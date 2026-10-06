@@ -1,0 +1,32 @@
+{
+  "_comment": "Kurmanji (Latin) — SCAFFOLD. Partial translation; missing keys fall back to English at runtime. Needs native review before launch.",
+  "common": {
+    "tagline": "Dikana te, bi zimanê te.",
+    "save": "Tomar bike",
+    "cancel": "Betal bike",
+    "delete": "Jê bibe",
+    "edit": "Biguherîne",
+    "back": "Vegere",
+    "language": "Ziman",
+    "logout": "Derkeve"
+  },
+  "nav": { "cta": "Dikana min ava bike", "login": "Têkeve", "dashboard": "Dikana min" },
+  "landing": {
+    "heroEyebrow": "Ji bo firoşkarên Instagram û WhatsApp",
+    "heroSub": "Wêne û bihayan bi zimanê xwe bişîne. Dikana te dikeve ser înternetê.",
+    "madeIn": "Li Hewlêr, Kurdistan hatiye çêkirin"
+  },
+  "store": {
+    "cart": "Selik",
+    "addToCart": "Têxe selikê",
+    "outOfStock": "Nemaye",
+    "checkout": "Siparîşê temam bike",
+    "subtotal": "Berhem",
+    "delivery": "Gihandin",
+    "total": "Giştî",
+    "placeOrder": "Daxwaz bike",
+    "orderReceived": "Daxwaza te gihîşt!",
+    "messageSeller": "Li ser WhatsApp ji firoşkar re binivîse",
+    "backToStore": "Vegere dikanê"
+  }
+}
