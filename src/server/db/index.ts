@@ -10,7 +10,12 @@ import { env } from "../env";
 export { schema };
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
-let instance: Db | undefined;
+/**
+ * One handle per process, shared through globalThis: Next bundles route handlers and pages separately, and dev
+ * HMR re-evaluates modules — without this each bundle would open its own pool (or, worse, its own PGlite
+ * instance on the same data directory, which is not coherent across instances).
+ */
+const g = globalThis as unknown as { __mmDb?: Db };
 
 /**
  * Create a database handle from a URL.
@@ -34,11 +39,11 @@ export function createDb(url: string): Db {
 
 /** Process-wide database handle (lazy — never connects at import/build time). */
 export function db(): Db {
-  if (!instance) instance = createDb(env().DATABASE_URL);
-  return instance;
+  if (!g.__mmDb) g.__mmDb = createDb(env().DATABASE_URL);
+  return g.__mmDb;
 }
 
 /** Tests inject an isolated PGlite database. */
 export function setDb(next: Db | undefined) {
-  instance = next;
+  g.__mmDb = next;
 }

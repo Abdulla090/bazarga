@@ -59,7 +59,7 @@ ok(!!landing.headers.get("content-security-policy"), "security headers present")
 const store = await fetch(`${BASE}/s/hawler-bazaar`);
 const storeHtml = await store.text();
 const ids = [...new Set([...storeHtml.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
-ok(store.status === 200 && ids.length === 3, `storefront lists 3 products (${ids.length})`);
+ok(store.status === 200 && ids.length >= 3, `storefront lists the demo products (${ids.length})`);
 
 const quote = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 2 }], "baghdad", "en"], { path: "/s/hawler-bazaar/cart" });
 const total = /"total":(\d+)/.exec(quote.text)?.[1];
@@ -110,6 +110,25 @@ const demoLogin = await callFormAction("logInAction", { email: "demo@mymarket.ap
 const demoCookie = (demoLogin.res.headers.get("set-cookie") ?? "").split(";")[0];
 const demoDash = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: demoCookie } })).text();
 ok(demoDash.includes("Shilan Smoke"), "demo seller sees the new order in the dashboard");
+
+// Seller uploads a photo (magic-byte check) and creates a product that shows up in the storefront.
+const photo = new FormData();
+photo.append("file", new Blob([readFileSync("public/images/product-honey.jpg")], { type: "image/jpeg" }), "honey.jpg");
+const up = await fetch(`${BASE}/api/uploads`, { method: "POST", headers: { Cookie: demoCookie, Origin: BASE }, body: photo });
+const upJson = await up.json();
+ok(up.status === 200 && typeof upJson.url === "string", "seller image upload accepted");
+const fake = new FormData();
+fake.append("file", new Blob(["<svg onload=alert(1)>"], { type: "image/jpeg" }), "x.jpg");
+const fakeRes = await fetch(`${BASE}/api/uploads`, { method: "POST", headers: { Cookie: demoCookie, Origin: BASE }, body: fake });
+ok(fakeRes.status === 400, "SVG disguised as JPEG is rejected");
+const productName = `Smoke item ${Date.now()}`;
+await callFormAction(
+  "saveProductAction",
+  { "name.en": productName, "name.ku": "تاقیکردنەوە", price: "12000", stock: "3", isActive: "on", imageUrls: upJson.url },
+  { cookie: demoCookie, path: "/dashboard/products/new" },
+);
+const sf = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
+ok(sf.includes(productName) && sf.includes(upJson.url), "new product with photo appears in the storefront");
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);
