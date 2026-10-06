@@ -326,6 +326,8 @@
     "file_too_large": "الصورة كبيرة جداً.",
     "unsupported_image_type": "استخدم صورة JPG أو PNG أو WebP.",
     "ai_disabled": "ميزة الصور إلى منتجات غير مفعّلة.",
-    "name_required": "أضف اسماً بلغة واحدة على الأقل."
+    "name_required": "أضف اسماً بلغة واحدة على الأقل.",
+    "empty_file": "اختر صورة أولاً.",
+    "nothing_to_read": "أضف صورة أو رسالة أولاً."
   }
 }

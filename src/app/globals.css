@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #f5b700;
+  --color-gold-600: #d99f00;
+  --color-ink: #0f1b2d;
+  --color-ink-70: #3c4757;
+  --color-ink-50: #6b7480;
+  --color-green: #1f8a5b;
+  --color-paper: #faf7f0;
+  --color-line: #e7e1d3;
+  --color-danger: #b42318;
+  --font-sans: "Vazirmatn Variable", "Inter Variable", system-ui, sans-serif;
+  --font-latin: "Inter Variable", "Vazirmatn Variable", system-ui, sans-serif;
+  --radius-card: 1.25rem;
+}
+
+/* Latin-script pages lead with Inter; Kurdish/Arabic lead with Vazirmatn. */
+html:lang(en),
+html:lang(kmr) {
+  font-family: var(--font-latin);
+}
+html {
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100dvh;
+}
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-base font-semibold transition
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-gold {
+    @apply btn bg-gold text-ink hover:bg-gold-600 active:translate-y-px;
+  }
+  .btn-ink {
+    @apply btn bg-ink text-paper hover:bg-ink-70;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-white text-ink hover:border-ink-50;
+  }
+  .btn-danger {
+    @apply btn border border-danger/30 bg-white text-danger hover:bg-danger/5;
+  }
+  .btn-sm {
+    @apply min-h-9 px-3 text-sm;
+  }
+  .card {
+    @apply rounded-[var(--radius-card)] border border-line bg-white p-4 sm:p-5;
+  }
+  .label {
+    @apply mb-1 block text-sm font-semibold text-ink-70;
+  }
+  .input {
+    @apply block min-h-11 w-full rounded-xl border border-line bg-white px-3 py-2 text-base text-ink
+      placeholder:text-ink-50 focus:border-ink focus:outline-none;
+  }
+  .hint {
+    @apply mt-1 text-xs text-ink-50;
+  }
+  .field-error {
+    @apply mt-1 text-sm text-danger;
+  }
+  .eyebrow {
+    @apply text-sm font-bold uppercase tracking-wide text-green;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+}
+
+/* Numbers and Latin bits inside RTL text stay readable. */
+.num {
+  font-family: var(--font-latin);
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}

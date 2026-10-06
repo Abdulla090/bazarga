@@ -326,6 +326,8 @@
     "file_too_large": "That photo is too big.",
     "unsupported_image_type": "Use a JPG, PNG or WebP photo.",
     "ai_disabled": "Photo-to-product is not switched on.",
-    "name_required": "Add a name in at least one language."
+    "name_required": "Add a name in at least one language.",
+    "empty_file": "Choose a photo first.",
+    "nothing_to_read": "Add a photo or a message first."
   }
 }
