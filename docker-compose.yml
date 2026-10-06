@@ -1,0 +1,48 @@
+# Single-VPS deployment: Postgres + one-shot migrate/seed + the app.
+#   cp .env.example .env   # fill in secrets (at least POSTGRES_PASSWORD and APP_URL)
+#   docker compose up -d --build
+# Put Caddy/Nginx/Cloudflare in front for TLS (see README).
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mymarket}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-mymarket}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mymarket} -d ${POSTGRES_DB:-mymarket}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    build: { context: ., target: builder }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-mymarket}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-mymarket}
+    command: ["sh", "-c", "npm run db:migrate && if [ \"$${SEED_DEMO:-true}\" = \"true\" ]; then npm run db:seed; fi"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  app:
+    build: { context: ., target: runner }
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-mymarket}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-mymarket}
+      NODE_ENV: production
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+
+volumes:
+  pgdata:
+  uploads:

@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.pglite
+.pglite-*
+uploads
+coverage
+*.zip
+.env
+.env.*
+!.env.example
