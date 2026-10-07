@@ -31,7 +31,23 @@
 - Fixed: `/s/[slug]/cart` and the order confirmation page crashed at runtime (label-key arrays were exported
   from "use client" modules, so server pages got client references); keys now live in `components/store/cart-labels.ts`.
 
+**PWA, push, performance, mobile (v3)**
+- Installable PWA: web app manifest, maskable icons, hand-written service worker with a Kurdish offline page,
+  production-only registration, seller install prompt.
+- Web push for new orders (VAPID from env; the feature hides itself when unset), settings toggle, dead
+  subscriptions pruned on 404/410 or repeated failures.
+- Performance budgets (`npm run budget`: storefront ≤155 KiB, dashboard ≤200 KiB gzipped first-load JS; all
+  routes pass), lazy-split heavy client pieces, explicit cache headers. Lighthouse mobile: store home 88/100/100/100,
+  product page 94/100/100/100 (Perf/A11y/BP/SEO), CLS 0 — details in `docs/PERFORMANCE.md`.
+- Mobile RTL pass verified at 360/390/414/430 px in ku and en on 11 storefront + dashboard routes: no
+  horizontal overflow, tap targets ≥44 px, inputs ≥16 px, logical properties, safe-area insets.
+  `npm run test:mobile` (Playwright) and `npm run shots:mobile` (screenshots + report).
+
 **Still open from this batch**
+- Cover photo is stored as one URL (no renditions), so the store-home LCP image has no `srcset`; keep the
+  upload pipeline's renditions for covers (biggest remaining Lighthouse item, LCP 3.8 s simulated).
+- Product-grid thumbnails: add a ~480 w rendition (Lighthouse estimates ~96 KB savings on store home).
+- Run `npm run test:mobile` in CI (needs a seeded build + Chromium in the CI image).
 - Dashboard UI for managing discount codes and delivery areas.
 - Legacy customer phones are stored as `9647…`; new checkouts store `+9647…`. A one-off migration to
   `+`-prefix existing `customers.phone` / `orders.customer_phone` would keep repeat-customer matching exact.
@@ -99,7 +115,7 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - ~~Discount codes, free-delivery thresholds~~ — shipped at checkout; still to do: a dashboard screen to
   create/edit/deactivate codes (codes are rows in `discount_codes`, seeded/inserted directly for now), bundles.
 - Multiple staff accounts per store with roles.
-- PWA install + push notifications for new orders.
+- ~~PWA install + push notifications for new orders.~~ Shipped (v3).
 
 ## 7. Platform & hardening
 
@@ -108,6 +124,7 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - Redis (or Postgres advisory locks) if rate-limit write volume grows; queue (pg-boss) for notifications and
   payment reconciliation.
 - Error monitoring (Sentry/GlitchTip) and uptime checks on `/api/health`.
-- Playwright E2E in CI (mobile RTL viewports) in addition to the HTTP smoke test.
+- Playwright E2E in CI (mobile RTL viewports) in addition to the HTTP smoke test — the mobile spec exists
+  (`e2e/`, `npm run test:mobile`); wiring it into CI is what's left.
 - Full Kurmanji (kmr) translation by a native speaker; add Turkmen and Assyrian (Syriac) communities later.
 - Billing: free tier + paid plan (FIB/ZainCash recurring or manual), plan limits.
