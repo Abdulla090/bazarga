@@ -66,7 +66,6 @@ export default async function TrackOrderPage({ params, searchParams }: { params:
             dir="ltr"
             inputMode="numeric"
             autoComplete="off"
-            placeholder="1001"
             defaultValue={order ? "" : (prefill ?? "")}
             aria-describedby="trk-number-hint"
             maxLength={20}
