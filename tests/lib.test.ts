@@ -58,6 +58,42 @@ describe("whatsapp", () => {
     const link = waLink("+964 750 123 4567", text);
     expect(link.startsWith("https://wa.me/9647501234567?text=")).toBe(true);
     expect(decodeURIComponent(link.split("text=")[1]!)).toBe(text);
+    expect(text).not.toMatch(/Discount|Subtotal/);
+  });
+
+  const discounted = {
+    storeName: "Hawler Bazaar",
+    orderNumber: 1002,
+    items: [{ name: "Kurdish dress", quantity: 1, lineTotal: 85000 }],
+    subtotal: 85000,
+    deliveryFee: 3000,
+    total: 79500,
+    discountCode: "EID10",
+    discountAmount: 8500,
+    customerName: "Shilan",
+    cityName: "Erbil",
+    address: "Near the Bazaar Mosque",
+    paymentLabel: "Cash on delivery",
+  };
+
+  it("adds the subtotal and a discount line with the code and amount, before delivery and total", () => {
+    const lines = orderSummaryText(discounted, "en").split("\n");
+    const i = lines.indexOf("Discount (EID10): -8,500 IQD");
+    expect(i).toBeGreaterThan(0);
+    expect(lines[i - 1]).toBe("Subtotal: 85,000 IQD");
+    expect(lines[i + 1]).toBe("Delivery: 3,000 IQD");
+    expect(lines).toContain("Total: 79,500 IQD");
+  });
+
+  it("discount line in Sorani and Arabic", () => {
+    expect(orderSummaryText(discounted, "ku")).toMatch(/^داشکاندن \(EID10\): -8,500 /m);
+    expect(orderSummaryText(discounted, "ar")).toMatch(/^خصم \(EID10\): -8,500 /m);
+  });
+
+  it("a free-delivery code says so instead of an amount", () => {
+    const text = orderSummaryText({ ...discounted, discountCode: "FREESHIP", discountAmount: 0, deliveryFee: 0, total: 85000 }, "en");
+    expect(text).toContain("Discount (FREESHIP): free delivery");
+    expect(text).not.toContain("Subtotal");
   });
 });
 
