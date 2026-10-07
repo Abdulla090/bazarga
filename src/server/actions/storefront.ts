@@ -1,5 +1,7 @@
 "use server";
 import { after } from "next/server";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
 import { env } from "../env";
@@ -12,10 +14,12 @@ import { getStorefrontStore } from "../cache/storefront";
 import { invalidateStock } from "../cache/tags";
 import { getOrderByPublicId, placeOrder, quoteCart, type Quote } from "../services/orders";
 import { notifySellerOfOrder } from "../services/notify-order";
+import { trackOrder } from "../services/tracking";
 import { getProvider, isProviderAvailable } from "../payments/registry";
 import { latestPaymentForOrder, startPayment, syncPaymentFromProvider } from "../payments/service";
 import { cartItemSchema, cartSchema, checkoutSchema, localeSchema } from "@/lib/validation";
 import { toActionState, type ActionState } from "./util";
+import { parseOrderNumber, trackingPath, TRACK_COOKIE, TRACK_COOKIE_TTL_SECONDS } from "@/lib/order-tracking";
 
 const slugSchema = z.string().regex(/^[a-z0-9-]{2,40}$/);
 
@@ -126,4 +130,39 @@ export async function retryPaymentAction(slug: string, publicId: string): Promis
   } catch (e) {
     return toActionState(e);
   }
+}
+
+/**
+ * Order-tracking form (/s/[slug]/track). A plain <form action> so it works before hydration / without JS:
+ * on a match the order's unguessable public id goes into a short-lived httpOnly cookie and the page re-renders it
+ * (POST → redirect → GET, the phone never lands in a URL); every miss redirects with the same generic error.
+ */
+export async function trackOrderAction(formData: FormData): Promise<void> {
+  const slugRaw = formData.get("slug");
+  const parsedSlug = slugSchema.safeParse(slugRaw);
+  if (!parsedSlug.success) redirect("/");
+  const slug = parsedSlug.data;
+  const numberRaw = formData.get("number");
+  const n = parseOrderNumber(typeof numberRaw === "string" ? numberRaw.slice(0, 20) : null);
+  const back = (e: "nf" | "rl") => `${trackingPath(slug, n ?? undefined)}${n ? "&" : "?"}e=${e}`;
+  const store = await getStorefrontStore(slug);
+  if (!store) redirect(back("nf"));
+  const result = await trackOrder(db(), {
+    storeId: store.id,
+    ip: await clientIp(),
+    number: typeof numberRaw === "string" ? numberRaw.slice(0, 20) : null,
+    phone: formData.get("phone"),
+  });
+  if (!result.ok) {
+    logger.info("order.track_miss", { storeId: store.id, reason: result.reason });
+    redirect(back(result.reason === "rate_limited" ? "rl" : "nf"));
+  }
+  (await cookies()).set(TRACK_COOKIE, result.order.publicId, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: env().NODE_ENV === "production",
+    maxAge: TRACK_COOKIE_TTL_SECONDS,
+  });
+  redirect(trackingPath(slug));
 }

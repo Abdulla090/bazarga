@@ -74,6 +74,10 @@ export function buildTrackingTimeline(status: OrderStatus, events: readonly Time
   }
 }
 
+/** httpOnly cookie holding the public id of the order the shopper last looked up (legacy mm_* prefix). */
+export const TRACK_COOKIE = "mm_track";
+export const TRACK_COOKIE_TTL_SECONDS = 30 * 60;
+
 /** Path of a store's tracking page; `n` pre-fills the order number. */
 export function trackingPath(slug: string, orderNumber?: number): string {
   return `/s/${slug}/track${orderNumber ? `?n=${orderNumber}` : ""}`;
