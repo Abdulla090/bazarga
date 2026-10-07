@@ -1,9 +1,11 @@
 import { randomBytes } from "node:crypto";
-import { and, asc, desc, eq, gte, inArray, isNotNull, notInArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, gt, notInArray, or, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import {
   customers,
+  deliveryAreas,
   deliveryZones,
+  discountCodes,
   orderEvents,
   orderItems,
   orders,
@@ -27,6 +29,7 @@ import {
 } from "@/lib/order-status";
 import { governorateForCityKey } from "@/lib/governorates";
 import type { CheckoutInput } from "@/lib/validation";
+import { applyDiscount, DISCOUNT_CODE_RE, normalizeDiscountCode, type DiscountRejection, type DiscountRule } from "@/lib/discounts";
 import type { Store } from "./stores";
 
 export type Order = typeof orders.$inferSelect;
@@ -115,6 +118,82 @@ async function resolveLines(database: Db, storeId: string, items: MergedLine[], 
   });
 }
 
+// ---------------------------------------------------------------- delivery area + discount (shared by quote + checkout)
+type ZoneRow = typeof deliveryZones.$inferSelect;
+type DiscountRow = typeof discountCodes.$inferSelect;
+
+export type ResolvedDelivery = { fee: number; areaId: string | null; areaName: string | null };
+
+/**
+ * Fee for a zone + optional area. An area id must belong to that zone of this store and be active
+ * (else `invalid_area`); "other area" free text keeps the zone fee.
+ */
+async function resolveDelivery(
+  database: Db,
+  storeId: string,
+  zone: ZoneRow,
+  areaId: string | null | undefined,
+  areaOther: string | null | undefined,
+  locale: Locale,
+): Promise<ResolvedDelivery> {
+  if (areaId) {
+    const area = await database.query.deliveryAreas.findFirst({
+      where: and(eq(deliveryAreas.id, areaId), eq(deliveryAreas.storeId, storeId), eq(deliveryAreas.zoneId, zone.id), eq(deliveryAreas.isActive, true)),
+    });
+    if (!area) throw new AppError("VALIDATION", "invalid_area");
+    return { fee: area.fee ?? zone.fee, areaId: area.id, areaName: pickText(area.name, locale) || null };
+  }
+  return { fee: zone.fee, areaId: null, areaName: areaOther?.trim() || null };
+}
+
+const toRule = (d: DiscountRow): DiscountRule => ({
+  type: d.type,
+  value: d.value,
+  minSubtotal: d.minSubtotal,
+  maxUses: d.maxUses,
+  usedCount: d.usedCount,
+  startsAt: d.startsAt,
+  endsAt: d.endsAt,
+  isActive: d.isActive,
+});
+
+/** Look up a shopper-typed code for this store. null = no such code. */
+export async function findDiscountCode(database: Db, storeId: string, raw: string): Promise<DiscountRow | null> {
+  const code = normalizeDiscountCode(raw);
+  if (!DISCOUNT_CODE_RE.test(code)) return null;
+  const row = await database.query.discountCodes.findFirst({ where: and(eq(discountCodes.storeId, storeId), eq(discountCodes.code, code)) });
+  return row ?? null;
+}
+
+export type DiscountError = "discount_invalid" | `discount_${DiscountRejection}`;
+
+/**
+ * Count one use of a code — race-safe: the conditional UPDATE re-checks active / window / limit under the row lock,
+ * so two shoppers racing for the last use can't both get it (the loser's whole order transaction rolls back).
+ */
+export async function claimDiscountUse(database: Db, codeId: string, now = new Date()): Promise<boolean> {
+  const rows = await database
+    .update(discountCodes)
+    .set({ usedCount: sql`${discountCodes.usedCount} + 1`, updatedAt: now })
+    .where(
+      and(
+        eq(discountCodes.id, codeId),
+        eq(discountCodes.isActive, true),
+        or(isNull(discountCodes.maxUses), lt(discountCodes.usedCount, discountCodes.maxUses)),
+        or(isNull(discountCodes.startsAt), lte(discountCodes.startsAt, now)),
+        or(isNull(discountCodes.endsAt), gt(discountCodes.endsAt, now)),
+      ),
+    )
+    .returning({ id: discountCodes.id });
+  return rows.length > 0;
+}
+
+/** "Add X IQD more for free delivery": null when there is no threshold or the cart is empty/already over it. */
+export function freeDeliveryRemaining(subtotal: number, threshold: number | null | undefined): number | null {
+  if (!threshold || threshold <= 0 || subtotal <= 0 || subtotal >= threshold) return null;
+  return threshold - subtotal;
+}
+
 // ---------------------------------------------------------------- quote (cart page)
 /** Cart thumbnails are ~64 px: use the smallest stored rendition when the image went through the pipeline. */
 function thumbUrl(img: { url: string; renditions: { width: number; url: string }[] } | undefined): string | null {
@@ -143,10 +222,22 @@ export type QuoteLine = {
 export type Quote = {
   lines: QuoteLine[];
   subtotal: number;
+  /** After free delivery (threshold or code). */
   deliveryFee: number;
   total: number;
   cityKey: string | null;
+  discountAmount: number;
+  /** The normalised code when it applies to this cart. */
+  discountCode: string | null;
+  /** Why the typed code doesn't apply (shown under the field). */
+  discountError: DiscountError | null;
+  freeDelivery: boolean;
+  freeDeliveryThreshold: number | null;
+  /** IQD still to add for free delivery; null when n/a. */
+  freeDeliveryRemaining: number | null;
 };
+
+export type QuoteOptions = { areaId?: string | null; discountCode?: string | null; now?: Date };
 
 /**
  * Price a cart from the database (never from client-sent prices). Unavailable lines are returned
@@ -158,6 +249,7 @@ export async function quoteCart(
   items: CartLine[],
   cityKey: string | null,
   locale: Locale,
+  opts: QuoteOptions = {},
 ): Promise<Quote> {
   const resolved = await resolveLines(database, storeId, mergeCart(items), locale);
   const ids = [...new Set(resolved.map((l) => l.productId))];
@@ -192,10 +284,39 @@ export async function quoteCart(
     const zone = await database.query.deliveryZones.findFirst({
       where: and(eq(deliveryZones.storeId, storeId), eq(deliveryZones.cityKey, cityKey), eq(deliveryZones.isActive, true)),
     });
-    deliveryFee = zone?.fee ?? 0;
+    if (zone) {
+      // A stale/foreign area id just falls back to the zone fee in the quote; checkout rejects it.
+      deliveryFee = await resolveDelivery(database, storeId, zone, opts.areaId, null, locale).then(
+        (d) => d.fee,
+        () => zone.fee,
+      );
+    }
   }
   const t = computeTotals(okLines, deliveryFee);
-  return { lines, subtotal: t.subtotal, deliveryFee: t.deliveryFee, total: t.total, cityKey };
+  const [storeRow, code] = await Promise.all([
+    database.query.stores.findFirst({ where: eq(stores.id, storeId), columns: { freeDeliveryThreshold: true } }),
+    opts.discountCode ? findDiscountCode(database, storeId, opts.discountCode) : Promise.resolve(null),
+  ]);
+  const threshold = storeRow?.freeDeliveryThreshold ?? null;
+  let discountError: DiscountError | null = opts.discountCode && !code ? "discount_invalid" : null;
+  const applied = applyDiscount(
+    { subtotal: t.subtotal, deliveryFee: t.deliveryFee, freeDeliveryThreshold: threshold, discount: code ? toRule(code) : null },
+    opts.now,
+  );
+  if (applied.rejection) discountError = `discount_${applied.rejection}`;
+  return {
+    lines,
+    subtotal: t.subtotal,
+    deliveryFee: applied.deliveryFee,
+    total: applied.total,
+    cityKey,
+    discountAmount: applied.discountAmount,
+    discountCode: code && !applied.rejection ? code.code : null,
+    discountError,
+    freeDelivery: applied.freeDelivery,
+    freeDeliveryThreshold: threshold,
+    freeDeliveryRemaining: applied.freeDelivery ? null : freeDeliveryRemaining(t.subtotal, threshold),
+  };
 }
 
 // ---------------------------------------------------------------- checkout
@@ -204,12 +325,19 @@ export type PlacedOrder = Order & { items: OrderItem[] };
 export type PlaceOrderOptions = {
   /** Which non-COD providers are configured on this deployment (env credentials present). */
   isProviderAvailable?: (m: PaymentMethod) => boolean;
+  now?: Date;
 };
+
+type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode";
+/** Parsed checkout input; area, landmark and discount code are optional for callers that don't collect them. */
+export type PlaceOrderInput = Omit<CheckoutInput, OptionalCheckoutFields> & Partial<Pick<CheckoutInput, OptionalCheckoutFields>>;
 
 /**
  * Create an order atomically:
  *  - re-prices every line from the DB (client prices are ignored), per variant when the product has variants,
- *  - takes the delivery fee from the store's zone for the chosen city,
+ *  - takes the delivery fee from the store's zone (or the chosen area of it) for the chosen city,
+ *  - applies a discount code (validated, then its use claimed with a conditional UPDATE) and the store's
+ *    free-delivery threshold,
  *  - decrements tracked stock (variant stock for variant lines) with a conditional UPDATE
  *    (fails → whole transaction rolls back),
  *  - allocates a per-store sequential order number,
@@ -218,7 +346,7 @@ export type PlaceOrderOptions = {
 export async function placeOrder(
   database: Db,
   store: Pick<Store, "id">,
-  input: CheckoutInput,
+  input: PlaceOrderInput,
   opts: PlaceOrderOptions = {},
 ): Promise<PlacedOrder> {
   const storeId = store.id;
@@ -250,7 +378,23 @@ export async function placeOrder(
       // out_of_stock is enforced by the conditional decrement below (same error, and race-safe).
     }
 
-    const totals = computeTotals(priced, zone.fee);
+    const delivery = await resolveDelivery(tx as unknown as Db, storeId, zone, input.areaId, input.areaOther, input.locale);
+    const totals = computeTotals(priced, delivery.fee);
+    const now = opts.now ?? new Date();
+
+    // Discount code: validate for this cart, then claim one use atomically (rolls back with the order).
+    let code: DiscountRow | null = null;
+    if (input.discountCode) {
+      code = await findDiscountCode(tx as unknown as Db, storeId, input.discountCode);
+      if (!code) throw new AppError("VALIDATION", "discount_invalid");
+    }
+    const [storeRow] = await tx.select({ threshold: stores.freeDeliveryThreshold }).from(stores).where(eq(stores.id, storeId));
+    const applied = applyDiscount(
+      { subtotal: totals.subtotal, deliveryFee: totals.deliveryFee, freeDeliveryThreshold: storeRow?.threshold ?? null, discount: code ? toRule(code) : null },
+      now,
+    );
+    if (applied.rejection) throw new AppError("VALIDATION", `discount_${applied.rejection}`);
+    if (code && !(await claimDiscountUse(tx as unknown as Db, code.id, now))) throw new AppError("VALIDATION", "discount_used_up");
 
     // Atomic, race-safe stock decrement.
     for (const line of priced) {
@@ -300,8 +444,10 @@ export async function placeOrder(
         phone: input.phone,
         cityKey: input.cityKey,
         address: input.address,
+        areaName: delivery.areaName,
+        landmark: input.landmark ?? null,
         ordersCount: 1,
-        totalSpent: totals.total,
+        totalSpent: applied.total,
         lastOrderAt: new Date(),
       })
       .onConflictDoUpdate({
@@ -310,8 +456,10 @@ export async function placeOrder(
           name: input.customerName,
           cityKey: input.cityKey,
           address: input.address,
+          areaName: delivery.areaName,
+          landmark: input.landmark ?? null,
           ordersCount: sql`${customers.ordersCount} + 1`,
-          totalSpent: sql`${customers.totalSpent} + ${totals.total}`,
+          totalSpent: sql`${customers.totalSpent} + ${applied.total}`,
           lastOrderAt: new Date(),
         },
       })
@@ -329,11 +477,17 @@ export async function placeOrder(
         cityKey: zone.cityKey,
         cityName: pickText(zone.name, input.locale),
         governorateKey: zone.governorateKey ?? governorateForCityKey(zone.cityKey),
+        areaId: delivery.areaId,
+        areaName: delivery.areaName,
         address: input.address,
+        landmark: input.landmark ?? null,
         notes: input.notes,
         subtotal: totals.subtotal,
-        deliveryFee: totals.deliveryFee,
-        total: totals.total,
+        discountCodeId: code?.id ?? null,
+        discountCode: code?.code ?? null,
+        discountAmount: applied.discountAmount,
+        deliveryFee: applied.deliveryFee,
+        total: applied.total,
         paymentMethod: input.paymentMethod,
         paymentStatus: input.paymentMethod === "cod" ? "unpaid" : "pending",
         locale: input.locale,

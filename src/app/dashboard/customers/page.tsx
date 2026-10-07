@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { phoneDisplay } from "@/lib/phone";
 import { requireStore } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { listCustomers } from "@/server/services/orders";
@@ -23,7 +24,7 @@ export default async function CustomersPage() {
             <li key={c.id} className="card flex flex-wrap items-center gap-x-4 gap-y-1 p-3">
               <span className="min-w-0 flex-1">
                 <span className="block font-bold">{c.name}</span>
-                <a href={waLink(c.phone, "")} className="num text-sm text-green underline" dir="ltr" target="_blank" rel="noopener noreferrer">+{c.phone}</a>
+                <a href={waLink(c.phone, "")} className="num text-sm text-green underline" dir="ltr" target="_blank" rel="noopener noreferrer">{phoneDisplay(c.phone)}</a>
               </span>
               <span className="text-sm">{t("orders")}: <span className="num font-bold">{c.ordersCount}</span></span>
               <span className="text-sm">{t("spent")}: <span className="num font-bold">{formatIQD(c.totalSpent, locale)}</span></span>

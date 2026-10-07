@@ -40,3 +40,8 @@ export function orderSummaryText(o: SummaryInput, locale: Locale): string {
     `${t.to}: ${o.customerName} — ${o.cityName}, ${o.address}`,
   ].join("\n");
 }
+
+/** One-line delivery address: area — landmark — street (Iraqi addresses are landmark-first). */
+export function fullAddress(o: { areaName?: string | null; landmark?: string | null; address: string }): string {
+  return [o.areaName, o.landmark, o.address].map((x) => x?.trim()).filter(Boolean).join(" — ");
+}

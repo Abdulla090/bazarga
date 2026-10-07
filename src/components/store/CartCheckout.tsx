@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { maskIraqiMobile } from "@/lib/phone";
+import { fmt } from "@/lib/fmt";
 import { useCart } from "./cart";
 import { placeOrderAction, quoteAction } from "@/server/actions/storefront";
 import type { Quote } from "@/server/services/orders";
@@ -9,9 +11,10 @@ import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
 
-type Zone = { key: string; name: string; fee: number };
+type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
+const OTHER = "__other";
 
-export const CART_LABEL_KEYS = ["address", "addressHint", "cart", "checkout", "continue", "deliverTo", "delivery", "emptyCart", "name", "notes", "payment", "phone", "placeOrder", "qty", "subtotal", "total", "unavailableLine", "yourDetails"] as const;
+export const CART_LABEL_KEYS = ["address", "addressHint", "cart", "checkout", "continue", "deliverTo", "delivery", "emptyCart", "name", "notes", "payment", "phone", "placeOrder", "qty", "subtotal", "total", "unavailableLine", "yourDetails", "area", "chooseArea", "otherArea", "areaPlaceholder", "landmark", "landmarkHint", "addressDetails", "phoneHint", "haveCode", "discountCode", "apply", "removeCode", "discount", "codeApplied", "freeDeliveryUnlocked", "freeDeliveryProgress", "placing", "free"] as const;
 /** Store strings translated on the server; `errors` is the errors namespace (storefronts ship no i18n runtime). */
 export type CartLabels = Record<(typeof CART_LABEL_KEYS)[number], string> & { cod: string; errors: Record<string, string> };
 
@@ -22,6 +25,13 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const { lines, setQty, clear } = useCart(slug);
   const [city, setCity] = useState(zones.some((z) => z.key === defaultCity) ? defaultCity : (zones[0]?.key ?? ""));
   const [method, setMethod] = useState<PaymentMethod>(payments[0] ?? "cod");
+  const [area, setArea] = useState("");
+  const [phone, setPhone] = useState("");
+  const [codeOpen, setCodeOpen] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [code, setCode] = useState<string | null>(null);
+  const zone = zones.find((z) => z.key === city);
+  const areaId = area && area !== OTHER ? area : null;
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -31,12 +41,12 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   useEffect(() => {
     let live = true;
     if (!lines.length) return;
-    quoteAction(slug, lines, city || null, locale).then((q) => live && setQuote(q));
+    quoteAction(slug, lines, city || null, locale, { areaId, discountCode: code }).then((q) => live && setQuote(q));
     return () => {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linesKey, city, slug, locale]);
+  }, [linesKey, city, areaId, code, slug, locale]);
 
   if (!lines.length) {
     return (
@@ -58,7 +68,11 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         customerName: fd.get("customerName"),
         phone: fd.get("phone"),
         cityKey: city,
-        address: fd.get("address"),
+        areaId,
+        areaOther: area === OTHER ? fd.get("areaOther") : null,
+        landmark: fd.get("landmark"),
+        discountCode: quote?.discountCode ?? null,
+        address: fd.get("address") ?? "",
         notes: fd.get("notes") || undefined,
         paymentMethod: method,
         locale,
@@ -67,7 +81,10 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         setError(r.error === "VALIDATION" ? undefined : r.error);
         setFieldErrors(r.fieldErrors ?? {});
         if (r.error === "OUT_OF_STOCK" || r.error === "out_of_stock" || r.error === "product_unavailable") {
-          setQuote(await quoteAction(slug, lines, city || null, locale));
+          setQuote(await quoteAction(slug, lines, city || null, locale, { areaId, discountCode: code }));
+        }
+        if (r.error?.startsWith("discount_")) {
+          setQuote(await quoteAction(slug, lines, city || null, locale, { areaId, discountCode: code }));
         }
         return;
       }
@@ -110,21 +127,72 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <h2 className="text-xl font-extrabold">{L.checkout}</h2>
         <div>
           <label className="label" htmlFor="co-city">{L.deliverTo}</label>
-          <select id="co-city" className="input" value={city} onChange={(e) => setCity(e.target.value)} required>
+          <select
+            id="co-city"
+            className="input"
+            value={city}
+            onChange={(e) => {
+              setCity(e.target.value);
+              setArea("");
+            }}
+            required
+          >
             {zones.map((z) => (
               <option key={z.key} value={z.key}>
-                {z.name} · {z.fee === 0 ? "0" : z.fee.toLocaleString("en-US")}
+                {z.name} · {z.fee === 0 ? L.free : formatIQD(z.fee, locale)}
               </option>
             ))}
           </select>
         </div>
+        {zone && zone.areas.length > 0 && (
+          <div>
+            <label className="label" htmlFor="co-area">{L.area}</label>
+            <select id="co-area" name="areaId" className="input" value={area} onChange={(e) => setArea(e.target.value)} required>
+              <option value="" disabled>{L.chooseArea}</option>
+              {zone.areas.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                  {a.fee !== zone.fee ? ` · ${a.fee === 0 ? L.free : formatIQD(a.fee, locale)}` : ""}
+                </option>
+              ))}
+              <option value={OTHER}>{L.otherArea}</option>
+            </select>
+            {fe("areaId")}
+          </div>
+        )}
+        {(area === OTHER || (zone && zone.areas.length === 0)) && (
+          <div>
+            {zone && zone.areas.length === 0 && <label className="label" htmlFor="co-area-other">{L.area}</label>}
+            <input id="co-area-other" name="areaOther" className="input" placeholder={L.areaPlaceholder} aria-label={L.area} maxLength={80} />
+          </div>
+        )}
         <fieldset className="grid gap-3">
           <legend className="label">{L.yourDetails}</legend>
           <input name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
           {fe("customerName")}
-          <input name="phone" className="input num" dir="ltr" inputMode="tel" placeholder="07XX XXX XXXX" aria-label={L.phone} autoComplete="tel" required />
-          {fe("phone")}
-          <textarea name="address" className="input min-h-20" placeholder={L.addressHint} aria-label={L.address} required minLength={3} maxLength={300} />
+          <div>
+            <input
+              name="phone"
+              className="input num w-full"
+              dir="ltr"
+              type="tel"
+              inputMode="tel"
+              placeholder="07XX XXX XXXX"
+              aria-label={L.phone}
+              aria-describedby="co-phone-hint"
+              autoComplete="tel"
+              value={phone}
+              onChange={(e) => setPhone(maskIraqiMobile(e.target.value))}
+              maxLength={17}
+              required
+            />
+            {fieldErrors.phone ? fe("phone") : <p id="co-phone-hint" className="hint">{L.phoneHint}</p>}
+          </div>
+          <div>
+            <input name="landmark" className="input w-full" placeholder={L.landmarkHint} aria-label={L.landmark} maxLength={200} />
+            {fe("landmark")}
+          </div>
+          <textarea name="address" className="input min-h-16" placeholder={L.addressDetails} aria-label={L.address} maxLength={300} />
           {fe("address")}
           <textarea name="notes" className="input min-h-16" placeholder={L.notes} aria-label={L.notes} maxLength={500} />
         </fieldset>
@@ -139,17 +207,63 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             ))}
           </div>
         </fieldset>
+        <div>
+          {!codeOpen && !code ? (
+            <button type="button" className="text-sm font-semibold underline" onClick={() => setCodeOpen(true)}>{L.haveCode}</button>
+          ) : code && quote?.discountCode ? (
+            <p className="flex items-center justify-between gap-2 rounded-xl bg-green/10 px-3 py-2 text-sm font-semibold text-green">
+              <span>{fmt(L.codeApplied, { code: quote.discountCode })}</span>
+              <button type="button" className="underline" onClick={() => { setCode(null); setCodeInput(""); }}>{L.removeCode}</button>
+            </p>
+          ) : (
+            <div>
+              <label className="label" htmlFor="co-code">{L.discountCode}</label>
+              <div className="flex gap-2">
+                <input
+                  id="co-code"
+                  className="input min-w-0 flex-1 uppercase"
+                  dir="ltr"
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                  value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      setCode(codeInput.trim() || null);
+                    }
+                  }}
+                  maxLength={32}
+                />
+                <button type="button" className="btn-ghost btn-sm shrink-0" onClick={() => setCode(codeInput.trim() || null)} disabled={!codeInput.trim()}>{L.apply}</button>
+              </div>
+              {code && quote?.discountError && <p className="field-error" role="alert">{te(quote.discountError)}</p>}
+            </div>
+          )}
+        </div>
+        {quote && quote.freeDeliveryRemaining !== null && (
+          <p className="rounded-xl bg-gold/15 px-3 py-2 text-sm font-semibold">{fmt(L.freeDeliveryProgress, { amount: formatIQD(quote.freeDeliveryRemaining, locale) })}</p>
+        )}
+        {quote && quote.freeDelivery && quote.subtotal > 0 && (
+          <p className="rounded-xl bg-green/10 px-3 py-2 text-sm font-semibold text-green">{L.freeDeliveryUnlocked}</p>
+        )}
         <dl className="grid grid-cols-2 gap-1 border-t border-line pt-3">
           <dt>{L.subtotal}</dt>
           <dd className="num text-end">{quote ? formatIQD(quote.subtotal, locale) : "…"}</dd>
+          {quote && quote.discountAmount > 0 && (
+            <>
+              <dt>{L.discount}</dt>
+              <dd className="num text-end text-green">−{formatIQD(quote.discountAmount, locale)}</dd>
+            </>
+          )}
           <dt>{L.delivery}</dt>
-          <dd className="num text-end">{quote ? formatIQD(quote.deliveryFee, locale) : "…"}</dd>
+          <dd className="num text-end">{quote ? (quote.freeDelivery ? L.free : formatIQD(quote.deliveryFee, locale)) : "…"}</dd>
           <dt className="text-lg font-extrabold">{L.total}</dt>
           <dd className="num text-end text-lg font-extrabold">{quote ? formatIQD(quote.total, locale) : "…"}</dd>
         </dl>
         {error && <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-sm font-semibold text-danger">{te(error)}</p>}
         <button className="btn-gold" disabled={placing || !available.length || !city}>
-          {placing ? "…" : L.placeOrder}
+          {placing ? L.placing : L.placeOrder}
         </button>
       </form>
     </div>

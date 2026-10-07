@@ -4,6 +4,7 @@ import { users } from "../db/schema";
 import { notify } from "../notifications";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
+import { fullAddress } from "@/lib/whatsapp";
 import type { PlacedOrder } from "./orders";
 import type { Store } from "./stores";
 
@@ -15,7 +16,7 @@ export async function notifySellerOfOrder(database: Db, store: Store, order: Pla
     kind: "order.created",
     to: { whatsapp: store.whatsapp, email: owner?.email ?? null },
     title: `🛍️ داواکاری نوێ #${order.number} — ${store.name}`,
-    body: `${order.customerName} · ${order.customerPhone}\n${order.cityName}, ${order.address}\n${lines}\n${formatIQD(order.total, "ku")} · ${PAYMENT_LABEL[order.paymentMethod]}`,
+    body: `${order.customerName} · ${order.customerPhone}\n${order.cityName}, ${fullAddress(order)}\n${lines}\n${formatIQD(order.total, "ku")} · ${PAYMENT_LABEL[order.paymentMethod]}`,
     link: `${appUrl}/dashboard/orders/${order.id}`,
   });
 }

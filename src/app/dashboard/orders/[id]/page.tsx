@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { phoneDisplay } from "@/lib/phone";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
@@ -8,7 +9,7 @@ import { getOrder } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
-import { waLink } from "@/lib/whatsapp";
+import { fullAddress, waLink } from "@/lib/whatsapp";
 import { PaymentBadge, StatusBadge } from "@/components/dashboard/Badges";
 import { StatusActions } from "./StatusActions";
 import { ArrowBack } from "@/components/ui/icons";
@@ -22,6 +23,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const t = await getTranslations("orders");
   const tp = await getTranslations("payments");
   const tc = await getTranslations("common");
+  const ts = await getTranslations("store");
   const locale = await currentLocale();
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" });
 
@@ -38,12 +40,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <section className="card grid gap-2">
           <h2 className="font-bold">{t("customer")}</h2>
           <p className="text-lg font-semibold">{order.customerName}</p>
-          <p className="num" dir="ltr">+{order.customerPhone}</p>
-          <p><span className="font-semibold">{t("address")}:</span> {order.cityName} — {order.address}</p>
+          <p className="num" dir="ltr">{phoneDisplay(order.customerPhone)}</p>
+          <p><span className="font-semibold">{t("address")}:</span> {order.cityName} — {fullAddress(order)}</p>
           {order.notes && <p><span className="font-semibold">{t("notes")}:</span> {order.notes}</p>}
           <div className="mt-2 flex flex-wrap gap-2">
             <a className="btn-ink btn-sm" href={waLink(order.customerPhone, `${store.name} — #${order.number}`)} target="_blank" rel="noopener noreferrer">{t("whatsappCustomer")}</a>
-            <a className="btn-ghost btn-sm" href={`tel:+${order.customerPhone}`}>{t("call")}</a>
+            <a className="btn-ghost btn-sm" href={`tel:${phoneDisplay(order.customerPhone)}`}>{t("call")}</a>
           </div>
         </section>
         <section className="card">
@@ -58,6 +60,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </ul>
           <dl className="mt-3 grid grid-cols-2 gap-1 border-t border-line pt-3">
             <dt>{t("subtotal")}</dt><dd className="num text-end">{formatIQD(order.subtotal, locale)}</dd>
+            {order.discountAmount > 0 && (
+              <>
+                <dt>{ts("discount")}{order.discountCode && <span className="num"> · {order.discountCode}</span>}</dt><dd className="num text-end">−{formatIQD(order.discountAmount, locale)}</dd>
+              </>
+            )}
             <dt>{t("deliveryFee")}</dt><dd className="num text-end">{formatIQD(order.deliveryFee, locale)}</dd>
             <dt className="font-bold">{t("total")}</dt><dd className="num text-end font-bold">{formatIQD(order.total, locale)}</dd>
             <dt>{t("payment")}</dt><dd className="text-end">{order.paymentMethod === "cod" ? tp("cod") : PAYMENT_LABEL[order.paymentMethod]}</dd>

@@ -416,6 +416,8 @@
     "discount_below_minimum": "Your order is below this code's minimum.",
     "invalid_area": "Choose an area from the list.",
     "invalid_threshold": "Enter a whole amount in IQD, e.g. 50000.",
-    "invalid_image_url": "That image couldn't be used. Upload it again."
+    "invalid_image_url": "That image couldn't be used. Upload it again.",
+    "phone_operator": "Use a Korek (075), Asiacell (077) or Zain (078/079) mobile number.",
+    "address_required": "Add a landmark or your street address."
   }
 }

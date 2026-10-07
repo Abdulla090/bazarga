@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { LOCALES } from "./i18n";
-import { normalizePhone } from "./phone";
+import { normalizeIraqiMobile, normalizePhone } from "./phone";
 import { isValidSlug } from "./slug";
 import { ORDER_STATUSES, PAYMENT_METHODS } from "./order-status";
 import { HEX_COLOR_RE, THEME_PRESETS } from "./theme";
@@ -180,15 +180,47 @@ export const cartItemSchema = z.object({
 });
 export const cartSchema = z.array(cartItemSchema).min(1).max(50);
 
+/** Checkout phone: Iraqi mobiles only (Korek/Asiacell/Zain), stored as "+9647XXXXXXXXX". */
+export const iraqiMobileSchema = z
+  .string()
+  .trim()
+  .min(6)
+  .max(24)
+  .transform((v, ctx) => {
+    const r = normalizeIraqiMobile(v);
+    if (!r.ok) {
+      ctx.addIssue({ code: "custom", message: r.reason });
+      return z.NEVER;
+    }
+    return r.e164;
+  });
+
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .nullish()
+    .transform((v) => v || null);
+
 export const checkoutSchema = z.object({
   items: cartSchema,
   customerName: trimmed(80).min(2),
-  phone: phoneSchema,
+  phone: iraqiMobileSchema,
   cityKey: z.string().trim().min(2).max(40),
-  address: trimmed(300).min(3),
+  /** A seller-defined area of the chosen city's zone… */
+  areaId: z.preprocess((v) => (v === "" ? null : v), uuid.nullish()).transform((v) => v ?? null),
+  /** …or the shopper's own when it isn't listed ("Other area"). */
+  areaOther: optionalText(80),
+  landmark: optionalText(200),
+  discountCode: optionalText(40),
+  /** Street / building — optional when a landmark is given (Iraqi addresses are landmark-based). */
+  address: trimmed(300).default(""),
   notes: trimmed(500).optional().transform((v) => v || null),
   paymentMethod: z.enum(PAYMENT_METHODS),
   locale: localeSchema.default("ku"),
+}).superRefine((v, ctx) => {
+  if (!v.landmark && v.address.length < 3) ctx.addIssue({ code: "custom", path: ["landmark"], message: "address_required" });
 });
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 

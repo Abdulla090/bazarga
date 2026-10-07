@@ -9,7 +9,7 @@ import { latestPaymentForOrder } from "@/server/payments/service";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
-import { orderSummaryText, waLink } from "@/lib/whatsapp";
+import { fullAddress, orderSummaryText, waLink } from "@/lib/whatsapp";
 import { PAYMENT_PANEL_KEYS, PaymentPanel } from "@/components/store/PaymentPanel";
 import { pickLabels } from "@/lib/fmt";
 import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
@@ -46,7 +46,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       total: order.total,
       customerName: order.customerName,
       cityName: order.cityName,
-      address: order.address,
+      address: fullAddress(order),
       paymentLabel,
     },
     locale,
@@ -80,6 +80,11 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
         </ul>
         <dl className="mt-2 grid grid-cols-2 gap-1 border-t border-line pt-2">
           <dt>{t("subtotal")}</dt><dd className="num text-end">{formatIQD(order.subtotal, locale)}</dd>
+          {order.discountAmount > 0 && (
+            <>
+              <dt>{t("discount")}{order.discountCode && <span className="num"> · {order.discountCode}</span>}</dt><dd className="num text-end">−{formatIQD(order.discountAmount, locale)}</dd>
+            </>
+          )}
           <dt>{t("delivery")} · {order.cityName}</dt><dd className="num text-end">{formatIQD(order.deliveryFee, locale)}</dd>
           <dt className="font-extrabold">{t("total")}</dt><dd className="num text-end font-extrabold">{formatIQD(order.total, locale)}</dd>
           <dt>{t("payment")}</dt><dd className="text-end">{paymentLabel}</dd>

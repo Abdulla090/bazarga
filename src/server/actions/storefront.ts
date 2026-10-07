@@ -34,11 +34,17 @@ async function cachedStoreOr404(slug: string) {
 }
 
 /** Server-side cart pricing (the cart in localStorage only holds product ids + quantities). */
-export async function quoteAction(slug: string, items: unknown, cityKey: string | null, locale: string): Promise<Quote | null> {
+const quoteExtraSchema = z
+  .object({ areaId: z.uuid().nullish(), discountCode: z.string().trim().max(40).nullish() })
+  .default({});
+
+export async function quoteAction(slug: string, items: unknown, cityKey: string | null, locale: string, extra?: unknown): Promise<Quote | null> {
   try {
     const store = await cachedStoreOr404(slug);
     const parsed = z.array(cartItemSchema).max(50).parse(items);
-    return await quoteCart(db(), store.id, parsed, cityKey ? z.string().max(40).parse(cityKey) : null, localeSchema.parse(locale));
+    const opts = quoteExtraSchema.parse(extra ?? {});
+    if (opts.discountCode) await enforceRateLimit(db(), `discount:${await clientIp()}`, 60, 600);
+    return await quoteCart(db(), store.id, parsed, cityKey ? z.string().max(40).parse(cityKey) : null, localeSchema.parse(locale), opts);
   } catch {
     return null;
   }

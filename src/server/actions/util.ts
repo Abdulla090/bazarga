@@ -17,6 +17,8 @@ const SPECIFIC = new Set([
   "invalid_or_expired_token", "invalid_city", "product_unavailable", "payment_method_unavailable", "out_of_stock",
   "invalid_transition", "file_too_large", "unsupported_image_type", "ai_disabled", "name_required", "empty_file", "nothing_to_read",
   "image_too_large", "invalid_color", "invalid_threshold", "invalid_image_url",
+  "phone_operator", "address_required", "invalid_area", "variant_required", "discount_invalid", "discount_inactive",
+  "discount_not_started", "discount_expired", "discount_used_up", "discount_below_minimum",
 ]);
 
 /** Convert any thrown error into a serialisable, translatable action result. Unexpected errors are logged, not leaked. */
