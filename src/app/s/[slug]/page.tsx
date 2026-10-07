@@ -8,6 +8,7 @@ import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
 import { filterCatalog, DEFAULT_PAGE_SIZE } from "@/lib/catalog-filter";
 import { waLink } from "@/lib/whatsapp";
+import { buildSrcSet, SIZES } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
 import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 
@@ -60,6 +61,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={store.coverImageUrl}
+            srcSet={buildSrcSet(store.coverImageRenditions)}
+            sizes={store.coverImageRenditions?.length ? SIZES.cover : undefined}
             alt=""
             loading="eager"
             fetchPriority="high"

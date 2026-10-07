@@ -11,6 +11,8 @@ import {
   products,
   storePaymentMethods,
   stores,
+  type ImageRendition,
+  type ProductSpec,
 } from "../db/schema";
 import type { LocalizedText } from "@/lib/i18n";
 import type { PaymentMethod } from "@/lib/order-status";
@@ -38,6 +40,7 @@ export type StorefrontStore = {
   accentColor: string | null;
   coverImageUrl: string | null;
   coverImagePlaceholder: string | null;
+  coverImageRenditions: ImageRendition[];
   about: LocalizedText;
   returnPolicy: LocalizedText;
   freeDeliveryThreshold: number | null;
@@ -61,6 +64,7 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       accentColor: true,
       coverImageUrl: true,
       coverImagePlaceholder: true,
+      coverImageRenditions: true,
       about: true,
       returnPolicy: true,
       freeDeliveryThreshold: true,
@@ -237,6 +241,8 @@ export type ProductDetail = {
   price: number;
   compareAtPrice: number | null;
   stock: number | null;
+  sku: string | null;
+  specs: ProductSpec[];
   images: ProductImage[];
   options: DetailOption[];
   variants: DetailVariant[];
@@ -254,6 +260,8 @@ export async function loadProductDetail(database: Db, storeId: string, productId
       price: true,
       compareAtPrice: true,
       stock: true,
+      sku: true,
+      specs: true,
     },
   });
   if (!p) return null;

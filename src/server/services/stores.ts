@@ -116,6 +116,7 @@ export async function updateStoreStorefront(database: Db, storeId: string, input
     .set({
       coverImageUrl: cover,
       coverImagePlaceholder: cover ? input.coverImagePlaceholder : null,
+      coverImageRenditions: cover ? (input.coverImageRenditions ?? []) : [],
       ...(cover ? {} : { coverImageKey: null }),
       freeDeliveryThreshold: input.freeDeliveryThreshold,
       updatedAt: new Date(),

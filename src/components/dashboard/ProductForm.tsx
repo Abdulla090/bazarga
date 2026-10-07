@@ -6,6 +6,7 @@ import { Field, FormError } from "@/components/forms/Field";
 import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
 import { Check, Icon } from "@/components/ui/icons";
+import { SpecsEditor, type SpecRow } from "./SpecsEditor";
 
 // Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
 const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
@@ -17,6 +18,8 @@ type Values = {
   price: number | "";
   compareAtPrice: number | null;
   stock: number | null;
+  sku: string | null;
+  specs: SpecRow[];
   categoryId: string | null;
   isActive: boolean;
   images: ProductImageInput[];
@@ -32,6 +35,8 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   const [lang, setLang] = useState<Locale>(defaultLang);
   const fe = state.fieldErrors ?? {};
   const nameError = Object.keys(fe).find((k) => k.startsWith("name")) ? "name_required" : undefined;
+  const specsKey = Object.keys(fe).find((k) => k.startsWith("specs"));
+  const specsError = specsKey ? fe[specsKey] : undefined;
 
   return (
     <form action={action} className="grid gap-4">
@@ -75,6 +80,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
         <Field label={t("price")} name="price" type="number" inputMode="numeric" min={0} step={250} required ltr defaultValue={initial.price} error={fe.price} />
         <Field label={t("compareAt")} name="compareAtPrice" type="number" inputMode="numeric" min={0} step={250} ltr defaultValue={initial.compareAtPrice ?? ""} hint={t("compareAtHint")} error={fe.compareAtPrice ? "VALIDATION" : undefined} />
         <Field label={t("stock")} name="stock" type="number" inputMode="numeric" min={0} ltr defaultValue={initial.stock ?? ""} hint={t("stockHint")} error={fe.stock} />
+        <Field label={t("sku")} name="sku" ltr maxLength={64} autoComplete="off" defaultValue={initial.sku ?? ""} hint={t("skuHint")} error={fe.sku} />
         <div>
           <label className="label" htmlFor="f-cat">{t("category")}</label>
           <select id="f-cat" name="categoryId" className="input" defaultValue={initial.categoryId ?? ""}>
@@ -88,6 +94,10 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
           <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />
           {t("active")}
         </label>
+      </div>
+
+      <div className="card">
+        <SpecsEditor initial={initial.specs} lang={lang} error={specsError} />
       </div>
 
       <div className="card">

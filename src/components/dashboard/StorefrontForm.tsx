@@ -5,8 +5,9 @@ import { saveStorefrontAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Icon, Plus, X } from "@/components/ui/icons";
 
-type Values = { coverImageUrl: string | null; coverImagePlaceholder: string | null; freeDeliveryThreshold: number | null };
-type Uploaded = { url?: string; image?: { url: string; placeholder?: string | null }; error?: string };
+type Rendition = { width: number; height: number; url: string; key: string; bytes: number };
+type Values = { coverImageUrl: string | null; coverImagePlaceholder: string | null; coverImageRenditions: Rendition[]; freeDeliveryThreshold: number | null };
+type Uploaded = { url?: string; image?: { url: string; placeholder?: string | null; renditions?: Rendition[] }; error?: string };
 
 /**
  * Cover photo + free-delivery threshold. The photo goes to /api/uploads first (resize, WebP, EXIF strip); the
@@ -17,8 +18,8 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
   const tc = useTranslations("common");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState(saveStorefrontAction, {});
-  const [cover, setCover] = useState<{ url: string; placeholder: string | null } | null>(
-    initial.coverImageUrl ? { url: initial.coverImageUrl, placeholder: initial.coverImagePlaceholder } : null,
+  const [cover, setCover] = useState<{ url: string; placeholder: string | null; renditions: Rendition[] } | null>(
+    initial.coverImageUrl ? { url: initial.coverImageUrl, placeholder: initial.coverImagePlaceholder, renditions: initial.coverImageRenditions } : null,
   );
   const [busy, setBusy] = useState(false);
   const [uploadError, setUploadError] = useState<string>();
@@ -36,7 +37,7 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
       const j = (await res.json().catch(() => ({}))) as Uploaded;
       const url = j.image?.url ?? j.url;
       if (!res.ok || !url) setUploadError(j.error ?? "generic");
-      else setCover({ url, placeholder: j.image?.placeholder ?? null });
+      else setCover({ url, placeholder: j.image?.placeholder ?? null, renditions: j.image?.renditions ?? [] });
     } catch {
       setUploadError("generic");
     } finally {
@@ -54,6 +55,7 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
         <span className="label">{t("cover")}</span>
         <input type="hidden" name="coverImageUrl" value={cover?.url ?? ""} />
         <input type="hidden" name="coverImagePlaceholder" value={cover?.placeholder ?? ""} />
+        <input type="hidden" name="coverImageRenditions" value={JSON.stringify(cover?.renditions ?? [])} />
         {cover && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
