@@ -74,6 +74,10 @@ export async function setup() {
       { name: "dashboard-orders", path: "/dashboard/orders", auth: true },
       { name: "dashboard-order-detail", path: orderId ? `/dashboard/orders/${orderId}` : "/dashboard/orders", auth: true },
       { name: "dashboard-settings", path: "/dashboard/settings", auth: true },
+      // Collapsed sections (new-code / edit forms, per-city area forms) are opened before measuring.
+      { name: "dashboard-discounts", path: "/dashboard/discounts", auth: true, openDetails: true },
+      { name: "dashboard-delivery", path: "/dashboard/delivery", auth: true, openDetails: true },
+      { name: "dashboard-more", path: "/dashboard/more", auth: true },
     ],
   };
 }

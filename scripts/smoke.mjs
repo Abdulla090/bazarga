@@ -170,5 +170,25 @@ ok(sf.includes(productName) && sf.includes(upJson.url), "new product with photo 
 ok(sf.includes('fetchPriority="high"') || sf.includes('fetchpriority="high"'), "store home renders the cover hero");
 ok(!(upJson.image?.renditions?.length > 1) || sf.includes(`${upJson.image.renditions[0].url} ${upJson.image.renditions[0].width}w`), "uploaded cover keeps its renditions (srcset)");
 
+// Dashboard → Discounts: create a code (lower-case input is upper-cased), it lists for its store only.
+const code = `SMK${Date.now().toString(36).toUpperCase().slice(-6)}`;
+const disc = await callFormAction("saveDiscountAction", { code: code.toLowerCase(), type: "percentage", value: "15", minSubtotal: "", maxUses: "5", startsOn: "", endsOn: "", isActive: "on" }, { cookie: demoCookie, path: "/dashboard/discounts" });
+ok(disc.text.includes('"ok":true'), "seller creates a discount code");
+const badPct = await callFormAction("saveDiscountAction", { code: `${code}X`, type: "percentage", value: "95", isActive: "on" }, { cookie: demoCookie, path: "/dashboard/discounts" });
+ok(badPct.text.includes("invalid_percent"), "a percent over 90 is rejected");
+const discPage = await (await fetch(`${BASE}/dashboard/discounts`, { headers: { Cookie: demoCookie } })).text();
+ok(discPage.includes(code), "discounts screen lists the new code");
+const otherDisc = await (await fetch(`${BASE}/dashboard/discounts`, { headers: { Cookie: cookie } })).text();
+ok(!otherDisc.includes(code), "another seller does not see the code");
+
+// Dashboard → Delivery: add an area to a city with its own fee; checkout offers it.
+const delPage = await (await fetch(`${BASE}/dashboard/delivery`, { headers: { Cookie: demoCookie } })).text();
+const zoneId = /name="zoneId" value="([0-9a-f-]{36})"/.exec(delPage)?.[1];
+const areaName = `Smoke area ${Date.now().toString(36)}`;
+const area = zoneId ? await callFormAction("saveAreaAction", { zoneId, "name.en": areaName, fee: "1750" }, { cookie: demoCookie, path: "/dashboard/delivery" }) : { text: "" };
+ok(area.text.includes('"ok":true'), "seller adds a delivery area");
+const cartPage = await (await fetch(`${BASE}/s/hawler-bazaar/cart`, { headers: { Cookie: "mm_locale=en" } })).text();
+ok(cartPage.includes(areaName), "checkout offers the new area (storefront cache invalidated)");
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

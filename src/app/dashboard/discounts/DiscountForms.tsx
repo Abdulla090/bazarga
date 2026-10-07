@@ -28,17 +28,15 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
   const formRef = useRef<HTMLFormElement>(null);
   const p = initial?.id ?? "new";
   useEffect(() => {
-    if (state.ok && !initial) {
-      formRef.current?.reset();
-      setType("percentage");
-    }
+    // Clear the "new code" form after a successful create (the reset event puts the type back too).
+    if (state.ok && !initial) formRef.current?.reset();
   }, [state, initial]);
   const err = (k: string) => {
     const e = state.fieldErrors?.[k];
     return e ? <p id={`${p}-${k}-err`} className="field-error">{te(e as "generic")}</p> : null;
   };
   return (
-    <form ref={formRef} action={action} className="grid gap-3 sm:grid-cols-2" noValidate>
+    <form ref={formRef} action={action} onReset={() => setType(initial?.type ?? "percentage")} className="grid gap-3 sm:grid-cols-2" noValidate>
       {initial?.id && <input type="hidden" name="id" value={initial.id} />}
       <div>
         <label className="label" htmlFor={`${p}-code`}>{t("code")}</label>

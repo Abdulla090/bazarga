@@ -33,6 +33,7 @@ for (const locale of LOCALES) {
       await ctx.clearCookies();
       await ctx.addCookies(cookies(r.anon));
       await page.goto(BASE + r.path, { waitUntil: "networkidle" });
+      if (r.openDetails) await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
       await page.evaluate(() => document.fonts.ready);
       // Scroll through once so lazy images below the fold are in the full-page screenshot, then back to the top.
       await page.evaluate(async () => {
