@@ -5,6 +5,7 @@ import path from "node:path";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { env } from "../env";
 import { validateImage } from "./image";
+import { resolveStorageConfig } from "./config";
 
 export interface StorageAdapter {
   readonly name: string;
@@ -50,6 +51,9 @@ export class S3Storage implements StorageAdapter {
       region: cfg.region,
       endpoint: cfg.endpoint,
       forcePathStyle: !!cfg.endpoint,
+      // R2 / MinIO / B2 don't implement every flexible-checksum header newer AWS SDKs send by default.
+      requestChecksumCalculation: "WHEN_REQUIRED",
+      responseChecksumValidation: "WHEN_REQUIRED",
       credentials: { accessKeyId: cfg.accessKeyId, secretAccessKey: cfg.secretAccessKey },
     });
   }
@@ -75,22 +79,8 @@ export class S3Storage implements StorageAdapter {
 let adapter: StorageAdapter | undefined;
 export function storage(): StorageAdapter {
   if (adapter) return adapter;
-  const e = env();
-  if (e.STORAGE_DRIVER === "s3") {
-    if (!e.S3_BUCKET || !e.S3_ACCESS_KEY_ID || !e.S3_SECRET_ACCESS_KEY || !e.S3_PUBLIC_URL) {
-      throw new Error("STORAGE_DRIVER=s3 requires S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_PUBLIC_URL");
-    }
-    adapter = new S3Storage({
-      endpoint: e.S3_ENDPOINT,
-      region: e.S3_REGION,
-      bucket: e.S3_BUCKET,
-      accessKeyId: e.S3_ACCESS_KEY_ID,
-      secretAccessKey: e.S3_SECRET_ACCESS_KEY,
-      publicUrl: e.S3_PUBLIC_URL,
-    });
-  } else {
-    adapter = new LocalDiskStorage(e.UPLOAD_DIR);
-  }
+  const cfg = resolveStorageConfig(env(), { serverless: !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME });
+  adapter = cfg.driver === "s3" ? new S3Storage(cfg) : new LocalDiskStorage(cfg.uploadDir);
   return adapter;
 }
 

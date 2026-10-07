@@ -8,7 +8,7 @@ next-env.d.ts
 .env.local
 .env*.local
 uploads
-.pglite
+.pglite*
 *.zip
 .DS_Store
 npm-debug.log*

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { connection } from "next/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "@fontsource-variable/vazirmatn";
@@ -19,6 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { themeColor: "#0F1B2D", width: "device-width", initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Nonce-based CSP (src/proxy.ts) needs every page rendered per request: Next stamps the nonce from the
+  // request's CSP header onto its scripts at render time. A statically prerendered page would ship un-nonced
+  // scripts that the browser blocks.
+  await connection();
   const raw = await getLocale();
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const messages = await getMessages();

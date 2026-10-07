@@ -117,12 +117,14 @@ Back up with `docker compose exec db pg_dump -U mymarket mymarket > backup.sql` 
 ### B. Vercel + Neon (or Supabase) + Cloudflare R2
 
 1. Create a Neon/Supabase Postgres; copy the pooled connection string (`?sslmode=require`).
-2. Run migrations from your machine or CI: `DATABASE_URL=… npm run db:migrate` (and `db:seed` if you want the demo).
+2. Run migrations from your machine or CI against the **direct** (non-pooler) URL: `DATABASE_URL=… npm run db:migrate:deploy` (and `db:seed` for the demo).
 3. Create an R2 bucket with a public URL (custom domain or `r2.dev`) and an API token.
 4. Import the repo in Vercel and set env vars: `DATABASE_URL`, `APP_URL`, `ROOT_DOMAIN`, `STORAGE_DRIVER=s3`,
-   `S3_ENDPOINT=https://<account>.r2.cloudflarestorage.com`, `S3_REGION=auto`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`,
+   `R2_ACCOUNT_ID` (or `S3_ENDPOINT=https://<account>.r2.cloudflarestorage.com`), `S3_REGION=auto`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`,
    `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL`, plus email/payment/AI keys.
 5. For subdomain storefronts add the wildcard domain `*.mymarket.app` to the Vercel project.
+
+Security: pages ship a per-request nonce CSP (no inline scripts), so every page renders dynamically.
 
 Serverless note: the local-disk storage driver does not persist on Vercel — use `s3`. Keep `DATABASE_POOL_MAX`
 low (e.g. `3`) with a pooled connection string.
