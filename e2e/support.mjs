@@ -51,6 +51,17 @@ export async function setup() {
     `/s/${SLUG}/cart`,
   );
   const orderPath = new URL(/"redirectTo":"([^"]+)"/.exec(placed)?.[1] ?? `${BASE}/`).pathname;
+  // Look the order up on the tracking page the way a shopper's browser does without JS (multipart form post).
+  const confHtml = await (await fetch(BASE + orderPath)).text();
+  const orderNumber = new RegExp(`/s/${SLUG}/track\\?n=(\\d+)`).exec(confHtml)?.[1] ?? "";
+  const fd = new FormData();
+  fd.append(`$ACTION_ID_${actionId("trackOrderAction")}`, "");
+  fd.append("slug", SLUG);
+  fd.append("number", orderNumber);
+  fd.append("phone", "0750 111 2233");
+  const tracked = await fetch(`${BASE}/s/${SLUG}/track`, { method: "POST", headers: { Origin: BASE }, body: fd, redirect: "manual" });
+  const [trackName, ...trackRest] = (tracked.headers.get("set-cookie") ?? "").split(";")[0].split("=");
+  const trackCookie = trackName === "mm_track" ? { name: trackName, value: trackRest.join("=") } : null;
   const session = await login(process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app", process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo");
   const dashProducts = await (await fetch(`${BASE}/dashboard/products`, { headers: { Cookie: `${session.name}=${session.value}` } })).text();
   const editId = /\/dashboard\/products\/([0-9a-f-]{36})/.exec(dashProducts)?.[1];
@@ -67,6 +78,8 @@ export async function setup() {
       { name: "product", path: `/s/${SLUG}/p/${listed.find((id) => !buyable.includes(id)) ?? listed[0]}` },
       { name: "checkout", path: `/s/${SLUG}/cart`, cart: true },
       { name: "order-confirmation", path: orderPath },
+      { name: "track-order", path: `/s/${SLUG}/track`, anon: true },
+      ...(trackCookie ? [{ name: "track-result", path: `/s/${SLUG}/track`, anon: true, cookies: [trackCookie] }] : []),
       { name: "login", path: "/login", anon: true },
       { name: "dashboard-home", path: "/dashboard", auth: true },
       { name: "dashboard-products", path: "/dashboard/products", auth: true },

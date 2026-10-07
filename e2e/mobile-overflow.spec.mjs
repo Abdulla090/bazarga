@@ -23,6 +23,7 @@ for (const locale of ["ku", "en"]) {
       await context.addCookies([
         { name: "mm_locale", value: locale, domain: host, path: "/" },
         ...(r.anon ? [] : [{ name: ctx.session.name, value: ctx.session.value, domain: host, path: "/" }]),
+        ...(r.cookies ?? []).map((c) => ({ ...c, domain: host, path: "/" })),
       ]);
       const res = await page.goto(r.path, { waitUntil: "networkidle" });
       expect(res?.status(), `${r.name} status`).toBeLessThan(400);
