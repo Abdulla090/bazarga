@@ -19,7 +19,7 @@ export function ActiveToggle({ id, active }: { id: string; active: boolean }) {
           await toggleProductAction(id, !optimistic);
         })
       }
-      className={`chip min-h-8 px-3 ${optimistic ? "bg-green/15 text-green" : "bg-ink/10 text-ink-70"}`}
+      className={`chip min-h-11 shrink-0 px-3 sm:min-h-8 ${optimistic ? "bg-green/15 text-green" : "bg-ink/10 text-ink-70"}`}
     >
       {optimistic ? t("active") : t("hidden")}
     </button>

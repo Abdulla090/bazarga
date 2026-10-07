@@ -43,7 +43,7 @@ export function ProductCard({
         )}
       </Link>
       <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <Link href={href} className="line-clamp-2 font-bold leading-snug">
+        <Link href={href} className="line-clamp-2 min-h-11 font-bold leading-snug">
           {name}
         </Link>
         <p className="num">

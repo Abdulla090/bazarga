@@ -1,5 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { deleteSellerSubscription, pushConfig, saveSellerSubscription, subscriptionSchema } from "../push";
 import { invalidateCatalog, invalidateStore } from "../cache/tags";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -270,6 +272,29 @@ export async function createProductsFromDraftsAction(drafts: unknown): Promise<A
     invalidateCatalog(store.id);
     revalidatePath("/dashboard/products");
     return { ok: true, count: list.length };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+// ---------------------------------------------------------------- web push (new-order alerts)
+export async function subscribePushAction(sub: unknown): Promise<ActionState> {
+  try {
+    const { user, store } = await requireStore();
+    if (!pushConfig()) return { ok: false, error: "push_disabled" };
+    const ua = (await headers()).get("user-agent");
+    await saveSellerSubscription(db(), { userId: user.id, storeId: store.id }, subscriptionSchema.parse(sub), ua);
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+export async function unsubscribePushAction(endpoint: unknown): Promise<ActionState> {
+  try {
+    const user = await requireUser();
+    await deleteSellerSubscription(db(), user.id, z.string().url().max(2000).parse(endpoint));
+    return { ok: true };
   } catch (e) {
     return toActionState(e);
   }

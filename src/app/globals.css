@@ -114,7 +114,8 @@ body {
   @apply btn border border-danger/30 bg-white text-danger hover:bg-danger/5;
 }
 @utility btn-sm {
-  @apply min-h-9 px-3 text-sm;
+  /* 44 px touch target on phones (WCAG 2.5.5 / Apple HIG); compact from sm up. */
+  @apply min-h-11 px-3 text-sm sm:min-h-9;
 }
 @utility card {
   @apply rounded-[var(--radius-card)] border border-line bg-white p-4 sm:p-5;
@@ -123,6 +124,7 @@ body {
   @apply mb-1 block text-sm font-semibold text-ink-70;
 }
 @utility input {
+  /* text-base (16 px) on purpose: anything smaller makes iOS Safari zoom on focus. */
   @apply block min-h-11 w-full rounded-xl border border-line bg-white px-3 py-2 text-base text-ink
     placeholder:text-ink-50 focus:border-ink focus:outline-none;
 }

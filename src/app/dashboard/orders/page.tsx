@@ -26,7 +26,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
             key={s ?? "all"}
             href={s ? `/dashboard/orders?status=${s}` : "/dashboard/orders"}
             aria-current={status === s ? "page" : undefined}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${status === s ? "bg-ink text-paper" : "bg-white text-ink-70 border border-line"}`}
+            className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold ${status === s ? "bg-ink text-paper" : "bg-white text-ink-70 border border-line"}`}
           >
             {s ? t(`status_${s}`) : t("all")}
           </Link>

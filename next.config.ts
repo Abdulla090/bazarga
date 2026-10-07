@@ -12,6 +12,8 @@ const securityHeaders = [
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
 ];
 
+const IMMUTABLE = "public, max-age=31536000, immutable";
+
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
@@ -26,7 +28,7 @@ const nextConfig: NextConfig = {
     // changes made outside the app. stale = client router reuse window.
     storefront: { stale: 60, revalidate: 900, expire: 86_400 },
   },
-  serverExternalPackages: ["@electric-sql/pglite", "pg"],
+  serverExternalPackages: ["@electric-sql/pglite", "pg", "web-push"],
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",
@@ -36,7 +38,34 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    const isProd = process.env.NODE_ENV === "production";
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Hashed build output never changes under a URL (Next sets this too in production; stated explicitly so a
+      // CDN in front sees it). Not in dev, where chunk names are stable across edits.
+      ...(isProd ? [{ source: "/_next/static/:path*", headers: [{ key: "Cache-Control", value: IMMUTABLE }] }] : []),
+      // Service worker: always revalidated so a deploy reaches clients on the next visit.
+      {
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+          { key: "Service-Worker-Allowed", value: "/" },
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'" },
+        ],
+      },
+      // Static offline fallback: no scripts at all (it is served outside the nonce proxy).
+      {
+        source: "/offline.html",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600" },
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" },
+        ],
+      },
+      // Unhashed public assets: long-lived but not immutable (a rebrand replaces them in place).
+      { source: "/icons/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }] },
+      { source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }] },
+    ];
   },
 };
 

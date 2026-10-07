@@ -170,11 +170,11 @@ export function ProductBuy({
   const buttons = (compact: boolean) => (
     <div className={`grid grid-cols-2 gap-2 ${compact ? "flex-1" : ""}`}>
       <button type="button" onClick={addToCart} disabled={soldOut} className={`btn-ghost ${compact ? "btn-sm min-h-11 px-2" : ""}`}>
-        {added && <Icon as={Check} />}
+        {added && !compact && <Icon as={Check} />}
         <span className="truncate">{ctaLabel}</span>
       </button>
       <button type="button" onClick={buyNow} disabled={soldOut} className={`btn-gold ${compact ? "btn-sm min-h-11 px-2" : ""}`}>
-        <Icon as={ShoppingBag} /> <span className="truncate">{labels.buyNow}</span>
+        {!compact && <Icon as={ShoppingBag} />} <span className="truncate">{labels.buyNow}</span>
       </button>
     </div>
   );
@@ -269,9 +269,9 @@ export function ProductBuy({
         data-testid="buy-bar"
       >
         <div className="flex items-center gap-3">
-          <div className="min-w-0 max-w-[38%]">
-            <p className="truncate text-xs text-ink-70">{variantTitle || name}</p>
-            <p className="num truncate font-extrabold">{priceText}</p>
+          <div className="min-w-0 max-w-[34%]">
+            <p className="hidden truncate text-xs text-ink-70 min-[400px]:block">{variantTitle || name}</p>
+            <p className="num truncate text-sm font-extrabold min-[400px]:text-base">{priceText}</p>
           </div>
           {buttons(true)}
         </div>

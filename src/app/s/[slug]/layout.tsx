@@ -31,7 +31,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const theme = resolveTheme(store.themePreset, store.accentColor);
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={themeStyle(theme)}>
-      <header className="sticky top-0 z-20 border-b border-line bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-line bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="container-page flex min-h-16 items-center gap-3 py-2">
           <Link href={`/s/${store.slug}`} className="me-auto flex min-w-0 items-center gap-3">
             {store.logoUrl ? (
@@ -70,9 +70,9 @@ export default async function StoreLayout({ children, params }: { children: Reac
           <LocaleSwitcher current={locale} locales={["ku", "ar", "en"]} />
           <div className="flex flex-wrap items-center gap-3 text-ink-70">
             {store.instagram && (
-              <a href={`https://instagram.com/${store.instagram}`} target="_blank" rel="noopener noreferrer" className="underline" dir="ltr">@{store.instagram}</a>
+              <a href={`https://instagram.com/${store.instagram}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline" dir="ltr">@{store.instagram}</a>
             )}
-            <Link href="/" className="inline-flex items-center gap-1">
+            <Link href="/" className="inline-flex min-h-11 items-center gap-1">
               <Awning className="h-3 w-7" /> {t("poweredBy")}
             </Link>
           </div>

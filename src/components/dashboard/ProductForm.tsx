@@ -1,12 +1,14 @@
 "use client";
-import { useActionState, useState } from "react";
+import { Suspense, lazy, useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { saveProductAction, deleteProductAction } from "@/server/actions/dashboard";
 import { Field, FormError } from "@/components/forms/Field";
-import { ImageUploader } from "./ImageUploader";
 import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
 import { Check, Icon } from "@/components/ui/icons";
+
+// Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
+const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
 
 type Values = {
   id?: string;
@@ -47,7 +49,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
               role="tab"
               aria-selected={lang === l}
               onClick={() => setLang(l)}
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${lang === l ? "bg-ink text-paper" : "border border-line"}`}
+              className={`inline-flex min-h-11 items-center rounded-full px-3 py-1 text-sm font-semibold sm:min-h-9 ${lang === l ? "bg-ink text-paper" : "border border-line"}`}
             >
               {LOCALE_LABEL[l]}
               {initial.name[l] ? <Icon as={Check} className="ms-1" /> : null}
@@ -82,14 +84,16 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
             ))}
           </select>
         </div>
-        <label className="flex items-center gap-2 font-semibold sm:col-span-2">
+        <label className="flex min-h-11 items-center gap-2 font-semibold sm:col-span-2">
           <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />
           {t("active")}
         </label>
       </div>
 
       <div className="card">
-        <ImageUploader initial={initial.images} maxMb={maxMb} />
+        <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-dashed border-line" aria-hidden />}>
+          <ImageUploader initial={initial.images} maxMb={maxMb} />
+        </Suspense>
       </div>
 
       <div className="flex flex-wrap gap-2">

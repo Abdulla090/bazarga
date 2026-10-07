@@ -23,7 +23,7 @@ export function LocaleSwitcher({ current, locales = UI_LOCALES, compact = false 
               router.refresh();
             })
           }
-          className={`min-h-9 rounded-full px-2.5 py-1 text-sm font-semibold transition ${
+          className={`min-h-11 min-w-11 rounded-full px-2.5 py-1 sm:min-h-9 sm:min-w-0 text-sm font-semibold transition ${
             current === l ? "bg-ink text-paper" : "text-ink-70 hover:bg-ink/5"
           }`}
         >

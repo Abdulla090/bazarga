@@ -54,7 +54,7 @@ export function StoreForm({
       <div>
         <label className="label" htmlFor="f-slug">{t("slug")}</label>
         <div className="flex items-stretch overflow-hidden rounded-xl border border-line bg-white focus-within:border-ink" dir="ltr">
-          <span className="num flex items-center bg-paper px-3 text-sm text-ink-50">{rootDomain}/s/</span>
+          <span className="num flex min-w-0 shrink items-center truncate bg-paper px-3 text-sm text-ink-50">{rootDomain}/s/</span>
           <input
             id="f-slug"
             name="slug"
@@ -64,7 +64,7 @@ export function StoreForm({
               setSlugTouched(true);
               setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
             }}
-            className="num min-h-11 flex-1 px-2 outline-none"
+            className="num min-h-11 w-0 min-w-[8ch] flex-1 px-2 text-base outline-none"
             pattern="[a-z0-9][a-z0-9-]{1,38}[a-z0-9]"
             aria-invalid={!!fe.slug || undefined}
           />
@@ -107,7 +107,7 @@ export function StoreForm({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={initial.logoUrl} alt="" className="mb-2 h-16 w-16 rounded-xl object-cover" />
             )}
-            <input id="f-logo" type="file" name="logo" accept="image/jpeg,image/png,image/webp" className="block text-sm" />
+            <input id="f-logo" type="file" name="logo" accept="image/jpeg,image/png,image/webp" className="block min-h-11 w-full max-w-full text-base file:me-3 file:min-h-11 file:rounded-full file:border file:border-line file:bg-white file:px-4 file:font-semibold" />
           </div>
         </>
       )}

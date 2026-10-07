@@ -1,7 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES, type ImageLike } from "@/lib/responsive-image";
+
+// Thumbnails are a multi-photo, md+ extra: separate chunk, only requested when a product has several photos.
+// React.lazy rather than next/dynamic: no loadable runtime added to the storefront bundle.
+const GalleryThumbs = lazy(() => import("./GalleryThumbs"));
 
 export type GalleryImage = ImageLike & { id: string };
 
@@ -49,7 +53,6 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
     };
     window.addEventListener(GALLERY_EVENT, onShow);
     return () => window.removeEventListener(GALLERY_EVENT, onShow);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images]);
 
   if (!images.length) return <span className="block aspect-square rounded-[var(--radius-card)] bg-white" />;
@@ -95,21 +98,9 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
               <span key={img.id} className={`h-1.5 rounded-full transition-all ${i === active ? "w-5 bg-ink" : "w-1.5 bg-ink/25"}`} />
             ))}
           </div>
-          <ul className="hidden gap-2 md:order-1 md:grid md:content-start">
-            {images.map((img, i) => (
-              <li key={img.id}>
-                <button
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-label={`${label.photo} ${i + 1} ${label.of} ${images.length}`}
-                  aria-current={i === active || undefined}
-                  className={`block overflow-hidden rounded-xl border-2 ${i === active ? "border-ink" : "border-transparent opacity-70 hover:opacity-100"}`}
-                >
-                  <ResponsiveImage image={img} alt="" sizes={SIZES.thumb} index={i} aboveTheFold={0} className="aspect-square w-full object-cover" />
-                </button>
-              </li>
-            ))}
-          </ul>
+          <Suspense fallback={null}>
+            <GalleryThumbs images={images} active={active} onPick={go} label={label} />
+          </Suspense>
         </>
       )}
     </div>

@@ -8,6 +8,7 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { StatusBadge } from "@/components/dashboard/Badges";
 import { CopyButton } from "@/components/CopyButton";
+import { LazyInstallPrompt } from "@/components/pwa/lazy";
 
 export default async function DashboardHome() {
   const { store, user } = await requireStore();
@@ -23,6 +24,7 @@ export default async function DashboardHome() {
   return (
     <div className="grid gap-6">
       <h1 className="text-2xl font-extrabold">{t("hello", { name: user.name })}</h1>
+      <LazyInstallPrompt />
       <div className="grid gap-3 sm:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="card">
@@ -42,7 +44,7 @@ export default async function DashboardHome() {
       <section className="card">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-bold">{t("recentOrders")}</h2>
-          <Link href="/dashboard/orders" className="text-sm font-semibold underline">{t("seeAll")}</Link>
+          <Link href="/dashboard/orders" className="inline-flex min-h-11 items-center text-sm font-semibold underline">{t("seeAll")}</Link>
         </div>
         {recent.length === 0 ? (
           <p className="text-ink-70">{t("noOrders")}</p>

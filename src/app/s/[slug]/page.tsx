@@ -24,7 +24,7 @@ function homeHref(slug: string, p: { q?: string; c?: string; page?: number }) {
   return `/s/${slug}${s ? `?${s}` : ""}`;
 }
 
-const chip = "shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors";
+const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold transition-colors";
 const chipOn = "bg-st-accent text-st-on-accent";
 const chipOff = "border border-st-border bg-st-surface text-st-fg";
 

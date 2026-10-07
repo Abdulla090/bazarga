@@ -57,7 +57,7 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
             <button
               type="button"
               aria-label={t("removeImage")}
-              className="absolute -end-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-ink text-paper"
+              className="absolute -end-2 -top-2 grid h-11 w-11 place-items-center rounded-full bg-ink text-paper sm:h-7 sm:w-7"
               onClick={() => setImages((list) => list.filter((_, j) => j !== i))}
             >
               <X aria-hidden size={16} strokeWidth={2.5} />

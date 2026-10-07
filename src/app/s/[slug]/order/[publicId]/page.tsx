@@ -10,7 +10,10 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { fullAddress, orderSummaryText, waLink } from "@/lib/whatsapp";
-import { PaymentPanel } from "@/components/store/PaymentPanel";
+import dynamic from "next/dynamic";
+
+// Only online-payment orders need it (COD renders nothing): split so cash orders never download its code.
+const PaymentPanel = dynamic(() => import("@/components/store/PaymentPanel").then((m) => m.PaymentPanel));
 import { PAYMENT_PANEL_KEYS } from "@/components/store/cart-labels";
 import { pickLabels } from "@/lib/fmt";
 import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
@@ -58,11 +61,11 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       <div className="card text-center">
         <Icon as={CircleCheck} className="text-5xl text-green" />
         <h1 className="mt-2 text-2xl font-extrabold">{t("orderReceived")}</h1>
-        <p className="num mt-1 text-lg font-bold">{t("orderNumber", { number: order.number })}</p>
+        <p className="num mt-1 text-lg font-bold"><bdi>{t("orderNumber", { number: order.number })}</bdi></p>
         <p className="mt-2 text-ink-70">{t("orderThanks", { name: order.customerName })}</p>
       </div>
 
-      <PaymentPanel labels={pickLabels((k) => t(k), PAYMENT_PANEL_KEYS)} slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />
+      {order.paymentMethod !== "cod" && <PaymentPanel labels={pickLabels((k) => t(k), PAYMENT_PANEL_KEYS)} slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />}
 
       {sellerPhone && (
         <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn min-h-14 bg-whatsapp text-ink hover:brightness-95">

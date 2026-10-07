@@ -419,5 +419,20 @@
     "invalid_image_url": "That image couldn't be used. Upload it again.",
     "phone_operator": "Use a Korek (075), Asiacell (077) or Zain (078/079) mobile number.",
     "address_required": "Add a landmark or your street address."
+  },
+  "pwa": {
+    "installTitle": "Install my market",
+    "installSub": "Open your dashboard from your home screen, like an app.",
+    "installCta": "Install",
+    "installDismiss": "Later",
+    "iosHint": "In Safari, tap Share ⬆︎ then “Add to Home Screen”.",
+    "pushTitle": "New-order alerts",
+    "pushSub": "Get a notification on this device whenever an order comes in.",
+    "pushOn": "Turn on",
+    "pushOff": "Turn off",
+    "pushEnabled": "Alerts are on for this device.",
+    "pushDenied": "Notifications are blocked. Allow them in your browser settings.",
+    "pushUnsupported": "This browser doesn't support notifications. On iPhone, install the app first.",
+    "pushError": "Something went wrong, please try again."
   }
 }
