@@ -74,7 +74,9 @@ const order = await callAction(
       customerName: "Shilan Smoke",
       phone: "0770 111 2233",
       cityKey: "erbil",
-      address: "Shawes, near the Bazaar Mosque",
+      address: "Shawes",
+      landmark: "Near the Bazaar Mosque",
+      areaOther: "Shawes",
       paymentMethod: "cod",
       locale: "ku",
     },
@@ -87,6 +89,18 @@ if (redirectTo) {
   const conf = await (await fetch(new URL(new URL(redirectTo).pathname, BASE))).text();
   ok(conf.includes("https://wa.me/9647501234567?text="), "confirmation page has a prefilled wa.me link to the seller");
 }
+
+ok(/"discountAmount":0/.test(quote.text) && /"freeDeliveryRemaining"/.test(quote.text), "quote carries discount + free-delivery fields");
+const badCode = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 1 }], "erbil", "en", { discountCode: "NO-SUCH-CODE" }], { path: "/s/hawler-bazaar/cart" });
+ok(badCode.text.includes('"discountError":"discount_invalid"'), "unknown discount code is reported by the quote");
+const badPhone = await callAction(
+  "placeOrderAction",
+  ["hawler-bazaar", { items: [{ productId: ids[1], quantity: 1 }], customerName: "Op Test", phone: "0760 111 2233", cityKey: "erbil", landmark: "x mosque", paymentMethod: "cod", locale: "ku" }],
+  { path: "/s/hawler-bazaar/cart" },
+);
+ok(badPhone.text.includes("phone_operator"), "checkout rejects a non-Korek/Asiacell/Zain number");
+const searched = await (await fetch(`${BASE}/s/hawler-bazaar?q=zzzz-no-match`, { headers: { Cookie: "mm_locale=en" } })).text();
+ok(searched.includes("Nothing matches") && searched.includes('role="search"'), "storefront search renders the empty-search state");
 
 const bad = await callAction("placeOrderAction", ["hawler-bazaar", { items: [], customerName: "x" }], { path: "/s/hawler-bazaar/cart" });
 ok(bad.text.includes('"error":"VALIDATION"'), "invalid checkout is rejected by Zod");
@@ -127,8 +141,11 @@ await callFormAction(
   { "name.en": productName, "name.ku": "تاقیکردنەوە", price: "12000", stock: "3", isActive: "on", imageUrls: upJson.url },
   { cookie: demoCookie, path: "/dashboard/products/new" },
 );
+const look = await callFormAction("saveStorefrontAction", { coverImageUrl: upJson.url, coverImagePlaceholder: upJson.image?.placeholder ?? "", freeDeliveryThreshold: "250,000" }, { cookie: demoCookie, path: "/dashboard/settings" });
+ok(!look.text.includes('"error"'), "seller saves cover + free-delivery threshold");
 const sf = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok(sf.includes(productName) && sf.includes(upJson.url), "new product with photo appears in the storefront");
+ok(sf.includes('fetchPriority="high"') || sf.includes('fetchpriority="high"'), "store home renders the cover hero");
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

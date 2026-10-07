@@ -1,5 +1,43 @@
 # my market — Roadmap after v1
 
+## Shipped
+
+**Storefront & catalog**
+- Store home `/s/[slug]`: cover hero (seller photo with scrim, LCP-eager, LQIP placeholder; falls back to the
+  theme's `st-hero` gradient) with logo, name, tagline and about; server-side GET search (`?q=`, works without JS);
+  category chips that keep the query; cumulative "Show more" pagination (`?page=N` shows the first N×24);
+  empty-search state with "Clear"; floating WhatsApp button (wa.me link from `store.whatsapp`, safe-area aware,
+  start side so bottom-right in RTL); chips and surfaces on theme tokens only. No next-intl client code on storefront routes.
+- `src/lib/catalog-filter.ts` — pure `filterCatalog()` (search across every locale's name, Arabic/Kurdish letter
+  folding ي/ی ك/ک ه/ە ة أ/إ/آ, tatweel + diacritics stripped, multi-word AND) — unit tested.
+
+**Seller settings**
+- Cover photo upload (client → `/api/uploads` → URL + placeholder saved) and optional free-delivery threshold
+  (IQD, accepts `50,000` / Eastern Arabic digits) — `saveStorefrontAction` + `updateStoreStorefront`, zod-validated,
+  invalidates the store cache tag and the settings path.
+
+**Checkout**
+- Discount codes: percentage / fixed / free-delivery; checks active, start/end window, minimum subtotal, usage
+  limit; the use is claimed with a conditional `UPDATE … WHERE used_count < max_uses … RETURNING` inside the
+  order transaction, so a failed order never burns a use and racing shoppers can't exceed the limit. Quote shows
+  the discount or the reason it doesn't apply; code, amount and id are stored on the order.
+- Free-delivery threshold applied in quote and order (checked before the code's discount) with an
+  "Add X IQD more for free delivery" nudge.
+- Delivery area select per chosen city (seller areas with their own fee, or "Other area" free text) and a
+  landmark field; saved on the order and the customer; address line is now optional when a landmark is given.
+- Iraqi mobile normalisation to `+9647XXXXXXXXX` (07xx, 7xx, +964, 00964, Eastern Arabic / Kurdish digits) with
+  operator validation (75 Korek, 77 Asiacell, 78/79 Zain) and an as-you-type input mask.
+- Order confirmation, seller dashboard and seller notification show area, landmark and discount.
+
+**Still open from this batch**
+- Dashboard UI for managing discount codes and delivery areas.
+- Legacy customer phones are stored as `9647…`; new checkouts store `+9647…`. A one-off migration to
+  `+`-prefix existing `customers.phone` / `orders.customer_phone` would keep repeat-customer matching exact.
+- Concurrency of discount claims is tested on PGlite (single connection, so transactions serialise); the
+  conditional UPDATE is what makes it safe under Postgres READ COMMITTED — worth one integration run on real Postgres.
+
+---
+
 Ordered by what unblocks real sellers fastest. Each item lists the code seam that already exists for it.
 
 ## 1. Payments go-live (weeks 1–3)
@@ -55,8 +93,9 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - Order notifications to the seller's own WhatsApp via approved utility templates (`WhatsAppCloudNotifier`
   currently sends free-form text, which only works inside the 24 h window).
 - Delivery company integrations (common Kurdistan/Iraq couriers): create shipment, label, status sync.
-- Product variants (size/colour) with per-variant stock.
-- Discount codes, free-delivery thresholds, bundles.
+- ~~Product variants (size/colour) with per-variant stock.~~ Shipped (see "Shipped" below).
+- ~~Discount codes, free-delivery thresholds~~ — shipped at checkout; still to do: a dashboard screen to
+  create/edit/deactivate codes (codes are rows in `discount_codes`, seeded/inserted directly for now), bundles.
 - Multiple staff accounts per store with roles.
 - PWA install + push notifications for new orders.
 
