@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Logo } from "./Logo";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { currentUser } from "@/server/auth/session";
+import { currentLocale } from "@/server/locale";
 
 export async function SiteHeader() {
   const t = await getTranslations("nav");
@@ -13,7 +14,7 @@ export async function SiteHeader() {
         <Link href="/" className="me-auto">
           <Logo />
         </Link>
-        <LocaleSwitcher locales={["ku", "ar", "en"]} />
+        <LocaleSwitcher current={await currentLocale()} locales={["ku", "ar", "en"]} />
         {user ? (
           <Link href="/dashboard" className="btn-gold btn-sm">
             {t("dashboard")}

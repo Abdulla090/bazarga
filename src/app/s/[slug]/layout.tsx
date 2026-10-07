@@ -67,7 +67,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
           </div>
         )}
         <div className="container-page flex flex-wrap items-center justify-between gap-3 text-sm">
-          <LocaleSwitcher locales={["ku", "ar", "en"]} />
+          <LocaleSwitcher current={locale} locales={["ku", "ar", "en"]} />
           <div className="flex flex-wrap items-center gap-3 text-ink-70">
             {store.instagram && (
               <a href={`https://instagram.com/${store.instagram}`} target="_blank" rel="noopener noreferrer" className="underline" dir="ltr">@{store.instagram}</a>

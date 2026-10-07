@@ -1,12 +1,11 @@
 "use client";
-import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { setLocaleAction } from "@/server/actions/locale";
 import { HTML_LANG, LOCALE_LABEL, UI_LOCALES, type Locale } from "@/lib/i18n";
 
-export function LocaleSwitcher({ locales = UI_LOCALES, compact = false }: { locales?: readonly Locale[]; compact?: boolean }) {
-  const current = useLocale();
+/** Language buttons. `current` comes from the server (no client i18n runtime needed, so storefronts can use it). */
+export function LocaleSwitcher({ current, locales = UI_LOCALES, compact = false }: { current: Locale; locales?: readonly Locale[]; compact?: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   return (
@@ -24,7 +23,7 @@ export function LocaleSwitcher({ locales = UI_LOCALES, compact = false }: { loca
               router.refresh();
             })
           }
-          className={`rounded-full px-2.5 py-1 text-sm font-semibold transition ${
+          className={`min-h-9 rounded-full px-2.5 py-1 text-sm font-semibold transition ${
             current === l ? "bg-ink text-paper" : "text-ink-70 hover:bg-ink/5"
           }`}
         >

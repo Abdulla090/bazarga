@@ -4,6 +4,8 @@ import { requireStore } from "@/server/auth/session";
 import { logOutAction } from "@/server/actions/auth";
 import { Logo } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { IntlProvider } from "@/components/IntlProvider";
+import { currentLocale } from "@/server/locale";
 import { DashNav } from "@/components/dashboard/DashNav";
 import { ExternalLink, Icon } from "@/components/ui/icons";
 
@@ -13,7 +15,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { store } = await requireStore();
   const t = await getTranslations("dash");
   const tc = await getTranslations("common");
+  const locale = await currentLocale();
   return (
+    <IntlProvider>
     <div className="min-h-dvh pb-20 md:pb-0">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-2 px-4">
@@ -21,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Logo showKu={false} />
             <span className="hidden truncate text-sm font-bold text-ink-70 sm:inline">· {store.name}</span>
           </Link>
-          <LocaleSwitcher compact />
+          <LocaleSwitcher current={locale} compact />
           <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm">{t("viewStore")} <Icon as={ExternalLink} className="rtl:-scale-x-100" /></Link>
         </div>
       </header>
@@ -36,5 +40,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
       <DashNav variant="bottom" />
     </div>
+    </IntlProvider>
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { connection } from "next/server";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 import { fontVariables } from "./fonts";
 import { HTML_LANG, dirOf, isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
@@ -32,13 +31,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   await connection();
   const raw = await getLocale();
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
-  const messages = await getMessages();
   return (
     <html lang={HTML_LANG[locale]} dir={dirOf(locale)} className={fontVariables}>
       <body className="antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        {/* Client translations are provided per area (src/components/IntlProvider.tsx), not here: storefronts ship none. */}
+        {children}
       </body>
     </html>
   );

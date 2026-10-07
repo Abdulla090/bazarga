@@ -10,6 +10,7 @@ import { Logo } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { DEFAULT_LOCALE, isLocale, pickText } from "@/lib/i18n";
+import { currentLocale } from "@/server/locale";
 
 export const metadata = { title: "Set up your store" };
 
@@ -23,7 +24,7 @@ export default async function OnboardingPage() {
     <div className="min-h-dvh">
       <header className="container-page flex items-center justify-between py-4">
         <Logo />
-        <LocaleSwitcher locales={["ku", "ar", "en"]} />
+        <LocaleSwitcher current={await currentLocale()} locales={["ku", "ar", "en"]} />
       </header>
       <main className="container-page max-w-xl py-6">
         <h1 className="text-3xl font-extrabold">{t("title")}</h1>

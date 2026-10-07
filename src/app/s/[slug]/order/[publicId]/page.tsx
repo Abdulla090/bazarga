@@ -10,7 +10,8 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { orderSummaryText, waLink } from "@/lib/whatsapp";
-import { PaymentPanel } from "@/components/store/PaymentPanel";
+import { PAYMENT_PANEL_KEYS, PaymentPanel } from "@/components/store/PaymentPanel";
+import { pickLabels } from "@/lib/fmt";
 import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
 
 // Always fresh: reads the order directly (never through the storefront cache).
@@ -60,7 +61,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
         <p className="mt-2 text-ink-70">{t("orderThanks", { name: order.customerName })}</p>
       </div>
 
-      <PaymentPanel slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />
+      <PaymentPanel labels={pickLabels((k) => t(k), PAYMENT_PANEL_KEYS)} slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />
 
       {sellerPhone && (
         <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn min-h-14 bg-whatsapp text-ink hover:brightness-95">

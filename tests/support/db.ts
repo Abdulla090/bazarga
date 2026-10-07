@@ -53,7 +53,7 @@ export async function enable(database: Db, storeId: string, method: "fib" | "zai
   await setPaymentMethod(database, storeId, method, true);
 }
 
-export const checkout = (items: { productId: string; quantity: number }[], extra: Partial<Record<string, unknown>> = {}) => ({
+export const checkout = (items: { productId: string; variantId?: string | null; quantity: number }[], extra: Partial<Record<string, unknown>> = {}) => ({
   items,
   customerName: "Shilan",
   phone: "9647701112233",

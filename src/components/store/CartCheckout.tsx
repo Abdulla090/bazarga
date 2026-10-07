@@ -2,21 +2,22 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
 import { useCart } from "./cart";
 import { placeOrderAction, quoteAction } from "@/server/actions/storefront";
 import type { Quote } from "@/server/services/orders";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
-import { FormError } from "@/components/forms/Field";
 
 type Zone = { key: string; name: string; fee: number };
 
-export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {
-  const t = useTranslations("store");
-  const tp = useTranslations("payments");
-  const te = useTranslations("errors");
+export const CART_LABEL_KEYS = ["address", "addressHint", "cart", "checkout", "continue", "deliverTo", "delivery", "emptyCart", "name", "notes", "payment", "phone", "placeOrder", "qty", "subtotal", "total", "unavailableLine", "yourDetails"] as const;
+/** Store strings translated on the server; `errors` is the errors namespace (storefronts ship no i18n runtime). */
+export type CartLabels = Record<(typeof CART_LABEL_KEYS)[number], string> & { cod: string; errors: Record<string, string> };
+
+
+export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity }: { labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {
+  const te = (k: string) => L.errors[k] ?? L.errors.generic ?? k;
   const router = useRouter();
   const { lines, setQty, clear } = useCart(slug);
   const [city, setCity] = useState(zones.some((z) => z.key === defaultCity) ? defaultCity : (zones[0]?.key ?? ""));
@@ -40,8 +41,8 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
   if (!lines.length) {
     return (
       <div className="card mx-auto max-w-md text-center">
-        <p className="text-lg font-semibold">{t("emptyCart")}</p>
-        <Link href={`/s/${slug}`} className="btn-gold mt-4">{t("continue")}</Link>
+        <p className="text-lg font-semibold">{L.emptyCart}</p>
+        <Link href={`/s/${slug}`} className="btn-gold mt-4">{L.continue}</Link>
       </div>
     );
   }
@@ -76,12 +77,12 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
     });
   }
 
-  const fe = (k: string) => fieldErrors[k] && <p className="field-error">{te(fieldErrors[k] as "generic")}</p>;
+  const fe = (k: string) => fieldErrors[k] && <p className="field-error">{te(fieldErrors[k]!)}</p>;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
       <section className="grid h-fit gap-2">
-        <h1 className="text-2xl font-extrabold">{t("cart")}</h1>
+        <h1 className="text-2xl font-extrabold">{L.cart}</h1>
         {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
           <div key={l.key} className={`card flex items-center gap-3 p-3 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
@@ -93,22 +94,22 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
             <div className="min-w-0 flex-1">
               <p className="truncate font-bold">{l.name}</p>
               {l.variantTitle && <p className="truncate text-sm text-ink-70">{l.variantTitle}</p>}
-              {l.available ? <p className="num text-sm text-ink-70">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-semibold text-danger">{t("unavailableLine")}</p>}
+              {l.available ? <p className="num text-sm text-ink-70">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-semibold text-danger">{L.unavailableLine}</p>}
             </div>
-            <div className="flex items-center gap-1" aria-label={t("qty")}>
+            <div className="flex items-center gap-1" aria-label={L.qty}>
               <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
               <span className="num w-6 text-center font-bold">{l.quantity}</span>
               <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
             </div>
           </div>
         ))}
-        <Link href={`/s/${slug}`} className="mt-2 text-sm font-semibold underline">{t("continue")}</Link>
+        <Link href={`/s/${slug}`} className="mt-2 text-sm font-semibold underline">{L.continue}</Link>
       </section>
 
       <form action={submit} className="card grid h-fit gap-4 lg:sticky lg:top-24">
-        <h2 className="text-xl font-extrabold">{t("checkout")}</h2>
+        <h2 className="text-xl font-extrabold">{L.checkout}</h2>
         <div>
-          <label className="label" htmlFor="co-city">{t("deliverTo")}</label>
+          <label className="label" htmlFor="co-city">{L.deliverTo}</label>
           <select id="co-city" className="input" value={city} onChange={(e) => setCity(e.target.value)} required>
             {zones.map((z) => (
               <option key={z.key} value={z.key}>
@@ -118,37 +119,37 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
           </select>
         </div>
         <fieldset className="grid gap-3">
-          <legend className="label">{t("yourDetails")}</legend>
-          <input name="customerName" className="input" placeholder={t("name")} aria-label={t("name")} autoComplete="name" required minLength={2} />
+          <legend className="label">{L.yourDetails}</legend>
+          <input name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
           {fe("customerName")}
-          <input name="phone" className="input num" dir="ltr" inputMode="tel" placeholder="07XX XXX XXXX" aria-label={t("phone")} autoComplete="tel" required />
+          <input name="phone" className="input num" dir="ltr" inputMode="tel" placeholder="07XX XXX XXXX" aria-label={L.phone} autoComplete="tel" required />
           {fe("phone")}
-          <textarea name="address" className="input min-h-20" placeholder={t("addressHint")} aria-label={t("address")} required minLength={3} maxLength={300} />
+          <textarea name="address" className="input min-h-20" placeholder={L.addressHint} aria-label={L.address} required minLength={3} maxLength={300} />
           {fe("address")}
-          <textarea name="notes" className="input min-h-16" placeholder={t("notes")} aria-label={t("notes")} maxLength={500} />
+          <textarea name="notes" className="input min-h-16" placeholder={L.notes} aria-label={L.notes} maxLength={500} />
         </fieldset>
         <fieldset>
-          <legend className="label">{t("payment")}</legend>
+          <legend className="label">{L.payment}</legend>
           <div className="grid gap-2">
             {payments.map((m) => (
               <label key={m} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 font-semibold ${method === m ? "border-ink bg-ink/5" : "border-line"}`}>
                 <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="accent-ink" />
-                {m === "cod" ? tp("cod") : PAYMENT_LABEL[m]}
+                {m === "cod" ? L.cod : PAYMENT_LABEL[m]}
               </label>
             ))}
           </div>
         </fieldset>
         <dl className="grid grid-cols-2 gap-1 border-t border-line pt-3">
-          <dt>{t("subtotal")}</dt>
+          <dt>{L.subtotal}</dt>
           <dd className="num text-end">{quote ? formatIQD(quote.subtotal, locale) : "…"}</dd>
-          <dt>{t("delivery")}</dt>
+          <dt>{L.delivery}</dt>
           <dd className="num text-end">{quote ? formatIQD(quote.deliveryFee, locale) : "…"}</dd>
-          <dt className="text-lg font-extrabold">{t("total")}</dt>
+          <dt className="text-lg font-extrabold">{L.total}</dt>
           <dd className="num text-end text-lg font-extrabold">{quote ? formatIQD(quote.total, locale) : "…"}</dd>
         </dl>
-        <FormError error={error} />
+        {error && <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-sm font-semibold text-danger">{te(error)}</p>}
         <button className="btn-gold" disabled={placing || !available.length || !city}>
-          {placing ? "…" : t("placeOrder")}
+          {placing ? "…" : L.placeOrder}
         </button>
       </form>
     </div>
