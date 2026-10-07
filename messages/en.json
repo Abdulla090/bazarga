@@ -166,7 +166,16 @@
     "untracked": "Not counted",
     "translations": "Name and description in each language",
     "translationsHint": "Fill at least one. Missing languages fall back automatically.",
-    "removeImage": "Remove photo"
+    "removeImage": "Remove photo",
+    "sku": "SKU (optional)",
+    "skuHint": "Your own product code, e.g. HB-HONEY-500",
+    "specs": "Details table",
+    "specsHint": "Material, size, weight, origin… shown as a table on the product page. Fill each row in the language tab you're on.",
+    "specLabel": "Label",
+    "specValue": "Value",
+    "addSpec": "Add row",
+    "removeSpec": "Remove row",
+    "specsInvalid": "Every row needs a label and a value."
   },
   "categories": {
     "title": "Categories",
@@ -373,7 +382,30 @@
     "placing": "Placing your order…",
     "notYou": "Not you? Clear details",
     "pickOption": "Pick a size or colour on the product page",
-    "outOfStockLine": "Not enough left"
+    "outOfStockLine": "Not enough left",
+    "inStock": "In stock",
+    "soldOutStatus": "Sold out",
+    "skuLabel": "SKU",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "percentOff": "{pct}% off",
+    "descriptionTitle": "Description",
+    "detailsTitle": "Details",
+    "deliveryReturnsTitle": "Delivery & returns",
+    "moreFromStore": "More from this store",
+    "trustCod": "Cash on delivery",
+    "trustDelivery": "Delivery to {city}: {fee}",
+    "trustDeliveryEta": "Delivery to {city}: {fee} · {eta}",
+    "trustReturns": "Returns accepted",
+    "trustNoReturns": "Ask the seller about returns",
+    "trustAsk": "Questions? Ask on WhatsApp",
+    "openPhoto": "Open photo {n} full screen",
+    "closeViewer": "Close",
+    "zoom": "Zoom",
+    "nextPhoto": "Next photo",
+    "prevPhoto": "Previous photo",
+    "noReturnPolicy": "This store hasn't published a return policy yet. Ask the seller on WhatsApp before ordering."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -418,7 +450,11 @@
     "invalid_threshold": "Enter a whole amount in IQD, e.g. 50000.",
     "invalid_image_url": "That image couldn't be used. Upload it again.",
     "phone_operator": "Use a Korek (075), Asiacell (077) or Zain (078/079) mobile number.",
-    "address_required": "Add a landmark or your street address."
+    "address_required": "Add a landmark or your street address.",
+    "spec_label_required": "Every row needs a label.",
+    "spec_value_required": "Every row needs a value.",
+    "too_many_specs": "Up to 20 rows.",
+    "invalid_sku": "Letters, numbers, - _ . / only."
   },
   "pwa": {
     "installTitle": "Install Bazarga",

@@ -166,7 +166,16 @@
     "untracked": "غير محسوب",
     "translations": "الاسم والوصف بكل لغة",
     "translationsHint": "املأ لغة واحدة على الأقل. اللغات الفارغة تُكمَّل تلقائياً.",
-    "removeImage": "إزالة الصورة"
+    "removeImage": "إزالة الصورة",
+    "sku": "رمز المنتج (SKU، اختياري)",
+    "skuHint": "رمزك الخاص للمنتج، مثل HB-HONEY-500",
+    "specs": "جدول التفاصيل",
+    "specsHint": "الخامة، المقاس، الوزن، المنشأ… تظهر كجدول في صفحة المنتج. املأ كل صف باللغة المحددة.",
+    "specLabel": "العنوان",
+    "specValue": "القيمة",
+    "addSpec": "أضف صفاً",
+    "removeSpec": "احذف الصف",
+    "specsInvalid": "كل صف يحتاج عنواناً وقيمة."
   },
   "categories": {
     "title": "الأقسام",
@@ -373,7 +382,30 @@
     "placing": "جارٍ إرسال طلبك…",
     "notYou": "لست أنت؟ امسح البيانات",
     "pickOption": "اختر المقاس أو اللون من صفحة المنتج",
-    "outOfStockLine": "الكمية غير متوفرة"
+    "outOfStockLine": "الكمية غير متوفرة",
+    "inStock": "متوفر",
+    "soldOutStatus": "نفدت الكمية",
+    "skuLabel": "الرمز",
+    "quantity": "الكمية",
+    "decrease": "إنقاص الكمية",
+    "increase": "زيادة الكمية",
+    "percentOff": "خصم {pct}٪",
+    "descriptionTitle": "الوصف",
+    "detailsTitle": "التفاصيل",
+    "deliveryReturnsTitle": "التوصيل والإرجاع",
+    "moreFromStore": "المزيد من هذا المتجر",
+    "trustCod": "الدفع عند الاستلام",
+    "trustDelivery": "التوصيل إلى {city}: {fee}",
+    "trustDeliveryEta": "التوصيل إلى {city}: {fee} · {eta}",
+    "trustReturns": "الإرجاع متاح",
+    "trustNoReturns": "اسأل البائع عن الإرجاع",
+    "trustAsk": "لديك سؤال؟ اسأل عبر واتساب",
+    "openPhoto": "افتح الصورة {n} بملء الشاشة",
+    "closeViewer": "إغلاق",
+    "zoom": "تكبير",
+    "nextPhoto": "الصورة التالية",
+    "prevPhoto": "الصورة السابقة",
+    "noReturnPolicy": "لم ينشر هذا المتجر سياسة إرجاع بعد. اسأل البائع عبر واتساب قبل الطلب."
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",
@@ -418,7 +450,11 @@
     "invalid_threshold": "أدخل مبلغاً صحيحاً بالدينار، مثل 50000.",
     "invalid_image_url": "تعذّر استخدام هذه الصورة. ارفعها مرة أخرى.",
     "phone_operator": "استخدم رقم كورك (075) أو آسياسيل (077) أو زين (078/079).",
-    "address_required": "أضف أقرب معلم أو عنوان الشارع."
+    "address_required": "أضف أقرب معلم أو عنوان الشارع.",
+    "spec_label_required": "كل صف يحتاج عنواناً.",
+    "spec_value_required": "كل صف يحتاج قيمة.",
+    "too_many_specs": "حتى ٢٠ صفاً.",
+    "invalid_sku": "أحرف وأرقام و - _ . / فقط."
   },
   "pwa": {
     "installTitle": "ثبّت ماي ماركت",
