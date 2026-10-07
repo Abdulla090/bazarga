@@ -7,12 +7,14 @@ import { formatIQD } from "@/lib/money";
 import type { Locale } from "@/lib/i18n";
 import { waLink } from "@/lib/whatsapp";
 import { initialSelection, isValueAvailable, matchVariant, priceRange, type Selection } from "@/lib/variants";
+import { percentOff, stockStatus } from "@/lib/product-page";
 import { Check, Icon, MessageCircle, Share2, ShoppingBag } from "@/components/ui/icons";
 
 export type BuyOption = { id: string; name: string; values: { id: string; label: string; swatch: string | null }[] };
 export type BuyVariant = {
   id: string;
   optionValueIds: string[];
+  sku: string | null;
   price: number;
   compareAtPrice: number | null;
   stock: number | null;
@@ -36,7 +38,17 @@ export type BuyLabels = {
   /** First line of the WhatsApp message, e.g. "Hi Hawler Bazaar, I'd like to ask about:" */
   waIntro: string;
   unavailable: string;
+  inStock: string;
+  soldOutStatus: string;
+  skuLabel: string;
+  quantity: string;
+  decrease: string;
+  increase: string;
+  /** "{pct}% off" */
+  percentOff: string;
 };
+
+const MAX_QTY = 99;
 
 export const fill = (tpl: string, vars: Record<string, string | number>) =>
   tpl.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
@@ -52,6 +64,7 @@ export function ProductBuy({
   basePrice,
   baseCompareAt,
   baseStock,
+  sku,
   options,
   variants,
   locale,
@@ -65,6 +78,7 @@ export function ProductBuy({
   basePrice: number;
   baseCompareAt: number | null;
   baseStock: number | null;
+  sku: string | null;
   options: BuyOption[];
   variants: BuyVariant[];
   locale: Locale;
@@ -79,6 +93,7 @@ export function ProductBuy({
   const [added, setAdded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [nudge, setNudge] = useState(false);
+  const [qty, setQty] = useState(1);
   const [inlineVisible, setInlineVisible] = useState(true);
   const inlineRef = useRef<HTMLDivElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -96,6 +111,10 @@ export function ProductBuy({
       ? variant.stock !== null && variant.stock <= 0
       : variants.every((v) => v.stock !== null && v.stock <= 0)
     : baseStock !== null && baseStock <= 0;
+  const pct = percentOff(price, compareAt);
+  const status = stockStatus(stock, soldOut);
+  const maxQty = stock !== null && stock > 0 ? Math.min(MAX_QTY, stock) : MAX_QTY;
+  const shownSku = variant?.sku ?? (hasVariants ? null : sku);
   const priceText =
     hasVariants && !variant && range.min !== range.max ? fill(labels.from, { price: formatIQD(range.min, locale) }) : formatIQD(price, locale);
 
@@ -111,6 +130,7 @@ export function ProductBuy({
     const next = { ...sel, [optionId]: valueId };
     setSel(next);
     setNudge(false);
+    setQty(1);
     const v = matchVariant(optionIds, variants, next);
     if (v?.imageId) window.dispatchEvent(new CustomEvent(GALLERY_EVENT, { detail: v.imageId }));
   }
@@ -125,7 +145,7 @@ export function ProductBuy({
 
   function addToCart(): boolean {
     if (!ready() || soldOut) return false;
-    add({ productId, variantId: variant?.id ?? null });
+    add({ productId, variantId: variant?.id ?? null }, Math.min(qty, maxQty));
     setAdded(true);
     setTimeout(() => setAdded(false), 1400);
     return true;
@@ -182,10 +202,34 @@ export function ProductBuy({
   return (
     <>
       <div className="grid gap-4">
-        <p className="num flex flex-wrap items-baseline gap-x-3 text-2xl" aria-live="polite">
-          <span className="font-extrabold">{priceText}</span>
-          {compareAt && compareAt > price && <s className="text-lg text-ink-50">{formatIQD(compareAt, locale)}</s>}
-        </p>
+        <div className="grid gap-1.5">
+          <p className="num flex flex-wrap items-center gap-x-3 gap-y-1 text-2xl" aria-live="polite" data-testid="price">
+            <span className="font-extrabold">{priceText}</span>
+            {compareAt && compareAt > price && <s className="text-lg text-ink-50">{formatIQD(compareAt, locale)}</s>}
+            {pct !== null && (
+              <span className="chip bg-danger text-sm font-bold text-[#fff]" data-testid="pct-off">
+                {fill(labels.percentOff, { pct })}
+              </span>
+            )}
+          </p>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" data-testid="stock-status">
+            {status.kind === "out" ? (
+              <span className="font-bold text-danger">{labels.soldOutStatus}</span>
+            ) : status.kind === "low" ? (
+              <span className="font-bold text-danger">{fill(labels.onlyLeft, { count: status.count })}</span>
+            ) : !hasVariants || variant ? (
+              <span className="inline-flex items-center gap-1.5 font-semibold">
+                <span aria-hidden className="h-2 w-2 rounded-full bg-green" />
+                {labels.inStock}
+              </span>
+            ) : null}
+            {shownSku && (
+              <span className="text-ink-70" data-testid="sku">
+                {labels.skuLabel}: <bdi className="num">{shownSku}</bdi>
+              </span>
+            )}
+          </p>
+        </div>
 
         {options.length > 0 && (
           <div ref={pickerRef} className="grid scroll-mt-24 gap-4">
@@ -240,8 +284,33 @@ export function ProductBuy({
           </div>
         )}
 
-        {!soldOut && stock !== null && stock > 0 && stock <= 5 && (
-          <p className="font-semibold text-danger">{fill(labels.onlyLeft, { count: stock })}</p>
+        {!soldOut && (
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold" id="qty-label">{labels.quantity}</span>
+            <div className="inline-flex items-center rounded-xl border-2 border-line bg-white" role="group" aria-labelledby="qty-label">
+              <button
+                type="button"
+                className="h-11 w-11 text-xl font-bold disabled:opacity-30"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={qty <= 1}
+                aria-label={labels.decrease}
+              >
+                −
+              </button>
+              <output className="num min-w-8 text-center font-extrabold" aria-live="polite" data-testid="qty">
+                {qty}
+              </output>
+              <button
+                type="button"
+                className="h-11 w-11 text-xl font-bold disabled:opacity-30"
+                onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
+                disabled={qty >= maxQty}
+                aria-label={labels.increase}
+              >
+                +
+              </button>
+            </div>
+          </div>
         )}
 
         <div ref={inlineRef}>{buttons(false)}</div>

@@ -10,12 +10,12 @@ import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("landing");
   return {
-    title: { default: t("metaTitle"), template: "%s · my market" },
+    title: { default: t("metaTitle"), template: "%s · Bazarga" },
     description: t("metaDescription"),
-    applicationName: "my market",
+    applicationName: "Bazarga",
     icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
     manifest: "/manifest.webmanifest",
-    appleWebApp: { capable: true, title: "فرۆشگاکەم", statusBarStyle: "default" },
+    appleWebApp: { capable: true, title: "بازارگە", statusBarStyle: "default" },
   };
 }
 

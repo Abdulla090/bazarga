@@ -1,6 +1,7 @@
 {
   "_comment": "Kurmanji (Latin) — SCAFFOLD. Partial translation; missing keys fall back to English at runtime. Needs native review before launch.",
   "common": {
+    "appName": "Bazarga",
     "tagline": "Dikana te, bi zimanê te.",
     "save": "Tomar bike",
     "cancel": "Betal bike",
@@ -34,7 +35,7 @@
     "backToStore": "Vegere dikanê"
   },
   "pwa": {
-    "installTitle": "my market saz bike",
+    "installTitle": "Bazarga saz bike",
     "installSub": "Panela xwe ji ekrana sereke veke, wek sepanekê.",
     "installCta": "Saz bike",
     "installDismiss": "Paşê",

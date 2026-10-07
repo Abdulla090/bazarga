@@ -1,17 +1,17 @@
 type Props = { className?: string; showKu?: boolean; tone?: "ink" | "paper" };
 
-/** Lowercase "my market" wordmark + gold scalloped shop awning, paired with فرۆشگاکەم. */
+/** "BAZARGA" wordmark + gold scalloped shop awning, paired with the Kurdish بازارگە. */
 export function Logo({ className = "", showKu = true, tone = "ink" }: Props) {
   const color = tone === "ink" ? "text-ink" : "text-paper";
   return (
-    <span className={`inline-flex items-end gap-2 ${color} ${className}`} aria-label="my market · فرۆشگاکەم">
+    <span className={`inline-flex items-end gap-2 ${color} ${className}`} aria-label="Bazarga · بازارگە">
       <span className="relative inline-flex flex-col items-start" dir="ltr">
         <Awning className="mb-0.5 h-3.5 w-9" />
-        <span className="font-latin text-xl font-extrabold leading-none tracking-tight">
-          my market
+        <span className="font-latin text-xl font-extrabold leading-none tracking-wide">
+          BAZARGA
         </span>
       </span>
-      {showKu && <span className="pb-px text-sm font-bold opacity-80" lang="ckb">فرۆشگاکەم</span>}
+      {showKu && <span className="pb-px text-sm font-bold opacity-80" lang="ckb">بازارگە</span>}
     </span>
   );
 }

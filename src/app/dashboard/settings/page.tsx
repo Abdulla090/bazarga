@@ -43,6 +43,7 @@ export default async function SettingsPage() {
         initial={{
           coverImageUrl: store.coverImageUrl,
           coverImagePlaceholder: store.coverImagePlaceholder,
+          coverImageRenditions: store.coverImageRenditions ?? [],
           freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />

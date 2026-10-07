@@ -19,6 +19,7 @@ const SPECIFIC = new Set([
   "image_too_large", "invalid_color", "invalid_threshold", "invalid_image_url",
   "phone_operator", "address_required", "invalid_area", "variant_required", "discount_invalid", "discount_inactive",
   "discount_not_started", "discount_expired", "discount_used_up", "discount_below_minimum",
+  "spec_label_required", "spec_value_required", "too_many_specs", "invalid_sku",
 ]);
 
 /** Convert any thrown error into a serialisable, translatable action result. Unexpected errors are logged, not leaked. */

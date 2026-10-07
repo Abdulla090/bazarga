@@ -95,16 +95,17 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const fe = (k: string) => fieldErrors[k] && <p className="field-error">{te(fieldErrors[k]!)}</p>;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
-      <section className="grid h-fit gap-2">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      {/* minmax(0,…) tracks: a long product name truncates instead of widening the page at 360 px. */}
+      <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] gap-2">
         <h1 className="text-2xl font-extrabold">{L.cart}</h1>
         {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
           <div key={l.key} className={`card flex items-center gap-3 p-3 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={l.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
+              <img src={l.image} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
             ) : (
-              <span className="h-16 w-16 rounded-xl bg-paper" />
+              <span className="h-16 w-16 shrink-0 rounded-xl bg-paper" />
             )}
             <div className="min-w-0 flex-1">
               <p className="truncate font-bold">{l.name}</p>

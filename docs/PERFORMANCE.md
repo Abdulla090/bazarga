@@ -34,19 +34,24 @@ Gzipped first-load JS per route, from the build diagnostics. Budgets: storefront
 
 | Route | gzip | raw |
 |---|---|---|
-| `/s/[slug]` | 144.9 KiB | 475.4 KiB |
-| `/s/[slug]/p/[productId]` | 149.2 KiB | 485.8 KiB |
-| `/s/[slug]/cart` | 148.4 KiB | 485.5 KiB |
-| `/dashboard` | 157.9 KiB | 518.7 KiB |
-| `/dashboard/settings` | 161.7 KiB | 530.5 KiB |
-| `/dashboard/products/[id]`, `/new` | 159.3 KiB | 522.6 KiB |
-| `/dashboard/delivery` | 159.0 KiB | 521.9 KiB |
-| `/dashboard/ai` | 159.0 KiB | 521.2 KiB |
-| `/dashboard/categories` | 158.5 KiB | 520.1 KiB |
-| `/dashboard/orders/[id]` | 158.2 KiB | 519.1 KiB |
-| `/dashboard/payments` | 158.0 KiB | 518.6 KiB |
-| `/dashboard/products` | 157.9 KiB | 518.3 KiB |
-| `/dashboard/customers`, `/more`, `/orders` | 157.3 KiB | 517.5 KiB |
+| `/s/[slug]` | 145.2 KiB | 476.2 KiB |
+| `/s/[slug]/p/[productId]` | 150.3 KiB | 489.4 KiB |
+| `/s/[slug]/cart` | 148.6 KiB | 486.5 KiB |
+| `/dashboard` | 158.2 KiB | 519.5 KiB |
+| `/dashboard/settings` | 161.9 KiB | 531.6 KiB |
+| `/dashboard/products/[id]`, `/new` | 160.3 KiB | 526.0 KiB |
+| `/dashboard/delivery` | 159.3 KiB | 522.8 KiB |
+| `/dashboard/ai` | 159.2 KiB | 522.0 KiB |
+| `/dashboard/categories` | 158.8 KiB | 521.0 KiB |
+| `/dashboard/orders/[id]` | 158.4 KiB | 519.9 KiB |
+| `/dashboard/payments` | 158.2 KiB | 519.4 KiB |
+| `/dashboard/products` | 158.1 KiB | 519.1 KiB |
+| `/dashboard/customers`, `/more`, `/orders` | 157.6 KiB | 518.4 KiB |
+
+Product page extras outside the first load: the thumbnail strip (≈0.7 KiB gzip, only for multi-photo
+products) and the fullscreen photo viewer (≈2.1 KiB gzip, requested on the first tap / pointerdown) are
+`React.lazy` chunks; the related-products strip, trust row, collapsible sections and specs table are
+server-rendered with no client JS. The store-home cover now ships a `srcset` from its pipeline renditions.
 
 ## Mobile layout checks
 

@@ -20,7 +20,7 @@ import {
 import { deleteZone, setPaymentMethod, updateZoneFee, upsertZone } from "../services/settings";
 import { updateOrderStatus } from "../services/orders";
 import { uploadProcessedImage } from "../storage";
-import {
+import { specsFromForm,
   categorySchema,
   deliveryZoneSchema,
   orderStatusSchema,
@@ -98,6 +98,16 @@ export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise
   }
 }
 
+/** Parse a JSON hidden input; anything unparsable becomes [] (the schema then decides). */
+function jsonField(v: FormDataEntryValue | null): unknown {
+  if (typeof v !== "string" || !v) return [];
+  try {
+    return JSON.parse(v) as unknown;
+  } catch {
+    return [];
+  }
+}
+
 /** Cover photo (uploaded client-side to /api/uploads first) + free-delivery threshold. */
 export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
@@ -105,6 +115,7 @@ export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Pr
     const input = storeStorefrontSchema.parse({
       coverImageUrl: fd.get("coverImageUrl") ?? null,
       coverImagePlaceholder: fd.get("coverImagePlaceholder") ?? null,
+      coverImageRenditions: jsonField(fd.get("coverImageRenditions")),
       freeDeliveryThreshold: fd.get("freeDeliveryThreshold") ?? null,
     });
     await updateStoreStorefront(db(), store.id, input);
@@ -124,6 +135,8 @@ function productInputFromForm(fd: FormData) {
     price: fd.get("price"),
     compareAtPrice: emptyToNull(fd.get("compareAtPrice")),
     stock: emptyToNull(fd.get("stock")),
+    sku: emptyToNull(fd.get("sku")),
+    specs: specsFromForm(fd),
     categoryId: emptyToNull(fd.get("categoryId")),
     isActive: fd.get("isActive") === "on" || fd.get("isActive") === "true",
     imageUrls: fd.getAll("imageUrls").filter((v): v is string => typeof v === "string" && v.length > 0),

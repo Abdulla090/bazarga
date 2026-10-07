@@ -143,6 +143,57 @@ export type ProductImageInput = z.infer<typeof productImageSchema>;
 
 export const categorySchema = z.object({ name: requiredLocalizedName, sort: z.coerce.number().int().default(0) });
 
+/** Short translatable cell (spec label/value): trimmed, ≤120 chars per locale, empty locales dropped. */
+const specText = z
+  .object({ ku: trimmed(120).optional(), ar: trimmed(120).optional(), en: trimmed(120).optional(), kmr: trimmed(120).optional() })
+  .transform((o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v && v.length > 0)) as Partial<Record<(typeof LOCALES)[number], string>>);
+
+/** Max rows in a product's details table. */
+export const MAX_SPECS = 20;
+
+/**
+ * Seller-defined details table: rows left completely blank are dropped (an "add row" the seller never filled),
+ * a row needs a label and a value in at least one language each.
+ */
+export const productSpecsSchema = z
+  .array(z.object({ label: specText, value: specText }))
+  .transform((rows) => rows.filter((r) => Object.keys(r.label).length > 0 || Object.keys(r.value).length > 0))
+  .pipe(
+    z
+      .array(
+        z.object({
+          label: z.record(z.string(), z.string()).refine((o) => Object.keys(o).length > 0, { message: "spec_label_required" }),
+          value: z.record(z.string(), z.string()).refine((o) => Object.keys(o).length > 0, { message: "spec_value_required" }),
+        }),
+      )
+      .max(MAX_SPECS, { message: "too_many_specs" }),
+  )
+  .transform((rows) => rows as { label: Partial<Record<(typeof LOCALES)[number], string>>; value: Partial<Record<(typeof LOCALES)[number], string>> }[]);
+
+/**
+ * Specs rows come as `specs.<row>.label.<locale>` / `specs.<row>.value.<locale>`; row indexes may have gaps
+ * (rows removed in the form), so they are collected and ordered by index.
+ */
+export function specsFromForm(fd: FormData): unknown[] {
+  const rows = new Map<number, { label: Record<string, string>; value: Record<string, string> }>();
+  for (const [k, v] of fd.entries()) {
+    const m = /^specs\.(\d{1,3})\.(label|value)\.(ku|ar|en|kmr)$/.exec(k);
+    if (!m || typeof v !== "string") continue;
+    const i = Number(m[1]);
+    const row = rows.get(i) ?? { label: {}, value: {} };
+    row[m[2] as "label" | "value"][m[3]!] = v;
+    rows.set(i, row);
+  }
+  return [...rows.entries()].sort((a, b) => a[0] - b[0]).map(([, r]) => r);
+}
+
+export const skuSchema = z
+  .string()
+  .trim()
+  .max(64)
+  .regex(/^[A-Za-z0-9._\/-]*$/, { message: "invalid_sku" })
+  .transform((v) => (v.length ? v : null));
+
 export const productSchema = z
   .object({
     name: requiredLocalizedName,
@@ -150,6 +201,8 @@ export const productSchema = z
     price: iqd,
     compareAtPrice: iqd.nullable().optional(),
     stock: z.coerce.number().int().min(0).max(1_000_000).nullable().optional(),
+    sku: skuSchema.nullable().optional(),
+    specs: productSpecsSchema.default([]),
     categoryId: uuid.nullable().optional(),
     isActive: z.coerce.boolean().default(true),
     /** Legacy/simple form: bare URLs (no responsive metadata). Ignored when `images` is given. */
@@ -160,7 +213,8 @@ export const productSchema = z
     message: "compare_at_must_exceed_price",
     path: ["compareAtPrice"],
   });
-export type ProductInput = z.infer<typeof productSchema>;
+/** Parsed product input; `specs` optional for direct (seed/test) callers, which default to an empty table. */
+export type ProductInput = Omit<z.infer<typeof productSchema>, "specs"> & { specs?: z.infer<typeof productSchema>["specs"] };
 
 export const deliveryZoneSchema = z.object({
   cityKey: z.string().trim().toLowerCase().regex(/^[a-z0-9-]{2,40}$/),
@@ -259,6 +313,8 @@ export const storeStorefrontSchema = z.object({
   coverImageUrl: z.preprocess(emptyToNullish, imageUrlSchema.nullable()),
   /** Tiny inline WebP from the upload pipeline; a malformed one is dropped rather than failing the save. */
   coverImagePlaceholder: z.preprocess(emptyToNullish, productImageSchema.shape.placeholder).catch(null).transform((v) => v ?? null),
+  /** Pipeline renditions of the cover; malformed metadata is dropped (the cover still shows from its URL). */
+  coverImageRenditions: productImageSchema.shape.renditions.catch([]),
   freeDeliveryThreshold: z.preprocess(
     parseIqdInput,
     z
@@ -269,4 +325,6 @@ export const storeStorefrontSchema = z.object({
       .nullable(),
   ),
 });
-export type StoreStorefrontInput = z.infer<typeof storeStorefrontSchema>;
+export type StoreStorefrontInput = Omit<z.infer<typeof storeStorefrontSchema>, "coverImageRenditions"> & {
+  coverImageRenditions?: z.infer<typeof storeStorefrontSchema>["coverImageRenditions"];
+};

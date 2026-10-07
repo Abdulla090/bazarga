@@ -16,6 +16,8 @@ import {
 
 /** Translatable text: { ku: "...", ar: "...", en: "...", kmr: "..." } — every key optional. */
 export type LocalizedText = Partial<Record<"ku" | "ar" | "en" | "kmr", string>>;
+/** One row of a product's details table: both sides translatable (value may be the same in every locale). */
+export type ProductSpec = { label: LocalizedText; value: LocalizedText };
 
 export const localeEnum = pgEnum("locale", ["ku", "ar", "en", "kmr"]);
 /** COD-shaped lifecycle — see src/lib/order-status.ts (kept in sync by tests/schema-enums.test.ts). */
@@ -117,6 +119,8 @@ export const stores = pgTable(
     coverImageKey: text("cover_image_key"),
     /** Tiny inline WebP data: URL shown while the cover loads. */
     coverImagePlaceholder: text("cover_image_placeholder"),
+    /** Upload-pipeline WebP renditions of the cover (srcset for the store-home LCP image); [] for older covers. */
+    coverImageRenditions: jsonb("cover_image_renditions").$type<ImageRendition[]>().notNull().default([]),
     about: jsonb("about").$type<LocalizedText>().notNull().default({}),
     returnPolicy: jsonb("return_policy").$type<LocalizedText>().notNull().default({}),
     // ---- promotions
@@ -163,6 +167,10 @@ export const products = pgTable(
     compareAtPrice: integer("compare_at_price"),
     /** null = stock not tracked (unlimited). */
     stock: integer("stock"),
+    /** Seller's own stock-keeping code for simple products (variants carry their own). */
+    sku: text("sku"),
+    /** Seller-defined attributes shown as a table on the product page (Material, Size, Weight, Origin…). */
+    specs: jsonb("specs").$type<ProductSpec[]>().notNull().default([]),
     isActive: boolean("is_active").notNull().default(true),
     sort: integer("sort").notNull().default(0),
     createdAt: createdAt(),

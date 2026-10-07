@@ -19,7 +19,7 @@ export default async function NewProductPage() {
         defaultLang={store.defaultLocale}
         maxMb={env().MAX_UPLOAD_MB}
         categories={cats.map((c) => ({ id: c.id, name: pickText(c.name, locale) }))}
-        initial={{ name: {}, description: {}, price: "", compareAtPrice: null, stock: null, categoryId: null, isActive: true, images: [] }}
+        initial={{ name: {}, description: {}, price: "", compareAtPrice: null, stock: null, sku: null, specs: [], categoryId: null, isActive: true, images: [] }}
       />
     </div>
   );

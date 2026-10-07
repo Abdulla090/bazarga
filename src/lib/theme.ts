@@ -44,7 +44,7 @@ export type ThemeTokens = {
 };
 
 export const PRESET_TOKENS: Record<ThemePreset, ThemeTokens> = {
-  /** Warm paper + Sun Gold — the my market house style. */
+  /** Warm paper + Sun Gold — the Bazarga house style. */
   bazaar: {
     bg: BRAND.paper,
     surface: "#FFFFFF",

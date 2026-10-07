@@ -1,8 +1,8 @@
 {
-  "name": "mymarket",
+  "name": "bazarga",
   "version": "1.0.0",
   "private": true,
-  "description": "my market (فرۆشگاکەم) — Kurdish-first, zero-setup online store builder",
+  "description": "Bazarga (بازارگە) — Kurdish-first, zero-setup online store builder",
   "engines": {
     "node": ">=22"
   },

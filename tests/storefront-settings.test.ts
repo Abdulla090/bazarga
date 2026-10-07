@@ -24,12 +24,13 @@ describe("storeStorefrontSchema", () => {
   });
   it("accepts a valid cover + threshold", () => {
     const v = storeStorefrontSchema.parse({ coverImageUrl: "/uploads/a.webp", coverImagePlaceholder: PH, freeDeliveryThreshold: "75,000" });
-    expect(v).toEqual({ coverImageUrl: "/uploads/a.webp", coverImagePlaceholder: PH, freeDeliveryThreshold: 75000 });
+    expect(v).toEqual({ coverImageUrl: "/uploads/a.webp", coverImagePlaceholder: PH, coverImageRenditions: [], freeDeliveryThreshold: 75000 });
   });
   it("empty fields mean no cover / no threshold; bad placeholder is dropped", () => {
     expect(storeStorefrontSchema.parse({ coverImageUrl: "", coverImagePlaceholder: "javascript:x", freeDeliveryThreshold: "" })).toEqual({
       coverImageUrl: null,
       coverImagePlaceholder: null,
+      coverImageRenditions: [],
       freeDeliveryThreshold: null,
     });
   });

@@ -15,6 +15,13 @@
       "when": 1791384291539,
       "tag": "0001_day1_sprint_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791406878596,
+      "tag": "0002_product_specs_cover_renditions",
+      "breakpoints": true
     }
   ]
 }

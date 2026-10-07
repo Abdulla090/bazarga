@@ -1,4 +1,4 @@
-# my market — Roadmap after v1
+# Bazarga — Roadmap after v1
 
 ## Shipped
 

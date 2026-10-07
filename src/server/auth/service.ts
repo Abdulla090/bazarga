@@ -98,8 +98,8 @@ export async function requestPasswordReset(database: Db, email: string, appUrl: 
   try {
     await emailProvider().send({
       to: u.email,
-      subject: "my market — reset your password / وشەی نهێنی نوێ",
-      text: `Reset your my market password (valid 1 hour):\n${link}\n\nIf you didn't ask for this, ignore this email.`,
+      subject: "Bazarga — reset your password / وشەی نهێنی نوێ",
+      text: `Reset your Bazarga password (valid 1 hour):\n${link}\n\nIf you didn't ask for this, ignore this email.`,
     });
   } catch (err) {
     logger.error("auth.reset_email_failed", { err });

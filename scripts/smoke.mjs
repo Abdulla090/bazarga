@@ -52,7 +52,7 @@ ok(health.status === "ok", "health check ok");
 
 const landing = await fetch(`${BASE}/`);
 const landingHtml = await landing.text();
-ok(landing.status === 200 && landingHtml.includes("فرۆشگاکەم"), "landing renders (Kurdish default)");
+ok(landing.status === 200 && landingHtml.includes("بازارگە"), "landing renders (Kurdish default)");
 ok(landingHtml.includes('dir="rtl"'), "landing is RTL by default");
 ok(!!landing.headers.get("content-security-policy"), "security headers present");
 
@@ -61,7 +61,22 @@ const storeHtml = await store.text();
 // Simple products carry an add-to-cart productId (used below); variant products only link to their page.
 const ids = [...new Set([...storeHtml.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
 const listed = new Set([...storeHtml.matchAll(/\/s\/hawler-bazaar\/p\/([0-9a-f-]{36})/g)].map((m) => m[1]));
-ok(store.status === 200 && listed.size >= 3 && ids.length >= 2, `storefront lists the demo products (${listed.size}, ${ids.length} buyable from the grid)`);
+ok(store.status === 200 && listed.size >= 4 && ids.length >= 3, `storefront lists the demo products (${listed.size}, ${ids.length} buyable from the grid)`);
+ok(/srcSet="\/images\/seed\/hero-320\.webp 320w/.test(storeHtml), "store home cover ships a srcset from its renditions");
+
+// Rich product page: every demo product has 3–5 photos, a details table, JSON-LD and an og:image.
+let sale = null;
+for (const id of listed) {
+  const html = await (await fetch(`${BASE}/s/hawler-bazaar/p/${id}`, { headers: { Cookie: "mm_locale=en" } })).text();
+  const photos = /data-testid="gallery-counter"[^>]*>1<!-- -->\/<!-- -->(\d)/.exec(html)?.[1] ?? /data-testid="gallery-counter"[^>]*>1\/(\d)/.exec(html)?.[1];
+  const ld = /<script type="application\/ld\+json" nonce="[^"]+">([^<]+)<\/script>/.exec(html)?.[1];
+  const data = ld ? JSON.parse(ld) : null;
+  ok(Number(photos) >= 3 && Number(photos) <= 5, `product ${id.slice(0, 8)}: gallery has 3–5 photos (${photos})`);
+  ok(html.includes('data-testid="specs-table"') && html.includes('data-testid="related"'), `product ${id.slice(0, 8)}: details table + related strip`);
+  ok(data?.["@type"] === "Product" && data.offers?.priceCurrency === "IQD" && /og:image" content="http/.test(html), `product ${id.slice(0, 8)}: nonced Product JSON-LD (IQD) + og:image`);
+  if (html.includes('data-testid="pct-off"')) sale = id;
+}
+ok(!!sale, "one demo product is on sale (compare-at price, % off badge)");
 
 const quote = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 2 }], "baghdad", "en"], { path: "/s/hawler-bazaar/cart" });
 const total = /"total":(\d+)/.exec(quote.text)?.[1];
@@ -93,6 +108,11 @@ if (redirectTo) {
 }
 
 ok(/"discountAmount":0/.test(quote.text) && /"freeDeliveryRemaining"/.test(quote.text), "quote carries discount + free-delivery fields");
+const welcome = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 2 }], "erbil", "en", { discountCode: "WELCOME10" }], { path: "/s/hawler-bazaar/cart" });
+ok(/"discountAmount":[1-9]\d*/.test(welcome.text) && /"discountCode":"WELCOME10","discountError":null/.test(welcome.text), "WELCOME10 takes 10% off a 30,000+ IQD cart");
+// The sale item (honey, 25,000 IQD) alone is under the 30,000 IQD minimum.
+const welcomeSmall = await callAction("quoteAction", ["hawler-bazaar", [{ productId: sale, quantity: 1 }], "erbil", "en", { discountCode: "WELCOME10" }], { path: "/s/hawler-bazaar/cart" });
+ok(/"discountError":"discount_below_minimum"/.test(welcomeSmall.text), "WELCOME10 minimum (30,000 IQD) is enforced by the quote");
 const badCode = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 1 }], "erbil", "en", { discountCode: "NO-SUCH-CODE" }], { path: "/s/hawler-bazaar/cart" });
 ok(badCode.text.includes('"discountError":"discount_invalid"'), "unknown discount code is reported by the quote");
 const badPhone = await callAction(
@@ -143,11 +163,12 @@ await callFormAction(
   { "name.en": productName, "name.ku": "تاقیکردنەوە", price: "12000", stock: "3", isActive: "on", imageUrls: upJson.url },
   { cookie: demoCookie, path: "/dashboard/products/new" },
 );
-const look = await callFormAction("saveStorefrontAction", { coverImageUrl: upJson.url, coverImagePlaceholder: upJson.image?.placeholder ?? "", freeDeliveryThreshold: "250,000" }, { cookie: demoCookie, path: "/dashboard/settings" });
+const look = await callFormAction("saveStorefrontAction", { coverImageUrl: upJson.url, coverImagePlaceholder: upJson.image?.placeholder ?? "", coverImageRenditions: JSON.stringify(upJson.image?.renditions ?? []), freeDeliveryThreshold: "250,000" }, { cookie: demoCookie, path: "/dashboard/settings" });
 ok(look.text.includes('"ok":true'), "seller saves cover + free-delivery threshold");
 const sf = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok(sf.includes(productName) && sf.includes(upJson.url), "new product with photo appears in the storefront");
 ok(sf.includes('fetchPriority="high"') || sf.includes('fetchpriority="high"'), "store home renders the cover hero");
+ok(!(upJson.image?.renditions?.length > 1) || sf.includes(`${upJson.image.renditions[0].url} ${upJson.image.renditions[0].width}w`), "uploaded cover keeps its renditions (srcset)");
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

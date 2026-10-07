@@ -140,6 +140,8 @@ export async function createProduct(database: Db, storeId: string, input: Produc
         price: input.price,
         compareAtPrice: input.compareAtPrice ?? null,
         stock: input.stock ?? null,
+        sku: input.sku ?? null,
+        specs: input.specs ?? [],
         categoryId: input.categoryId ?? null,
         isActive: input.isActive,
       })
@@ -160,6 +162,8 @@ export async function updateProduct(database: Db, storeId: string, id: string, i
         price: input.price,
         compareAtPrice: input.compareAtPrice ?? null,
         stock: input.stock ?? null,
+        sku: input.sku ?? null,
+        specs: input.specs ?? [],
         categoryId: input.categoryId ?? null,
         isActive: input.isActive,
         updatedAt: new Date(),

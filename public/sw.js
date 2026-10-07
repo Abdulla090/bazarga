@@ -1,5 +1,5 @@
 /*
- * my market service worker — hand-written, no Workbox.
+ * Bazarga service worker — hand-written, no Workbox.
  *   precache:                /offline.html + its font and icon
  *   stale-while-revalidate:  /_next/static/* (hashed, immutable) and product image renditions (/api/files/*)
  *   network-first:           HTML navigations, falling back to the cached page, then the Kurdish offline page
@@ -113,9 +113,9 @@ self.addEventListener("push", (event) => {
   try {
     data = event.data ? event.data.json() : {};
   } catch {
-    data = { title: "فرۆشگاکەم", body: event.data ? event.data.text() : "" };
+    data = { title: "بازارگە", body: event.data ? event.data.text() : "" };
   }
-  const title = data.title || "فرۆشگاکەم";
+  const title = data.title || "بازارگە";
   event.waitUntil(
     self.registration.showNotification(title, {
       body: data.body || "",

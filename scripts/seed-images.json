@@ -29,6 +29,105 @@
       }
     ]
   },
+  "product-dress-collar": {
+    "url": "/images/seed/product-dress-collar-500.webp",
+    "width": 500,
+    "height": 500,
+    "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAQAgCdASoQABAAA4BaJQBOgCIJRPBhtW4AAP7z+jHPZCQy2M79sMCGs+PTuA+s5JGZ6aUgNr292lo1tz1pP2qQk62jUxuSfj/Yfr+AbfGGCN83iwvO/oCusaM+KZEemAAAAA==",
+    "dominantColor": "#f8f8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-dress-collar-320.webp",
+        "url": "/images/seed/product-dress-collar-320.webp",
+        "bytes": 23066
+      },
+      {
+        "width": 500,
+        "height": 500,
+        "key": "seed/product-dress-collar-500.webp",
+        "url": "/images/seed/product-dress-collar-500.webp",
+        "bytes": 50960
+      }
+    ]
+  },
+  "product-dress-hem": {
+    "url": "/images/seed/product-dress-hem-600.webp",
+    "width": 600,
+    "height": 440,
+    "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAwAA4BaJQBOgCTih5Q98vgA/D9/pyVmbE8WJZpj7dxCi+ZepS+n6Ebv5JU4t2XHpDTPgpHezWu7PPLAPJlJZjeGqxTXpQAAAA==",
+    "dominantColor": "#f8f8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 235,
+        "key": "seed/product-dress-hem-320.webp",
+        "url": "/images/seed/product-dress-hem-320.webp",
+        "bytes": 15454
+      },
+      {
+        "width": 600,
+        "height": 440,
+        "key": "seed/product-dress-hem-600.webp",
+        "url": "/images/seed/product-dress-hem-600.webp",
+        "bytes": 46854
+      }
+    ]
+  },
+  "product-dress-sleeve": {
+    "url": "/images/seed/product-dress-sleeve-480.webp",
+    "width": 480,
+    "height": 480,
+    "placeholder": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAwAgCdASoQABAAA4BaJQBOgCFU/mgn6HroAAD+9wied9PlysUs0NjRtTu6J1Ohvww1/xUC7ZGYSHRmby7A8fNqu1RyJjtSbQAAAA==",
+    "dominantColor": "#f8f8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-dress-sleeve-320.webp",
+        "url": "/images/seed/product-dress-sleeve-320.webp",
+        "bytes": 15748
+      },
+      {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-dress-sleeve-480.webp",
+        "url": "/images/seed/product-dress-sleeve-480.webp",
+        "bytes": 32250
+      }
+    ]
+  },
+  "product-dress-full": {
+    "url": "/images/seed/product-dress-full-1024.webp",
+    "width": 1024,
+    "height": 1024,
+    "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAQCdASoQABAAA4BaJYwAApQdmQ0kGdAA/vYRdSWNR3nvZBfjEmKAb0c6f/u8PUTHXKdKRgn2WQ78yikfbvurA8aRJEWP7bHd/xSTy1hdj2s3uKUEAA==",
+    "dominantColor": "#f8f8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-dress-full-320.webp",
+        "url": "/images/seed/product-dress-full-320.webp",
+        "bytes": 12734
+      },
+      {
+        "width": 640,
+        "height": 640,
+        "key": "seed/product-dress-full-640.webp",
+        "url": "/images/seed/product-dress-full-640.webp",
+        "bytes": 46132
+      },
+      {
+        "width": 1024,
+        "height": 1024,
+        "key": "seed/product-dress-full-1024.webp",
+        "url": "/images/seed/product-dress-full-1024.webp",
+        "bytes": 104872
+      }
+    ]
+  },
   "product-honey": {
     "url": "/images/seed/product-honey-1024.webp",
     "width": 1024,
@@ -59,6 +158,75 @@
       }
     ]
   },
+  "product-honey-jar": {
+    "url": "/images/seed/product-honey-jar-560.webp",
+    "width": 560,
+    "height": 560,
+    "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAQAgCdASoQABAAA4BaJbACdAEHKH1lUucQAP7wTAmos+q1vj6qH7DiJ1b19SiQ+8/eiVlliFQz3VsZruI0ekhI5mOUNQMeojuaEA/ISFUDEm30pfBR4AAA",
+    "dominantColor": "#f8e8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-honey-jar-320.webp",
+        "url": "/images/seed/product-honey-jar-320.webp",
+        "bytes": 13310
+      },
+      {
+        "width": 560,
+        "height": 560,
+        "key": "seed/product-honey-jar-560.webp",
+        "url": "/images/seed/product-honey-jar-560.webp",
+        "bytes": 31940
+      }
+    ]
+  },
+  "product-honey-dipper": {
+    "url": "/images/seed/product-honey-dipper-560.webp",
+    "width": 560,
+    "height": 560,
+    "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAwAgCdASoQABAAA4BaJaACdAD1e/6vrgDXAAD+68MuYo7HIwnfaHs3X3JG1yD0RMOqI7KclGYeOf+jW7w9CQ/bo4vI2R754U3HnmnUY9tVTsgtvCx80SDAAAA=",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-honey-dipper-320.webp",
+        "url": "/images/seed/product-honey-dipper-320.webp",
+        "bytes": 12104
+      },
+      {
+        "width": 560,
+        "height": 560,
+        "key": "seed/product-honey-dipper-560.webp",
+        "url": "/images/seed/product-honey-dipper-560.webp",
+        "bytes": 27446
+      }
+    ]
+  },
+  "product-honey-pot": {
+    "url": "/images/seed/product-honey-pot-524.webp",
+    "width": 524,
+    "height": 524,
+    "placeholder": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAwAgCdASoQABAAA4BaJZgCdAEPdrOeRBkSgAD+83UtWmjDd+Fhz+pGqGLZbLj2ZU4CueSgHgLNj93f1+RZN7k652RZBOcOVPQaP2KAAAA=",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-honey-pot-320.webp",
+        "url": "/images/seed/product-honey-pot-320.webp",
+        "bytes": 3964
+      },
+      {
+        "width": 524,
+        "height": 524,
+        "key": "seed/product-honey-pot-524.webp",
+        "url": "/images/seed/product-honey-pot-524.webp",
+        "bytes": 7614
+      }
+    ]
+  },
   "product-cosmetics": {
     "url": "/images/seed/product-cosmetics-1024.webp",
     "width": 1024,
@@ -86,6 +254,75 @@
         "key": "seed/product-cosmetics-1024.webp",
         "url": "/images/seed/product-cosmetics-1024.webp",
         "bytes": 37012
+      }
+    ]
+  },
+  "product-cosmetics-serum": {
+    "url": "/images/seed/product-cosmetics-serum-480.webp",
+    "width": 480,
+    "height": 640,
+    "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoQABUAPu1kqk4ppaQiMAgBMB2JbACdACHc/UV9nPLQlpcAAP7n2YcoS6e/SJCqUxo8jigexZoZP+zU847YAHTlrBYZbeY6qIPolkAik8M4Njba4+30dqzuSOOIid3QKQ3VAAAA",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 427,
+        "key": "seed/product-cosmetics-serum-320.webp",
+        "url": "/images/seed/product-cosmetics-serum-320.webp",
+        "bytes": 7656
+      },
+      {
+        "width": 480,
+        "height": 640,
+        "key": "seed/product-cosmetics-serum-480.webp",
+        "url": "/images/seed/product-cosmetics-serum-480.webp",
+        "bytes": 13180
+      }
+    ]
+  },
+  "product-cosmetics-cream": {
+    "url": "/images/seed/product-cosmetics-cream-520.webp",
+    "width": 520,
+    "height": 520,
+    "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQABAAA4BaJQBOgCIi+A/AdvAA/vOadmsmyGoxah3WDjyi7be1WqbrAGzRriiuOx8vs6DTMbADW5BhyujZoAAA",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-cosmetics-cream-320.webp",
+        "url": "/images/seed/product-cosmetics-cream-320.webp",
+        "bytes": 10558
+      },
+      {
+        "width": 520,
+        "height": 520,
+        "key": "seed/product-cosmetics-cream-520.webp",
+        "url": "/images/seed/product-cosmetics-cream-520.webp",
+        "bytes": 21770
+      }
+    ]
+  },
+  "product-cosmetics-flowers": {
+    "url": "/images/seed/product-cosmetics-flowers-364.webp",
+    "width": 364,
+    "height": 364,
+    "placeholder": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAgCdASoQABAAA4BaJQBOgCHghtHLR2SgAP7zfllHoMrruQ4+cbxAqYsRBN5jErx9opNFPdlhPteTy8AAAA==",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-cosmetics-flowers-320.webp",
+        "url": "/images/seed/product-cosmetics-flowers-320.webp",
+        "bytes": 14468
+      },
+      {
+        "width": 364,
+        "height": 364,
+        "key": "seed/product-cosmetics-flowers-364.webp",
+        "url": "/images/seed/product-cosmetics-flowers-364.webp",
+        "bytes": 18096
       }
     ]
   },
@@ -123,6 +360,75 @@
         "key": "seed/hero-1200.webp",
         "url": "/images/seed/hero-1200.webp",
         "bytes": 78158
+      }
+    ]
+  },
+  "product-scarf": {
+    "url": "/images/seed/product-scarf-600.webp",
+    "width": 600,
+    "height": 270,
+    "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAAcAA4BaJZgCdAELW91fnFAA/vLi33vIFUPEY9GjETnLhn7BiQTjVult3DJbcPpyDu2QAAA=",
+    "dominantColor": "#080808",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 144,
+        "key": "seed/product-scarf-320.webp",
+        "url": "/images/seed/product-scarf-320.webp",
+        "bytes": 9104
+      },
+      {
+        "width": 600,
+        "height": 270,
+        "key": "seed/product-scarf-600.webp",
+        "url": "/images/seed/product-scarf-600.webp",
+        "bytes": 22338
+      }
+    ]
+  },
+  "product-scarf-seller": {
+    "url": "/images/seed/product-scarf-seller-630.webp",
+    "width": 630,
+    "height": 630,
+    "placeholder": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoQABAAA4BaJbACdAEMNCgRbgAA/tKpuSkqPkx1iKtHlrtjfuOYkUzEQ7LhDd2bd3WdQnwJPjUUcl04vnv2ZeufRpe9Kj6mzXo/EY3gAAA=",
+    "dominantColor": "#080808",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-scarf-seller-320.webp",
+        "url": "/images/seed/product-scarf-seller-320.webp",
+        "bytes": 19318
+      },
+      {
+        "width": 630,
+        "height": 630,
+        "key": "seed/product-scarf-seller-630.webp",
+        "url": "/images/seed/product-scarf-seller-630.webp",
+        "bytes": 49642
+      }
+    ]
+  },
+  "product-scarf-shelf": {
+    "url": "/images/seed/product-scarf-shelf-400.webp",
+    "width": 400,
+    "height": 400,
+    "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADwAQCdASoQABAAA4BaJbACdAEXWKoaQwAA/vGZ3uPyguvEcEXWdJu7LaL+Xea5VN5rq0uN0l99fk/hp0KEChtgmutVaBgkkY1ssxY8Hy1qdKTUoDUais3hW48IUL47KnuLi7NkAAA=",
+    "dominantColor": "#080808",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-scarf-shelf-320.webp",
+        "url": "/images/seed/product-scarf-shelf-320.webp",
+        "bytes": 15488
+      },
+      {
+        "width": 400,
+        "height": 400,
+        "key": "seed/product-scarf-shelf-400.webp",
+        "url": "/images/seed/product-scarf-shelf-400.webp",
+        "bytes": 20752
       }
     ]
   }

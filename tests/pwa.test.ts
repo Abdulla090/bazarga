@@ -6,7 +6,7 @@ import { buildCsp } from "@/server/csp";
 describe("web app manifest", () => {
   const m = manifest();
   it("is Kurdish-first and on brand", () => {
-    expect(m.name).toBe("my market / فرۆشگاکەم");
+    expect(m.name).toBe("Bazarga / بازارگە");
     expect(m.dir).toBe("rtl");
     expect(m.lang).toBe("ku");
     expect(m.theme_color).toBe("#0F1B2D");
