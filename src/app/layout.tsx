@@ -5,6 +5,7 @@ import "./globals.css";
 import { fontVariables } from "./fonts";
 import { HTML_LANG, dirOf, isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
 import { BRAND } from "@/lib/theme";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("landing");
@@ -12,7 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: t("metaTitle"), template: "%s · my market" },
     description: t("metaDescription"),
     applicationName: "my market",
-    icons: { icon: "/icon.svg" },
+    icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
+    manifest: "/manifest.webmanifest",
+    appleWebApp: { capable: true, title: "فرۆشگاکەم", statusBarStyle: "default" },
   };
 }
 
@@ -22,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export const instant = false;
 
-export const viewport: Viewport = { themeColor: BRAND.ink, width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: BRAND.ink, width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Nonce-based CSP (src/proxy.ts) needs every page rendered per request: Next stamps the nonce from the
@@ -36,6 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="antialiased">
         {/* Client translations are provided per area (src/components/IntlProvider.tsx), not here: storefronts ship none. */}
         {children}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

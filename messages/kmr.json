@@ -10,7 +10,11 @@
     "language": "Ziman",
     "logout": "Derkeve"
   },
-  "nav": { "cta": "Dikana min ava bike", "login": "Têkeve", "dashboard": "Dikana min" },
+  "nav": {
+    "cta": "Dikana min ava bike",
+    "login": "Têkeve",
+    "dashboard": "Dikana min"
+  },
   "landing": {
     "heroEyebrow": "Ji bo firoşkarên Instagram û WhatsApp",
     "heroSub": "Wêne û bihayan bi zimanê xwe bişîne. Dikana te dikeve ser înternetê.",
@@ -28,5 +32,20 @@
     "orderReceived": "Daxwaza te gihîşt!",
     "messageSeller": "Li ser WhatsApp ji firoşkar re binivîse",
     "backToStore": "Vegere dikanê"
+  },
+  "pwa": {
+    "installTitle": "my market saz bike",
+    "installSub": "Panela xwe ji ekrana sereke veke, wek sepanekê.",
+    "installCta": "Saz bike",
+    "installDismiss": "Paşê",
+    "iosHint": "Di Safari de li Parve bike ⬆︎ bitikîne, paşê “Add to Home Screen”.",
+    "pushTitle": "Hişyariyên fermanên nû",
+    "pushSub": "Dema fermanek bê, li ser vê cîhazê agahdar bibe.",
+    "pushOn": "Veke",
+    "pushOff": "Bigire",
+    "pushEnabled": "Hişyarî li ser vê cîhazê vekirî ne.",
+    "pushDenied": "Agahdarî hatine astengkirin. Di mîhengên gerokê de destûrê bide.",
+    "pushUnsupported": "Ev gerok agahdariyan piştgirî nake. Li iPhone pêşî sepanê saz bike.",
+    "pushError": "Xeletiyek çêbû, dîsa biceribîne."
   }
 }
