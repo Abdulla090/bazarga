@@ -10,7 +10,7 @@ Cash on Delivery (plus FIB / ZainCash when connected), WhatsApp order hand-off, 
 |---|---|
 | Stack | Next.js 16 (App Router, Turbopack) · React 19 · TypeScript (strict) · PostgreSQL + Drizzle ORM · Zod 4 · Tailwind CSS 4 · next-intl 4 |
 | Locales | `ku` Sorani (default, RTL) · `ar` Arabic (RTL) · `en` English (LTR) · `kmr` Kurmanji (Latin, scaffolded) |
-| Tests | Vitest (63 unit/integration tests on a real embedded Postgres) + an HTTP smoke test of the production build |
+| Tests | Vitest (259 unit/integration tests on a real embedded Postgres) + an HTTP smoke test of the production build + Playwright mobile checks |
 | Deploy | Docker / docker-compose (app + Postgres) on a VPS, or Vercel + Neon/Supabase + Cloudflare R2 |
 
 ---
@@ -237,10 +237,10 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
 | Stores, onboarding, settings (logo, tagline, WhatsApp, Instagram, city, language) | ✅ |
 | Subdomain storefronts `{slug}.ROOT_DOMAIN` | ✅ in proxy (needs wildcard DNS/TLS) |
 | Custom domains | 🟡 `stores.custom_domain` column + TODO in `src/proxy.ts` |
-| Products CRUD (4-language name/description, IQD price, compare-at, stock, category, images, active) | ✅ |
+| Products CRUD (4-language name/description, IQD price, compare-at, stock, SKU, details table, category, images, active) | ✅ |
 | Categories, delivery zones (9 seeded Iraqi cities, editable/addable), payment toggles | ✅ |
 | Orders list/detail, status flow + history, customers list, stats (orders today, 7-day revenue, open) | ✅ |
-| Storefront grid, product page, cart (server-priced), checkout, confirmation, WhatsApp deep link | ✅ |
+| Storefront grid, product page (swipe gallery + fullscreen zoom viewer, % off, stock, quantity, trust row, details table, related products, Product JSON-LD), cart (server-priced), checkout, confirmation, WhatsApp deep link | ✅ |
 | Transactional stock decrement + restock on cancel | ✅ |
 | Cash on Delivery | ✅ |
 | FIB | 🟢 implemented from public docs (OAuth2 client credentials, create payment → QR/app links, status, cancel, callback re-verification). Needs sandbox credentials to validate end-to-end. `redirectUri` is marked TODO(verify). |
@@ -258,7 +258,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md) for what comes next.
 ## 7. Testing
 
 ```bash
-npm test                         # 63 tests, ~10 s
+npm test                         # 259 tests, ~40 s
 npm run build && npm run db:setup && (npm start &) && BASE_URL=http://localhost:3000 npm run test:smoke
 ```
 
