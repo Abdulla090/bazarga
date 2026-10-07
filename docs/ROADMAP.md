@@ -43,9 +43,31 @@
   horizontal overflow, tap targets ≥44 px, inputs ≥16 px, logical properties, safe-area insets.
   `npm run test:mobile` (Playwright) and `npm run shots:mobile` (screenshots + report).
 
+**Bazarga (v4)**
+- Renamed to **Bazarga** (Latin wordmark "BAZARGA", Kurdish/Arabic بازارگە) across every locale, metadata,
+  PWA manifest + regenerated icons, offline page, service worker, reset email, sender display name, storefront
+  "Made with" footer, README. Domains, cookie names, DB names and migrations unchanged.
+- Product page `/s/[slug]/p/[productId]` (mobile-first, `st-*` tokens): swipe gallery with "2/5" counter, dots,
+  thumbnail strip, lazy fullscreen viewer (`<dialog>`, swipe, pinch / double-tap / button zoom with native pan);
+  price with compare-at strike + "% off" badge, stock status (in stock / only N left / sold out), SKU (product
+  or selected variant), quantity stepper; trust row (cash on delivery, delivery fee + ETA to the home city,
+  returns, WhatsApp); collapsible Description (paragraphs + line breaks as text), Details (specs table),
+  Delivery & returns; "More from this store" (same category first, ≤8, from the cached catalog); Product
+  JSON-LD (Offer/AggregateOffer in IQD, availability, nonced) and og/twitter image.
+- `products.specs` (jsonb `{label, value}` LocalizedText rows, ≤20) + `products.sku` and
+  `stores.cover_image_renditions` (migration `0002_product_specs_cover_renditions`); specs editor in the product
+  form (add/remove rows per language tab), zod validation, tests. Cover uploads keep their renditions → store-home
+  cover `srcset` (closes the "cover renditions" item below).
+- Demo seed: 4 products with 3–5 photos each (detail crops derived from the demo photos with sharp, run through
+  the upload pipeline), specs everywhere, honey on sale (30,000 → 25,000), the variant dress, cover with
+  renditions, Erbil areas (Shawes, Ankawa, Bakhtiyari, 100m Street, Iskan) and Sulaymaniyah areas, WELCOME10
+  (10 %, min 30,000 IQD, 100 uses) next to NEWROZ. Smoke + Playwright product-page checks added.
+
 **Still open from this batch**
-- Cover photo is stored as one URL (no renditions), so the store-home LCP image has no `srcset`; keep the
-  upload pipeline's renditions for covers (biggest remaining Lighthouse item, LCP 3.8 s simulated).
+- ~~Cover renditions~~ shipped in v4 (re-run Lighthouse on the store home to confirm the LCP gain).
+- Product page: the trust row's delivery line uses the store's home city; remember the shopper's last checkout
+  city (cookie) to show their own fee. Specs labels could offer presets (Material, Size, Weight, Origin).
+- Lightbox pinch zoom is verified in desktop Chromium with touch emulation only; check on real iOS Safari / Android.
 - Product-grid thumbnails: add a ~480 w rendition (Lighthouse estimates ~96 KB savings on store home).
 - Run `npm run test:mobile` in CI (needs a seeded build + Chromium in the CI image).
 - Dashboard UI for managing discount codes and delivery areas.
