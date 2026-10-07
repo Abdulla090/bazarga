@@ -88,7 +88,7 @@ describe("storefront cache: tags", () => {
     const src = readFileSync("src/server/actions/dashboard.ts", "utf8");
     const bodies = src.split(/\nexport async function /).slice(1);
     const storefrontWrites =
-      /\b(createStore|updateStore|updateStoreTheme|updateStoreCover|setFreeDeliveryThreshold|createProduct|updateProduct|setProductActive|deleteProduct|createCategory|updateCategory|deleteCategory|updateZoneFee|upsertZone|deleteZone|setPaymentMethod|updateZoneEta)\(/;
+      /\b(createStore|updateStore|updateStoreTheme|updateStoreCover|setFreeDeliveryThreshold|createProduct|updateProduct|setProductActive|deleteProduct|createCategory|updateCategory|deleteCategory|updateZoneFee|upsertZone|deleteZone|setPaymentMethod|updateZoneEta|addArea|updateArea|deleteArea|createDiscountCode|updateDiscountCode|setDiscountCodeActive)\(/;
     const offenders = bodies
       .filter((b) => storefrontWrites.test(b) && !/invalidate(Store|Catalog|Stock)\(/.test(b))
       .map((b) => b.slice(0, b.indexOf("(")));

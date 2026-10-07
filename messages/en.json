@@ -141,7 +141,8 @@
     "noOrders": "No orders yet. Share your link to get the first one.",
     "shareTitle": "Your store link",
     "shareSub": "Put it in your Instagram bio and WhatsApp status.",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "discounts": "Discounts"
   },
   "products": {
     "title": "Products",
@@ -192,7 +193,14 @@
     "active": "Delivering",
     "add": "Add a city",
     "cityKey": "City code (Latin)",
-    "free": "Free"
+    "free": "Free",
+    "areas": "Areas",
+    "areasHint": "Neighbourhoods or towns shoppers can pick. Leave the fee empty to use the city fee.",
+    "areaName": "Area name",
+    "areaFee": "Fee override (IQD)",
+    "addArea": "Add area",
+    "noAreas": "No areas yet — shoppers just type theirs.",
+    "cityFee": "City fee"
   },
   "payments": {
     "title": "Payment methods",
@@ -454,7 +462,12 @@
     "spec_label_required": "Every row needs a label.",
     "spec_value_required": "Every row needs a value.",
     "too_many_specs": "Up to 20 rows.",
-    "invalid_sku": "Letters, numbers, - _ . / only."
+    "invalid_sku": "Letters, numbers, - _ . / only.",
+    "discount_code_taken": "You already have a code with that name.",
+    "invalid_discount_code": "Use 3–32 Latin letters, numbers, - or _.",
+    "invalid_percent": "Percent must be between 1 and 90.",
+    "invalid_date": "That date isn’t valid.",
+    "invalid_date_range": "The end date must be on or after the start date."
   },
   "pwa": {
     "installTitle": "Install Bazarga",
@@ -470,5 +483,33 @@
     "pushDenied": "Notifications are blocked. Allow them in your browser settings.",
     "pushUnsupported": "This browser doesn't support notifications. On iPhone, install the app first.",
     "pushError": "Something went wrong, please try again."
+  },
+  "discounts": {
+    "title": "Discount codes",
+    "sub": "Codes shoppers type at checkout.",
+    "new": "New code",
+    "edit": "Edit code",
+    "code": "Code",
+    "type": "Type",
+    "percentage": "Percent off",
+    "fixed": "Fixed amount (IQD)",
+    "value": "Value",
+    "valuePercent": "Percent (1–90)",
+    "valueFixed": "Amount (IQD)",
+    "minSubtotal": "Minimum order (IQD)",
+    "maxUses": "Use limit",
+    "startsOn": "Starts",
+    "endsOn": "Ends",
+    "active": "Active",
+    "inactive": "Off",
+    "uses": "Uses",
+    "unlimited": "no limit",
+    "noDates": "Any time",
+    "none": "No discount codes yet. Create one to share on Instagram.",
+    "minOrder": "Min. {amount}",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "codeHint": "3–32 Latin letters, numbers, - or _",
+    "status": "Status"
   }
 }

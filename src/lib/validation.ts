@@ -328,3 +328,80 @@ export const storeStorefrontSchema = z.object({
 export type StoreStorefrontInput = Omit<z.infer<typeof storeStorefrontSchema>, "coverImageRenditions"> & {
   coverImageRenditions?: z.infer<typeof storeStorefrontSchema>["coverImageRenditions"];
 };
+
+// ---------------------------------------------------------------- dashboard: discount codes
+/** Dashboard-created code types (free-delivery codes stay possible in the schema but aren't offered in the UI yet). */
+export const DASH_DISCOUNT_TYPES = ["percentage", "fixed"] as const;
+export const MAX_DISCOUNT_PERCENT = 90;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+/** Iraq has no DST: a seller's calendar day is always UTC+3. */
+const IRAQ_OFFSET = "+03:00";
+
+/** "2026-10-08" → that day's 00:00 in Iraq. */
+export function iraqDayStart(day: string): Date {
+  return new Date(`${day}T00:00:00${IRAQ_OFFSET}`);
+}
+/** "2026-10-08" → the *end* of that day (exclusive: next day's 00:00 in Iraq), so an end date includes the whole day. */
+export function iraqDayEndExclusive(day: string): Date {
+  return new Date(iraqDayStart(day).getTime() + 86_400_000);
+}
+/** Inverse for form defaults: a stored instant → "YYYY-MM-DD" in Iraq. `exclusiveEnd` steps back into the last included day. */
+export function toIraqDay(d: Date | null | undefined, exclusiveEnd = false): string {
+  if (!d) return "";
+  const t = d.getTime() - (exclusiveEnd ? 1 : 0) + 3 * 3_600_000;
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+const optionalDay = z.preprocess(
+  (v) => (v === "" || v === undefined ? null : v),
+  z
+    .string()
+    .regex(DATE_RE, { message: "invalid_date", abort: true })
+    // Rejects impossible days like 2026-02-31 (Date would roll them over).
+    .refine((s) => {
+      const d = iraqDayStart(s);
+      return !Number.isNaN(d.getTime()) && toIraqDay(d) === s;
+    }, { message: "invalid_date" })
+    .nullable(),
+);
+const optionalPositiveInt = z.preprocess(
+  (v) => (v === "" || v === undefined ? null : parseIqdInput(v)),
+  z.number({ message: "VALIDATION" }).int().positive().max(1_000_000_000).nullable(),
+);
+
+export const discountCodeSchema = z
+  .object({
+    code: z
+      .string()
+      .transform((v) => v.trim().toUpperCase().replace(/\s+/g, ""))
+      .pipe(z.string().regex(/^[A-Z0-9_-]{3,32}$/, { message: "invalid_discount_code" })),
+    type: z.enum(DASH_DISCOUNT_TYPES),
+    value: z.preprocess(parseIqdInput, z.number({ message: "VALIDATION" }).int().positive().max(1_000_000_000)),
+    minSubtotal: z.preprocess((v) => parseIqdInput(v) ?? 0, z.number({ message: "VALIDATION" }).int().min(0).max(1_000_000_000)),
+    maxUses: optionalPositiveInt,
+    startsOn: optionalDay,
+    endsOn: optionalDay,
+    isActive: z.coerce.boolean().default(true),
+  })
+  .superRefine((v, ctx) => {
+    if (v.type === "percentage" && (v.value < 1 || v.value > MAX_DISCOUNT_PERCENT))
+      ctx.addIssue({ code: "custom", path: ["value"], message: "invalid_percent" });
+    if (v.startsOn && v.endsOn && v.endsOn < v.startsOn) ctx.addIssue({ code: "custom", path: ["endsOn"], message: "invalid_date_range" });
+  })
+  .transform(({ startsOn, endsOn, ...rest }) => ({
+    ...rest,
+    startsAt: startsOn ? iraqDayStart(startsOn) : null,
+    endsAt: endsOn ? iraqDayEndExclusive(endsOn) : null,
+  }));
+export type DiscountCodeInput = z.infer<typeof discountCodeSchema>;
+
+// ---------------------------------------------------------------- dashboard: delivery areas
+export const deliveryAreaSchema = z.object({
+  name: requiredLocalizedName,
+  /** Empty = use the city's fee. */
+  fee: z.preprocess(
+    (v) => (v === "" || v === undefined ? null : parseIqdInput(v)),
+    z.number({ message: "VALIDATION" }).int().min(0).max(1_000_000).nullable(),
+  ),
+});
+export type DeliveryAreaInput = z.infer<typeof deliveryAreaSchema>;
