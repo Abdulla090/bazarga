@@ -18,7 +18,8 @@ const schema = z.object({
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
 
   // Storage
-  STORAGE_DRIVER: z.enum(["local", "s3"]).default("local"),
+  /** Unset → R2/S3 when S3_BUCKET + keys + S3_PUBLIC_URL are all present, else local disk. */
+  STORAGE_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["local", "s3"]).optional()),
   UPLOAD_DIR: z.string().default("./uploads"),
   S3_ENDPOINT: z.string().optional(),
   S3_REGION: z.string().default("auto"),
@@ -26,6 +27,8 @@ const schema = z.object({
   S3_ACCESS_KEY_ID: z.string().optional(),
   S3_SECRET_ACCESS_KEY: z.string().optional(),
   S3_PUBLIC_URL: z.string().optional(),
+  /** Cloudflare account id — derives S3_ENDPOINT=https://<id>.r2.cloudflarestorage.com when S3_ENDPOINT is unset. */
+  R2_ACCOUNT_ID: z.string().optional(),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(5),
 
   // Email

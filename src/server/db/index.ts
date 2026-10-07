@@ -6,6 +6,8 @@ import { PGlite } from "@electric-sql/pglite";
 import { Pool } from "pg";
 import * as schema from "./schema";
 import { env } from "../env";
+import { logger } from "../logger";
+import { pgPoolConfig } from "./pg-config";
 
 export { schema };
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
@@ -29,11 +31,9 @@ export function createDb(url: string): Db {
     const client = target === "memory" || target === "" ? new PGlite() : new PGlite(target);
     return drizzlePglite(client, { schema }) as unknown as Db;
   }
-  const pool = new Pool({
-    connectionString: url,
-    max: Number(process.env.DATABASE_POOL_MAX ?? 10),
-    ssl: url.includes("sslmode=require") ? { rejectUnauthorized: false } : undefined,
-  });
+  const pool = new Pool(pgPoolConfig(url));
+  // A dropped idle connection (Neon scale-to-zero, PgBouncer restarts) must not crash the process.
+  pool.on("error", (err) => logger.error("pg pool error", { err }));
   return drizzlePg(pool, { schema }) as unknown as Db;
 }
 
