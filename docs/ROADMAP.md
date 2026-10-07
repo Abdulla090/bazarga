@@ -28,6 +28,8 @@
 - Iraqi mobile normalisation to `+9647XXXXXXXXX` (07xx, 7xx, +964, 00964, Eastern Arabic / Kurdish digits) with
   operator validation (75 Korek, 77 Asiacell, 78/79 Zain) and an as-you-type input mask.
 - Order confirmation, seller dashboard and seller notification show area, landmark and discount.
+- Fixed: `/s/[slug]/cart` and the order confirmation page crashed at runtime (label-key arrays were exported
+  from "use client" modules, so server pages got client references); keys now live in `components/store/cart-labels.ts`.
 
 **Still open from this batch**
 - Dashboard UI for managing discount codes and delivery areas.
