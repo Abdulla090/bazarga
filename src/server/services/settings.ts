@@ -4,6 +4,7 @@ import { deliveryZones, storePaymentMethods } from "../db/schema";
 import { AppError } from "../errors";
 import type { LocalizedText } from "@/lib/i18n";
 import { PAYMENT_METHODS, type PaymentMethod } from "@/lib/order-status";
+import { governorateForCityKey } from "@/lib/governorates";
 
 // ---------------------------------------------------------------- delivery zones
 export async function listZones(database: Db, storeId: string, opts: { activeOnly?: boolean } = {}) {
@@ -22,7 +23,7 @@ export async function upsertZone(
 ) {
   const [z] = await database
     .insert(deliveryZones)
-    .values({ storeId, ...input, sort: 100 })
+    .values({ storeId, ...input, governorateKey: governorateForCityKey(input.cityKey), sort: 100 })
     .onConflictDoUpdate({
       target: [deliveryZones.storeId, deliveryZones.cityKey],
       set: { name: input.name, fee: input.fee, isActive: input.isActive },

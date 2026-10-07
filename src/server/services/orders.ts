@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { and, asc, desc, eq, gte, inArray, isNotNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, notInArray, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import {
   customers,
@@ -15,7 +15,15 @@ import {
 import { AppError } from "../errors";
 import { computeTotals } from "@/lib/totals";
 import { pickText, type Locale } from "@/lib/i18n";
-import { canTransition, type OrderStatus, type PaymentMethod } from "@/lib/order-status";
+import {
+  LOST_ORDER_STATUSES,
+  OPEN_ORDER_STATUSES,
+  RESTOCK_ON,
+  canTransition,
+  type OrderStatus,
+  type PaymentMethod,
+} from "@/lib/order-status";
+import { governorateForCityKey } from "@/lib/governorates";
 import type { CheckoutInput } from "@/lib/validation";
 import type { Store } from "./stores";
 
@@ -218,6 +226,7 @@ export async function placeOrder(
         customerPhone: input.phone,
         cityKey: zone.cityKey,
         cityName: pickText(zone.name, input.locale),
+        governorateKey: zone.governorateKey ?? governorateForCityKey(zone.cityKey),
         address: input.address,
         notes: input.notes,
         subtotal: totals.subtotal,
@@ -244,7 +253,7 @@ export async function placeOrder(
       )
       .returning();
 
-    await tx.insert(orderEvents).values({ orderId: order.id, fromStatus: null, toStatus: "new" });
+    await tx.insert(orderEvents).values({ orderId: order.id, fromStatus: null, toStatus: "pending" });
     return { ...order, items: insertedItems };
   });
 }
@@ -283,8 +292,10 @@ export async function getOrderByPublicId(database: Db, storeId: string, publicId
 }
 
 /**
- * Move an order along new → confirmed → out_for_delivery → delivered (or cancel).
- * Cancelling restocks tracked items; delivering a COD order marks it paid.
+ * Move an order along its COD lifecycle (src/lib/order-status.ts).
+ * - cancelled / returned restock tracked items (refused doesn't: the parcel is still with the courier);
+ * - delivering a COD order marks it paid; returning a paid COD order marks it refunded;
+ * - courier name / tracking number, when given, are saved on the order and snapshotted in the history row.
  */
 export async function updateOrderStatus(
   database: Db,
@@ -293,6 +304,7 @@ export async function updateOrderStatus(
   to: OrderStatus,
   actorUserId: string | null,
   note?: string,
+  shipping?: { courierName?: string | null; trackingNumber?: string | null },
 ): Promise<Order> {
   return database.transaction(async (tx) => {
     const order = await tx.query.orders.findFirst({ where: and(eq(orders.id, orderId), eq(orders.storeId, storeId)) });
@@ -301,6 +313,9 @@ export async function updateOrderStatus(
 
     const patch: Partial<typeof orders.$inferInsert> = { status: to, updatedAt: new Date() };
     if (to === "delivered" && order.paymentMethod === "cod") patch.paymentStatus = "paid";
+    if (to === "returned" && order.paymentMethod === "cod" && order.paymentStatus === "paid") patch.paymentStatus = "refunded";
+    if (shipping?.courierName !== undefined) patch.courierName = shipping.courierName?.trim() || null;
+    if (shipping?.trackingNumber !== undefined) patch.trackingNumber = shipping.trackingNumber?.trim() || null;
 
     // Optimistic concurrency: only update if status is still what we read.
     const [updated] = await tx
@@ -310,7 +325,7 @@ export async function updateOrderStatus(
       .returning();
     if (!updated) throw new AppError("CONFLICT", "order_changed");
 
-    if (to === "cancelled") {
+    if (RESTOCK_ON.includes(to)) {
       const items = await tx.query.orderItems.findMany({ where: eq(orderItems.orderId, orderId) });
       for (const it of items) {
         if (!it.productId) continue;
@@ -320,7 +335,15 @@ export async function updateOrderStatus(
           .where(and(eq(products.id, it.productId), eq(products.storeId, storeId), isNotNull(products.stock)));
       }
     }
-    await tx.insert(orderEvents).values({ orderId, fromStatus: order.status, toStatus: to, actorUserId, note: note ?? null });
+    await tx.insert(orderEvents).values({
+      orderId,
+      fromStatus: order.status,
+      toStatus: to,
+      actorUserId,
+      note: note ?? null,
+      courierName: updated.courierName,
+      trackingNumber: updated.trackingNumber,
+    });
     return updated;
   });
 }
@@ -350,10 +373,10 @@ export async function storeStats(database: Db, storeId: string, now = new Date()
     .select({
       ordersToday: sql<number>`count(*) filter (where ${orders.createdAt} >= ${today.toISOString()}::timestamptz)`,
       revenueWeek: sql<number>`coalesce(sum(${orders.total}) filter (where ${orders.createdAt} >= ${weekAgo.toISOString()}::timestamptz), 0)`,
-      openOrders: sql<number>`count(*) filter (where ${orders.status} in ('new','confirmed','out_for_delivery'))`,
+      openOrders: sql<number>`count(*) filter (where ${inArray(orders.status, [...OPEN_ORDER_STATUSES])})`,
     })
     .from(orders)
-    .where(and(eq(orders.storeId, storeId), ne(orders.status, "cancelled")));
+    .where(and(eq(orders.storeId, storeId), notInArray(orders.status, [...LOST_ORDER_STATUSES])));
   return {
     ordersToday: Number(row?.ordersToday ?? 0),
     revenueWeek: Number(row?.revenueWeek ?? 0),

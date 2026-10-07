@@ -170,7 +170,7 @@ describe("checkout: stock", () => {
 });
 
 describe("order status flow", () => {
-  it("follows new → confirmed → out_for_delivery → delivered and marks COD paid", async () => {
+  it("follows pending → confirmed → shipped → delivered and marks COD paid", async () => {
     const { store, user } = await seller(database, "flow");
     const p = await product(database, store.id, 2_000);
     const o = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }]));
@@ -178,12 +178,54 @@ describe("order status flow", () => {
       message: "invalid_transition",
     });
     await updateOrderStatus(database, store.id, o.id, "confirmed", user.id);
-    await updateOrderStatus(database, store.id, o.id, "out_for_delivery", user.id);
+    await updateOrderStatus(database, store.id, o.id, "shipped", user.id);
     const done = await updateOrderStatus(database, store.id, o.id, "delivered", user.id);
     expect(done.paymentStatus).toBe("paid");
     await expect(updateOrderStatus(database, store.id, o.id, "cancelled", user.id)).rejects.toBeInstanceOf(AppError);
     const events = await database.query.orderEvents.findMany({ where: eq(orderEvents.orderId, o.id) });
-    expect(events.map((e) => e.toStatus)).toEqual(["new", "confirmed", "out_for_delivery", "delivered"]);
+    expect(events.map((e) => e.toStatus)).toEqual(["pending", "confirmed", "shipped", "delivered"]);
+  });
+});
+
+describe("COD status expansion", () => {
+  it("refused at the door does not restock; returned does; history snapshots courier + tracking", async () => {
+    const { store, user } = await seller(database, "refuse");
+    const p = await product(database, store.id, 4_000, 5);
+    const o = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 2 }]));
+    expect(o.status).toBe("pending");
+    expect(o.governorateKey).toBe("erbil");
+    expect(await stockOf(p.id)).toBe(3);
+    await updateOrderStatus(database, store.id, o.id, "confirmed", user.id);
+    const shipped = await updateOrderStatus(database, store.id, o.id, "shipped", user.id, undefined, {
+      courierName: " Al-Waseet ",
+      trackingNumber: "WS-123456",
+    });
+    expect(shipped).toMatchObject({ courierName: "Al-Waseet", trackingNumber: "WS-123456" });
+    await updateOrderStatus(database, store.id, o.id, "refused", user.id, "customer not home, refused on call");
+    expect(await stockOf(p.id)).toBe(3);
+    await updateOrderStatus(database, store.id, o.id, "returned", user.id);
+    expect(await stockOf(p.id)).toBe(5);
+    const events = await database.query.orderEvents.findMany({ where: eq(orderEvents.orderId, o.id) });
+    expect(events.map((e) => e.toStatus)).toEqual(["pending", "confirmed", "shipped", "refused", "returned"]);
+    expect(events.find((e) => e.toStatus === "shipped")).toMatchObject({ courierName: "Al-Waseet", trackingNumber: "WS-123456" });
+    await expect(updateOrderStatus(database, store.id, o.id, "shipped", user.id)).rejects.toMatchObject({
+      message: "invalid_transition",
+    });
+  });
+
+  it("postponed can be re-shipped; delivered-then-returned COD is refunded and excluded from revenue", async () => {
+    const { store, user } = await seller(database, "postpone");
+    const p = await product(database, store.id, 10_000, null);
+    const o = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }]));
+    for (const s of ["confirmed", "shipped", "postponed", "shipped", "delivered"] as const) {
+      await updateOrderStatus(database, store.id, o.id, s, user.id);
+    }
+    expect((await storeStats(database, store.id)).revenueWeek).toBe(13_000);
+    const r = await updateOrderStatus(database, store.id, o.id, "returned", user.id);
+    expect(r.paymentStatus).toBe("refunded");
+    const s = await storeStats(database, store.id);
+    expect(s.revenueWeek).toBe(0);
+    expect(s.openOrders).toBe(0);
   });
 });
 

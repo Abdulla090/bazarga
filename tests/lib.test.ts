@@ -104,8 +104,8 @@ describe("validation", () => {
     expect(checkoutSchema.safeParse({ items: [], customerName: "x" }).success).toBe(false);
   });
   it("order transitions", () => {
-    expect(canTransition("new", "confirmed")).toBe(true);
-    expect(canTransition("new", "delivered")).toBe(false);
+    expect(canTransition("pending", "confirmed")).toBe(true);
+    expect(canTransition("pending", "delivered")).toBe(false);
     expect(canTransition("delivered", "cancelled")).toBe(false);
   });
 });

@@ -1,10 +1,20 @@
 /*
  * Demo data: seller demo@mymarket.app / mymarket-demo  →  store "Hawler Bazaar" (/s/hawler-bazaar)
- * with three products. Idempotent: re-running does nothing if the store exists.
+ * with three products, a size-variant dress, the "bazaar" theme, Erbil delivery areas, a NEWROZ discount code and
+ * free delivery over 75,000 IQD. Idempotent: re-running does nothing if the store exists.
  */
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { createDb } from "../src/server/db";
-import { stores, users } from "../src/server/db/schema";
+import {
+  deliveryAreas,
+  deliveryZones,
+  discountCodes,
+  productOptionValues,
+  productOptions,
+  productVariants,
+  stores,
+  users,
+} from "../src/server/db/schema";
 import { signUp } from "../src/server/auth/service";
 import { createStore } from "../src/server/services/stores";
 import { createCategory, createProduct } from "../src/server/services/catalog";
@@ -40,7 +50,7 @@ async function main() {
   const beauty = await createCategory(db, store.id, { name: { ku: "جوانکاری", ar: "مستحضرات", en: "Beauty" }, sort: 2 });
 
   const base = { compareAtPrice: null, isActive: true } as const;
-  await createProduct(db, store.id, {
+  const dress = await createProduct(db, store.id, {
     ...base,
     name: { ku: "کراسی کوردی", ar: "فستان كردي", en: "Kurdish dress", kmr: "Kirasê kurdî" },
     description: {
@@ -79,6 +89,62 @@ async function main() {
     categoryId: beauty.id,
     imageUrls: ["/images/product-cosmetics.jpg"],
   });
+
+  // ---- theme + policies + promotions
+  await db
+    .update(stores)
+    .set({
+      themePreset: "bazaar",
+      accentColor: null,
+      about: {
+        ku: "دوکانێکی بچووکی هەولێر: جلی کوردیی دەستدروست، هەنگوینی چیا و بەرهەمی پێستی سروشتی.",
+        ar: "متجر صغير في أربيل: ملابس كردية مصنوعة يدوياً، عسل جبلي ومنتجات طبيعية للبشرة.",
+        en: "A small Erbil shop: hand-finished Kurdish clothing, mountain honey and natural skincare.",
+      },
+      returnPolicy: {
+        ku: "دەتوانیت لە ماوەی ٣ ڕۆژدا کاڵاکە بگەڕێنیتەوە ئەگەر بەکارنەهاتبێت.",
+        ar: "يمكنك إرجاع المنتج غير المستخدم خلال 3 أيام.",
+        en: "Unused items can be returned within 3 days of delivery.",
+      },
+      freeDeliveryThreshold: 75_000,
+    })
+    .where(eq(stores.id, store.id));
+  await db.insert(discountCodes).values({ storeId: store.id, code: "NEWROZ", type: "percentage", value: 10, minSubtotal: 30_000 });
+
+  // ---- delivery: same-day in Erbil with a few neighbourhoods, 2–4 days elsewhere
+  const erbil = await db.query.deliveryZones.findFirst({
+    where: and(eq(deliveryZones.storeId, store.id), eq(deliveryZones.cityKey, "erbil")),
+  });
+  await db.update(deliveryZones).set({ etaMinDays: 2, etaMaxDays: 4 }).where(eq(deliveryZones.storeId, store.id));
+  if (erbil) {
+    await db.update(deliveryZones).set({ etaMinDays: 0, etaMaxDays: 1 }).where(eq(deliveryZones.id, erbil.id));
+    await db.insert(deliveryAreas).values([
+      { storeId: store.id, zoneId: erbil.id, name: { ku: "عەنکاوە", ar: "عنكاوا", en: "Ankawa" }, fee: 3000, sort: 0 },
+      { storeId: store.id, zoneId: erbil.id, name: { ku: "شاوێس", ar: "شاويس", en: "Shawes" }, fee: 2000, sort: 1 },
+      { storeId: store.id, zoneId: erbil.id, name: { ku: "بەختیاری", ar: "بختياري", en: "Bakhtiari" }, fee: null, sort: 2 },
+    ]);
+  }
+
+  // ---- variants: the dress comes in S / M / L
+  const [size] = await db
+    .insert(productOptions)
+    .values({ productId: dress.id, storeId: store.id, name: { ku: "قەبارە", ar: "المقاس", en: "Size", kmr: "Mezinahî" } })
+    .returning();
+  const values = await db
+    .insert(productOptionValues)
+    .values(["S", "M", "L"].map((v, i) => ({ optionId: size!.id, productId: dress.id, storeId: store.id, label: { en: v }, sort: i })))
+    .returning();
+  await db.insert(productVariants).values(
+    values.map((v, i) => ({
+      productId: dress.id,
+      storeId: store.id,
+      optionValueIds: [v.id],
+      sku: `HB-DRESS-${v.label.en}`,
+      stock: [3, 6, 3][i]!,
+      price: i === 2 ? 90_000 : null,
+      sort: i,
+    })),
+  );
 
   console.log(`[seed] created Hawler Bazaar → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
   process.exit(0);

@@ -2,10 +2,13 @@ import { getTranslations } from "next-intl/server";
 import type { OrderStatus } from "@/lib/order-status";
 
 const STATUS_STYLE: Record<OrderStatus, string> = {
-  new: "bg-gold/25 text-ink",
+  pending: "bg-gold/25 text-ink",
   confirmed: "bg-ink/10 text-ink",
-  out_for_delivery: "bg-blue-100 text-blue-900",
+  shipped: "bg-blue-100 text-blue-900",
   delivered: "bg-green/15 text-green",
+  postponed: "bg-orange-100 text-orange-900",
+  refused: "bg-danger/10 text-danger",
+  returned: "bg-ink/10 text-ink-70",
   cancelled: "bg-danger/10 text-danger",
 };
 const PAY_STYLE: Record<string, string> = {

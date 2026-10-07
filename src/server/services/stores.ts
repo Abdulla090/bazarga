@@ -50,7 +50,14 @@ export async function createStore(database: Db, ownerId: string, input: StoreInp
       .returning();
     if (!store) throw new AppError("CONFLICT", "slug_taken");
     await tx.insert(deliveryZones).values(
-      IRAQI_CITIES.map((c, i) => ({ storeId: store.id, cityKey: c.key, name: c.name, fee: c.fee, sort: i })),
+      IRAQI_CITIES.map((c, i) => ({
+        storeId: store.id,
+        cityKey: c.key,
+        governorateKey: c.governorateKey,
+        name: c.name,
+        fee: c.fee,
+        sort: i,
+      })),
     );
     await tx
       .insert(storePaymentMethods)

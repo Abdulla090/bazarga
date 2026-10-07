@@ -95,7 +95,7 @@ describe("tenant isolation: orders & customers", () => {
     await expect(updateOrderStatus(database, B.store.id, aOrderId, "cancelled", B.user.id)).rejects.toMatchObject({
       code: "NOT_FOUND",
     });
-    expect((await getOrder(database, A.store.id, aOrderId))?.status).toBe("new");
+    expect((await getOrder(database, A.store.id, aOrderId))?.status).toBe("pending");
   });
 
   it("the public order page requires the matching store", async () => {
