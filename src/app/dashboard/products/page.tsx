@@ -16,7 +16,7 @@ export default async function ProductsPage() {
   const locale = await currentLocale();
   const products = await listProducts(db(), store.id);
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="me-auto text-2xl font-extrabold">{t("title")}</h1>
         <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
@@ -25,9 +25,9 @@ export default async function ProductsPage() {
       {products.length === 0 ? (
         <p className="card text-ink-70">{t("empty")}</p>
       ) : (
-        <ul className="grid gap-2">
+        <ul className="grid grid-cols-1 gap-2">
           {products.map((p) => (
-            <li key={p.id} className="card flex items-center gap-3 p-3">
+            <li key={p.id} className="card flex min-w-0 items-center gap-3 p-3">
               {p.images[0] ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={p.images[0].renditions[0]?.url ?? p.images[0].url} alt="" loading="lazy" decoding="async" width={64} height={64} className="h-16 w-16 shrink-0 rounded-xl object-cover" />

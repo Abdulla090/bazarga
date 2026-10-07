@@ -16,8 +16,8 @@ export function LoginForm() {
       <Field label={t("password")} name="password" type="password" autoComplete="current-password" required ltr error={state.fieldErrors?.password} />
       <button className="btn-gold" disabled={pending}>{t("login")}</button>
       <div className="flex flex-wrap justify-between gap-2 text-sm">
-        <Link href="/forgot-password" className="text-ink-70 underline">{t("forgot")}</Link>
-        <span>{t("noAccount")} <Link href="/signup" className="font-bold underline">{t("signup")}</Link></span>
+        <Link href="/forgot-password" className="inline-flex min-h-11 items-center text-ink-70 underline">{t("forgot")}</Link>
+        <span>{t("noAccount")} <Link href="/signup" className="inline-flex min-h-11 items-center font-bold underline">{t("signup")}</Link></span>
       </div>
       <p className="hint text-center">{t("phoneSoon")}</p>
     </form>

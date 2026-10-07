@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
           <button className="btn-gold" disabled={pending}>{t("sendLink")}</button>
         </>
       )}
-      <Link href="/login" className="text-sm underline">{t("login")}</Link>
+      <Link href="/login" className="inline-flex min-h-11 items-center text-sm underline">{t("login")}</Link>
     </form>
   );
 }

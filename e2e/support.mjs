@@ -115,6 +115,7 @@ export function auditInPage(expectedWidth) {
   for (const el of document.querySelectorAll("a[href], button, input:not([type=hidden]), select, textarea, [role=button], summary, label:has(input[type=checkbox]), label:has(input[type=radio])")) {
     if (!visible(el)) continue;
     if (el.closest("p, li > span") && el.tagName === "A" && getComputedStyle(el).display === "inline") continue; // inline text links are exempt (WCAG 2.5.8)
+    if (el.matches("input[type=checkbox], input[type=radio]") && el.closest("label")?.getBoundingClientRect().height >= 44) continue; // the label is the target
     const r = el.getBoundingClientRect();
     if (r.height < 44 || r.width < 24) smallTargets.push(`${describe(el)} ${Math.round(r.width)}×${Math.round(r.height)}`);
   }
