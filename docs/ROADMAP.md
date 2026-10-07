@@ -119,7 +119,7 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 
 ## 7. Platform & hardening
 
-- Nonce-based CSP (drop `'unsafe-inline'`).
+- ~~Nonce-based CSP (drop `'unsafe-inline'`).~~ Shipped: per-request nonce in `src/proxy.ts`, no `unsafe-inline` scripts.
 - Image pipeline: resize/strip EXIF on upload (sharp or Cloudflare Images), responsive `srcset`.
 - Redis (or Postgres advisory locks) if rate-limit write volume grows; queue (pg-boss) for notifications and
   payment reconciliation.
