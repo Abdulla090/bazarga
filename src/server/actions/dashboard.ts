@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
 import { requireStore, requireUser } from "../auth/session";
-import { createStore, getStoreForOwner, updateStore, updateStoreTheme } from "../services/stores";
+import { createStore, getStoreForOwner, updateStore, updateStoreStorefront, updateStoreTheme } from "../services/stores";
 import {
   createCategory,
   createProduct,
@@ -26,6 +26,7 @@ import {
   productSchema,
   storeSchema,
   storeThemeSchema,
+  storeStorefrontSchema,
 } from "@/lib/validation";
 import { RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
@@ -88,6 +89,24 @@ export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise
     });
     await updateStoreTheme(db(), store.id, input);
     invalidateStore(store.id);
+    revalidatePath("/dashboard/settings");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+/** Cover photo (uploaded client-side to /api/uploads first) + free-delivery threshold. */
+export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    const input = storeStorefrontSchema.parse({
+      coverImageUrl: fd.get("coverImageUrl") ?? null,
+      coverImagePlaceholder: fd.get("coverImagePlaceholder") ?? null,
+      freeDeliveryThreshold: fd.get("freeDeliveryThreshold") ?? null,
+    });
+    await updateStoreStorefront(db(), store.id, input);
+    invalidateStore(store.id, [store.slug]);
     revalidatePath("/dashboard/settings");
     return { ok: true };
   } catch (e) {

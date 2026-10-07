@@ -263,7 +263,9 @@
     "removeCover": "Remove",
     "uploading": "Uploading…",
     "freeDeliveryThreshold": "Free delivery over (IQD)",
-    "freeDeliveryHint": "Orders at or above this amount ship free. Leave empty to turn it off."
+    "freeDeliveryHint": "Orders at or above this amount ship free. Leave empty to turn it off.",
+    "storefrontTitle": "Store front",
+    "saveStorefront": "Save"
   },
   "ai": {
     "title": "Add products from photos",
@@ -412,6 +414,8 @@
     "discount_expired": "That code has expired.",
     "discount_used_up": "That code has been used up.",
     "discount_below_minimum": "Your order is below this code's minimum.",
-    "invalid_area": "Choose an area from the list."
+    "invalid_area": "Choose an area from the list.",
+    "invalid_threshold": "Enter a whole amount in IQD, e.g. 50000.",
+    "invalid_image_url": "That image couldn't be used. Upload it again."
   }
 }

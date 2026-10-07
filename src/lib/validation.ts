@@ -203,3 +203,38 @@ export const waitlistSchema = z.object({
   city: trimmed(60).min(1),
   locale: localeSchema.default("ku"),
 });
+
+// ---------------------------------------------------------------- storefront look: cover + free delivery
+/** Max free-delivery threshold: 100 million IQD — anything above is a typo. */
+export const MAX_FREE_DELIVERY_THRESHOLD = 100_000_000;
+
+/** Parses "50,000", "٥٠٬٠٠٠", "50000 IQD" → 50000; empty → null; anything else → NaN (rejected by the schema). */
+export function parseIqdInput(v: unknown): number | null {
+  if (v === null || v === undefined) return null;
+  if (typeof v === "number") return v;
+  const ascii = String(v)
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .replace(/(iqd|د\.ع|دینار|دينار)/gi, "")
+    .replace(/[\s,،٬]/g, "");
+  if (!ascii) return null;
+  return /^\d+$/.test(ascii) ? Number(ascii) : Number.NaN;
+}
+
+const emptyToNullish = (v: unknown) => (v === "" || v === undefined ? null : v);
+
+export const storeStorefrontSchema = z.object({
+  coverImageUrl: z.preprocess(emptyToNullish, imageUrlSchema.nullable()),
+  /** Tiny inline WebP from the upload pipeline; a malformed one is dropped rather than failing the save. */
+  coverImagePlaceholder: z.preprocess(emptyToNullish, productImageSchema.shape.placeholder).catch(null).transform((v) => v ?? null),
+  freeDeliveryThreshold: z.preprocess(
+    parseIqdInput,
+    z
+      .number({ message: "invalid_threshold" })
+      .int({ message: "invalid_threshold" })
+      .positive({ message: "invalid_threshold" })
+      .max(MAX_FREE_DELIVERY_THRESHOLD, { message: "invalid_threshold" })
+      .nullable(),
+  ),
+});
+export type StoreStorefrontInput = z.infer<typeof storeStorefrontSchema>;

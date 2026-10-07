@@ -5,6 +5,7 @@ import { updateStoreAction } from "@/server/actions/dashboard";
 import { currentLocale } from "@/server/locale";
 import { StoreForm } from "@/components/dashboard/StoreForm";
 import { ThemeForm } from "@/components/dashboard/ThemeForm";
+import { StorefrontForm } from "@/components/dashboard/StorefrontForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { pickText } from "@/lib/i18n";
 
@@ -30,6 +31,14 @@ export default async function SettingsPage() {
           city: store.city,
           logoUrl: store.logoUrl,
           tagline: store.tagline as Record<string, string>,
+        }}
+      />
+      <StorefrontForm
+        maxMb={env().MAX_UPLOAD_MB}
+        initial={{
+          coverImageUrl: store.coverImageUrl,
+          coverImagePlaceholder: store.coverImagePlaceholder,
+          freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />
       <ThemeForm

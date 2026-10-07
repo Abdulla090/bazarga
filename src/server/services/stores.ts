@@ -4,7 +4,7 @@ import { deliveryZones, storePaymentMethods, stores } from "../db/schema";
 import { AppError } from "../errors";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { PAYMENT_METHODS } from "@/lib/order-status";
-import type { StoreInput, StoreThemeInput } from "@/lib/validation";
+import type { StoreInput, StoreStorefrontInput, StoreThemeInput } from "@/lib/validation";
 
 export type Store = typeof stores.$inferSelect;
 
@@ -100,6 +100,24 @@ export async function updateStoreTheme(database: Db, storeId: string, input: Sto
       accentColor: input.accentColor,
       about: input.about,
       returnPolicy: input.returnPolicy,
+      updatedAt: new Date(),
+    })
+    .where(eq(stores.id, storeId))
+    .returning();
+  if (!s) throw new AppError("NOT_FOUND");
+  return s;
+}
+
+/** Cover photo + free-delivery threshold. A removed cover also drops its placeholder and storage key. */
+export async function updateStoreStorefront(database: Db, storeId: string, input: StoreStorefrontInput): Promise<Store> {
+  const cover = input.coverImageUrl;
+  const [s] = await database
+    .update(stores)
+    .set({
+      coverImageUrl: cover,
+      coverImagePlaceholder: cover ? input.coverImagePlaceholder : null,
+      ...(cover ? {} : { coverImageKey: null }),
+      freeDeliveryThreshold: input.freeDeliveryThreshold,
       updatedAt: new Date(),
     })
     .where(eq(stores.id, storeId))
