@@ -172,7 +172,12 @@ export const deliveryZoneSchema = z.object({
 export const paymentToggleSchema = z.object({ method: z.enum(PAYMENT_METHODS), enabled: z.coerce.boolean() });
 
 // ---------------------------------------------------------------- checkout
-export const cartItemSchema = z.object({ productId: uuid, quantity: z.coerce.number().int().min(1).max(99) });
+export const cartItemSchema = z.object({
+  productId: uuid,
+  /** Required (server-checked) when the product has variants; absent/null for simple products. */
+  variantId: uuid.nullable().optional(),
+  quantity: z.coerce.number().int().min(1).max(99),
+});
 export const cartSchema = z.array(cartItemSchema).min(1).max(50);
 
 export const checkoutSchema = z.object({

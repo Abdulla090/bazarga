@@ -9,7 +9,7 @@ export function waLink(phoneDigits: string, text: string): string {
 type SummaryInput = {
   storeName: string;
   orderNumber: number;
-  items: { name: string; quantity: number; lineTotal: number }[];
+  items: { name: string; variantTitle?: string | null; quantity: number; lineTotal: number }[];
   subtotal: number;
   deliveryFee: number;
   total: number;
@@ -29,7 +29,7 @@ const L: Record<Locale, Record<string, string>> = {
 /** Human, short order summary for the customer → seller WhatsApp message. */
 export function orderSummaryText(o: SummaryInput, locale: Locale): string {
   const t = L[locale];
-  const lines = o.items.map((i) => `• ${i.name} ×${i.quantity} — ${formatIQD(i.lineTotal, locale)}`);
+  const lines = o.items.map((i) => `• ${i.name}${i.variantTitle ? ` (${i.variantTitle})` : ""} ×${i.quantity} — ${formatIQD(i.lineTotal, locale)}`);
   return [
     `${t.hi} ${o.storeName} 👋`,
     `${t.order} #${o.orderNumber}`,

@@ -53,7 +53,7 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
     setFieldErrors({});
     startPlacing(async () => {
       const r = await placeOrderAction(slug, {
-        items: available.map((l) => ({ productId: l.productId, quantity: l.quantity })),
+        items: available.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
         customerName: fd.get("customerName"),
         phone: fd.get("phone"),
         cityKey: city,
@@ -82,8 +82,8 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
     <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
       <section className="grid h-fit gap-2">
         <h1 className="text-2xl font-extrabold">{t("cart")}</h1>
-        {(quote?.lines ?? lines.map((l) => ({ ...l, name: "…", image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
-          <div key={l.productId} className={`card flex items-center gap-3 p-3 ${l.available ? "" : "opacity-60"}`}>
+        {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
+          <div key={l.key} className={`card flex items-center gap-3 p-3 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={l.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
@@ -92,12 +92,13 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
             )}
             <div className="min-w-0 flex-1">
               <p className="truncate font-bold">{l.name}</p>
+              {l.variantTitle && <p className="truncate text-sm text-ink-70">{l.variantTitle}</p>}
               {l.available ? <p className="num text-sm text-ink-70">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-semibold text-danger">{t("unavailableLine")}</p>}
             </div>
             <div className="flex items-center gap-1" aria-label={t("qty")}>
-              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l.productId, l.quantity - 1)} aria-label="−">−</button>
+              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
               <span className="num w-6 text-center font-bold">{l.quantity}</span>
-              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l.productId, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
+              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
             </div>
           </div>
         ))}

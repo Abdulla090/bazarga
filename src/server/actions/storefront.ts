@@ -14,7 +14,7 @@ import { getOrderByPublicId, placeOrder, quoteCart, type Quote } from "../servic
 import { notifySellerOfOrder } from "../services/notify-order";
 import { getProvider, isProviderAvailable } from "../payments/registry";
 import { latestPaymentForOrder, startPayment, syncPaymentFromProvider } from "../payments/service";
-import { cartSchema, checkoutSchema, localeSchema } from "@/lib/validation";
+import { cartItemSchema, cartSchema, checkoutSchema, localeSchema } from "@/lib/validation";
 import { toActionState, type ActionState } from "./util";
 
 const slugSchema = z.string().regex(/^[a-z0-9-]{2,40}$/);
@@ -37,7 +37,7 @@ async function cachedStoreOr404(slug: string) {
 export async function quoteAction(slug: string, items: unknown, cityKey: string | null, locale: string): Promise<Quote | null> {
   try {
     const store = await cachedStoreOr404(slug);
-    const parsed = z.array(z.object({ productId: z.uuid(), quantity: z.number().int().min(1).max(99) })).max(50).parse(items);
+    const parsed = z.array(cartItemSchema).max(50).parse(items);
     return await quoteCart(db(), store.id, parsed, cityKey ? z.string().max(40).parse(cityKey) : null, localeSchema.parse(locale));
   } catch {
     return null;

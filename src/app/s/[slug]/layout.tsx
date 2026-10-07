@@ -45,7 +45,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
               {tagline && <span className="block truncate text-xs text-ink-70">{tagline}</span>}
             </span>
           </Link>
-          <CartLink slug={store.slug} />
+          <CartLink slug={store.slug} label={t("cart")} />
         </div>
       </header>
       <main className="container-page flex-1 py-6">{children}</main>
@@ -59,7 +59,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
               </section>
             )}
             {returns && (
-              <section>
+              <section id="returns" className="scroll-mt-24">
                 <h2 className="mb-1 font-bold">{t("returnPolicy")}</h2>
                 <p className="whitespace-pre-line text-ink-70">{returns}</p>
               </section>

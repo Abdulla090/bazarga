@@ -1,24 +1,35 @@
 "use client";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { useCart } from "./cart";
 
-export function AddToCart({ slug, productId, disabled, big = false }: { slug: string; productId: string; disabled?: boolean; big?: boolean }) {
-  const t = useTranslations("store");
+export type AddToCartLabels = { add: string; added: string; soldOut: string };
+
+/** Grid "Add to cart" for simple products (products with variants link to their page instead). */
+export function AddToCart({
+  slug,
+  productId,
+  disabled,
+  labels,
+}: {
+  slug: string;
+  productId: string;
+  disabled?: boolean;
+  labels: AddToCartLabels;
+}) {
   const { add } = useCart(slug);
   const [added, setAdded] = useState(false);
   return (
     <button
       type="button"
       disabled={disabled}
-      className={big ? "btn-gold w-full" : "btn-gold btn-sm w-full"}
+      className="btn-gold btn-sm w-full"
       onClick={() => {
-        add(productId);
+        add({ productId });
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);
       }}
     >
-      {disabled ? t("outOfStock") : added ? t("added") : t("addToCart")}
+      <span aria-live="polite">{disabled ? labels.soldOut : added ? labels.added : labels.add}</span>
     </button>
   );
 }

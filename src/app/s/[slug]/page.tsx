@@ -16,6 +16,14 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const locale = await currentLocale();
   const [{ products, categories: usedCats }, { zones }] = await Promise.all([getCatalog(store.id), getStorefrontSettings(store.id)]);
   const shown = c ? products.filter((p) => p.categoryId === c) : products;
+  const cardLabels = {
+    add: t("addToCart"),
+    added: t("added"),
+    soldOut: t("outOfStock"),
+    chooseOptions: t("chooseOptions"),
+    from: t.raw("from") as string,
+    onlyLeft: t.raw("onlyLeft") as string,
+  };
   const minFee = zones.length ? Math.min(...zones.map((z) => z.fee)) : null;
 
   return (
@@ -53,7 +61,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {shown.map((p, i) => (
-            <ProductCard key={p.id} p={p} slug={store.slug} locale={locale} index={i} />
+            <ProductCard key={p.id} p={p} slug={store.slug} locale={locale} index={i} labels={cardLabels} />
           ))}
         </div>
       )}

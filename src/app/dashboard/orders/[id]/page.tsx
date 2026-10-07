@@ -51,7 +51,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <ul className="divide-y divide-line">
             {order.items.map((i) => (
               <li key={i.id} className="flex justify-between gap-2 py-2">
-                <span>{i.name} <span className="num text-ink-70">×{i.quantity}</span></span>
+                <span>{i.name}{i.variantTitle && <span className="text-ink-70"> · {i.variantTitle}</span>}{i.sku && <span className="num text-xs text-ink-50"> {i.sku}</span>} <span className="num text-ink-70">×{i.quantity}</span></span>
                 <span className="num">{formatIQD(i.lineTotal, locale)}</span>
               </li>
             ))}

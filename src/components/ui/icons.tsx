@@ -37,6 +37,12 @@ export {
   Droplet,
   Palette,
   MapPin,
+  Search,
+  Share2,
+  Clock,
+  Banknote,
+  Undo2,
+  TicketPercent,
 } from "lucide-react";
 export type { LucideIcon };
 

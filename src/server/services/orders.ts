@@ -9,6 +9,8 @@ import {
   orders,
   products,
   productImages,
+  productOptionValues,
+  productVariants,
   storePaymentMethods,
   stores,
 } from "../db/schema";
@@ -30,13 +32,87 @@ import type { Store } from "./stores";
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 
-type CartLine = { productId: string; quantity: number };
+type CartLine = { productId: string; variantId?: string | null; quantity: number };
+type MergedLine = { productId: string; variantId: string | null; quantity: number };
 
-/** Merge duplicate lines so the same product can't bypass stock checks by appearing twice. */
-export function mergeCart(items: CartLine[]): CartLine[] {
-  const m = new Map<string, number>();
-  for (const i of items) m.set(i.productId, (m.get(i.productId) ?? 0) + i.quantity);
-  return [...m.entries()].map(([productId, quantity]) => ({ productId, quantity }));
+const lineKey = (l: { productId: string; variantId?: string | null }) => `${l.productId}:${l.variantId ?? ""}`;
+
+/** Merge duplicate lines (same product + variant) so a line can't bypass stock checks by appearing twice. */
+export function mergeCart(items: CartLine[]): MergedLine[] {
+  const m = new Map<string, MergedLine>();
+  for (const i of items) {
+    const k = lineKey(i);
+    const cur = m.get(k);
+    if (cur) cur.quantity += i.quantity;
+    else m.set(k, { productId: i.productId, variantId: i.variantId ?? null, quantity: i.quantity });
+  }
+  return [...m.values()];
+}
+
+// ---------------------------------------------------------------- line resolution (shared by quote + checkout)
+type ProductRow = typeof products.$inferSelect;
+type VariantRow = typeof productVariants.$inferSelect;
+
+/** Why a line can't be bought as is. `variant_required`: the product has variants and none (or a stale one) was picked. */
+export type LineProblem = "product_unavailable" | "variant_required" | "out_of_stock";
+
+type ResolvedLine = MergedLine & {
+  product: ProductRow | null;
+  variant: VariantRow | null;
+  unitPrice: number;
+  /** Units on hand for what is being bought (variant stock for variant products); null = not tracked. */
+  stock: number | null;
+  variantTitle: string | null;
+  sku: string | null;
+  problem: LineProblem | null;
+};
+
+/**
+ * Price and validate cart lines against the DB. A product with active variants can only be bought through one
+ * of them (its own price/stock are then ignored); a product without variants can't carry a variant id.
+ */
+async function resolveLines(database: Db, storeId: string, items: MergedLine[], locale: Locale): Promise<ResolvedLine[]> {
+  const ids = [...new Set(items.map((i) => i.productId))];
+  if (!ids.length) return [];
+  const [found, variants, values] = await Promise.all([
+    database.query.products.findMany({ where: and(eq(products.storeId, storeId), inArray(products.id, ids)) }),
+    database.query.productVariants.findMany({
+      where: and(eq(productVariants.storeId, storeId), inArray(productVariants.productId, ids), eq(productVariants.isActive, true)),
+    }),
+    database
+      .select({ id: productOptionValues.id, label: productOptionValues.label })
+      .from(productOptionValues)
+      .where(and(eq(productOptionValues.storeId, storeId), inArray(productOptionValues.productId, ids))),
+  ]);
+  return items.map((i) => {
+    const product = found.find((f) => f.id === i.productId) ?? null;
+    const own = variants.filter((v) => v.productId === i.productId);
+    let variant: VariantRow | null = null;
+    let problem: LineProblem | null = null;
+    if (!product || !product.isActive) problem = "product_unavailable";
+    else if (own.length) {
+      variant = own.find((v) => v.id === i.variantId) ?? null;
+      if (!variant) problem = "variant_required";
+    } else if (i.variantId) problem = "product_unavailable"; // the variant was removed since it was added to the cart
+    const stock = variant ? variant.stock : (product?.stock ?? null);
+    if (!problem && stock !== null && stock < i.quantity) problem = "out_of_stock";
+    const variantTitle = variant
+      ? variant.optionValueIds
+          .map((id) => pickText(values.find((v) => v.id === id)?.label, locale))
+          .filter(Boolean)
+          .join(" / ") || null
+      : null;
+    return {
+      ...i,
+      product,
+      variant,
+      unitPrice: variant?.price ?? product?.price ?? 0,
+      stock,
+      variantTitle,
+      sku: variant?.sku ?? null,
+      problem,
+    };
+  });
 }
 
 // ---------------------------------------------------------------- quote (cart page)
@@ -48,14 +124,19 @@ function thumbUrl(img: { url: string; renditions: { width: number; url: string }
 }
 
 export type QuoteLine = {
+  /** productId:variantId — stable key for the cart UI. */
+  key: string;
   productId: string;
+  variantId: string | null;
   name: string;
+  variantTitle: string | null;
   image: string | null;
   unitPrice: number;
   quantity: number;
   lineTotal: number;
-  /** false when the product was removed, deactivated, or doesn't have enough stock. */
+  /** false when the product was removed, deactivated, needs a variant, or doesn't have enough stock. */
   available: boolean;
+  problem: LineProblem | null;
   stock: number | null;
 };
 
@@ -78,30 +159,31 @@ export async function quoteCart(
   cityKey: string | null,
   locale: Locale,
 ): Promise<Quote> {
-  const merged = mergeCart(items);
-  const ids = merged.map((i) => i.productId);
-  const found = ids.length
-    ? await database.query.products.findMany({ where: and(eq(products.storeId, storeId), inArray(products.id, ids)) })
-    : [];
+  const resolved = await resolveLines(database, storeId, mergeCart(items), locale);
+  const ids = [...new Set(resolved.map((l) => l.productId))];
   const imgs = ids.length
     ? await database
-        .select({ productId: productImages.productId, url: productImages.url, renditions: productImages.renditions })
+        .select({ id: productImages.id, productId: productImages.productId, url: productImages.url, renditions: productImages.renditions, sort: productImages.sort })
         .from(productImages)
-        .where(and(eq(productImages.storeId, storeId), inArray(productImages.productId, ids), eq(productImages.sort, 0)))
+        .where(and(eq(productImages.storeId, storeId), inArray(productImages.productId, ids)))
     : [];
-  const lines: QuoteLine[] = merged.map((i) => {
-    const p = found.find((f) => f.id === i.productId);
-    const available = !!p && p.isActive && (p.stock === null || p.stock >= i.quantity);
-    const unitPrice = p?.price ?? 0;
+  const lines: QuoteLine[] = resolved.map((l) => {
+    const available = !l.problem;
+    // The picked variant's photo when it has one, else the product cover.
+    const img = (l.variant?.imageId && imgs.find((x) => x.id === l.variant!.imageId)) || imgs.find((x) => x.productId === l.productId && x.sort === 0);
     return {
-      productId: i.productId,
-      name: p ? pickText(p.name, locale) : "—",
-      image: thumbUrl(imgs.find((x) => x.productId === i.productId)),
-      unitPrice,
-      quantity: i.quantity,
-      lineTotal: available ? unitPrice * i.quantity : 0,
+      key: lineKey(l),
+      productId: l.productId,
+      variantId: l.variantId,
+      name: l.product ? pickText(l.product.name, locale) : "—",
+      variantTitle: l.variantTitle,
+      image: thumbUrl(img || undefined),
+      unitPrice: l.unitPrice,
+      quantity: l.quantity,
+      lineTotal: available ? l.unitPrice * l.quantity : 0,
       available,
-      stock: p?.stock ?? null,
+      problem: l.problem,
+      stock: l.stock,
     };
   });
   const okLines = lines.filter((l) => l.available);
@@ -126,9 +208,10 @@ export type PlaceOrderOptions = {
 
 /**
  * Create an order atomically:
- *  - re-prices every line from the DB (client prices are ignored),
+ *  - re-prices every line from the DB (client prices are ignored), per variant when the product has variants,
  *  - takes the delivery fee from the store's zone for the chosen city,
- *  - decrements tracked stock with a conditional UPDATE (fails → whole transaction rolls back),
+ *  - decrements tracked stock (variant stock for variant lines) with a conditional UPDATE
+ *    (fails → whole transaction rolls back),
  *  - allocates a per-store sequential order number,
  *  - upserts the customer record.
  */
@@ -160,34 +243,46 @@ export async function placeOrder(
     });
     if (!zone) throw new AppError("VALIDATION", "invalid_city");
 
-    const ids = items.map((i) => i.productId);
-    const found = await tx.query.products.findMany({
-      where: and(eq(products.storeId, storeId), inArray(products.id, ids), eq(products.isActive, true)),
-    });
-    const priced = items.map((i) => {
-      const p = found.find((f) => f.id === i.productId);
-      if (!p) throw new AppError("NOT_FOUND", "product_unavailable", { productId: i.productId });
-      return { product: p, quantity: i.quantity, unitPrice: p.price };
-    });
+    const priced = await resolveLines(tx as unknown as Db, storeId, items, input.locale);
+    for (const l of priced) {
+      if (l.problem === "product_unavailable") throw new AppError("NOT_FOUND", "product_unavailable", { productId: l.productId });
+      if (l.problem === "variant_required") throw new AppError("VALIDATION", "variant_required", { productId: l.productId });
+      // out_of_stock is enforced by the conditional decrement below (same error, and race-safe).
+    }
 
     const totals = computeTotals(priced, zone.fee);
 
     // Atomic, race-safe stock decrement.
     for (const line of priced) {
-      if (line.product.stock === null) continue;
-      const updated = await tx
-        .update(products)
-        .set({ stock: sql`${products.stock} - ${line.quantity}`, updatedAt: new Date() })
-        .where(
-          and(
-            eq(products.id, line.product.id),
-            eq(products.storeId, storeId),
-            isNotNull(products.stock),
-            gte(products.stock, line.quantity),
-          ),
-        )
-        .returning({ id: products.id });
-      if (!updated.length) throw new AppError("OUT_OF_STOCK", "out_of_stock", { productId: line.product.id });
+      if (line.stock === null) continue;
+      const updated = line.variant
+        ? await tx
+            .update(productVariants)
+            .set({ stock: sql`${productVariants.stock} - ${line.quantity}`, updatedAt: new Date() })
+            .where(
+              and(
+                eq(productVariants.id, line.variant.id),
+                eq(productVariants.storeId, storeId),
+                isNotNull(productVariants.stock),
+                gte(productVariants.stock, line.quantity),
+              ),
+            )
+            .returning({ id: productVariants.id })
+        : await tx
+            .update(products)
+            .set({ stock: sql`${products.stock} - ${line.quantity}`, updatedAt: new Date() })
+            .where(
+              and(
+                eq(products.id, line.productId),
+                eq(products.storeId, storeId),
+                isNotNull(products.stock),
+                gte(products.stock, line.quantity),
+              ),
+            )
+            .returning({ id: products.id });
+      if (!updated.length) {
+        throw new AppError("OUT_OF_STOCK", "out_of_stock", { productId: line.productId, variantId: line.variantId });
+      }
     }
 
     const [seq] = await tx
@@ -251,8 +346,11 @@ export async function placeOrder(
       .values(
         priced.map((l, i) => ({
           orderId: order.id,
-          productId: l.product.id,
-          name: pickText(l.product.name, input.locale),
+          productId: l.productId,
+          variantId: l.variant?.id ?? null,
+          name: pickText(l.product!.name, input.locale),
+          variantTitle: l.variantTitle,
+          sku: l.sku,
           unitPrice: l.unitPrice,
           quantity: l.quantity,
           lineTotal: totals.lines[i]!,
@@ -335,6 +433,14 @@ export async function updateOrderStatus(
     if (RESTOCK_ON.includes(to)) {
       const items = await tx.query.orderItems.findMany({ where: eq(orderItems.orderId, orderId) });
       for (const it of items) {
+        if (it.variantId) {
+          // Variant lines restock the variant (untracked variants stay untracked).
+          await tx
+            .update(productVariants)
+            .set({ stock: sql`${productVariants.stock} + ${it.quantity}`, updatedAt: new Date() })
+            .where(and(eq(productVariants.id, it.variantId), eq(productVariants.storeId, storeId), isNotNull(productVariants.stock)));
+          continue;
+        }
         if (!it.productId) continue;
         await tx
           .update(products)
