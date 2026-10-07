@@ -44,6 +44,8 @@ database: stop `npm run dev` before running `db:*` scripts against the same fold
 | `npm run test:smoke` | HTTP end-to-end smoke test against a running build (`BASE_URL=…`) |
 | `npm run db:generate` | Generate a new SQL migration from `src/server/db/schema.ts` (drizzle-kit) |
 | `npm run db:migrate` | Apply migrations in `./drizzle` to `DATABASE_URL` |
+| `npm run budget` | Fails if gzipped first-load JS goes over budget (reads `.next/diagnostics/route-bundle-stats.json`; run after `npm run build`) |
+| `npm run test:mobile` | Playwright: no horizontal overflow at 360 px on storefront + dashboard routes (needs a running build + seeded demo) |
 | `npm run db:seed` | Seed the demo seller + "Hawler Bazaar" (idempotent) |
 
 ---
@@ -68,6 +70,7 @@ See `.env.example` for a commented template.
 | Storage | `STORAGE_DRIVER` (`local`\|`s3`), `UPLOAD_DIR`, `MAX_UPLOAD_MB`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL` | `local`, `./uploads`, `5` |
 | Email | `EMAIL_DRIVER` (`console`\|`resend`), `EMAIL_FROM`, `RESEND_API_KEY` | `console` |
 | Notifications | `NOTIFY_CHANNELS` (`console,telegram,whatsapp,email`), `TELEGRAM_BOT_TOKEN`, `TELEGRAM_DEFAULT_CHAT_ID`, `WHATSAPP_CLOUD_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_API_VERSION` | `console` |
+| Web push | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (`mailto:` or `https:`) — generate with `npx web-push generate-vapid-keys`; never commit the private key. Missing any → the new-order alert toggle in Dashboard → Settings is hidden and nothing is sent | off |
 | OTP | `OTP_DRIVER` (`console` only in v1) | `console` |
 | FIB | `FIB_ENABLED`, `FIB_BASE_URL`, `FIB_CLIENT_ID`, `FIB_CLIENT_SECRET` | off, sandbox `https://fib.stage.fib.iq` |
 | ZainCash | `ZAINCASH_ENABLED`, `ZAINCASH_BASE_URL`, `ZAINCASH_CLIENT_ID`, `ZAINCASH_CLIENT_SECRET`, `ZAINCASH_API_KEY`, `ZAINCASH_SCOPE` | off, UAT `https://pg-api-uat.zaincash.iq`, `payment:read payment:write` |

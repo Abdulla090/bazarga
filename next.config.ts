@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
     // changes made outside the app. stale = client router reuse window.
     storefront: { stale: 60, revalidate: 900, expire: 86_400 },
   },
-  serverExternalPackages: ["@electric-sql/pglite", "pg"],
+  serverExternalPackages: ["@electric-sql/pglite", "pg", "web-push"],
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",

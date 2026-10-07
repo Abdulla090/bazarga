@@ -44,6 +44,11 @@ const schema = z.object({
   WHATSAPP_PHONE_NUMBER_ID: z.string().optional(),
   WHATSAPP_API_VERSION: z.string().default("v21.0"),
 
+  // Web push (seller new-order alerts). All three set → feature on; read via src/server/push pushConfig().
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+  VAPID_SUBJECT: z.string().optional(),
+
   // OTP
   OTP_DRIVER: z.enum(["console"]).default("console"),
 

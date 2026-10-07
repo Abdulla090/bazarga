@@ -8,14 +8,19 @@ import { ThemeForm } from "@/components/dashboard/ThemeForm";
 import { StorefrontForm } from "@/components/dashboard/StorefrontForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { pickText } from "@/lib/i18n";
+import { pushConfig } from "@/server/push";
+import { PushToggle } from "@/components/dashboard/PushToggle";
 
 export default async function SettingsPage() {
   const { store } = await requireStore();
   const t = await getTranslations("settings");
   const locale = await currentLocale();
+  const push = pushConfig();
   return (
     <div className="grid max-w-2xl gap-4">
       <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      {/* Hidden entirely when VAPID keys are not configured. */}
+      {push && <PushToggle vapidPublicKey={push.publicKey} />}
       <StoreForm
         action={updateStoreAction}
         mode="edit"
