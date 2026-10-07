@@ -17,12 +17,15 @@ import {
   updateCategory,
   updateProduct,
 } from "../services/catalog";
-import { deleteZone, setPaymentMethod, updateZoneFee, upsertZone } from "../services/settings";
+import { addArea, deleteArea, deleteZone, setPaymentMethod, updateArea, updateZoneFee, upsertZone } from "../services/settings";
+import { createDiscountCode, setDiscountCodeActive, updateDiscountCode } from "../services/discounts";
 import { updateOrderStatus } from "../services/orders";
 import { uploadProcessedImage } from "../storage";
 import { specsFromForm,
   categorySchema,
+  deliveryAreaSchema,
   deliveryZoneSchema,
+  discountCodeSchema,
   orderStatusSchema,
   paymentToggleSchema,
   productSchema,
@@ -248,6 +251,81 @@ export async function deleteZoneAction(id: string) {
   await deleteZone(db(), store.id, uuid.parse(id));
   invalidateStore(store.id);
   revalidatePath("/dashboard/delivery");
+}
+
+// ---------------------------------------------------------------- delivery areas
+/** Area forms edit the Sorani + Arabic + English names; any other translation already stored is kept. */
+const AREA_FORM_LOCALES = ["ku", "ar", "en"] as const;
+
+function areaInputFromForm(fd: FormData) {
+  const name = localizedFromForm(fd, "name");
+  return deliveryAreaSchema.parse({ name, fee: fd.get("fee") ?? "" });
+}
+
+/** Add an area to a city (zone id in the form) or, with an `id`, rename it / change its fee override. */
+export async function saveAreaAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    const input = areaInputFromForm(fd);
+    const id = emptyToNull(fd.get("id"));
+    if (id) await updateArea(db(), store.id, uuid.parse(id), input, AREA_FORM_LOCALES);
+    else await addArea(db(), store.id, uuid.parse(fd.get("zoneId")), input);
+    invalidateStore(store.id);
+    revalidatePath("/dashboard/delivery");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+export async function deleteAreaAction(id: string) {
+  const { store } = await requireStore();
+  await deleteArea(db(), store.id, uuid.parse(id));
+  invalidateStore(store.id);
+  revalidatePath("/dashboard/delivery");
+}
+
+// ---------------------------------------------------------------- discount codes
+function discountInputFromForm(fd: FormData) {
+  const o = formObject(fd);
+  return discountCodeSchema.parse({
+    code: o.code ?? "",
+    type: o.type,
+    value: o.value ?? "",
+    minSubtotal: o.minSubtotal ?? "",
+    maxUses: o.maxUses ?? "",
+    startsOn: o.startsOn ?? "",
+    endsOn: o.endsOn ?? "",
+    isActive: o.isActive === "on" || o.isActive === "true",
+  });
+}
+
+/** Create, or with an `id` edit, a code. Checkout reads codes live, but the store tag also covers promo banners. */
+export async function saveDiscountAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    const input = discountInputFromForm(fd);
+    const id = emptyToNull(fd.get("id"));
+    if (id) await updateDiscountCode(db(), store.id, uuid.parse(id), input);
+    else await createDiscountCode(db(), store.id, input);
+    invalidateStore(store.id);
+    revalidatePath("/dashboard/discounts");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+export async function toggleDiscountAction(id: string, isActive: boolean): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    await setDiscountCodeActive(db(), store.id, uuid.parse(id), z.boolean().parse(isActive));
+    invalidateStore(store.id);
+    revalidatePath("/dashboard/discounts");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
 }
 
 // ---------------------------------------------------------------- payments

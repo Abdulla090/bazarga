@@ -1,6 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import type { Db } from "../db";
-import { deliveryZones, storePaymentMethods } from "../db/schema";
+import { deliveryAreas, deliveryZones, storePaymentMethods } from "../db/schema";
 import { AppError } from "../errors";
 import type { LocalizedText } from "@/lib/i18n";
 import { PAYMENT_METHODS, type PaymentMethod } from "@/lib/order-status";
@@ -46,6 +46,61 @@ export async function deleteZone(database: Db, storeId: string, zoneId: string) 
     .delete(deliveryZones)
     .where(and(eq(deliveryZones.id, zoneId), eq(deliveryZones.storeId, storeId)))
     .returning({ id: deliveryZones.id });
+  if (!r.length) throw new AppError("NOT_FOUND");
+}
+
+// ---------------------------------------------------------------- delivery areas (per city zone)
+/** All areas of the store (active or not), for the dashboard; grouped by zone by the caller. */
+export async function listAreas(database: Db, storeId: string) {
+  return database.query.deliveryAreas.findMany({
+    where: eq(deliveryAreas.storeId, storeId),
+    orderBy: [asc(deliveryAreas.sort), asc(deliveryAreas.createdAt)],
+  });
+}
+
+/** Add an area to one of *this store's* zones (a zone id from another store is NOT_FOUND). */
+export async function addArea(database: Db, storeId: string, zoneId: string, input: { name: LocalizedText; fee: number | null }) {
+  const zone = await database.query.deliveryZones.findFirst({
+    where: and(eq(deliveryZones.id, zoneId), eq(deliveryZones.storeId, storeId)),
+    columns: { id: true },
+  });
+  if (!zone) throw new AppError("NOT_FOUND");
+  const [a] = await database.insert(deliveryAreas).values({ storeId, zoneId, name: input.name, fee: input.fee, sort: 100 }).returning();
+  return a!;
+}
+
+/**
+ * Rename / change the fee override (null = the city's fee). Locales not on the form (e.g. ar/kmr when the
+ * dashboard edits ku + en) are kept, so a rename never silently drops a translation.
+ */
+export async function updateArea(
+  database: Db,
+  storeId: string,
+  areaId: string,
+  input: { name: LocalizedText; fee: number | null },
+  editedLocales: readonly string[] = ["ku", "ar", "en", "kmr"],
+) {
+  const existing = await database.query.deliveryAreas.findFirst({
+    where: and(eq(deliveryAreas.id, areaId), eq(deliveryAreas.storeId, storeId)),
+  });
+  if (!existing) throw new AppError("NOT_FOUND");
+  const kept = Object.fromEntries(Object.entries(existing.name).filter(([l]) => !editedLocales.includes(l)));
+  const name = { ...kept, ...input.name };
+  if (!Object.values(name).some((v) => v && v.trim())) throw new AppError("VALIDATION", "name_required");
+  const [a] = await database
+    .update(deliveryAreas)
+    .set({ name, fee: input.fee })
+    .where(and(eq(deliveryAreas.id, areaId), eq(deliveryAreas.storeId, storeId)))
+    .returning();
+  return a!;
+}
+
+/** Remove an area. Past orders keep their area name (orders.area_id is set null by the FK). */
+export async function deleteArea(database: Db, storeId: string, areaId: string) {
+  const r = await database
+    .delete(deliveryAreas)
+    .where(and(eq(deliveryAreas.id, areaId), eq(deliveryAreas.storeId, storeId)))
+    .returning({ id: deliveryAreas.id });
   if (!r.length) throw new AppError("NOT_FOUND");
 }
 

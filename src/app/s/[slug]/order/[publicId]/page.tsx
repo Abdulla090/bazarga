@@ -48,6 +48,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       subtotal: order.subtotal,
       deliveryFee: order.deliveryFee,
       total: order.total,
+      discountCode: order.discountCode,
+      discountAmount: order.discountAmount,
       customerName: order.customerName,
       cityName: order.cityName,
       address: fullAddress(order),

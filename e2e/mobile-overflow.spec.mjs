@@ -26,6 +26,10 @@ for (const locale of ["ku", "en"]) {
       ]);
       const res = await page.goto(r.path, { waitUntil: "networkidle" });
       expect(res?.status(), `${r.name} status`).toBeLessThan(400);
+      if (r.openDetails) {
+        await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
+        await page.waitForTimeout(100);
+      }
       const { scrollWidth, innerWidth } = await page.evaluate(() => ({
         scrollWidth: document.scrollingElement.scrollWidth,
         innerWidth: window.innerWidth,
