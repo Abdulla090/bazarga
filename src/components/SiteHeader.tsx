@@ -9,7 +9,7 @@ export async function SiteHeader() {
   const t = await getTranslations("nav");
   const user = await currentUser().catch(() => null);
   return (
-    <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
       <div className="container-page flex min-h-16 flex-wrap items-center gap-3 py-2">
         <Link href="/" className="me-auto">
           <Logo />

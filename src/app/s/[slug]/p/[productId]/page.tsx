@@ -61,12 +61,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     // Bottom padding on phones so the sticky buy bar never covers the footer.
-    <div className="grid gap-6 pb-20 md:grid-cols-2 md:gap-10 md:pb-0">
+    <div className="grid gap-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:grid-cols-2 md:gap-10 md:pb-0">
       <div className="min-w-0 md:sticky md:top-24 md:h-fit">
         <ProductGallery images={p.images} alt={name} label={{ photo: t("photo"), of: t("of") }} />
       </div>
       <div className="grid h-fit min-w-0 gap-5">
-        <Link href={`/s/${store.slug}`} className="inline-flex w-fit items-center gap-1 text-sm font-semibold text-ink-70">
+        <Link href={`/s/${store.slug}`} className="inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-ink-70">
           <ArrowBack /> {tc("back")}
         </Link>
         <h1 className="text-2xl font-extrabold leading-tight sm:text-3xl">{name}</h1>

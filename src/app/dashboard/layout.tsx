@@ -18,10 +18,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const locale = await currentLocale();
   return (
     <IntlProvider>
-    <div className="min-h-dvh pb-20 md:pb-0">
-      <header className="sticky top-0 z-20 border-b border-line bg-paper/95 backdrop-blur">
-        <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-2 px-4">
-          <Link href="/dashboard" className="me-auto flex items-center gap-3">
+    <div className="min-h-dvh pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
+      <header className="sticky top-0 z-20 border-b border-line bg-paper/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+        <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))]">
+          <Link href="/dashboard" className="me-auto flex min-h-11 min-w-0 items-center gap-3">
             <Logo showKu={false} />
             <span className="hidden truncate text-sm font-bold text-ink-70 sm:inline">· {store.name}</span>
           </Link>

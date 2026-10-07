@@ -36,7 +36,7 @@ export default async function ProductsPage() {
               )}
               <Link href={`/dashboard/products/${p.id}`} className="min-w-0 flex-1">
                 <span className="block truncate font-bold">{pickText(p.name, locale)}</span>
-                <span className="num block text-sm text-ink-70">
+                <span className="num block truncate text-sm text-ink-70">
                   {formatIQD(p.price, locale)} · {p.stock === null ? t("untracked") : t("inStock", { count: p.stock })}
                 </span>
               </Link>

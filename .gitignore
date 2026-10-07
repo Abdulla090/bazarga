@@ -13,3 +13,7 @@ next-env.d.ts
 .DS_Store
 npm-debug.log*
 .eslintcache
+/mobile-shots
+/test-results
+/playwright-report
+.probe.mjs

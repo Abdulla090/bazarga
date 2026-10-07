@@ -49,7 +49,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
               role="tab"
               aria-selected={lang === l}
               onClick={() => setLang(l)}
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${lang === l ? "bg-ink text-paper" : "border border-line"}`}
+              className={`inline-flex min-h-11 items-center rounded-full px-3 py-1 text-sm font-semibold sm:min-h-9 ${lang === l ? "bg-ink text-paper" : "border border-line"}`}
             >
               {LOCALE_LABEL[l]}
               {initial.name[l] ? <Icon as={Check} className="ms-1" /> : null}
@@ -84,7 +84,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
             ))}
           </select>
         </div>
-        <label className="flex items-center gap-2 font-semibold sm:col-span-2">
+        <label className="flex min-h-11 items-center gap-2 font-semibold sm:col-span-2">
           <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />
           {t("active")}
         </label>

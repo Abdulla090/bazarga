@@ -21,7 +21,9 @@
     "db:setup": "npm run db:migrate && npm run db:seed",
     "test:smoke": "node scripts/smoke.mjs",
     "start:standalone": "node .next/standalone/server.js",
-    "budget": "node scripts/budget.mjs"
+    "budget": "node scripts/budget.mjs",
+    "test:mobile": "playwright test",
+    "shots:mobile": "node scripts/mobile-shots.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1147.0",

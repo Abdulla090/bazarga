@@ -44,7 +44,7 @@ export default async function DashboardHome() {
       <section className="card">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-bold">{t("recentOrders")}</h2>
-          <Link href="/dashboard/orders" className="text-sm font-semibold underline">{t("seeAll")}</Link>
+          <Link href="/dashboard/orders" className="inline-flex min-h-11 items-center text-sm font-semibold underline">{t("seeAll")}</Link>
         </div>
         {recent.length === 0 ? (
           <p className="text-ink-70">{t("noOrders")}</p>

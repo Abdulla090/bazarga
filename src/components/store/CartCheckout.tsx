@@ -112,13 +112,13 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
               {l.available ? <p className="num text-sm text-ink-70">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-semibold text-danger">{L.unavailableLine}</p>}
             </div>
             <div className="flex items-center gap-1" aria-label={L.qty}>
-              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
+              <button type="button" className="btn-ghost btn-sm w-11 px-0 sm:w-9" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
               <span className="num w-6 text-center font-bold">{l.quantity}</span>
-              <button type="button" className="btn-ghost btn-sm w-9 px-0" onClick={() => setQty(l, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
+              <button type="button" className="btn-ghost btn-sm w-11 px-0 sm:w-9" onClick={() => setQty(l, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
             </div>
           </div>
         ))}
-        <Link href={`/s/${slug}`} className="mt-2 text-sm font-semibold underline">{L.continue}</Link>
+        <Link href={`/s/${slug}`} className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold underline">{L.continue}</Link>
       </section>
 
       <form action={submit} className="card grid h-fit gap-4 lg:sticky lg:top-24">
@@ -199,7 +199,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <div className="grid gap-2">
             {payments.map((m) => (
               <label key={m} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 font-semibold ${method === m ? "border-ink bg-ink/5" : "border-line"}`}>
-                <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="accent-ink" />
+                <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="h-5 w-5 shrink-0 accent-ink" />
                 {m === "cod" ? L.cod : PAYMENT_LABEL[m]}
               </label>
             ))}
@@ -207,7 +207,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         </fieldset>
         <div>
           {!codeOpen && !code ? (
-            <button type="button" className="text-sm font-semibold underline" onClick={() => setCodeOpen(true)}>{L.haveCode}</button>
+            <button type="button" className="min-h-11 text-sm font-semibold underline" onClick={() => setCodeOpen(true)}>{L.haveCode}</button>
           ) : code && quote?.discountCode ? (
             <p className="flex items-center justify-between gap-2 rounded-xl bg-green/10 px-3 py-2 text-sm font-semibold text-green">
               <span>{fmt(L.codeApplied, { code: quote.discountCode })}</span>

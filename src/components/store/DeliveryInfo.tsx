@@ -69,14 +69,14 @@ export async function DeliveryInfo({
       </ul>
       {zones.length > 1 && (
         <details className="group mt-2">
-          <summary className="cursor-pointer list-none text-sm font-semibold underline underline-offset-4">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center text-sm font-semibold underline underline-offset-4">
             {t("allCities", { count: zones.length })}
           </summary>
           <ul className="mt-1 max-h-72 divide-y divide-line overflow-y-auto">{zones.filter((z) => z !== home).map(row)}</ul>
         </details>
       )}
       {hasReturnPolicy && (
-        <a href="#returns" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold underline underline-offset-4">
+        <a href="#returns" className="mt-1 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
           <Icon as={Undo2} /> {t("returnPolicy")}
         </a>
       )}
