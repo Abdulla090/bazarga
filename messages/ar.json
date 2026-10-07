@@ -328,6 +328,7 @@
     "invalid_transition": "تغيير الحالة هذا غير مسموح.",
     "file_too_large": "الصورة كبيرة جداً.",
     "unsupported_image_type": "استخدم صورة JPG أو PNG أو WebP.",
+    "image_too_large": "هذه الصورة كبيرة جداً (أكثر من 50 ميغابكسل).",
     "ai_disabled": "ميزة الصور إلى منتجات غير مفعّلة.",
     "name_required": "أضف اسماً بلغة واحدة على الأقل.",
     "empty_file": "اختر صورة أولاً.",

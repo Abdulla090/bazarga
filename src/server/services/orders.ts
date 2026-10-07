@@ -40,6 +40,13 @@ export function mergeCart(items: CartLine[]): CartLine[] {
 }
 
 // ---------------------------------------------------------------- quote (cart page)
+/** Cart thumbnails are ~64 px: use the smallest stored rendition when the image went through the pipeline. */
+function thumbUrl(img: { url: string; renditions: { width: number; url: string }[] } | undefined): string | null {
+  if (!img) return null;
+  const smallest = [...img.renditions].sort((a, b) => a.width - b.width)[0];
+  return smallest?.url ?? img.url;
+}
+
 export type QuoteLine = {
   productId: string;
   name: string;
@@ -78,7 +85,7 @@ export async function quoteCart(
     : [];
   const imgs = ids.length
     ? await database
-        .select({ productId: productImages.productId, url: productImages.url })
+        .select({ productId: productImages.productId, url: productImages.url, renditions: productImages.renditions })
         .from(productImages)
         .where(and(eq(productImages.storeId, storeId), inArray(productImages.productId, ids), eq(productImages.sort, 0)))
     : [];
@@ -89,7 +96,7 @@ export async function quoteCart(
     return {
       productId: i.productId,
       name: p ? pickText(p.name, locale) : "—",
-      image: imgs.find((x) => x.productId === i.productId)?.url ?? null,
+      image: thumbUrl(imgs.find((x) => x.productId === i.productId)),
       unitPrice,
       quantity: i.quantity,
       lineTotal: available ? unitPrice * i.quantity : 0,

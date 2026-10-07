@@ -99,6 +99,33 @@ export const imageUrlSchema = z
   .max(500)
   .refine((u) => (u.startsWith("/") && !u.startsWith("//")) || u.startsWith("https://"), { message: "invalid_image_url" });
 
+/** Image metadata produced by the upload pipeline (/api/uploads) and round-tripped through the product form. */
+export const productImageSchema = z.object({
+  url: imageUrlSchema,
+  width: z.number().int().positive().max(20_000).nullable().optional(),
+  height: z.number().int().positive().max(20_000).nullable().optional(),
+  placeholder: z
+    .string()
+    .max(4000)
+    .regex(/^data:image\/webp;base64,[A-Za-z0-9+/=]+$/)
+    .nullable()
+    .optional(),
+  dominantColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().optional(),
+  renditions: z
+    .array(
+      z.object({
+        width: z.number().int().positive().max(20_000),
+        height: z.number().int().positive().max(20_000),
+        url: imageUrlSchema,
+        key: z.string().max(300),
+        bytes: z.number().int().nonnegative(),
+      }),
+    )
+    .max(8)
+    .default([]),
+});
+export type ProductImageInput = z.infer<typeof productImageSchema>;
+
 export const categorySchema = z.object({ name: requiredLocalizedName, sort: z.coerce.number().int().default(0) });
 
 export const productSchema = z
@@ -110,7 +137,9 @@ export const productSchema = z
     stock: z.coerce.number().int().min(0).max(1_000_000).nullable().optional(),
     categoryId: uuid.nullable().optional(),
     isActive: z.coerce.boolean().default(true),
+    /** Legacy/simple form: bare URLs (no responsive metadata). Ignored when `images` is given. */
     imageUrls: z.array(imageUrlSchema).max(8).default([]),
+    images: z.array(productImageSchema).max(8).optional(),
   })
   .refine((p) => p.compareAtPrice == null || p.compareAtPrice > p.price, {
     message: "compare_at_must_exceed_price",

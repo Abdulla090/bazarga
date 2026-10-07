@@ -29,7 +29,7 @@ export default async function ProductsPage() {
             <li key={p.id} className="card flex items-center gap-3 p-3">
               {p.images[0] ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.images[0].url} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+                <img src={p.images[0].renditions[0]?.url ?? p.images[0].url} alt="" loading="lazy" decoding="async" width={64} height={64} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
               ) : (
                 <span className="h-16 w-16 shrink-0 rounded-xl bg-paper" />
               )}

@@ -10,6 +10,8 @@ import { currentLocale } from "@/server/locale";
 import { AddToCart } from "@/components/store/AddToCart";
 import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import { SIZES } from "@/lib/responsive-image";
 
 async function load(slug: string, productId: string) {
   if (!z.uuid().safeParse(productId).success) notFound();
@@ -43,8 +45,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="grid gap-2">
         {p.images.length ? (
           p.images.map((img, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={img.id} src={img.url} alt={i === 0 ? name : ""} className="w-full rounded-[var(--radius-card)] border border-line object-cover" />
+            <ResponsiveImage
+              key={img.id}
+              image={img}
+              alt={i === 0 ? name : ""}
+              sizes={SIZES.productHero}
+              index={i}
+              className="h-auto w-full rounded-[var(--radius-card)] border border-line object-cover"
+            />
           ))
         ) : (
           <span className="block aspect-square rounded-[var(--radius-card)] bg-white" />

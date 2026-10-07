@@ -18,6 +18,11 @@ import {
 import { signUp } from "../src/server/auth/service";
 import { createStore } from "../src/server/services/stores";
 import { createCategory, createProduct } from "../src/server/services/catalog";
+import type { ProductImageInput } from "../src/lib/validation";
+import seedImages from "./seed-images.json";
+
+/** Pre-built pipeline renditions of the demo photos (scripts/build-seed-images.ts). */
+const IMG = seedImages as Record<"product-dress" | "product-honey" | "product-cosmetics" | "hero", ProductImageInput>;
 
 const DEMO_EMAIL = process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app";
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo";
@@ -61,7 +66,8 @@ async function main() {
     price: 85000,
     stock: 12,
     categoryId: clothing.id,
-    imageUrls: ["/images/product-dress.jpg"],
+    imageUrls: [],
+    images: [IMG["product-dress"]],
   });
   await createProduct(db, store.id, {
     ...base,
@@ -74,7 +80,8 @@ async function main() {
     price: 25000,
     stock: 40,
     categoryId: food.id,
-    imageUrls: ["/images/product-honey.jpg"],
+    imageUrls: [],
+    images: [IMG["product-honey"]],
   });
   await createProduct(db, store.id, {
     ...base,
@@ -87,7 +94,8 @@ async function main() {
     price: 40000,
     stock: null,
     categoryId: beauty.id,
-    imageUrls: ["/images/product-cosmetics.jpg"],
+    imageUrls: [],
+    images: [IMG["product-cosmetics"]],
   });
 
   // ---- theme + policies + promotions
@@ -107,6 +115,8 @@ async function main() {
         en: "Unused items can be returned within 3 days of delivery.",
       },
       freeDeliveryThreshold: 75_000,
+      coverImageUrl: IMG.hero.url,
+      coverImagePlaceholder: IMG.hero.placeholder ?? null,
     })
     .where(eq(stores.id, store.id));
   await db.insert(discountCodes).values({ storeId: store.id, code: "NEWROZ", type: "percentage", value: 10, minSubtotal: 30_000 });

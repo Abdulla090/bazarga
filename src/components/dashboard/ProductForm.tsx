@@ -5,6 +5,7 @@ import { saveProductAction, deleteProductAction } from "@/server/actions/dashboa
 import { Field, FormError } from "@/components/forms/Field";
 import { ImageUploader } from "./ImageUploader";
 import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
+import type { ProductImageInput } from "@/lib/validation";
 
 type Values = {
   id?: string;
@@ -15,7 +16,7 @@ type Values = {
   stock: number | null;
   categoryId: string | null;
   isActive: boolean;
-  images: string[];
+  images: ProductImageInput[];
 };
 
 const LANGS: Locale[] = ["ku", "ar", "en", "kmr"];

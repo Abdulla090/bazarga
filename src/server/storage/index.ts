@@ -1,10 +1,9 @@
 import "server-only";
-import { randomUUID } from "node:crypto";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { env } from "../env";
-import { validateImage } from "./image";
+import { storeImage, type StoredImage } from "./pipeline";
 import { resolveStorageConfig } from "./config";
 
 export interface StorageAdapter {
@@ -84,10 +83,11 @@ export function storage(): StorageAdapter {
   return adapter;
 }
 
-/** Validate (magic bytes + size) and store a seller's image under their store prefix. */
-export async function uploadStoreImage(storeId: string, file: File): Promise<{ key: string; url: string }> {
+/**
+ * Seller image upload through the pipeline (./pipeline.ts): validated, EXIF/GPS-stripped, resized to WebP
+ * renditions with dimensions + placeholder, written via whichever adapter is configured (disk or S3/R2).
+ */
+export async function uploadProcessedImage(storeId: string, file: File): Promise<StoredImage> {
   const buf = new Uint8Array(await file.arrayBuffer());
-  const t = validateImage(buf, env().MAX_UPLOAD_MB);
-  const key = `stores/${storeId}/${randomUUID()}.${t.ext}`;
-  return storage().put(key, buf, t.mime);
+  return storeImage(storage(), storeId, buf, { maxMb: env().MAX_UPLOAD_MB });
 }

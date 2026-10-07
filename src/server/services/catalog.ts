@@ -3,10 +3,15 @@ import type { Db } from "../db";
 import { categories, productImages, products } from "../db/schema";
 import { AppError } from "../errors";
 import type { LocalizedText } from "@/lib/i18n";
-import type { ProductInput } from "@/lib/validation";
+import type { ProductImageInput, ProductInput } from "@/lib/validation";
 
 export type Product = typeof products.$inferSelect;
-export type ProductWithImages = Product & { images: { id: string; url: string; sort: number }[] };
+type ProductImageRow = typeof productImages.$inferSelect;
+export type ProductImage = Pick<
+  ProductImageRow,
+  "id" | "url" | "sort" | "width" | "height" | "placeholder" | "dominantColor" | "renditions" | "alt"
+>;
+export type ProductWithImages = Product & { images: ProductImage[] };
 
 // Every function takes `storeId` from the authenticated session and scopes every query by it.
 
@@ -59,11 +64,25 @@ async function assertCategoryInStore(database: Db, storeId: string, categoryId: 
 async function attachImages(database: Db, list: Product[]): Promise<ProductWithImages[]> {
   if (!list.length) return [];
   const imgs = await database
-    .select({ id: productImages.id, url: productImages.url, sort: productImages.sort, productId: productImages.productId })
+    .select({
+      id: productImages.id,
+      url: productImages.url,
+      sort: productImages.sort,
+      width: productImages.width,
+      height: productImages.height,
+      placeholder: productImages.placeholder,
+      dominantColor: productImages.dominantColor,
+      renditions: productImages.renditions,
+      alt: productImages.alt,
+      productId: productImages.productId,
+    })
     .from(productImages)
     .where(inArray(productImages.productId, list.map((p) => p.id)))
     .orderBy(asc(productImages.sort));
-  return list.map((p) => ({ ...p, images: imgs.filter((i) => i.productId === p.id) }));
+  return list.map((p) => ({
+    ...p,
+    images: imgs.filter((i) => i.productId === p.id).map(({ productId: _productId, ...img }) => img),
+  }));
 }
 
 export async function listProducts(database: Db, storeId: string, opts: { activeOnly?: boolean } = {}) {
@@ -81,12 +100,31 @@ export async function getProduct(database: Db, storeId: string, id: string): Pro
   return withImgs ?? null;
 }
 
-async function replaceImages(database: Db, storeId: string, productId: string, urls: string[]) {
+/** Gallery from the form: pipeline metadata when present, else bare URLs (seed images, legacy clients). */
+export function imagesFromInput(input: Pick<ProductInput, "images" | "imageUrls">): ProductImageInput[] {
+  return input.images ?? input.imageUrls.map((url) => ({ url, renditions: [] }));
+}
+
+async function replaceImages(database: Db, storeId: string, productId: string, images: ProductImageInput[]) {
   await database.delete(productImages).where(and(eq(productImages.productId, productId), eq(productImages.storeId, storeId)));
-  if (urls.length) {
-    await database
-      .insert(productImages)
-      .values(urls.map((url, i) => ({ productId, storeId, url, sort: i })));
+  if (images.length) {
+    await database.insert(productImages).values(
+      images.map((img, i) => {
+        const hasDims = img.width != null && img.height != null;
+        return {
+          productId,
+          storeId,
+          url: img.url,
+          storageKey: img.renditions.find((r) => r.url === img.url)?.key ?? null,
+          sort: i,
+          width: hasDims ? img.width! : null,
+          height: hasDims ? img.height! : null,
+          placeholder: img.placeholder ?? null,
+          dominantColor: img.dominantColor ?? null,
+          renditions: img.renditions,
+        };
+      }),
+    );
   }
 }
 
@@ -106,7 +144,7 @@ export async function createProduct(database: Db, storeId: string, input: Produc
         isActive: input.isActive,
       })
       .returning();
-    await replaceImages(tx as unknown as Db, storeId, p!.id, input.imageUrls);
+    await replaceImages(tx as unknown as Db, storeId, p!.id, imagesFromInput(input));
     return p!;
   });
 }
@@ -129,7 +167,7 @@ export async function updateProduct(database: Db, storeId: string, id: string, i
       .where(and(eq(products.id, id), eq(products.storeId, storeId)))
       .returning();
     if (!p) throw new AppError("NOT_FOUND");
-    await replaceImages(tx as unknown as Db, storeId, id, input.imageUrls);
+    await replaceImages(tx as unknown as Db, storeId, id, imagesFromInput(input));
     return p;
   });
 }

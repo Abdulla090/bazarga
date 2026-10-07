@@ -45,8 +45,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         <p className="card text-center text-ink-70">{t("noProducts")}</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {shown.map((p) => (
-            <ProductCard key={p.id} p={p} slug={store.slug} locale={locale} />
+          {shown.map((p, i) => (
+            <ProductCard key={p.id} p={p} slug={store.slug} locale={locale} index={i} />
           ))}
         </div>
       )}

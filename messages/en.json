@@ -328,6 +328,7 @@
     "invalid_transition": "That status change isn't allowed.",
     "file_too_large": "That photo is too big.",
     "unsupported_image_type": "Use a JPG, PNG or WebP photo.",
+    "image_too_large": "That photo is too large (over 50 megapixels).",
     "ai_disabled": "Photo-to-product is not switched on.",
     "name_required": "Add a name in at least one language.",
     "empty_file": "Choose a photo first.",

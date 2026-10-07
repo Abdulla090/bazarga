@@ -16,7 +16,7 @@ import {
 } from "../services/catalog";
 import { deleteZone, setPaymentMethod, updateZoneFee, upsertZone } from "../services/settings";
 import { updateOrderStatus } from "../services/orders";
-import { uploadStoreImage } from "../storage";
+import { uploadProcessedImage } from "../storage";
 import {
   categorySchema,
   deliveryZoneSchema,
@@ -61,7 +61,7 @@ export async function updateStoreAction(_prev: ActionState, fd: FormData): Promi
     const input = storeInputFromForm(fd);
     let logoUrl: string | null | undefined;
     const logo = fd.get("logo");
-    if (logo instanceof File && logo.size > 0) logoUrl = (await uploadStoreImage(store.id, logo)).url;
+    if (logo instanceof File && logo.size > 0) logoUrl = (await uploadProcessedImage(store.id, logo)).url;
     if (fd.get("removeLogo") === "1") logoUrl = null;
     await updateStore(db(), store.id, { ...input, logoUrl });
     revalidatePath("/dashboard", "layout");
@@ -82,6 +82,20 @@ function productInputFromForm(fd: FormData) {
     categoryId: emptyToNull(fd.get("categoryId")),
     isActive: fd.get("isActive") === "on" || fd.get("isActive") === "true",
     imageUrls: fd.getAll("imageUrls").filter((v): v is string => typeof v === "string" && v.length > 0),
+    images: imagesFromForm(fd),
+  });
+}
+
+/** `images` hidden inputs carry pipeline metadata as JSON (validated by productImageSchema). */
+function imagesFromForm(fd: FormData): unknown[] | undefined {
+  const raw = fd.getAll("images").filter((v): v is string => typeof v === "string" && v.length > 0);
+  if (!raw.length) return undefined;
+  return raw.map((v) => {
+    try {
+      return JSON.parse(v) as unknown;
+    } catch {
+      return null; // rejected by the schema → field error
+    }
   });
 }
 

@@ -1,12 +1,19 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { Plus, X } from "lucide-react";
+import type { ProductImageInput } from "@/lib/validation";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import { SIZES } from "@/lib/responsive-image";
 
-/** Uploads to /api/uploads and keeps the resulting URLs as hidden `imageUrls` inputs. */
-export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: string[]; maxMb: number; max?: number }) {
+/**
+ * Uploads to /api/uploads (resize → WebP renditions, EXIF/GPS stripped) and keeps each result as a hidden
+ * `images` input holding the pipeline metadata as JSON. The first image is the product's cover.
+ */
+export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: ProductImageInput[]; maxMb: number; max?: number }) {
   const t = useTranslations("products");
   const te = useTranslations("errors");
-  const [urls, setUrls] = useState<string[]>(initial);
+  const [images, setImages] = useState<ProductImageInput[]>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -15,7 +22,7 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: stri
     setBusy(true);
     setError(undefined);
     try {
-      for (const f of Array.from(files).slice(0, max - urls.length)) {
+      for (const f of Array.from(files).slice(0, max - images.length)) {
         if (f.size > maxMb * 1024 * 1024) {
           setError("file_too_large");
           continue;
@@ -23,9 +30,9 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: stri
         const fd = new FormData();
         fd.append("file", f);
         const res = await fetch("/api/uploads", { method: "POST", body: fd });
-        const j = (await res.json()) as { url?: string; error?: string };
-        if (!res.ok || !j.url) setError(j.error ?? "generic");
-        else setUrls((u) => [...u, j.url!]);
+        const j = (await res.json()) as { url?: string; image?: ProductImageInput; error?: string };
+        if (!res.ok || !j.image) setError(j.error ?? "generic");
+        else setImages((list) => [...list, j.image!]);
       }
     } finally {
       setBusy(false);
@@ -36,25 +43,35 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: stri
     <div>
       <span className="label">{t("images")}</span>
       <ul className="mb-2 flex flex-wrap gap-2">
-        {urls.map((u, i) => (
-          <li key={u} className="relative">
-            <input type="hidden" name="imageUrls" value={u} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={u} alt="" className="h-20 w-20 rounded-xl border border-line object-cover" />
+        {images.map((img, i) => (
+          <li key={img.url} className="relative">
+            <input type="hidden" name="images" value={JSON.stringify(img)} />
+            <ResponsiveImage
+              image={img}
+              alt=""
+              sizes={SIZES.thumb}
+              index={i}
+              aboveTheFold={0}
+              className="h-20 w-20 rounded-xl border border-line object-cover"
+            />
             <button
               type="button"
               aria-label={t("removeImage")}
-              className="absolute -end-2 -top-2 h-7 w-7 rounded-full bg-ink text-sm text-paper"
-              onClick={() => setUrls((list) => list.filter((_, j) => j !== i))}
+              className="absolute -end-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-ink text-paper"
+              onClick={() => setImages((list) => list.filter((_, j) => j !== i))}
             >
-              ×
+              <X aria-hidden size={16} strokeWidth={2.5} />
             </button>
           </li>
         ))}
       </ul>
-      {urls.length < max && (
+      {images.length < max && (
         <label className="btn-ghost btn-sm cursor-pointer">
-          {busy ? "…" : `+ ${t("addImages")}`}
+          {busy ? "…" : (
+            <>
+              <Plus aria-hidden size={16} /> {t("addImages")}
+            </>
+          )}
           <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" disabled={busy} onChange={(e) => onFiles(e.target.files)} />
         </label>
       )}

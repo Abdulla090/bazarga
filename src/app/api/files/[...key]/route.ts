@@ -8,7 +8,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
   const s = storage();
   if (!(s instanceof LocalDiskStorage)) return new NextResponse(null, { status: 404 });
   const k = key.join("/");
-  if (!/^stores\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/.test(k)) return new NextResponse(null, { status: 404 });
+  // v1 originals (<uuid>.jpg|png|webp) and pipeline renditions (<uuid>-<width>.webp).
+  if (!/^stores\/[0-9a-f-]{36}\/[0-9a-f-]{36}(-\d{2,5})?\.(jpg|png|webp)$/.test(k)) return new NextResponse(null, { status: 404 });
   try {
     const buf = await s.read(k);
     const type = sniffImage(buf);

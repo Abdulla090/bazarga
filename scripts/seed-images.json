@@ -1,0 +1,129 @@
+{
+  "product-dress": {
+    "url": "/images/seed/product-dress-1024.webp",
+    "width": 1024,
+    "height": 1024,
+    "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAQCdASoQABAAA4BaJYwAApQdmQQWygAA/vYLUkFWkyzI7VSKLUpX5VDOmWHbyG9g33Uw31LzsZjNMCVz5062iXuLArshxW8/iknlrF5w9rN7ilBAAA==",
+    "dominantColor": "#f8f8e8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-dress-320.webp",
+        "url": "/images/seed/product-dress-320.webp",
+        "bytes": 12948
+      },
+      {
+        "width": 640,
+        "height": 640,
+        "key": "seed/product-dress-640.webp",
+        "url": "/images/seed/product-dress-640.webp",
+        "bytes": 46582
+      },
+      {
+        "width": 1024,
+        "height": 1024,
+        "key": "seed/product-dress-1024.webp",
+        "url": "/images/seed/product-dress-1024.webp",
+        "bytes": 108620
+      }
+    ]
+  },
+  "product-honey": {
+    "url": "/images/seed/product-honey-1024.webp",
+    "width": 1024,
+    "height": 1024,
+    "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQABAAA4BaJagCdAEf3WE7JwZ0AAD+9Pxi7beTbO0cQBbF5Dedm6vzXDyvTHxJXlO650JrTPusmF/geaTUcUcgwIU34aNv8n4B+AU+ZTQ4sAAA",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-honey-320.webp",
+        "url": "/images/seed/product-honey-320.webp",
+        "bytes": 9790
+      },
+      {
+        "width": 640,
+        "height": 640,
+        "key": "seed/product-honey-640.webp",
+        "url": "/images/seed/product-honey-640.webp",
+        "bytes": 28242
+      },
+      {
+        "width": 1024,
+        "height": 1024,
+        "key": "seed/product-honey-1024.webp",
+        "url": "/images/seed/product-honey-1024.webp",
+        "bytes": 56938
+      }
+    ]
+  },
+  "product-cosmetics": {
+    "url": "/images/seed/product-cosmetics-1024.webp",
+    "width": 1024,
+    "height": 1024,
+    "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQABAAA4BaJQBOgB6Wv2JVRAAA/sQiUq7skJxK/lLEiphZvygKpDgcYF7fggwhY4Q2Z7tXm7Rbo5pjoRzOvwAA",
+    "dominantColor": "#e8e8d8",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 320,
+        "key": "seed/product-cosmetics-320.webp",
+        "url": "/images/seed/product-cosmetics-320.webp",
+        "bytes": 6854
+      },
+      {
+        "width": 640,
+        "height": 640,
+        "key": "seed/product-cosmetics-640.webp",
+        "url": "/images/seed/product-cosmetics-640.webp",
+        "bytes": 18648
+      },
+      {
+        "width": 1024,
+        "height": 1024,
+        "key": "seed/product-cosmetics-1024.webp",
+        "url": "/images/seed/product-cosmetics-1024.webp",
+        "bytes": 37012
+      }
+    ]
+  },
+  "hero": {
+    "url": "/images/seed/hero-1024.webp",
+    "width": 1200,
+    "height": 670,
+    "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADQAQCdASoQAAkAA4BaJZgCdAC2i8LXAAD+T3g+HhLvkH6drxHKd6zuTNuP9dotdgEIhDxFIxD1DRiXA222WKKaIQAAAA==",
+    "dominantColor": "#080808",
+    "renditions": [
+      {
+        "width": 320,
+        "height": 179,
+        "key": "seed/hero-320.webp",
+        "url": "/images/seed/hero-320.webp",
+        "bytes": 13944
+      },
+      {
+        "width": 640,
+        "height": 357,
+        "key": "seed/hero-640.webp",
+        "url": "/images/seed/hero-640.webp",
+        "bytes": 35428
+      },
+      {
+        "width": 1024,
+        "height": 572,
+        "key": "seed/hero-1024.webp",
+        "url": "/images/seed/hero-1024.webp",
+        "bytes": 63326
+      },
+      {
+        "width": 1200,
+        "height": 670,
+        "key": "seed/hero-1200.webp",
+        "url": "/images/seed/hero-1200.webp",
+        "bytes": 78158
+      }
+    ]
+  }
+}

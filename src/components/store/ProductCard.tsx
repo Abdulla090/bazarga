@@ -4,8 +4,11 @@ import { AddToCart } from "./AddToCart";
 import { formatIQD } from "@/lib/money";
 import { pickText, type Locale } from "@/lib/i18n";
 import type { ProductWithImages } from "@/server/services/catalog";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import { SIZES } from "@/lib/responsive-image";
 
-export async function ProductCard({ p, slug, locale }: { p: ProductWithImages; slug: string; locale: Locale }) {
+/** `index` = position in the grid: the first row (2 cards on phones) loads eagerly with high priority, the rest lazily. */
+export async function ProductCard({ p, slug, locale, index = 99 }: { p: ProductWithImages; slug: string; locale: Locale; index?: number }) {
   const t = await getTranslations("store");
   const name = pickText(p.name, locale);
   const soldOut = p.stock !== null && p.stock <= 0;
@@ -13,8 +16,14 @@ export async function ProductCard({ p, slug, locale }: { p: ProductWithImages; s
     <article className="flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
       <Link href={`/s/${slug}/p/${p.id}`} className="relative block">
         {p.images[0] ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.images[0].url} alt={name} loading="lazy" className="aspect-square w-full object-cover" />
+          <ResponsiveImage
+            image={p.images[0]}
+            alt={name}
+            sizes={SIZES.productGrid}
+            index={index}
+            aboveTheFold={2}
+            className="aspect-square w-full object-cover"
+          />
         ) : (
           <span className="block aspect-square w-full bg-paper" />
         )}
