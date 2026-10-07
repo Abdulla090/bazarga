@@ -18,7 +18,7 @@ export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string;
         <span className="sr-only">{t("fee")}</span>
         <input name="fee" type="number" min={0} step={250} defaultValue={fee} className="input num w-32" dir="ltr" aria-label={t("fee")} />
       </label>
-      <label className="flex items-center gap-2 text-sm font-semibold">
+      <label className="flex min-h-11 items-center gap-2 text-sm font-semibold">
         <input type="checkbox" name="isActive" defaultChecked={isActive} className="h-5 w-5 accent-green" />
         {t("active")}
       </label>

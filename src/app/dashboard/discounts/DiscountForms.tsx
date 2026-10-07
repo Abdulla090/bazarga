@@ -111,7 +111,7 @@ export function DiscountToggle({ id, isActive }: { id: string; isActive: boolean
           await toggleDiscountAction(id, !on);
         })
       }
-      className={`chip min-h-9 shrink-0 px-4 ${on ? "bg-green text-white" : "bg-ink/10 text-ink-70"}`}
+      className={`chip min-h-11 shrink-0 px-4 ${on ? "bg-green text-white" : "bg-ink/10 text-ink-70"}`}
     >
       {on ? t("active") : t("inactive")}
     </button>
