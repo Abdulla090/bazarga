@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "my market",
+    "appName": "Bazarga",
     "tagline": "Your store, in your language.",
     "save": "Save",
     "saved": "Saved",
@@ -31,7 +31,7 @@
     "dashboard": "My store"
   },
   "landing": {
-    "metaTitle": "my market · Your store, in your language",
+    "metaTitle": "Bazarga · Your store, in your language",
     "metaDescription": "A Kurdish-first online store for Instagram and WhatsApp sellers. Send photos and prices, get a store with delivery per city and local payments.",
     "heroEyebrow": "For Instagram and WhatsApp sellers",
     "heroSub": "Send photos and prices in your language. Your store goes live. No themes, no dashboard.",
@@ -50,9 +50,9 @@
     "s3Body": "Orders come in, and you get paid cash on delivery.",
     "demoEyebrow": "Live sample",
     "demoTitle": "A store like this, only yours.",
-    "demoBody": "Hawler Bazaar is a real working store on my market. Add something to the cart, pick your city and see the delivery fee.",
+    "demoBody": "Hawler Bazaar is a real working store on Bazarga. Add something to the cart, pick your city and see the delivery fee.",
     "demoCta": "Open Hawler Bazaar",
-    "whyEyebrow": "Why my market",
+    "whyEyebrow": "Why Bazarga",
     "whyTitle": "Built for the bazaar right here.",
     "w1Title": "Kurdish-first",
     "w1Body": "Sorani and Kurmanji built in. Rivals lead in Arabic.",
@@ -307,7 +307,7 @@
     "orderThanks": "Thank you, {name}. The seller will contact you to confirm.",
     "messageSeller": "Message the seller on WhatsApp",
     "backToStore": "Back to the store",
-    "poweredBy": "Made with my market",
+    "poweredBy": "Made with Bazarga",
     "fibTitle": "Pay with FIB",
     "fibScan": "Scan with the FIB app, or enter this code:",
     "openFib": "Open FIB app",
@@ -421,7 +421,7 @@
     "address_required": "Add a landmark or your street address."
   },
   "pwa": {
-    "installTitle": "Install my market",
+    "installTitle": "Install Bazarga",
     "installSub": "Open your dashboard from your home screen, like an app.",
     "installCta": "Install",
     "installDismiss": "Later",

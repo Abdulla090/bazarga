@@ -52,7 +52,7 @@ ok(health.status === "ok", "health check ok");
 
 const landing = await fetch(`${BASE}/`);
 const landingHtml = await landing.text();
-ok(landing.status === 200 && landingHtml.includes("فرۆشگاکەم"), "landing renders (Kurdish default)");
+ok(landing.status === 200 && landingHtml.includes("بازارگە"), "landing renders (Kurdish default)");
 ok(landingHtml.includes('dir="rtl"'), "landing is RTL by default");
 ok(!!landing.headers.get("content-security-policy"), "security headers present");
 

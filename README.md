@@ -1,8 +1,8 @@
-# my market · فرۆشگاکەم
+# BAZARGA · بازارگە
 
 **Your store, in your language.** · **دوکانەکەت، بە زمانی خۆت.** · **متجرك، بلغتك.**
 
-A Kurdish-first, zero-setup online store builder for Instagram and WhatsApp sellers in Kurdistan and Iraq.
+Bazarga (Kurdish/Arabic: بازارگە, "the market place") is a Kurdish-first, zero-setup online store builder for Instagram and WhatsApp sellers in Kurdistan and Iraq.
 A seller signs up, names the store, and gets a mobile storefront at `/s/<slug>` with delivery fees per city,
 Cash on Delivery (plus FIB / ZainCash when connected), WhatsApp order hand-off, and a small trilingual dashboard.
 

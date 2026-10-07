@@ -5,9 +5,9 @@ import { BRAND } from "@/lib/theme";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "my market / فرۆشگاکەم",
-    short_name: "فرۆشگاکەم",
-    description: "دوکانی ئۆنلاین بۆ فرۆشیارانی کوردستان — my market",
+    name: "Bazarga / بازارگە",
+    short_name: "بازارگە",
+    description: "دوکانی ئۆنلاین بۆ فرۆشیارانی کوردستان — Bazarga",
     start_url: "/dashboard?source=pwa",
     scope: "/",
     display: "standalone",

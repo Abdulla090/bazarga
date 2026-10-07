@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # ---------------------------------------------------------------------------
-# my market — production image (Next.js standalone output)
+# Bazarga — production image (Next.js standalone output)
 # ---------------------------------------------------------------------------
 FROM node:22-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1

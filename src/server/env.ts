@@ -33,7 +33,7 @@ const schema = z.object({
 
   // Email
   EMAIL_DRIVER: z.enum(["console", "resend"]).default("console"),
-  EMAIL_FROM: z.string().default("my market <hello@mymarket.app>"),
+  EMAIL_FROM: z.string().default("Bazarga <hello@mymarket.app>"),
   RESEND_API_KEY: z.string().optional(),
 
   // Notifications (comma separated: console,telegram,whatsapp,email)

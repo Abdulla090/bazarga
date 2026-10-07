@@ -155,7 +155,7 @@ export default async function LandingPage() {
       <footer className="border-t border-line py-8">
         <div className="container-page flex flex-wrap items-center justify-between gap-4 text-sm text-ink-70">
           <Logo />
-          <p>{t("madeIn")} · © {new Date().getFullYear()} my market</p>
+          <p>{t("madeIn")} · © {new Date().getFullYear()} Bazarga</p>
         </div>
       </footer>
     </>
