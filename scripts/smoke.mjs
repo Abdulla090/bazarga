@@ -2,7 +2,7 @@
  * End-to-end smoke test against a running build (no browser needed):
  *   BASE_URL=http://localhost:3000 node scripts/smoke.mjs
  * Exercises: health, landing, storefront, server-side cart quote, COD checkout, confirmation page +
- * WhatsApp deep link, seller signup → onboarding → dashboard order list, tenant isolation over HTTP.
+ * WhatsApp deep link, order tracking (lookup, wrong phone/number, rate limit), seller signup → onboarding → dashboard order list, tenant isolation over HTTP.
  * Server action ids are read from the build manifest, so run it from the repo root after `npm run build`.
  */
 import { readFileSync } from "node:fs";
@@ -102,9 +102,52 @@ const order = await callAction(
 );
 const redirectTo = /"redirectTo":"([^"]+)"/.exec(order.text)?.[1];
 ok(!!redirectTo && redirectTo.includes("/s/hawler-bazaar/order/"), "COD checkout creates an order");
+let orderNumber = null;
 if (redirectTo) {
   const conf = await (await fetch(new URL(new URL(redirectTo).pathname, BASE))).text();
   ok(conf.includes("https://wa.me/9647501234567?text="), "confirmation page has a prefilled wa.me link to the seller");
+  orderNumber = /\/s\/hawler-bazaar\/track\?n=(\d+)/.exec(conf)?.[1] ?? null;
+  ok(!!orderNumber && conf.includes('data-testid="track-link"'), "confirmation page links to order tracking");
+  ok(conf.includes(encodeURIComponent(`/s/hawler-bazaar/track?n=${orderNumber}`)), "WhatsApp summary carries the tracking link");
+}
+
+// Order tracking: the no-JS form post (multipart with $ACTION_ID_…) → 303 + httpOnly cookie → the page shows the order.
+async function track(number, phone, ip) {
+  const fd = new FormData();
+  fd.append(`$ACTION_ID_${actionId("trackOrderAction")}`, "");
+  fd.append("slug", "hawler-bazaar");
+  fd.append("number", number);
+  fd.append("phone", phone);
+  const res = await fetch(`${BASE}/s/hawler-bazaar/track`, { method: "POST", headers: { Origin: BASE, "X-Forwarded-For": ip }, body: fd, redirect: "manual" });
+  await res.text();
+  return { status: res.status, location: res.headers.get("location") ?? "", cookie: (res.headers.get("set-cookie") ?? "").split(";")[0] };
+}
+const trackPage = await fetch(`${BASE}/s/hawler-bazaar/track?n=${orderNumber ?? ""}`);
+const trackHtml = await trackPage.text();
+ok(trackPage.status === 200 && trackHtml.includes('data-testid="track-form"') && trackHtml.includes('dir="rtl"'), "tracking page renders the form (Kurdish, RTL)");
+ok(/name="robots" content="noindex/.test(trackHtml), "tracking page is noindex");
+const ipBase = `10.${Date.now() % 250}.${Math.floor(Math.random() * 250)}`;
+if (orderNumber) {
+  const hit = await track(orderNumber, "+964 770 111 2233", `${ipBase}.1`);
+  ok(hit.status === 303 && hit.cookie.startsWith("mm_track=") && /\/s\/hawler-bazaar\/track$/.test(hit.location), "tracking lookup with number + normalised phone succeeds");
+  const shown = await (await fetch(`${BASE}/s/hawler-bazaar/track`, { headers: { Cookie: `${hit.cookie}; mm_locale=en` } })).text();
+  ok(shown.includes('data-testid="track-result"') && shown.includes('data-testid="track-timeline"') && shown.includes("Order received"), "tracking page shows the status timeline");
+  ok(shown.includes("Shawes") && shown.includes('data-testid="track-whatsapp"') && shown.includes("https://wa.me/9647501234567?text="), "tracking page shows delivery area + WhatsApp to the store");
+  const wrongPhone = await track(orderNumber, "0770 111 2299", `${ipBase}.2`);
+  const wrongNumber = await track("999999", "0770 111 2233", `${ipBase}.3`);
+  ok(wrongPhone.status === 303 && /e=nf/.test(wrongPhone.location) && !wrongPhone.cookie.startsWith("mm_track="), "wrong phone → generic not-found, no cookie");
+  ok(/e=nf/.test(wrongNumber.location) && !wrongNumber.cookie.startsWith("mm_track="), "wrong number → the same generic not-found");
+  const nf = await (await fetch(new URL(wrongPhone.location, BASE), { headers: { Cookie: "mm_locale=en" } })).text();
+  ok(nf.includes('data-testid="track-error"') && !nf.includes('data-testid="track-result"'), "not-found message renders without order details");
+  // Storefront routes stream (partial prerender), so notFound() arrives as the 404 boundary in a 200 response.
+  const cross = await (await fetch(`${BASE}/s/smoke-nope-store/track`, { headers: { Cookie: hit.cookie } })).text();
+  ok(cross.includes("NEXT_HTTP_ERROR_FALLBACK;404") && !cross.includes('data-testid="track-result"'), "unknown store slug renders not-found on the tracking page");
+  let limited = null;
+  for (let i = 0; i < 12 && !limited; i++) {
+    const r = await track(String(900000 + i), "0770 111 2233", `${ipBase}.9`);
+    if (/e=rl/.test(r.location)) limited = i;
+  }
+  ok(limited !== null, `tracking lookups are rate-limited per IP (after ${limited ?? "?"} tries)`);
 }
 
 ok(/"discountAmount":0/.test(quote.text) && /"freeDeliveryRemaining"/.test(quote.text), "quote carries discount + free-delivery fields");
