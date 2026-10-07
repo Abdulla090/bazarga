@@ -63,6 +63,19 @@
   renditions, Erbil areas (Shawes, Ankawa, Bakhtiyari, 100m Street, Iskan) and Sulaymaniyah areas, WELCOME10
   (10 %, min 30,000 IQD, 100 uses) next to NEWROZ. Smoke + Playwright product-page checks added.
 
+**Dashboard: discounts & delivery areas (v5)**
+- Discounts screen `/dashboard/discounts`: create / edit / deactivate codes (percentage ≤90 %, fixed, free
+  delivery with a truck icon), start/end window, minimum subtotal, usage limit; codes are scoped to the seller's
+  store. Linked from the dashboard nav / More.
+- Delivery areas management `/dashboard/delivery`: add / edit / remove areas per city with their own fee; changes
+  invalidate the storefront cache so checkout offers the new area immediately.
+- WhatsApp order summary shows subtotal plus a discount line with the code and amount (free-delivery codes named),
+  in ku/ar/en/kmr.
+- Migration `0003_phone_e164_backfill`: legacy `9647…` customer and order phones rewritten to `+9647…`; duplicate
+  customers per store merged (oldest kept, orders repointed, totals summed).
+- Checks: unit tests for both screens and the migration; smoke covers discount + area create; 360 px mobile checks
+  cover Discounts, Delivery (areas open) and More.
+
 **Still open from this batch**
 - ~~Cover renditions~~ shipped in v4 (re-run Lighthouse on the store home to confirm the LCP gain).
 - Product page: the trust row's delivery line uses the store's home city; remember the shopper's last checkout
@@ -70,9 +83,8 @@
 - Lightbox pinch zoom is verified in desktop Chromium with touch emulation only; check on real iOS Safari / Android.
 - Product-grid thumbnails: add a ~480 w rendition (Lighthouse estimates ~96 KB savings on store home).
 - Run `npm run test:mobile` in CI (needs a seeded build + Chromium in the CI image).
-- Dashboard UI for managing discount codes and delivery areas.
-- Legacy customer phones are stored as `9647…`; new checkouts store `+9647…`. A one-off migration to
-  `+`-prefix existing `customers.phone` / `orders.customer_phone` would keep repeat-customer matching exact.
+- ~~Dashboard UI for managing discount codes and delivery areas.~~ Shipped in v5.
+- ~~Legacy `9647…` phone backfill to `+9647…`.~~ Shipped in v5 (migration 0003, with duplicate-customer merge).
 - Concurrency of discount claims is tested on PGlite (single connection, so transactions serialise); the
   conditional UPDATE is what makes it safe under Postgres READ COMMITTED — worth one integration run on real Postgres.
 
@@ -134,8 +146,7 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
   currently sends free-form text, which only works inside the 24 h window).
 - Delivery company integrations (common Kurdistan/Iraq couriers): create shipment, label, status sync.
 - ~~Product variants (size/colour) with per-variant stock.~~ Shipped (see "Shipped" below).
-- ~~Discount codes, free-delivery thresholds~~ — shipped at checkout; still to do: a dashboard screen to
-  create/edit/deactivate codes (codes are rows in `discount_codes`, seeded/inserted directly for now), bundles.
+- ~~Discount codes, free-delivery thresholds, dashboard screen for codes~~ — shipped (v5); still to do: bundles.
 - Multiple staff accounts per store with roles.
 - ~~PWA install + push notifications for new orders.~~ Shipped (v3).
 
