@@ -48,7 +48,7 @@ describe("filterCatalog", () => {
     expect(p1.hasMore).toBe(true);
     const p2 = filterCatalog(many, { locale: "en", page: "2" });
     expect(p2.items).toHaveLength(48);
-    expect(p2.items[0].id).toBe("0");
+    expect(p2.items[0]?.id).toBe("0");
     const p3 = filterCatalog(many, { locale: "en", page: 3 });
     expect(p3.items).toHaveLength(60);
     expect(p3.hasMore).toBe(false);
