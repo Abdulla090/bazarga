@@ -5,12 +5,14 @@ import { listDiscountCodes } from "@/server/services/discounts";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { toIraqDay } from "@/lib/validation";
+import { Icon, Truck } from "@/components/ui/icons";
 import { DiscountForm, DiscountToggle } from "./DiscountForms";
 
 export default async function DiscountsPage() {
   const { store } = await requireStore();
   const t = await getTranslations("discounts");
   const tc = await getTranslations("common");
+  const tdel = await getTranslations("delivery");
   const locale = await currentLocale();
   const codes = await listDiscountCodes(db(), store.id);
   return (
@@ -38,7 +40,7 @@ export default async function DiscountsPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="num min-w-0 break-all text-lg font-extrabold" dir="ltr">{c.code}</span>
                   <span className="chip bg-gold/20 px-3 text-ink">
-                    <bdi className="num">{c.type === "percentage" ? `${c.value}%` : c.type === "fixed" ? formatIQD(c.value, locale) : "🚚"}</bdi>
+                    {c.type === "free_delivery" ? <Icon as={Truck} label={tdel("free")} /> : <bdi className="num">{c.type === "percentage" ? `${c.value}%` : formatIQD(c.value, locale)}</bdi>}
                   </span>
                   <span className="ms-auto"><DiscountToggle id={c.id} isActive={c.isActive} /></span>
                 </div>
