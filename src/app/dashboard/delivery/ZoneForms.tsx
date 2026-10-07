@@ -1,7 +1,7 @@
 "use client";
-import { useActionState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { addZoneAction, deleteZoneAction, updateZoneAction } from "@/server/actions/dashboard";
+import { addZoneAction, deleteAreaAction, deleteZoneAction, saveAreaAction, updateZoneAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Check, Icon, Trash2 } from "@/components/ui/icons";
 
@@ -54,6 +54,53 @@ export function AddZoneForm() {
       </div>
       <button className="btn-gold sm:col-span-4" disabled={pending}>+ {t("add")}</button>
       <div className="sm:col-span-4"><FormError error={state.fieldErrors?.name ? "name_required" : state.error} /></div>
+    </form>
+  );
+}
+
+export type AreaValues = { id: string; name: { ku?: string; ar?: string; en?: string }; fee: number | null };
+
+/** One area of a city: rename (ku / ar / en) and an optional fee override; empty fee = the city's fee. */
+export function AreaForm({ zoneId, cityFee, area }: { zoneId: string; cityFee: number; area?: AreaValues }) {
+  const t = useTranslations("delivery");
+  const tc = useTranslations("common");
+  const [state, action, pending] = useActionState(saveAreaAction, {});
+  const [delPending, start] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
+  const p = area?.id ?? `new-${zoneId}`;
+  useEffect(() => {
+    if (state.ok && !area) formRef.current?.reset();
+  }, [state, area]);
+  return (
+    <form ref={formRef} action={action} className="grid gap-2 rounded-xl border border-line p-2 sm:grid-cols-[1fr_1fr_1fr_8rem_auto] sm:items-end" data-testid={area ? "area-row" : "area-add"}>
+      <input type="hidden" name={area ? "id" : "zoneId"} value={area?.id ?? zoneId} />
+      <div className="min-w-0">
+        <label className="label text-xs" htmlFor={`${p}-ku`}>{t("areaName")} · کوردی</label>
+        <input id={`${p}-ku`} name="name.ku" defaultValue={area?.name.ku} className="input" dir="rtl" />
+      </div>
+      <div className="min-w-0">
+        <label className="label text-xs" htmlFor={`${p}-ar`}>{t("areaName")} · عربي</label>
+        <input id={`${p}-ar`} name="name.ar" defaultValue={area?.name.ar} className="input" dir="rtl" />
+      </div>
+      <div className="min-w-0">
+        <label className="label text-xs" htmlFor={`${p}-en`}>{t("areaName")} · English</label>
+        <input id={`${p}-en`} name="name.en" defaultValue={area?.name.en} className="input" dir="ltr" />
+      </div>
+      <div className="min-w-0">
+        <label className="label text-xs" htmlFor={`${p}-fee`}>{t("areaFee")}</label>
+        <input id={`${p}-fee`} name="fee" type="number" inputMode="numeric" min={0} step={250} defaultValue={area?.fee ?? ""} placeholder={String(cityFee)} className="input num" dir="ltr" />
+      </div>
+      <div className="flex gap-2">
+        <button className={`${area ? "btn-ink" : "btn-gold"} btn-sm flex-1`} disabled={pending}>
+          {state.ok && !pending && area ? <Icon as={Check} label={tc("saved")} /> : area ? tc("save") : `+ ${t("addArea")}`}
+        </button>
+        {area && (
+          <button type="button" className="btn-ghost btn-sm" disabled={delPending} onClick={() => confirm(tc("confirmDelete")) && start(() => deleteAreaAction(area.id))} aria-label={tc("delete")}>
+            <Icon as={Trash2} />
+          </button>
+        )}
+      </div>
+      {state.error && <div className="sm:col-span-5"><FormError error={state.fieldErrors?.name ? "name_required" : state.error} /></div>}
     </form>
   );
 }
