@@ -1,10 +1,9 @@
 "use client";
+import type { PaymentPanelLabels } from "./cart-labels";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { refreshPaymentAction, retryPaymentAction } from "@/server/actions/storefront";
 
-export const PAYMENT_PANEL_KEYS = ["paid", "fibTitle", "fibScan", "openFib", "payPending", "paymentFailed", "checkStatus", "retryPayment"] as const;
-export type PaymentPanelLabels = Record<(typeof PAYMENT_PANEL_KEYS)[number], string>;
 
 type Props = {
   /** Translated on the server (storefronts ship no i18n runtime). */

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { maskIraqiMobile } from "@/lib/phone";
 import { fmt } from "@/lib/fmt";
+import type { CartLabels } from "./cart-labels";
 import { useCart } from "./cart";
 import { placeOrderAction, quoteAction } from "@/server/actions/storefront";
 import type { Quote } from "@/server/services/orders";
@@ -14,9 +15,6 @@ import type { Locale } from "@/lib/i18n";
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
 const OTHER = "__other";
 
-export const CART_LABEL_KEYS = ["address", "addressHint", "cart", "checkout", "continue", "deliverTo", "delivery", "emptyCart", "name", "notes", "payment", "phone", "placeOrder", "qty", "subtotal", "total", "unavailableLine", "yourDetails", "area", "chooseArea", "otherArea", "areaPlaceholder", "landmark", "landmarkHint", "addressDetails", "phoneHint", "haveCode", "discountCode", "apply", "removeCode", "discount", "codeApplied", "freeDeliveryUnlocked", "freeDeliveryProgress", "placing", "free"] as const;
-/** Store strings translated on the server; `errors` is the errors namespace (storefronts ship no i18n runtime). */
-export type CartLabels = Record<(typeof CART_LABEL_KEYS)[number], string> & { cod: string; errors: Record<string, string> };
 
 
 export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity }: { labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {

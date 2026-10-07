@@ -10,7 +10,8 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { fullAddress, orderSummaryText, waLink } from "@/lib/whatsapp";
-import { PAYMENT_PANEL_KEYS, PaymentPanel } from "@/components/store/PaymentPanel";
+import { PaymentPanel } from "@/components/store/PaymentPanel";
+import { PAYMENT_PANEL_KEYS } from "@/components/store/cart-labels";
 import { pickLabels } from "@/lib/fmt";
 import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
 

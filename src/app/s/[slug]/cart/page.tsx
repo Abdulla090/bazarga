@@ -5,7 +5,8 @@ import { isProviderAvailable } from "@/server/payments/registry";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { getMessages, getTranslations } from "next-intl/server";
-import { CART_LABEL_KEYS, CartCheckout } from "@/components/store/CartCheckout";
+import { CartCheckout } from "@/components/store/CartCheckout";
+import { CART_LABEL_KEYS } from "@/components/store/cart-labels";
 import { pickLabels } from "@/lib/fmt";
 
 export const metadata: Metadata = { robots: { index: false } };

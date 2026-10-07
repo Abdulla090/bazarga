@@ -58,8 +58,10 @@ ok(!!landing.headers.get("content-security-policy"), "security headers present")
 
 const store = await fetch(`${BASE}/s/hawler-bazaar`);
 const storeHtml = await store.text();
+// Simple products carry an add-to-cart productId (used below); variant products only link to their page.
 const ids = [...new Set([...storeHtml.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
-ok(store.status === 200 && ids.length >= 3, `storefront lists the demo products (${ids.length})`);
+const listed = new Set([...storeHtml.matchAll(/\/s\/hawler-bazaar\/p\/([0-9a-f-]{36})/g)].map((m) => m[1]));
+ok(store.status === 200 && listed.size >= 3 && ids.length >= 2, `storefront lists the demo products (${listed.size}, ${ids.length} buyable from the grid)`);
 
 const quote = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 2 }], "baghdad", "en"], { path: "/s/hawler-bazaar/cart" });
 const total = /"total":(\d+)/.exec(quote.text)?.[1];
@@ -142,7 +144,7 @@ await callFormAction(
   { cookie: demoCookie, path: "/dashboard/products/new" },
 );
 const look = await callFormAction("saveStorefrontAction", { coverImageUrl: upJson.url, coverImagePlaceholder: upJson.image?.placeholder ?? "", freeDeliveryThreshold: "250,000" }, { cookie: demoCookie, path: "/dashboard/settings" });
-ok(!look.text.includes('"error"'), "seller saves cover + free-delivery threshold");
+ok(look.text.includes('"ok":true'), "seller saves cover + free-delivery threshold");
 const sf = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok(sf.includes(productName) && sf.includes(upJson.url), "new product with photo appears in the storefront");
 ok(sf.includes('fetchPriority="high"') || sf.includes('fetchpriority="high"'), "store home renders the cover hero");
