@@ -4,6 +4,7 @@ import { env } from "@/server/env";
 import { updateStoreAction } from "@/server/actions/dashboard";
 import { currentLocale } from "@/server/locale";
 import { StoreForm } from "@/components/dashboard/StoreForm";
+import { ThemeForm } from "@/components/dashboard/ThemeForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { pickText } from "@/lib/i18n";
 
@@ -29,6 +30,14 @@ export default async function SettingsPage() {
           city: store.city,
           logoUrl: store.logoUrl,
           tagline: store.tagline as Record<string, string>,
+        }}
+      />
+      <ThemeForm
+        initial={{
+          themePreset: store.themePreset,
+          accentColor: store.accentColor,
+          about: store.about,
+          returnPolicy: store.returnPolicy,
         }}
       />
     </div>

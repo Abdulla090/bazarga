@@ -2,17 +2,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { CreditCard, House, Icon, Menu, Receipt, Settings, ShoppingBag, Sparkles, Tags, Truck, Users } from "@/components/ui/icons";
 
 const ITEMS = [
-  { href: "/dashboard", key: "home", icon: "⌂", mobile: true },
-  { href: "/dashboard/orders", key: "orders", icon: "🧾", mobile: true },
-  { href: "/dashboard/products", key: "products", icon: "🛍️", mobile: true },
-  { href: "/dashboard/ai", key: "ai", icon: "✨", mobile: false },
-  { href: "/dashboard/categories", key: "categories", icon: "🏷️", mobile: false },
-  { href: "/dashboard/delivery", key: "delivery", icon: "🚚", mobile: false },
-  { href: "/dashboard/payments", key: "payments", icon: "💳", mobile: false },
-  { href: "/dashboard/customers", key: "customers", icon: "👥", mobile: false },
-  { href: "/dashboard/settings", key: "settings", icon: "⚙️", mobile: false },
+  { href: "/dashboard", key: "home", icon: House, mobile: true },
+  { href: "/dashboard/orders", key: "orders", icon: Receipt, mobile: true },
+  { href: "/dashboard/products", key: "products", icon: ShoppingBag, mobile: true },
+  { href: "/dashboard/ai", key: "ai", icon: Sparkles, mobile: false },
+  { href: "/dashboard/categories", key: "categories", icon: Tags, mobile: false },
+  { href: "/dashboard/delivery", key: "delivery", icon: Truck, mobile: false },
+  { href: "/dashboard/payments", key: "payments", icon: CreditCard, mobile: false },
+  { href: "/dashboard/customers", key: "customers", icon: Users, mobile: false },
+  { href: "/dashboard/settings", key: "settings", icon: Settings, mobile: false },
 ] as const;
 
 export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
@@ -27,14 +28,14 @@ export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
           {ITEMS.filter((i) => i.mobile).map((i) => (
             <li key={i.href}>
               <Link href={i.href} aria-current={active(i.href) ? "page" : undefined} className={`flex min-h-14 flex-col items-center justify-center text-xs font-semibold ${active(i.href) ? "text-ink" : "text-ink-50"}`}>
-                <span aria-hidden="true" className="text-lg">{i.icon}</span>
+                <Icon as={i.icon} className="text-xl" />
                 {t(i.key)}
               </Link>
             </li>
           ))}
           <li>
             <Link href="/dashboard/more" aria-current={path === "/dashboard/more" ? "page" : undefined} className={`flex min-h-14 flex-col items-center justify-center text-xs font-semibold ${path === "/dashboard/more" ? "text-ink" : "text-ink-50"}`}>
-              <span aria-hidden="true" className="text-lg">☰</span>
+              <Icon as={Menu} className="text-xl" />
               {t("more")}
             </Link>
           </li>
@@ -53,7 +54,7 @@ export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
               aria-current={active(i.href) ? "page" : undefined}
               className={`flex min-h-11 items-center gap-3 rounded-xl px-3 font-semibold ${active(i.href) ? "bg-ink text-paper" : "text-ink-70 hover:bg-ink/5"}`}
             >
-              <span aria-hidden="true">{i.icon}</span>
+              <Icon as={i.icon} />
               {t(i.key)}
             </Link>
           </li>

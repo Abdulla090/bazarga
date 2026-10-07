@@ -6,6 +6,7 @@ import { Field, FormError } from "@/components/forms/Field";
 import { ImageUploader } from "./ImageUploader";
 import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
+import { Check, Icon } from "@/components/ui/icons";
 
 type Values = {
   id?: string;
@@ -49,7 +50,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
               className={`rounded-full px-3 py-1 text-sm font-semibold ${lang === l ? "bg-ink text-paper" : "border border-line"}`}
             >
               {LOCALE_LABEL[l]}
-              {initial.name[l] ? " ✓" : ""}
+              {initial.name[l] ? <Icon as={Check} className="ms-1" /> : null}
             </button>
           ))}
         </div>
@@ -82,7 +83,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
           </select>
         </div>
         <label className="flex items-center gap-2 font-semibold sm:col-span-2">
-          <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-[#1F8A5B]" />
+          <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />
           {t("active")}
         </label>
       </div>

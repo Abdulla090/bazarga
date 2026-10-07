@@ -7,6 +7,7 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
 import { ActiveToggle } from "./ActiveToggle";
+import { Icon, Sparkles } from "@/components/ui/icons";
 
 export default async function ProductsPage() {
   const { store } = await requireStore();
@@ -18,7 +19,7 @@ export default async function ProductsPage() {
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="me-auto text-2xl font-extrabold">{t("title")}</h1>
-        <Link href="/dashboard/ai" className="btn-ghost btn-sm">✨ {td("ai")}</Link>
+        <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
         <Link href="/dashboard/products/new" className="btn-gold btn-sm">+ {t("new")}</Link>
       </div>
       {products.length === 0 ? (

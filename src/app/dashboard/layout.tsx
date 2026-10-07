@@ -5,6 +5,7 @@ import { logOutAction } from "@/server/actions/auth";
 import { Logo } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { DashNav } from "@/components/dashboard/DashNav";
+import { ExternalLink, Icon } from "@/components/ui/icons";
 
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
@@ -21,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <span className="hidden truncate text-sm font-bold text-ink-70 sm:inline">· {store.name}</span>
           </Link>
           <LocaleSwitcher compact />
-          <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm">{t("viewStore")} ↗</Link>
+          <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm">{t("viewStore")} <Icon as={ExternalLink} className="rtl:-scale-x-100" /></Link>
         </div>
       </header>
       <div className="mx-auto flex max-w-7xl gap-6 px-4 py-6">

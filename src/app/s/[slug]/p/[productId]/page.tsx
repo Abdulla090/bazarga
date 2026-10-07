@@ -12,6 +12,7 @@ import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
+import { ArrowBack, ArrowForward } from "@/components/ui/icons";
 
 async function load(slug: string, productId: string) {
   if (!z.uuid().safeParse(productId).success) notFound();
@@ -59,7 +60,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         )}
       </div>
       <div className="grid h-fit gap-4 md:sticky md:top-24">
-        <Link href={`/s/${store.slug}`} className="text-sm font-semibold text-ink-70">← {tc("back")}</Link>
+        <Link href={`/s/${store.slug}`} className="inline-flex items-center gap-1 text-sm font-semibold text-ink-70"><ArrowBack /> {tc("back")}</Link>
         <h1 className="text-3xl font-extrabold">{name}</h1>
         <p className="num text-2xl">
           <span className="font-extrabold">{formatIQD(p.price, locale)}</span>
@@ -68,7 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         {p.stock !== null && p.stock > 0 && p.stock <= 5 && <p className="font-semibold text-danger">{t("onlyLeft", { count: p.stock })}</p>}
         <AddToCart slug={store.slug} productId={p.id} disabled={soldOut} big />
         {pickText(p.description, locale) && <p className="whitespace-pre-line leading-relaxed text-ink-70">{pickText(p.description, locale)}</p>}
-        <Link href={`/s/${store.slug}/cart`} className="btn-ghost">{t("checkout")} →</Link>
+        <Link href={`/s/${store.slug}/cart`} className="btn-ghost">{t("checkout")} <ArrowForward /></Link>
       </div>
     </div>
   );

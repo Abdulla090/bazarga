@@ -16,6 +16,7 @@ const SPECIFIC = new Set([
   "email_taken", "invalid_credentials", "slug_taken", "invalid_slug", "invalid_phone", "password_short",
   "invalid_or_expired_token", "invalid_city", "product_unavailable", "payment_method_unavailable", "out_of_stock",
   "invalid_transition", "file_too_large", "unsupported_image_type", "ai_disabled", "name_required", "empty_file", "nothing_to_read",
+  "image_too_large", "invalid_color",
 ]);
 
 /** Convert any thrown error into a serialisable, translatable action result. Unexpected errors are logged, not leaked. */

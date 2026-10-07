@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Awning } from "@/components/Logo";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
+import { resolveTheme, themeStyle } from "@/lib/theme";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -25,8 +26,11 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const t = await getTranslations("store");
   const locale = await currentLocale();
   const tagline = pickText(store.tagline, locale);
+  const about = pickText(store.about, locale);
+  const returns = pickText(store.returnPolicy, locale);
+  const theme = resolveTheme(store.themePreset, store.accentColor);
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={themeStyle(theme)}>
       <header className="sticky top-0 z-20 border-b border-line bg-white/95 backdrop-blur">
         <div className="container-page flex min-h-16 items-center gap-3 py-2">
           <Link href={`/s/${store.slug}`} className="me-auto flex min-w-0 items-center gap-3">
@@ -34,7 +38,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
               // eslint-disable-next-line @next/next/no-img-element
               <img src={store.logoUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-lg font-extrabold text-gold">{store.name.slice(0, 1)}</span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-st-hero text-lg font-extrabold text-st-on-hero">{store.name.slice(0, 1)}</span>
             )}
             <span className="min-w-0">
               <span className="block truncate text-lg font-extrabold">{store.name}</span>
@@ -46,6 +50,22 @@ export default async function StoreLayout({ children, params }: { children: Reac
       </header>
       <main className="container-page flex-1 py-6">{children}</main>
       <footer className="border-t border-line bg-white py-6">
+        {(about || returns) && (
+          <div className="container-page mb-6 grid gap-4 text-sm sm:grid-cols-2">
+            {about && (
+              <section>
+                <h2 className="mb-1 font-bold">{t("about")}</h2>
+                <p className="whitespace-pre-line text-ink-70">{about}</p>
+              </section>
+            )}
+            {returns && (
+              <section>
+                <h2 className="mb-1 font-bold">{t("returnPolicy")}</h2>
+                <p className="whitespace-pre-line text-ink-70">{returns}</p>
+              </section>
+            )}
+          </div>
+        )}
         <div className="container-page flex flex-wrap items-center justify-between gap-3 text-sm">
           <LocaleSwitcher locales={["ku", "ar", "en"]} />
           <div className="flex flex-wrap items-center gap-3 text-ink-70">

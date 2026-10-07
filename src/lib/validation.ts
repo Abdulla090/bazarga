@@ -3,6 +3,7 @@ import { LOCALES } from "./i18n";
 import { normalizePhone } from "./phone";
 import { isValidSlug } from "./slug";
 import { ORDER_STATUSES, PAYMENT_METHODS } from "./order-status";
+import { HEX_COLOR_RE, THEME_PRESETS } from "./theme";
 
 /** Shared Zod schemas. Every server action / route handler parses input through one of these. */
 
@@ -90,6 +91,20 @@ export const storeSchema = z.object({
   tagline: localizedTextSchema.optional(),
 });
 export type StoreInput = z.infer<typeof storeSchema>;
+
+/** Storefront look (stores.theme_preset / accent_color / about / return_policy). */
+export const storeThemeSchema = z.object({
+  themePreset: z.enum(THEME_PRESETS).default("bazaar"),
+  accentColor: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => (v ? v.toUpperCase() : null))
+    .refine((v) => v === null || HEX_COLOR_RE.test(v), { message: "invalid_color" }),
+  about: localizedTextSchema.default({}),
+  returnPolicy: localizedTextSchema.default({}),
+});
+export type StoreThemeInput = z.infer<typeof storeThemeSchema>;
 
 // ---------------------------------------------------------------- catalog
 /** Only same-origin paths (uploads, seed images) or https URLs (S3/R2 public bucket). */

@@ -11,6 +11,7 @@ import { PAYMENT_LABEL } from "@/lib/order-status";
 import { waLink } from "@/lib/whatsapp";
 import { PaymentBadge, StatusBadge } from "@/components/dashboard/Badges";
 import { StatusActions } from "./StatusActions";
+import { ArrowBack } from "@/components/ui/icons";
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,7 +27,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="grid gap-4">
-      <Link href="/dashboard/orders" className="text-sm font-semibold text-ink-70">← {tc("back")}</Link>
+      <Link href="/dashboard/orders" className="inline-flex items-center gap-1 text-sm font-semibold text-ink-70"><ArrowBack /> {tc("back")}</Link>
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-extrabold">{t("order", { number: order.number })}</h1>
         <StatusBadge status={order.status} />

@@ -11,6 +11,7 @@ import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { orderSummaryText, waLink } from "@/lib/whatsapp";
 import { PaymentPanel } from "@/components/store/PaymentPanel";
+import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
 
 export const metadata: Metadata = { robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -53,7 +54,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   return (
     <div className="mx-auto grid max-w-lg gap-4">
       <div className="card text-center">
-        <p className="text-4xl" aria-hidden="true">✅</p>
+        <Icon as={CircleCheck} className="text-5xl text-green" />
         <h1 className="mt-2 text-2xl font-extrabold">{t("orderReceived")}</h1>
         <p className="num mt-1 text-lg font-bold">{t("orderNumber", { number: order.number })}</p>
         <p className="mt-2 text-ink-70">{t("orderThanks", { name: order.customerName })}</p>
@@ -62,8 +63,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       <PaymentPanel slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />
 
       {sellerPhone && (
-        <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn btn-gold min-h-14 bg-[#25D366] text-white hover:bg-[#1ebe5b]">
-          💬 {t("messageSeller")}
+        <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn min-h-14 bg-whatsapp text-ink hover:brightness-95">
+          <Icon as={MessageCircle} /> {t("messageSeller")}
         </a>
       )}
 

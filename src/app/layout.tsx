@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { connection } from "next/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
-import "@fontsource-variable/vazirmatn";
-import "@fontsource-variable/inter";
 import "./globals.css";
+import { fontVariables } from "./fonts";
 import { HTML_LANG, dirOf, isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
+import { BRAND } from "@/lib/theme";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("landing");
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = { themeColor: "#0F1B2D", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: BRAND.ink, width: "device-width", initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Nonce-based CSP (src/proxy.ts) needs every page rendered per request: Next stamps the nonce from the
@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const messages = await getMessages();
   return (
-    <html lang={HTML_LANG[locale]} dir={dirOf(locale)}>
+    <html lang={HTML_LANG[locale]} dir={dirOf(locale)} className={fontVariables}>
       <body className="antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}

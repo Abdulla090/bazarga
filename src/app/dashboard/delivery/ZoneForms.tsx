@@ -3,6 +3,7 @@ import { useActionState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { addZoneAction, deleteZoneAction, updateZoneAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
+import { Check, Icon, Trash2 } from "@/components/ui/icons";
 
 export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string; fee: number; isActive: boolean }) {
   const t = useTranslations("delivery");
@@ -18,12 +19,12 @@ export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string;
         <input name="fee" type="number" min={0} step={250} defaultValue={fee} className="input num w-32" dir="ltr" aria-label={t("fee")} />
       </label>
       <label className="flex items-center gap-2 text-sm font-semibold">
-        <input type="checkbox" name="isActive" defaultChecked={isActive} className="h-5 w-5 accent-[#1F8A5B]" />
+        <input type="checkbox" name="isActive" defaultChecked={isActive} className="h-5 w-5 accent-green" />
         {t("active")}
       </label>
-      <button className="btn-gold btn-sm" disabled={pending}>{state.ok && !pending ? "✓" : tc("save")}</button>
+      <button className="btn-gold btn-sm" disabled={pending}>{state.ok && !pending ? <Icon as={Check} label={tc("save")} /> : tc("save")}</button>
       <button type="button" className="btn-ghost btn-sm" disabled={delPending} onClick={() => confirm(tc("confirmDelete")) && start(() => deleteZoneAction(id))} aria-label={tc("delete")}>
-        🗑
+        <Icon as={Trash2} />
       </button>
       {state.error && <div className="w-full"><FormError error={state.error} /></div>}
     </form>

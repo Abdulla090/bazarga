@@ -1,18 +1,78 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens. Brand: Sun Gold #F5B700 · Deep Ink #0F1B2D · Mountain Green #1F8A5B · Paper #FAF7F0
+ * (mirrored in src/lib/theme.ts → BRAND; tests check the storefront presets for contrast).
+ */
 @theme {
   --color-gold: #f5b700;
   --color-gold-600: #d99f00;
+  /* Text on gold buttons. Storefronts remap it to the theme's on-accent colour. */
+  --color-on-gold: #0f1b2d;
   --color-ink: #0f1b2d;
   --color-ink-70: #3c4757;
   --color-ink-50: #6b7480;
   --color-green: #1f8a5b;
+  /* Mountain Green for white text (AA 5.3:1); plain green is for icons/large text. */
+  --color-green-deep: #1a7a50;
   --color-paper: #faf7f0;
   --color-line: #e7e1d3;
   --color-danger: #b42318;
-  --font-sans: "Vazirmatn Variable", "Inter Variable", system-ui, sans-serif;
-  --font-latin: "Inter Variable", "Vazirmatn Variable", system-ui, sans-serif;
+  --color-whatsapp: #25d366;
+
+  /* next/font variables (src/app/fonts.ts) — each face is unicode-range limited, so order = script priority. */
+  --font-sans: var(--font-vazirmatn), var(--font-inter), var(--font-inter-ext), Tahoma, system-ui, sans-serif;
+  --font-latin: var(--font-inter), var(--font-inter-ext), var(--font-vazirmatn), system-ui, sans-serif;
+
   --radius-card: 1.25rem;
+}
+
+/* Storefront theme tokens: utilities like bg-st-accent read the --st-* variables at use site. */
+@theme inline {
+  --color-st-bg: var(--st-bg);
+  --color-st-surface: var(--st-surface);
+  --color-st-fg: var(--st-fg);
+  --color-st-muted: var(--st-muted);
+  --color-st-border: var(--st-border);
+  --color-st-accent: var(--st-accent);
+  --color-st-on-accent: var(--st-on-accent);
+  --color-st-hero: var(--st-hero);
+  --color-st-on-hero: var(--st-on-hero);
+  --radius-st: var(--st-radius);
+}
+
+/* Defaults = "bazaar" preset (src/lib/theme.ts PRESET_TOKENS.bazaar). */
+:root {
+  --st-bg: #faf7f0;
+  --st-surface: #ffffff;
+  --st-fg: #0f1b2d;
+  --st-muted: #4b5563;
+  --st-border: #e7e1d4;
+  --st-accent: #f5b700;
+  --st-on-accent: #0f1b2d;
+  --st-hero: #0f1b2d;
+  --st-on-hero: #faf7f0;
+  --st-radius: 1rem;
+}
+
+/*
+ * Inside a storefront the house palette is remapped onto the store's theme, so every existing component
+ * (btn-gold, card, border-line, text-ink-70…) follows the seller's preset without per-component changes.
+ * The wrapper sets the --st-* variables inline (themeStyle()).
+ */
+.storefront {
+  --color-gold: var(--st-accent);
+  --color-gold-600: color-mix(in srgb, var(--st-accent) 85%, black);
+  --color-on-gold: var(--st-on-accent);
+  --color-ink: var(--st-fg);
+  --color-paper: var(--st-bg);
+  --color-white: var(--st-surface);
+  --color-line: var(--st-border);
+  --color-ink-70: var(--st-muted);
+  --color-ink-50: var(--st-muted);
+  --radius-card: var(--st-radius);
+  background: var(--st-bg);
+  color: var(--st-fg);
 }
 
 /* Latin-script pages lead with Inter; Kurdish/Arabic lead with Vazirmatn. */
@@ -42,7 +102,7 @@ body {
     disabled:cursor-not-allowed disabled:opacity-60;
 }
 @utility btn-gold {
-  @apply btn bg-gold text-ink hover:bg-gold-600 active:translate-y-px;
+  @apply btn bg-gold text-on-gold hover:bg-gold-600 active:translate-y-px;
 }
 @utility btn-ink {
   @apply btn bg-ink text-paper hover:bg-ink-70;

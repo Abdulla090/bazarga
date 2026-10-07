@@ -22,7 +22,8 @@
     "actions": "Actions",
     "loading": "One moment…",
     "confirmDelete": "Delete this for good?",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "reset": "Reset"
   },
   "nav": {
     "cta": "Build my store",
@@ -244,7 +245,17 @@
     "title": "Store settings",
     "logo": "Logo",
     "tagline": "Short line under your store name",
-    "danger": "Your store link changes if you change it here."
+    "danger": "Your store link changes if you change it here.",
+    "theme": "Store look",
+    "themeHint": "Pick a style for your storefront. You can change it any time.",
+    "theme_bazaar": "Bazaar — warm gold",
+    "theme_mountain": "Mountain — fresh green",
+    "theme_night": "Night — dark & premium",
+    "accentColor": "Accent colour (optional)",
+    "accentHint": "Buttons and highlights. Leave empty to use the style's colour.",
+    "about": "About your store",
+    "returnPolicy": "Return policy",
+    "saveTheme": "Save look"
   },
   "ai": {
     "title": "Add products from photos",
@@ -301,7 +312,9 @@
     "all": "All",
     "freeDelivery": "Free delivery",
     "deliveryFrom": "Delivery from {fee}",
-    "productNotFound": "This product isn't available."
+    "productNotFound": "This product isn't available.",
+    "about": "About us",
+    "returnPolicy": "Returns"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -332,6 +345,8 @@
     "ai_disabled": "Photo-to-product is not switched on.",
     "name_required": "Add a name in at least one language.",
     "empty_file": "Choose a photo first.",
-    "nothing_to_read": "Add a photo or a message first."
+    "nothing_to_read": "Add a photo or a message first.",
+    "retry": "Try again",
+    "invalid_color": "Use a colour like #C2185B."
   }
 }

@@ -8,6 +8,7 @@ import { currentLocale } from "@/server/locale";
 import { ProductCard } from "@/components/store/ProductCard";
 import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
+import { Icon, Truck } from "@/components/ui/icons";
 
 export default async function StorefrontPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ c?: string }> }) {
   const { slug } = await params;
@@ -26,9 +27,22 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
   return (
     <div className="grid gap-5">
+      {store.coverImageUrl && (
+        // Cover is the LCP element on the store home: eager + high priority, placeholder behind it.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={store.coverImageUrl}
+          alt=""
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="-mt-2 aspect-[16/6] w-full rounded-[var(--radius-card)] bg-st-hero object-cover"
+          style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
+        />
+      )}
       {minFee !== null && (
-        <p className="rounded-xl bg-green/10 px-3 py-2 text-sm font-semibold text-green">
-          🚚 {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
+        <p className="flex items-center gap-2 rounded-xl border border-st-border bg-st-surface px-3 py-2 text-sm font-semibold text-st-fg">
+          <Icon as={Truck} className="text-st-accent" /> {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
         </p>
       )}
       {usedCats.length > 0 && (

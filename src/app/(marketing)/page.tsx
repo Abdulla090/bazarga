@@ -6,6 +6,7 @@ import { WaitlistForm } from "./WaitlistForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
+import { Check, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/components/ui/icons";
 
 const DEMO_SLUG = "hawler-bazaar";
 
@@ -33,12 +34,12 @@ export default async function LandingPage() {
     { icon: "∞", title: t("w4Title"), body: t("w4Body") },
   ];
   const who = [
-    ["👗", t("c1")],
-    ["💄", t("c2")],
-    ["🍯", t("c3")],
-    ["🧵", t("c4")],
-    ["📱", t("c5")],
-  ];
+    [Shirt, t("c1")],
+    [Sparkles, t("c2")],
+    [Droplet, t("c3")],
+    [Scissors, t("c4")],
+    [Smartphone, t("c5")],
+  ] as const;
 
   return (
     <>
@@ -67,7 +68,7 @@ export default async function LandingPage() {
               fetchPriority="high"
             />
             <span className="absolute bottom-4 start-4 rounded-full bg-white/95 px-4 py-2 text-sm font-bold shadow">
-              <span className="text-green">✓</span> {t("badge")}
+              <Icon as={Check} className="text-green" /> {t("badge")}
             </span>
           </div>
         </section>
@@ -136,7 +137,7 @@ export default async function LandingPage() {
           <ul className="mt-6 flex flex-wrap gap-3">
             {who.map(([icon, label]) => (
               <li key={label} className="card flex items-center gap-2 px-4 py-3 font-semibold">
-                <span aria-hidden="true" className="text-2xl">{icon}</span> {label}
+                <Icon as={icon} className="text-2xl text-green" /> {label}
               </li>
             ))}
           </ul>

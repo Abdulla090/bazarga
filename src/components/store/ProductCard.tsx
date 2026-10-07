@@ -28,7 +28,7 @@ export async function ProductCard({ p, slug, locale, index = 99 }: { p: ProductW
           <span className="block aspect-square w-full bg-paper" />
         )}
         {p.compareAtPrice && p.compareAtPrice > p.price && (
-          <span className="chip absolute start-2 top-2 bg-danger text-white num">−{Math.round((1 - p.price / p.compareAtPrice) * 100)}%</span>
+          <span className="chip absolute start-2 top-2 bg-danger text-[#fff] num">−{Math.round((1 - p.price / p.compareAtPrice) * 100)}%</span>
         )}
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-3">

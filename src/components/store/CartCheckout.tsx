@@ -131,7 +131,7 @@ export function CartCheckout({ slug, locale, zones, payments, defaultCity }: { s
           <div className="grid gap-2">
             {payments.map((m) => (
               <label key={m} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 font-semibold ${method === m ? "border-ink bg-ink/5" : "border-line"}`}>
-                <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="accent-[#0F1B2D]" />
+                <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="accent-ink" />
                 {m === "cod" ? tp("cod") : PAYMENT_LABEL[m]}
               </label>
             ))}

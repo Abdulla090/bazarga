@@ -4,7 +4,7 @@ import { deliveryZones, storePaymentMethods, stores } from "../db/schema";
 import { AppError } from "../errors";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { PAYMENT_METHODS } from "@/lib/order-status";
-import type { StoreInput } from "@/lib/validation";
+import type { StoreInput, StoreThemeInput } from "@/lib/validation";
 
 export type Store = typeof stores.$inferSelect;
 
@@ -84,6 +84,22 @@ export async function updateStore(
       city: input.city,
       tagline: input.tagline ?? {},
       ...(input.logoUrl !== undefined ? { logoUrl: input.logoUrl } : {}),
+      updatedAt: new Date(),
+    })
+    .where(eq(stores.id, storeId))
+    .returning();
+  if (!s) throw new AppError("NOT_FOUND");
+  return s;
+}
+
+export async function updateStoreTheme(database: Db, storeId: string, input: StoreThemeInput): Promise<Store> {
+  const [s] = await database
+    .update(stores)
+    .set({
+      themePreset: input.themePreset,
+      accentColor: input.accentColor,
+      about: input.about,
+      returnPolicy: input.returnPolicy,
       updatedAt: new Date(),
     })
     .where(eq(stores.id, storeId))

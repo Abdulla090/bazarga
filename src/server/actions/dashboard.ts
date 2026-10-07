@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
 import { requireStore, requireUser } from "../auth/session";
-import { createStore, getStoreForOwner, updateStore } from "../services/stores";
+import { createStore, getStoreForOwner, updateStore, updateStoreTheme } from "../services/stores";
 import {
   createCategory,
   createProduct,
@@ -24,6 +24,7 @@ import {
   paymentToggleSchema,
   productSchema,
   storeSchema,
+  storeThemeSchema,
 } from "@/lib/validation";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
 
@@ -65,6 +66,24 @@ export async function updateStoreAction(_prev: ActionState, fd: FormData): Promi
     if (fd.get("removeLogo") === "1") logoUrl = null;
     await updateStore(db(), store.id, { ...input, logoUrl });
     revalidatePath("/dashboard", "layout");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    const input = storeThemeSchema.parse({
+      themePreset: fd.get("themePreset") ?? undefined,
+      accentColor: typeof fd.get("accentColor") === "string" ? (fd.get("accentColor") as string) : undefined,
+      about: localizedFromForm(fd, "about"),
+      returnPolicy: localizedFromForm(fd, "returnPolicy"),
+    });
+    await updateStoreTheme(db(), store.id, input);
+    revalidatePath("/dashboard/settings");
+    revalidatePath(`/s/${store.slug}`, "layout");
     return { ok: true };
   } catch (e) {
     return toActionState(e);
