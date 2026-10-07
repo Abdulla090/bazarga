@@ -9,7 +9,7 @@ import { StorefrontForm } from "@/components/dashboard/StorefrontForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { pickText } from "@/lib/i18n";
 import { pushConfig } from "@/server/push";
-import { PushToggle } from "@/components/dashboard/PushToggle";
+import { LazyPushToggle } from "@/components/pwa/lazy";
 
 export default async function SettingsPage() {
   const { store } = await requireStore();
@@ -20,7 +20,7 @@ export default async function SettingsPage() {
     <div className="grid max-w-2xl gap-4">
       <h1 className="text-2xl font-extrabold">{t("title")}</h1>
       {/* Hidden entirely when VAPID keys are not configured. */}
-      {push && <PushToggle vapidPublicKey={push.publicKey} />}
+      {push && <LazyPushToggle vapidPublicKey={push.publicKey} />}
       <StoreForm
         action={updateStoreAction}
         mode="edit"

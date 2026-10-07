@@ -1,12 +1,14 @@
 "use client";
-import { useActionState, useState } from "react";
+import { Suspense, lazy, useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { saveProductAction, deleteProductAction } from "@/server/actions/dashboard";
 import { Field, FormError } from "@/components/forms/Field";
-import { ImageUploader } from "./ImageUploader";
 import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
 import { Check, Icon } from "@/components/ui/icons";
+
+// Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
+const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
 
 type Values = {
   id?: string;
@@ -89,7 +91,9 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
       </div>
 
       <div className="card">
-        <ImageUploader initial={initial.images} maxMb={maxMb} />
+        <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-dashed border-line" aria-hidden />}>
+          <ImageUploader initial={initial.images} maxMb={maxMb} />
+        </Suspense>
       </div>
 
       <div className="flex flex-wrap gap-2">

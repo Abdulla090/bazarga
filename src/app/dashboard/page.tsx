@@ -8,7 +8,7 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { StatusBadge } from "@/components/dashboard/Badges";
 import { CopyButton } from "@/components/CopyButton";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { LazyInstallPrompt } from "@/components/pwa/lazy";
 
 export default async function DashboardHome() {
   const { store, user } = await requireStore();
@@ -24,7 +24,7 @@ export default async function DashboardHome() {
   return (
     <div className="grid gap-6">
       <h1 className="text-2xl font-extrabold">{t("hello", { name: user.name })}</h1>
-      <InstallPrompt />
+      <LazyInstallPrompt />
       <div className="grid gap-3 sm:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="card">
