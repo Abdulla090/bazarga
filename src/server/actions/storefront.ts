@@ -8,6 +8,8 @@ import { logger } from "../logger";
 import { enforceRateLimit } from "../auth/rate-limit";
 import { clientIp } from "../auth/session";
 import { getStoreBySlug } from "../services/stores";
+import { getStorefrontStore } from "../cache/storefront";
+import { invalidateStock } from "../cache/tags";
 import { getOrderByPublicId, placeOrder, quoteCart, type Quote } from "../services/orders";
 import { notifySellerOfOrder } from "../services/notify-order";
 import { getProvider, isProviderAvailable } from "../payments/registry";
@@ -17,8 +19,16 @@ import { toActionState, type ActionState } from "./util";
 
 const slugSchema = z.string().regex(/^[a-z0-9-]{2,40}$/);
 
+/** Full store row, read fresh (checkout and payments must not act on a cached store). */
 async function storeOr404(slug: string) {
   const store = await getStoreBySlug(db(), slugSchema.parse(slug));
+  if (!store) throw new AppError("NOT_FOUND");
+  return store;
+}
+
+/** Cached store lookup for read-only actions (cart quote). */
+async function cachedStoreOr404(slug: string) {
+  const store = await getStorefrontStore(slugSchema.parse(slug));
   if (!store) throw new AppError("NOT_FOUND");
   return store;
 }
@@ -26,7 +36,7 @@ async function storeOr404(slug: string) {
 /** Server-side cart pricing (the cart in localStorage only holds product ids + quantities). */
 export async function quoteAction(slug: string, items: unknown, cityKey: string | null, locale: string): Promise<Quote | null> {
   try {
-    const store = await storeOr404(slug);
+    const store = await cachedStoreOr404(slug);
     const parsed = z.array(z.object({ productId: z.uuid(), quantity: z.number().int().min(1).max(99) })).max(50).parse(items);
     return await quoteCart(db(), store.id, parsed, cityKey ? z.string().max(40).parse(cityKey) : null, localeSchema.parse(locale));
   } catch {
@@ -53,6 +63,8 @@ export async function placeOrderAction(slug: string, payload: unknown): Promise<
     const input = checkoutSchema.parse(payload);
     cartSchema.parse(input.items);
     const order = await placeOrder(db(), store, input, { isProviderAvailable });
+    // Stock went down: product pages and the grid's sold-out / "only N left" badges must not be served stale.
+    invalidateStock(store.id, order.items.map((i) => i.productId));
     logger.info("order.created", { storeId: store.id, orderId: order.id, total: order.total, method: order.paymentMethod });
     const appUrl = env().APP_URL;
     after(() => notifySellerOfOrder(db(), store, order, appUrl));

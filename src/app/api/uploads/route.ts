@@ -9,9 +9,7 @@ import { enforceRateLimit } from "@/server/auth/rate-limit";
 import { AppError } from "@/server/errors";
 import { assertSameOrigin, jsonError } from "@/server/http";
 
-// sharp needs the Node runtime.
-export const runtime = "nodejs";
-
+// sharp needs the Node runtime, which is the default (`runtime` segment config is not allowed with cacheComponents).
 /**
  * Seller image upload: POST multipart `file` → { url, image }.
  * `image` is the pipeline result (WebP renditions, dimensions, placeholder) that the product form round-trips.

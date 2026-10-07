@@ -3,21 +3,20 @@ import { getTranslations } from "next-intl/server";
 import { AddToCart } from "./AddToCart";
 import { formatIQD } from "@/lib/money";
 import { pickText, type Locale } from "@/lib/i18n";
-import type { ProductWithImages } from "@/server/services/catalog";
+import type { CatalogProduct } from "@/server/services/storefront";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
 
 /** `index` = position in the grid: the first row (2 cards on phones) loads eagerly with high priority, the rest lazily. */
-export async function ProductCard({ p, slug, locale, index = 99 }: { p: ProductWithImages; slug: string; locale: Locale; index?: number }) {
+export async function ProductCard({ p, slug, locale, index = 99 }: { p: CatalogProduct; slug: string; locale: Locale; index?: number }) {
   const t = await getTranslations("store");
   const name = pickText(p.name, locale);
-  const soldOut = p.stock !== null && p.stock <= 0;
   return (
     <article className="flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
       <Link href={`/s/${slug}/p/${p.id}`} className="relative block">
-        {p.images[0] ? (
+        {p.image ? (
           <ResponsiveImage
-            image={p.images[0]}
+            image={p.image}
             alt={name}
             sizes={SIZES.productGrid}
             index={index}
@@ -37,9 +36,9 @@ export async function ProductCard({ p, slug, locale, index = 99 }: { p: ProductW
           <span className="font-extrabold">{formatIQD(p.price, locale)}</span>
           {p.compareAtPrice && p.compareAtPrice > p.price && <s className="ms-2 text-sm text-ink-50">{formatIQD(p.compareAtPrice, locale)}</s>}
         </p>
-        {p.stock !== null && p.stock > 0 && p.stock <= 5 && <p className="text-xs font-semibold text-danger">{t("onlyLeft", { count: p.stock })}</p>}
+        {p.lowStock !== null && <p className="text-xs font-semibold text-danger">{t("onlyLeft", { count: p.lowStock })}</p>}
         <div className="mt-auto">
-          <AddToCart slug={slug} productId={p.id} disabled={soldOut} />
+          <AddToCart slug={slug} productId={p.id} disabled={p.soldOut} />
         </div>
       </div>
     </article>

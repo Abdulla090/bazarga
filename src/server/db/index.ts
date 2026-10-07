@@ -8,6 +8,10 @@ import * as schema from "./schema";
 import { env } from "../env";
 import { logger } from "../logger";
 import { pgPoolConfig } from "./pg-config";
+import { countQuery } from "./query-stats";
+
+/** Counts every statement (see query-stats.ts); never logs SQL or parameters. */
+const queryLogger = { logQuery: () => countQuery() };
 
 export { schema };
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
@@ -29,12 +33,12 @@ export function createDb(url: string): Db {
   if (url.startsWith("pglite://")) {
     const target = url.slice("pglite://".length);
     const client = target === "memory" || target === "" ? new PGlite() : new PGlite(target);
-    return drizzlePglite(client, { schema }) as unknown as Db;
+    return drizzlePglite(client, { schema, logger: queryLogger }) as unknown as Db;
   }
   const pool = new Pool(pgPoolConfig(url));
   // A dropped idle connection (Neon scale-to-zero, PgBouncer restarts) must not crash the process.
   pool.on("error", (err) => logger.error("pg pool error", { err }));
-  return drizzlePg(pool, { schema }) as unknown as Db;
+  return drizzlePg(pool, { schema, logger: queryLogger }) as unknown as Db;
 }
 
 /** Process-wide database handle (lazy — never connects at import/build time). */

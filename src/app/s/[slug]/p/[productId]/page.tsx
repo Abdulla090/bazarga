@@ -4,8 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { loadStore } from "../../data";
-import { db } from "@/server/db";
-import { getProduct } from "@/server/services/catalog";
+import { getProductDetail } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { AddToCart } from "@/components/store/AddToCart";
 import { formatIQD } from "@/lib/money";
@@ -17,8 +16,8 @@ import { ArrowBack, ArrowForward } from "@/components/ui/icons";
 async function load(slug: string, productId: string) {
   if (!z.uuid().safeParse(productId).success) notFound();
   const store = await loadStore(slug);
-  const p = await getProduct(db(), store.id, productId);
-  if (!p || !p.isActive) notFound();
+  const p = await getProductDetail(store.id, productId);
+  if (!p) notFound();
   return { store, p };
 }
 

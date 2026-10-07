@@ -17,6 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+/**
+ * Every route renders per request (connection() below), so the Cache Components static-shell / instant-navigation
+ * validation does not apply app-wide: data caching happens in the data layer (src/server/cache) instead.
+ */
+export const instant = false;
+
 export const viewport: Viewport = { themeColor: BRAND.ink, width: "device-width", initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

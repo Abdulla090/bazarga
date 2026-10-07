@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { loadStore } from "../data";
-import { db } from "@/server/db";
-import { listPaymentMethods, listZones } from "@/server/services/settings";
+import { getStorefrontSettings } from "@/server/cache/storefront";
 import { isProviderAvailable } from "@/server/payments/registry";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
@@ -13,15 +12,15 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const store = await loadStore(slug);
   const locale = await currentLocale();
-  const [zones, methods] = await Promise.all([listZones(db(), store.id, { activeOnly: true }), listPaymentMethods(db(), store.id)]);
-  const payments = methods.filter((m) => m.enabled && (m.method === "cod" || isProviderAvailable(m.method))).map((m) => m.method);
+  const { zones, payments: enabled } = await getStorefrontSettings(store.id);
+  const payments = enabled.filter((m) => m === "cod" || isProviderAvailable(m));
   return (
     <CartCheckout
       slug={store.slug}
       locale={locale}
-      zones={zones.map((z) => ({ key: z.cityKey, name: pickText(z.name, locale), fee: z.fee }))}
+      zones={zones.map((z) => ({ key: z.key, name: pickText(z.name, locale), fee: z.fee }))}
       payments={payments}
-      defaultCity={store.city ?? zones[0]?.cityKey ?? ""}
+      defaultCity={store.city ?? zones[0]?.key ?? ""}
     />
   );
 }

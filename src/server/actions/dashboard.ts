@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { invalidateCatalog, invalidateStore } from "../cache/tags";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
@@ -26,6 +27,7 @@ import {
   storeSchema,
   storeThemeSchema,
 } from "@/lib/validation";
+import { RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
 
 const uuid = z.uuid();
@@ -49,7 +51,9 @@ export async function createStoreAction(_prev: ActionState, fd: FormData): Promi
   try {
     const user = await requireUser();
     if (await getStoreForOwner(db(), user.id)) redirect("/dashboard");
-    await createStore(db(), user.id, storeInputFromForm(fd));
+    const created = await createStore(db(), user.id, storeInputFromForm(fd));
+    // The slug may have been looked up (and cached as "no such store") before it was taken.
+    invalidateStore(created.id, [created.slug]);
   } catch (e) {
     return toActionState(e);
   }
@@ -65,6 +69,7 @@ export async function updateStoreAction(_prev: ActionState, fd: FormData): Promi
     if (logo instanceof File && logo.size > 0) logoUrl = (await uploadProcessedImage(store.id, logo)).url;
     if (fd.get("removeLogo") === "1") logoUrl = null;
     await updateStore(db(), store.id, { ...input, logoUrl });
+    invalidateStore(store.id, [store.slug, input.slug]);
     revalidatePath("/dashboard", "layout");
     return { ok: true };
   } catch (e) {
@@ -82,8 +87,8 @@ export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise
       returnPolicy: localizedFromForm(fd, "returnPolicy"),
     });
     await updateStoreTheme(db(), store.id, input);
+    invalidateStore(store.id);
     revalidatePath("/dashboard/settings");
-    revalidatePath(`/s/${store.slug}`, "layout");
     return { ok: true };
   } catch (e) {
     return toActionState(e);
@@ -123,10 +128,9 @@ export async function saveProductAction(_prev: ActionState, fd: FormData): Promi
     const { store } = await requireStore();
     const input = productInputFromForm(fd);
     const id = emptyToNull(fd.get("id"));
-    if (id) await updateProduct(db(), store.id, uuid.parse(id), input);
-    else await createProduct(db(), store.id, input);
+    const saved = id ? await updateProduct(db(), store.id, uuid.parse(id), input) : await createProduct(db(), store.id, input);
+    invalidateCatalog(store.id, [saved.id]);
     revalidatePath("/dashboard/products");
-    revalidatePath(`/s/${store.slug}`);
   } catch (e) {
     return toActionState(e);
   }
@@ -136,15 +140,15 @@ export async function saveProductAction(_prev: ActionState, fd: FormData): Promi
 export async function toggleProductAction(id: string, isActive: boolean) {
   const { store } = await requireStore();
   await setProductActive(db(), store.id, uuid.parse(id), z.boolean().parse(isActive));
+  invalidateCatalog(store.id, [id]);
   revalidatePath("/dashboard/products");
-  revalidatePath(`/s/${store.slug}`);
 }
 
 export async function deleteProductAction(id: string) {
   const { store } = await requireStore();
   await deleteProduct(db(), store.id, uuid.parse(id));
+  invalidateCatalog(store.id, [id]);
   revalidatePath("/dashboard/products");
-  revalidatePath(`/s/${store.slug}`);
   redirect("/dashboard/products");
 }
 
@@ -156,6 +160,7 @@ export async function saveCategoryAction(_prev: ActionState, fd: FormData): Prom
     const id = emptyToNull(fd.get("id"));
     if (id) await updateCategory(db(), store.id, uuid.parse(id), input);
     else await createCategory(db(), store.id, input);
+    invalidateCatalog(store.id);
     revalidatePath("/dashboard/categories");
     return { ok: true };
   } catch (e) {
@@ -166,6 +171,7 @@ export async function saveCategoryAction(_prev: ActionState, fd: FormData): Prom
 export async function deleteCategoryAction(id: string) {
   const { store } = await requireStore();
   await deleteCategory(db(), store.id, uuid.parse(id));
+  invalidateCatalog(store.id);
   revalidatePath("/dashboard/categories");
 }
 
@@ -177,6 +183,7 @@ export async function updateZoneAction(_prev: ActionState, fd: FormData): Promis
       .object({ id: uuid, fee: z.coerce.number().int().min(0).max(1_000_000), isActive: z.boolean() })
       .parse({ id: fd.get("id"), fee: fd.get("fee"), isActive: fd.get("isActive") === "on" });
     await updateZoneFee(db(), store.id, data.id, data.fee, data.isActive);
+    invalidateStore(store.id);
     revalidatePath("/dashboard/delivery");
     return { ok: true };
   } catch (e) {
@@ -194,6 +201,7 @@ export async function addZoneAction(_prev: ActionState, fd: FormData): Promise<A
       isActive: true,
     });
     await upsertZone(db(), store.id, input);
+    invalidateStore(store.id);
     revalidatePath("/dashboard/delivery");
     return { ok: true };
   } catch (e) {
@@ -204,6 +212,7 @@ export async function addZoneAction(_prev: ActionState, fd: FormData): Promise<A
 export async function deleteZoneAction(id: string) {
   const { store } = await requireStore();
   await deleteZone(db(), store.id, uuid.parse(id));
+  invalidateStore(store.id);
   revalidatePath("/dashboard/delivery");
 }
 
@@ -212,6 +221,7 @@ export async function togglePaymentAction(method: string, enabled: boolean) {
   const { store } = await requireStore();
   const input = paymentToggleSchema.parse({ method, enabled });
   await setPaymentMethod(db(), store.id, input.method, input.enabled);
+  invalidateStore(store.id);
   revalidatePath("/dashboard/payments");
 }
 
@@ -221,6 +231,8 @@ export async function updateOrderStatusAction(orderId: string, status: string): 
     const { store, user } = await requireStore();
     const input = orderStatusSchema.parse({ orderId, status });
     await updateOrderStatus(db(), store.id, input.orderId, input.status, user.id);
+    // Cancelled / returned orders put stock back: product pages and "sold out" badges change.
+    if (RESTOCK_ON.includes(input.status)) invalidateCatalog(store.id);
     revalidatePath(`/dashboard/orders/${input.orderId}`);
     revalidatePath("/dashboard/orders");
     revalidatePath("/dashboard");
@@ -236,8 +248,8 @@ export async function createProductsFromDraftsAction(drafts: unknown): Promise<A
     const { store } = await requireStore();
     const list = z.array(z.unknown()).max(20).parse(drafts).map((d) => productSchema.parse(d));
     for (const p of list) await createProduct(db(), store.id, p);
+    invalidateCatalog(store.id);
     revalidatePath("/dashboard/products");
-    revalidatePath(`/s/${store.slug}`);
     return { ok: true, count: list.length };
   } catch (e) {
     return toActionState(e);

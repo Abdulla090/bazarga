@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
-import { db } from "@/server/db";
-import { listCategories, listProducts } from "@/server/services/catalog";
-import { listZones } from "@/server/services/settings";
+import { getCatalog, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { ProductCard } from "@/components/store/ProductCard";
 import { pickText } from "@/lib/i18n";
@@ -16,12 +14,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const store = await loadStore(slug);
   const t = await getTranslations("store");
   const locale = await currentLocale();
-  const [products, categories, zones] = await Promise.all([
-    listProducts(db(), store.id, { activeOnly: true }),
-    listCategories(db(), store.id),
-    listZones(db(), store.id, { activeOnly: true }),
-  ]);
-  const usedCats = categories.filter((cat) => products.some((p) => p.categoryId === cat.id));
+  const [{ products, categories: usedCats }, { zones }] = await Promise.all([getCatalog(store.id), getStorefrontSettings(store.id)]);
   const shown = c ? products.filter((p) => p.categoryId === c) : products;
   const minFee = zones.length ? Math.min(...zones.map((z) => z.fee)) : null;
 

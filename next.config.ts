@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
+  // `"use cache"` + cacheTag for the storefront data layer (src/server/cache/storefront.ts). Pages still render
+  // per request (root layout → connection() for the CSP nonce); only data is cached.
+  cacheComponents: true,
+  // Every route blocks on connection() at the root, so there is no App Shell to prefetch; keep classic prefetching.
+  partialPrefetching: false,
+  cacheLife: {
+    // Storefront reads are invalidated by tag on every seller write; this lifetime is only the safety net for
+    // changes made outside the app. stale = client router reuse window.
+    storefront: { stale: 60, revalidate: 900, expire: 86_400 },
+  },
   serverExternalPackages: ["@electric-sql/pglite", "pg"],
   experimental: {
     serverActions: {

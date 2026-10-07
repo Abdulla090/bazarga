@@ -13,8 +13,8 @@ import { orderSummaryText, waLink } from "@/lib/whatsapp";
 import { PaymentPanel } from "@/components/store/PaymentPanel";
 import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
 
+// Always fresh: reads the order directly (never through the storefront cache).
 export const metadata: Metadata = { robots: { index: false } };
-export const dynamic = "force-dynamic";
 
 export default async function OrderConfirmationPage({ params }: { params: Promise<{ slug: string; publicId: string }> }) {
   const { slug, publicId } = await params;
