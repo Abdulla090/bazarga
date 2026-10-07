@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
-import { Icon, X } from "@/components/ui/icons";
+import { ChevronBack, ChevronForward, Icon, X } from "@/components/ui/icons";
 import type { GalleryImage, GalleryLabels } from "./ProductGallery";
 
 const MAX_ZOOM = 4;
@@ -112,7 +112,7 @@ export default function GalleryLightbox({
               aria-pressed={zoom > 1}
               className="inline-flex h-11 min-w-11 items-center justify-center rounded-full bg-white/15 px-3 text-sm font-bold"
             >
-              {zoom > 1 ? "1×" : `${TAP_ZOOM}×`}
+              <bdi dir="ltr">{zoom > 1 ? "1×" : `${TAP_ZOOM}×`}</bdi>
               <span className="sr-only"> {label.zoom}</span>
             </button>
             <button type="button" onClick={close} className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15" autoFocus>
@@ -149,7 +149,7 @@ export default function GalleryLightbox({
               className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-xl font-bold disabled:opacity-30"
               aria-label={label.prev}
             >
-              <span aria-hidden className="rtl:-scale-x-100">‹</span>
+              <ChevronBack />
             </button>
             <button
               type="button"
@@ -158,7 +158,7 @@ export default function GalleryLightbox({
               className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-xl font-bold disabled:opacity-30"
               aria-label={label.next}
             >
-              <span aria-hidden className="rtl:-scale-x-100">›</span>
+              <ChevronForward />
             </button>
           </div>
         )}

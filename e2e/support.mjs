@@ -63,7 +63,8 @@ export async function setup() {
     cart: { key: `mm_cart_${SLUG}`, value: cart },
     routes: [
       { name: "storefront-home", path: `/s/${SLUG}` },
-      { name: "product", path: `/s/${SLUG}/p/${listed[0]}` },
+      // The richest demo page: the variant product (not buyable straight from the grid) — 5 photos, sizes, specs.
+      { name: "product", path: `/s/${SLUG}/p/${listed.find((id) => !buyable.includes(id)) ?? listed[0]}` },
       { name: "checkout", path: `/s/${SLUG}/cart`, cart: true },
       { name: "order-confirmation", path: orderPath },
       { name: "login", path: "/login", anon: true },

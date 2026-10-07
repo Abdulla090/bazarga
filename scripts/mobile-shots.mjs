@@ -34,6 +34,15 @@ for (const locale of LOCALES) {
       await ctx.addCookies(cookies(r.anon));
       await page.goto(BASE + r.path, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
+      // Scroll through once so lazy images below the fold are in the full-page screenshot, then back to the top.
+      await page.evaluate(async () => {
+        for (let y = 0; y < document.body.scrollHeight; y += 600) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 60));
+        }
+        window.scrollTo(0, 0);
+      });
+      await page.waitForLoadState("networkidle");
       const audit = await page.evaluate(auditInPage, width);
       if (audit.overflow) overflowing++;
       const file = `${OUT}/${locale}-${width}-${r.name}.png`;

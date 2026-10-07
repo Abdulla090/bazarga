@@ -59,6 +59,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+/** Whole trust tile is the tap target (≥ 44 px). */
+const trustLink = "flex min-h-11 w-full items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3";
 const section = "group rounded-[var(--radius-card)] border border-st-border bg-st-surface";
 const summary =
   "flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 font-bold [&::-webkit-details-marker]:hidden";
@@ -190,22 +192,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </span>
               </li>
             )}
-            <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3">
-              <Icon as={Undo2} className="mt-0.5 shrink-0 text-st-accent" />
-              <a href="#delivery-returns" className="font-semibold underline-offset-4 hover:underline">
-                {returnPolicy ? t("trustReturns") : t("trustNoReturns")}
+            <li className="flex">
+              <a href="#delivery-returns" className={`${trustLink} hover:border-st-fg`}>
+                <Icon as={Undo2} className="mt-0.5 shrink-0 text-st-accent" />
+                <span className="font-semibold">{returnPolicy ? t("trustReturns") : t("trustNoReturns")}</span>
               </a>
             </li>
             {wa && (
-              <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3">
-                <Icon as={MessageCircle} className="mt-0.5 shrink-0 text-st-accent" />
+              <li className="flex">
                 <a
                   href={waLink(wa, [t("waIntro", { store: store.name }), name, shareUrl].join("\n"))}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold underline-offset-4 hover:underline"
+                  className={`${trustLink} hover:border-st-fg`}
                 >
-                  {t("trustAsk")}
+                  <Icon as={MessageCircle} className="mt-0.5 shrink-0 text-st-accent" />
+                  <span className="font-semibold">{t("trustAsk")}</span>
                 </a>
               </li>
             )}
