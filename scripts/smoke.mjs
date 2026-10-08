@@ -185,6 +185,19 @@ const dash = await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: cookie
 const dashHtml = await dash.text();
 ok(dash.status === 200 && !dashHtml.includes("Shilan Smoke"), "new seller cannot see another store's orders");
 
+// Dashboard → Share kit: bio link, QR (SVG/PNG) and the story image, all for the session's own store.
+const sharePage = await (await fetch(`${BASE}/dashboard/share`, { headers: { Cookie: cookie } })).text();
+ok(sharePage.includes(`/s/${slug}`) && sharePage.includes('data-testid="share-qr"') && sharePage.includes("https://wa.me/?text="), "share kit shows the store link, QR and WhatsApp share");
+const qrSvgRes = await fetch(`${BASE}/api/share/qr?format=svg`, { headers: { Cookie: cookie } });
+ok(qrSvgRes.status === 200 && (qrSvgRes.headers.get("content-type") ?? "").startsWith("image/svg+xml") && (await qrSvgRes.text()).includes("<path"), "QR code downloads as SVG");
+const qrPngRes = await fetch(`${BASE}/api/share/qr?format=png&download=1`, { headers: { Cookie: cookie } });
+ok(qrPngRes.status === 200 && qrPngRes.headers.get("content-type") === "image/png" && (qrPngRes.headers.get("content-disposition") ?? "").includes(`${slug}-qr.png`), "QR code downloads as PNG (attachment)");
+const storyRes = await fetch(`${BASE}/api/share/story?lang=ku&download=1`, { headers: { Cookie: cookie } });
+const story = Buffer.from(await storyRes.arrayBuffer());
+ok(storyRes.status === 200 && story.readUInt32BE(16) === 1080 && story.readUInt32BE(20) === 1920, "story image is a 1080×1920 PNG");
+const anonStory = await fetch(`${BASE}/api/share/story`);
+ok(anonStory.status === 401, "story image needs a seller session");
+
 const demoLogin = await callFormAction("logInAction", { email: "demo@mymarket.app", password: "mymarket-demo" }, { path: "/login" });
 const demoCookie = (demoLogin.res.headers.get("set-cookie") ?? "").split(";")[0];
 const demoDash = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: demoCookie } })).text();

@@ -133,6 +133,7 @@
     "ai": "Add from photos",
     "viewStore": "View my store",
     "more": "More",
+    "share": "Share kit",
     "hello": "Hi {name} 👋",
     "ordersToday": "Orders today",
     "revenueWeek": "Revenue, last 7 days",
@@ -579,5 +580,25 @@
     "askStore": "Ask the store on WhatsApp",
     "waAbout": "Hi {store}, I have a question about order #{number}.",
     "another": "Track another order"
+  },
+  "shareKit": {
+    "title": "Share kit",
+    "subtitle": "Everything you need to bring shoppers to your store.",
+    "linkTitle": "Your store link",
+    "linkHint": "Put it in your Instagram bio: it is the one link shoppers tap.",
+    "bioTitle": "Ready-made bio line",
+    "bioLine": "🛍️ Order online, pay cash on delivery 👇\n{url}",
+    "whatsapp": "Share on WhatsApp",
+    "qrTitle": "QR code",
+    "qrHint": "Print it on bags, receipts and your shop counter. Customers scan it to open your store.",
+    "qrAlt": "QR code for {url}",
+    "downloadPng": "Download PNG",
+    "downloadSvg": "Download SVG (for print)",
+    "storyTitle": "Instagram story",
+    "storyHint": "A ready-made 1080×1920 story with your logo, name and QR code. Post it and add a link sticker to your store.",
+    "storyAlt": "Story image preview",
+    "storyDownload": "Download in:",
+    "storyCta": "Order online now",
+    "storyScan": "Scan to open the store"
   }
 }

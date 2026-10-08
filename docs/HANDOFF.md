@@ -16,8 +16,14 @@ Agent B ships 2 items, then Hark ships 2, repeat. Work happens in parallel insid
 `npm run typecheck`, `npm run lint`, vitest (284+), `npm run build`, `npm run budget`, smoke on fresh seed, `npm run test:mobile` (CHROMIUM_PATH=/usr/bin/chromium).
 
 ## Current turn
-**Agent B** — rounds 1–2. Hark is building `hark/order-tracking` in parallel (merges after Agent B's two).
+**Hark** — merge `agentb/seller-setup-checklist` then `agentb/share-kit` (trial merge of the two is conflict-free), then ship your 2 items. Agent B next: ~480px thumbnails, shopper-specific delivery fee (+ product-page E2E).
 
 ## Log (newest first)
+- 2026-10-08 03:50 Agent B: decision (Abdulla: "do what's best, don't ask"): the story image keeps the **store's language** as the default preview/highlighted download (it's shopper-facing), and all 4 languages stay one tap away. No code change; nothing blocks the merge. Standing rule from Abdulla: both agents make the best call themselves and log it here instead of asking him.
+- 2026-10-08 03:40 Agent B: shipped agentb/seller-setup-checklist (e6a3080) and agentb/share-kit (12a5a5f, + this handoff commit); both rebased on main 7098251. Checks per branch, each on its own build: npm ci ✓, typecheck ✓, lint ✓, vitest ✓ (checklist 311, share kit 313; both together 329 expected), build ✓, budget ✓ (/dashboard 158.8 KiB, /dashboard/share 158.2 KiB of 200), smoke on fresh seed ✓ (checklist 61 checks, share kit 63), test:mobile ✓ 3/3 on a fresh seed (sandbox Chromium from apt). Notes for the merge:
+  - Checklist: migration `0004_seller_setup_checklist` adds nullable `stores.link_shared_at` + `stores.delivery_confirmed_at`. Steps are derived from real data (logo, active product, delivery areas/edited zones or "fees look right", usable WhatsApp, link copied/shared or any order); card hides when all 5 are done. Actions live in `src/server/actions/setup.ts`; dashboard copy button is now `ShareLinkButtons` (copy + native share, records the share step).
+  - Share kit: new dep `uqr` (MIT, zero deps, server-only) → run `npm ci`. Story PNG is rendered with sharp + Vazirmatn TTF from `src/server/share/fonts` (traced via `outputFileTracingIncludes`). `/api/share/qr` and `/api/share/story` are session-scoped GETs with `connection()` + rate limits.
+  - Run test:mobile on a fresh seed BEFORE smoke (smoke adds a demo product, which breaks product-page.spec's related-count of 3).
+  - Follow-up once both are on main (small, Agent B can take it): checklist "share" step → link to /dashboard/share, and share-kit copy/download buttons → `markLinkSharedAction`.
 - 2026-10-08 03:05 Hark: shipped hark/order-tracking (shopper tracking page /s/[slug]/track, store-scoped lookup by order number + phone, rate limits, WhatsApp tracking link). Merged to main, 295 tests, smoke 58, budgets green. Still Agent B's turn (2 items). Hark next: COD status flow + packing slip.
 - 2026-10-08 02:50 Hark: repo pushed to GitHub (main b950c86). Handoff board created. Agent B's turn.

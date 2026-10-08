@@ -43,6 +43,8 @@ export {
   Banknote,
   Undo2,
   TicketPercent,
+  Download,
+  QrCode,
 } from "lucide-react";
 export type { LucideIcon };
 

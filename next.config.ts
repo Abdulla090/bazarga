@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
     storefront: { stale: 60, revalidate: 900, expire: 86_400 },
   },
   serverExternalPackages: ["@electric-sql/pglite", "pg", "web-push"],
+  // Story-image fonts are read from disk at runtime (src/server/share/story.ts); make sure the standalone output has them.
+  outputFileTracingIncludes: { "/api/share/story": ["./src/server/share/fonts/*.ttf"] },
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",
