@@ -37,16 +37,22 @@ Gzipped first-load JS per route, from the build diagnostics. Budgets: storefront
 | `/s/[slug]` | 145.2 KiB | 476.2 KiB |
 | `/s/[slug]/p/[productId]` | 150.3 KiB | 489.4 KiB |
 | `/s/[slug]/cart` | 148.6 KiB | 486.5 KiB |
-| `/dashboard` | 158.2 KiB | 519.5 KiB |
-| `/dashboard/settings` | 161.9 KiB | 531.6 KiB |
-| `/dashboard/products/[id]`, `/new` | 160.3 KiB | 526.0 KiB |
-| `/dashboard/delivery` | 159.3 KiB | 522.8 KiB |
-| `/dashboard/ai` | 159.2 KiB | 522.0 KiB |
-| `/dashboard/categories` | 158.8 KiB | 521.0 KiB |
-| `/dashboard/orders/[id]` | 158.4 KiB | 519.9 KiB |
-| `/dashboard/payments` | 158.2 KiB | 519.4 KiB |
-| `/dashboard/products` | 158.1 KiB | 519.1 KiB |
-| `/dashboard/customers`, `/more`, `/orders` | 157.6 KiB | 518.4 KiB |
+| `/s/[slug]/order/[publicId]` | 146.8 KiB | 480.7 KiB |
+| `/s/[slug]/track` | 144.8 KiB | 475.7 KiB |
+| `/dashboard` | 158.3 KiB | 519.8 KiB |
+| `/dashboard/settings` | 162.1 KiB | 531.9 KiB |
+| `/dashboard/products/[id]`, `/new` | 160.4 KiB | 526.4 KiB |
+| `/dashboard/delivery` | 159.9 KiB | 525.5 KiB |
+| `/dashboard/discounts` | 159.7 KiB | 524.2 KiB |
+| `/dashboard/ai` | 159.3 KiB | 522.4 KiB |
+| `/dashboard/categories` | 158.9 KiB | 521.3 KiB |
+| `/dashboard/orders/[id]` | 158.5 KiB | 520.3 KiB |
+| `/dashboard/payments` | 158.3 KiB | 519.8 KiB |
+| `/dashboard/products` | 158.2 KiB | 519.5 KiB |
+| `/dashboard/customers`, `/more`, `/orders` | 157.7 KiB | 518.7 KiB |
+
+The order-tracking page is a server-rendered `<form action>` with no page-specific client JS (it ships only the
+shared storefront runtime).
 
 Product page extras outside the first load: the thumbnail strip (≈0.7 KiB gzip, only for multi-photo
 products) and the fullscreen photo viewer (≈2.1 KiB gzip, requested on the first tap / pointerdown) are
@@ -56,6 +62,6 @@ server-rendered with no client JS. The store-home cover now ships a `srcset` fro
 ## Mobile layout checks
 
 - `npm run test:mobile` (Playwright): no horizontal overflow and no sub-16 px inputs at 360 px, ku and en, on
-  11 storefront + dashboard routes.
+  the storefront + dashboard routes in `e2e/support.mjs` (now including the tracking form and a looked-up order).
 - `npm run shots:mobile`: screenshots at 360/390/414/430 px × ku/en plus `report.json` (overflow, tap targets
   under 44 px, inputs under 16 px). Last run: 0 overflowing pages, 0 small tap targets, 0 small inputs (88 pages).
