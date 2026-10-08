@@ -19,6 +19,7 @@
     "db:migrate:deploy": "tsx --conditions=react-server scripts/migrate.ts --deploy",
     "db:seed": "tsx --conditions=react-server scripts/seed.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
+    "images:backfill": "tsx --conditions=react-server scripts/backfill-renditions.ts",
     "test:smoke": "node scripts/smoke.mjs",
     "start:standalone": "node .next/standalone/server.js",
     "budget": "node scripts/budget.mjs",

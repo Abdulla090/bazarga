@@ -17,7 +17,11 @@ import { validateImage } from "./image";
  *
  * Storage is abstract: `storeImage()` writes through any `StorageAdapter` (local disk, S3/R2 — see ./config.ts).
  */
-export const RENDITION_WIDTHS = [320, 640, 1024, 1600] as const;
+/**
+ * 480 sits between the phone grid tile (2 columns ≈ 173–195 CSS px × DPR 2–2.75) and the 640 hero size, so
+ * product-grid thumbnails stop downloading the 640 file on most phones (docs/PERFORMANCE.md).
+ */
+export const RENDITION_WIDTHS = [320, 480, 640, 1024, 1600] as const;
 export const DEFAULT_RENDITION_WIDTH = 1024;
 export const MAX_INPUT_PIXELS = 50_000_000; // ~ 8660×5773 — anything above is rejected, not decoded
 const WEBP_QUALITY = 78;
@@ -102,6 +106,55 @@ export function renditionKey(storeId: string, imageId: string, width: number) {
   return `stores/${storeId}/${imageId}-${width}.webp`;
 }
 export const RENDITION_KEY_RE = /^stores\/[0-9a-f-]{36}\/[0-9a-f-]{36}-\d{2,5}\.webp$/;
+
+/**
+ * Widths the current pipeline would emit for an image whose largest stored rendition is `topWidth` px but that
+ * are missing from `existing` — older uploads predate a width (e.g. 480). Never above the stored top width.
+ */
+export function missingRenditionWidths(existing: readonly number[], targets: readonly number[] = RENDITION_WIDTHS): number[] {
+  if (!existing.length) return [];
+  const top = Math.max(...existing);
+  const have = new Set(existing);
+  return renditionWidths(top, targets).filter((w) => w < top && !have.has(w));
+}
+
+/** imageId from a pipeline key (stores/<storeId>/<imageId>-<width>.webp); null for seed/legacy keys. */
+export function parseRenditionKey(key: string): { storeId: string; imageId: string; width: number } | null {
+  if (!RENDITION_KEY_RE.test(key)) return null;
+  const m = /^stores\/([0-9a-f-]{36})\/([0-9a-f-]{36})-(\d+)\.webp$/.exec(key);
+  return m ? { storeId: m[1]!, imageId: m[2]!, width: Number(m[3]) } : null;
+}
+
+/**
+ * Backfill: resize the largest stored rendition (`source`, WebP bytes) to the missing widths, write them next to
+ * the existing files (same store prefix + image id) and return the merged, ascending rendition list.
+ * Returns null when nothing is missing, the keys are not pipeline keys (seed/legacy rows are left alone) or the
+ * key's store prefix is not `storeId` (never write into another tenant's prefix).
+ */
+export async function addMissingRenditions(
+  sink: ImageSink,
+  storeId: string,
+  existing: readonly ImageRendition[],
+  source: Uint8Array,
+  targets: readonly number[] = RENDITION_WIDTHS,
+): Promise<ImageRendition[] | null> {
+  const missing = missingRenditionWidths(existing.map((r) => r.width), targets);
+  if (!missing.length) return null;
+  const top = [...existing].sort((a, b) => b.width - a.width)[0]!;
+  const parsed = parseRenditionKey(top.key);
+  if (!parsed || parsed.storeId !== storeId) return null;
+  const added = await Promise.all(
+    missing.map(async (w) => {
+      const { data, info } = await sharp(source, { limitInputPixels: MAX_INPUT_PIXELS, failOn: "error" })
+        .resize({ width: w, withoutEnlargement: true })
+        .webp({ quality: WEBP_QUALITY, effort: 4, smartSubsample: true })
+        .toBuffer({ resolveWithObject: true });
+      const { key, url } = await sink.put(renditionKey(parsed.storeId, parsed.imageId, info.width), new Uint8Array(data), "image/webp");
+      return { width: info.width, height: info.height, key, url, bytes: data.byteLength };
+    }),
+  );
+  return [...existing, ...added].sort((a, b) => a.width - b.width);
+}
 
 export function pickDefaultRendition<T extends { width: number }>(list: readonly T[], target = DEFAULT_RENDITION_WIDTH): T {
   if (!list.length) throw new Error("no renditions");

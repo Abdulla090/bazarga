@@ -24,8 +24,12 @@ export function buildSrcSet(renditions: readonly RenditionLike[] | null | undefi
 
 /** Common `sizes` presets for the storefront layouts. */
 export const SIZES = {
-  /** 2-col grid on phones, 3 on tablets, 4 on desktop inside a max-w-6xl container. */
-  productGrid: "(min-width: 1024px) 280px, (min-width: 640px) 33vw, 50vw",
+  /**
+   * 2-col grid on phones, 3 on tablets, 4 on desktop inside a max-w-6xl container. The calc() subtracts the
+   * container padding and grid gaps (phone: 2×16 px + 12 px gap → 50vw − 22px; tablet: 2×24 px + 2×12 px →
+   * 33vw − 24px) so a 390 px phone at DPR 2 picks the 480 rendition instead of 640.
+   */
+  productGrid: "(min-width: 1024px) 280px, (min-width: 640px) calc(33vw - 24px), calc(50vw - 22px)",
   /** Product page main image. */
   productHero: "(min-width: 1024px) 560px, 100vw",
   /** Store cover band. */

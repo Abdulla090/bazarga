@@ -229,7 +229,8 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
 * **Headers:** CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, COOP (`next.config.ts`).
   CSP still allows `'unsafe-inline'` scripts (Next inline bootstrap) — nonce-based CSP is on the roadmap.
 * **Uploads:** type detected from magic bytes (JPEG/PNG/WebP only, SVG rejected), size limit `MAX_UPLOAD_MB`,
-  random keys under `stores/<storeId>/`, served with `nosniff` + sandbox CSP.
+  random keys under `stores/<storeId>/`, served with `nosniff` + sandbox CSP. Stored as WebP renditions at
+  320/480/640/1024/1600 px (never upscaled); `npm run images:backfill` adds a newly introduced width to old uploads.
 * **Logging:** JSON-lines to stdout with secret-field redaction (`src/server/logger.ts`).
 * **Health:** `GET /api/health` → `200 {status:"ok",db:"ok"}` or `503`.
 

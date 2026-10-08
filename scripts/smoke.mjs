@@ -63,6 +63,10 @@ const ids = [...new Set([...storeHtml.matchAll(/productId\\?":\\?"([0-9a-f-]{36}
 const listed = new Set([...storeHtml.matchAll(/\/s\/hawler-bazaar\/p\/([0-9a-f-]{36})/g)].map((m) => m[1]));
 ok(store.status === 200 && listed.size >= 4 && ids.length >= 3, `storefront lists the demo products (${listed.size}, ${ids.length} buyable from the grid)`);
 ok(/srcSet="\/images\/seed\/hero-320\.webp 320w/.test(storeHtml), "store home cover ships a srcset from its renditions");
+ok(
+  /-480\.webp 480w/.test(storeHtml) && storeHtml.includes("calc(50vw - 22px)"),
+  "product grid offers the 480 w thumbnail with a padding-aware sizes",
+);
 
 // Rich product page: every demo product has 3–5 photos, a details table, JSON-LD and an og:image.
 let sale = null;
