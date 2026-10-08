@@ -11,6 +11,7 @@ import { waLink } from "@/lib/whatsapp";
 import { buildSrcSet, SIZES } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
 import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
+import { ViewPixel } from "@/components/store/ViewPixel";
 
 type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[] };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)?.trim() || undefined;
@@ -55,6 +56,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
   return (
     <div className="grid gap-5">
+      <ViewPixel slug={store.slug} />
       {/* Hero: cover photo (LCP, eager) with a scrim, or the theme's hero colour as a gradient. */}
       <section className="relative -mt-2 overflow-hidden rounded-[var(--radius-card)] bg-gradient-to-br from-st-hero to-st-hero/80 text-st-on-hero">
         {store.coverImageUrl && (

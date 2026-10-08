@@ -323,5 +323,32 @@ const unblockRes = await callFormAction("unblockPhoneAction", { phone: "+9647519
 const afterUnblock = await foOrder({ phone: "0751 999 8877" }, "10.66.0.4");
 ok(unblockRes.text.includes('"ok":true') && afterUnblock.text.includes('"redirectTo"'), "after unblocking, the number can order again");
 
+// Analytics: a same-origin pixel counts a real browser once per page per day; bots, prefetches and foreign products don't.
+const UA = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36";
+const homeNow = await (await fetch(`${BASE}/s/hawler-bazaar`)).text();
+const prodNow = await (await fetch(`${BASE}/s/hawler-bazaar/p/${ids[0]}`)).text();
+ok(homeNow.includes('src="/api/v/hawler-bazaar"') && prodNow.includes(`src="/api/v/hawler-bazaar?p=${ids[0]}"`), "store home and product page render the same-origin view pixel");
+const px = (q, h = {}) => fetch(`${BASE}/api/v/hawler-bazaar${q}`, { headers: { "User-Agent": UA, "X-Forwarded-For": "10.77.0.1", ...h } });
+const px1 = await px("");
+ok(px1.status === 200 && px1.headers.get("content-type") === "image/gif" && /no-store/.test(px1.headers.get("cache-control") ?? ""), "view pixel answers an uncached GIF");
+await px1.arrayBuffer();
+for (const [q, h] of [
+  ["", {}], // same visitor again → not counted
+  ["", { "X-Forwarded-For": "10.77.0.2" }],
+  [`?p=${ids[0]}`, {}],
+  ["", { "User-Agent": "WhatsApp/2.23.20.0", "X-Forwarded-For": "10.77.0.3" }],
+  ["", { "Sec-Purpose": "prefetch", "X-Forwarded-For": "10.77.0.4" }],
+  ["?p=00000000-0000-4000-8000-000000000000", { "X-Forwarded-For": "10.77.0.5" }],
+]) await (await px(q, h)).arrayBuffer();
+await new Promise((r) => setTimeout(r, 1500));
+const kpi = (html, k) => Number((new RegExp(`data-kpi="${k}"[\\s\\S]*?<dd[^>]*>([^<]+)</dd>`).exec(html)?.[1] ?? "NaN").replace(/[^0-9.]/g, ""));
+const an = await (await fetch(`${BASE}/dashboard/analytics`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
+ok(an.includes('data-testid="analytics"') && kpi(an, "visitors") === 2 && kpi(an, "storeViews") === 2 && kpi(an, "productViews") === 1, "analytics counts 2 visitors, 2 store views, 1 product view (bots/prefetch/dupes ignored)");
+ok(kpi(an, "orders") > 0 && an.includes('data-testid="top-sold"') && an.includes('data-testid="analytics-table"'), "analytics shows orders, best sellers and the by-day table");
+const anOther = await (await fetch(`${BASE}/dashboard/analytics?range=30`, { headers: { Cookie: `${cookie}; mm_locale=en` } })).text();
+ok(kpi(anOther, "visitors") === 0 && kpi(anOther, "orders") === 0, "another seller's analytics stay empty (tenant isolation)");
+const anAnon = await fetch(`${BASE}/dashboard/analytics`, { redirect: "manual" });
+ok(!(await anAnon.text()).includes('data-kpi="visitors"'), "analytics needs a seller session");
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

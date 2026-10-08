@@ -50,6 +50,13 @@
       "when": 1791462376033,
       "tag": "0006_fake_order_protection",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791463215534,
+      "tag": "0007_store_analytics",
+      "breakpoints": true
     }
   ]
 }

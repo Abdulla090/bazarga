@@ -83,7 +83,8 @@
     "pushError": "Xeletiyek çêbû, dîsa biceribîne."
   },
   "dash": {
-    "share": "Parvekirin"
+    "share": "Parvekirin",
+    "analytics": "Analîtîk"
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
@@ -171,5 +172,29 @@
   "errors": {
     "order_rejected": "Me nikarî vê fermanê tomar bikin. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin.",
     "too_many_orders": "Te îro gelek ferman kirine. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin."
+  },
+  "analytics": {
+    "title": "Analîtîk",
+    "subtitle": "Kiriyar çawa firoşgeha te dibînin û jê dikirin.",
+    "range": "{days} roj",
+    "visitors": "Serdanker",
+    "storeViews": "Dîtinên rûpela firoşgehê",
+    "productViews": "Dîtinên berheman",
+    "orders": "Ferman",
+    "conversion": "Rêjeya kirînê",
+    "conversionHint": "ferman ji bo her 100 serdankeran",
+    "revenue": "Dahat",
+    "byDay": "Li gorî rojê",
+    "visitorsPerDay": "Serdanker di rojê de",
+    "ordersPerDay": "Ferman di rojê de",
+    "table": "Wek tablo nîşan bide",
+    "day": "Roj",
+    "topViewed": "Berhemên herî zêde hatine dîtin",
+    "topSold": "Yên herî zêde firotî",
+    "views": "{count} dîtin",
+    "units": "{count} firotî",
+    "empty": "Hîn dane tune. Girêdana firoşgeha xwe parve bike da ku serdankerên te yên yekem bên.",
+    "privacy": "Li ser serverên me tên jimartin, bê cookie û bê şopînerên aliyê sêyem. Bot û pêşdîtinên girêdanan nayên jimartin; her serdanker rojê carekê ji bo her rûpelê tê jimartin.",
+    "ordersNote": "Fermanên betalkirî, redkirî û vegerandî nayên jimartin."
   }
 }
