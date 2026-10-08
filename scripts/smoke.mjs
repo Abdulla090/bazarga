@@ -16,7 +16,7 @@ const ok = (cond, msg) => {
   if (!cond) failures++;
 };
 
-async function callAction(name, args, { cookie, path = "/" } = {}) {
+async function callAction(name, args, { cookie, path = "/", headers = {} } = {}) {
   const res = await fetch(BASE + path, {
     method: "POST",
     headers: {
@@ -25,6 +25,7 @@ async function callAction(name, args, { cookie, path = "/" } = {}) {
       Accept: "text/x-component",
       Origin: BASE,
       ...(cookie ? { Cookie: cookie } : {}),
+      ...headers,
     },
     body: JSON.stringify(args),
     redirect: "manual",
@@ -293,6 +294,34 @@ home = await (await fetch(`${BASE}/dashboard`, { headers: { Cookie: cookie } }))
 ok(shared.text.includes('"ok":true') && fees.res.status < 400 && stepDone(home, "share") && stepDone(home, "delivery"), "copying the link and 'fees look right' tick their steps");
 const demoHome = await (await fetch(`${BASE}/dashboard`, { headers: { Cookie: demoCookie } })).text();
 ok(!demoHome.includes('data-testid="setup-checklist"') || stepDone(demoHome, "product"), "the demo store's checklist reflects its own products");
+
+// Fake-order protection (COD): honeypot, double tap, risk flag, per-store blocklist. Own IPs so the per-IP limits stay clear.
+const foOrder = (extra, ip) =>
+  callAction(
+    "placeOrderAction",
+    ["hawler-bazaar", { items: [{ productId: ids[0], quantity: 1 }], customerName: "Risk Test", phone: "0751 222 3344", cityKey: "erbil", landmark: "Smoke landmark", paymentMethod: "cod", locale: "en", hp: "", ...extra }],
+    { path: "/s/hawler-bazaar/cart", headers: { "X-Forwarded-For": ip } },
+  );
+const hpTry = await foOrder({ hp: "http://spam.example" }, "10.66.0.1");
+ok(hpTry.text.includes('"error":"order_rejected"') && !hpTry.text.includes("redirectTo"), "honeypot-filled checkout is refused with the generic message");
+const tap1 = /"redirectTo":"([^"]+)"/.exec((await foOrder({ elapsedMs: 400 }, "10.66.0.2")).text)?.[1];
+const tap2 = /"redirectTo":"([^"]+)"/.exec((await foOrder({ elapsedMs: 400 }, "10.66.0.2")).text)?.[1];
+ok(!!tap1 && tap1 === tap2, "a double tap returns the first order instead of a duplicate");
+const riskList = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: demoCookie } })).text();
+ok((riskList.match(/Risk Test/g) ?? []).length === 1 && riskList.includes('data-testid="risk-badge"'), "seller sees one order, flagged 'check before shipping'");
+const riskId = /href="\/dashboard\/orders\/([0-9a-f-]{36})"[^>]*>(?:(?!<\/a>).)*Risk Test/s.exec(riskList)?.[1];
+const riskDetail = riskId ? await (await fetch(`${BASE}/dashboard/orders/${riskId}`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text() : "";
+ok(riskDetail.includes('data-testid="order-risk"') && riskDetail.includes('data-risk="fast_submit"') && riskDetail.includes('data-testid="block-phone"'), "order page explains the risk and offers to block the number");
+const blockRes = await callFormAction("blockPhoneAction", { phone: "0751 999 8877", note: "smoke fake orders" }, { cookie: demoCookie, path: "/dashboard/customers" });
+ok(blockRes.text.includes('"ok":true'), "seller blocks a phone number");
+const blockedTry = await foOrder({ phone: "+964 751 999 8877" }, "10.66.0.3");
+ok(blockedTry.text.includes('"error":"order_rejected"'), "checkout refuses a blocked number");
+const demoCustomers = await (await fetch(`${BASE}/dashboard/customers`, { headers: { Cookie: demoCookie } })).text();
+const otherCustomers = await (await fetch(`${BASE}/dashboard/customers`, { headers: { Cookie: cookie } })).text();
+ok(demoCustomers.includes('data-blocked-phone="+9647519998877"') && !otherCustomers.includes("+9647519998877"), "blocklist is listed for its own store only");
+const unblockRes = await callFormAction("unblockPhoneAction", { phone: "+9647519998877" }, { cookie: demoCookie, path: "/dashboard/customers" });
+const afterUnblock = await foOrder({ phone: "0751 999 8877" }, "10.66.0.4");
+ok(unblockRes.text.includes('"ok":true') && afterUnblock.text.includes('"redirectTo"'), "after unblocking, the number can order again");
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

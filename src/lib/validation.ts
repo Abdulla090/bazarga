@@ -273,6 +273,10 @@ export const checkoutSchema = z.object({
   notes: trimmed(500).optional().transform((v) => v || null),
   paymentMethod: z.enum(PAYMENT_METHODS),
   locale: localeSchema.default("ku"),
+  /** Honeypot (the checkout's visually hidden "website" input): any value refuses the order (src/lib/order-risk.ts). */
+  hp: z.string().max(200).nullish().catch("x"),
+  /** ms the checkout form was open before submit; garbage is ignored rather than failing the order. */
+  elapsedMs: z.number().int().nonnegative().max(2_147_483_647).optional().catch(undefined),
 }).superRefine((v, ctx) => {
   if (!v.landmark && v.address.length < 3) ctx.addIssue({ code: "custom", path: ["landmark"], message: "address_required" });
 });

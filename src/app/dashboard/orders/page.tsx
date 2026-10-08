@@ -7,10 +7,13 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/order-status";
 import { PaymentBadge, StatusBadge } from "@/components/dashboard/Badges";
+import { knownRiskFlags } from "@/lib/order-risk";
+import { Icon, TriangleAlert } from "@/components/ui/icons";
 
 export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { store } = await requireStore();
   const t = await getTranslations("orders");
+  const tr = await getTranslations("risk");
   const locale = await currentLocale();
   const { status: raw } = await searchParams;
   const status = (ORDER_STATUSES as readonly string[]).includes(raw ?? "") ? (raw as OrderStatus) : undefined;
@@ -46,6 +49,9 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                 </span>
                 <span className="num font-bold">{formatIQD(o.total, locale)}</span>
                 <span className="flex gap-1">
+                  {knownRiskFlags(o.riskFlags).length > 0 && (
+                    <span className="chip bg-gold/20 text-ink" title={tr("title")} data-testid="risk-badge"><Icon as={TriangleAlert} /> {tr("badge")}</span>
+                  )}
                   <StatusBadge status={o.status} />
                   <PaymentBadge status={o.paymentStatus} />
                 </span>

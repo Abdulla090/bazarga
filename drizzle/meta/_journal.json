@@ -43,6 +43,13 @@
       "when": 1791459574509,
       "tag": "0005_order_restocked_at",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791462376033,
+      "tag": "0006_fake_order_protection",
+      "breakpoints": true
     }
   ]
 }

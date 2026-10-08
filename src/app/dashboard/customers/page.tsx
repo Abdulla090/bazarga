@@ -6,12 +6,15 @@ import { listCustomers } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { waLink } from "@/lib/whatsapp";
+import { listBlockedPhones } from "@/server/services/blocklist";
+import { AddBlockedPhoneForm, UnblockButton } from "@/components/dashboard/BlockPhoneForms";
 
 export default async function CustomersPage() {
   const { store } = await requireStore();
   const t = await getTranslations("customers");
+  const tr = await getTranslations("risk");
   const locale = await currentLocale();
-  const list = await listCustomers(db(), store.id);
+  const [list, blocked] = await Promise.all([listCustomers(db(), store.id), listBlockedPhones(db(), store.id)]);
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeZone: "Asia/Baghdad" });
   return (
     <div className="grid gap-4">
@@ -33,6 +36,26 @@ export default async function CustomersPage() {
           ))}
         </ul>
       )}
+      <section className="card grid gap-3" aria-labelledby="blocked-title" data-testid="blocked-phones">
+        <h2 id="blocked-title" className="text-lg font-bold">{tr("listTitle")}</h2>
+        <p className="text-sm text-ink-70">{tr("listHint")}</p>
+        <AddBlockedPhoneForm />
+        {blocked.length === 0 ? (
+          <p className="text-sm text-ink-50">{tr("listEmpty")}</p>
+        ) : (
+          <ul className="divide-y divide-line">
+            {blocked.map((b) => (
+              <li key={b.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2" data-blocked-phone={b.phone}>
+                <span className="min-w-0 flex-1">
+                  <span className="num block font-semibold" dir="ltr">{phoneDisplay(b.phone)}</span>
+                  {b.note && <span className="block text-sm text-ink-70">{b.note}</span>}
+                </span>
+                <UnblockButton phone={b.phone} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

@@ -535,7 +535,9 @@
     "invalid_discount_code": "Use 3–32 Latin letters, numbers, - or _.",
     "invalid_percent": "Percent must be between 1 and 90.",
     "invalid_date": "That date isn’t valid.",
-    "invalid_date_range": "The end date must be on or after the start date."
+    "invalid_date_range": "The end date must be on or after the start date.",
+    "order_rejected": "We couldn't place this order. Please contact the store on WhatsApp.",
+    "too_many_orders": "You've placed many orders today. Please contact the store on WhatsApp."
   },
   "pwa": {
     "installTitle": "Install Bazarga",
@@ -634,5 +636,24 @@
     "storyDownload": "Download in:",
     "storyCta": "Order online now",
     "storyScan": "Scan to open the store"
+  },
+  "risk": {
+    "title": "Check before shipping",
+    "hint": "These are signs of a possible fake order. Call the customer to confirm before you send it.",
+    "flag_fast_submit": "The order form was filled in unusually fast.",
+    "flag_duplicate": "The same phone ordered the same items in the last 24 hours.",
+    "flag_many_open": "This phone has other orders still open.",
+    "flag_refused_before": "This phone refused or returned an order before.",
+    "badge": "Check",
+    "block": "Block this number",
+    "unblock": "Unblock",
+    "blocked": "This number is blocked: new orders from it are refused.",
+    "blockConfirm": "Block {phone}? New orders from this number will be refused at checkout.",
+    "listTitle": "Blocked numbers",
+    "listHint": "Orders from these numbers are refused with a polite message. Only your store is affected.",
+    "listEmpty": "No blocked numbers.",
+    "phone": "Phone number",
+    "note": "Note (only you see it)",
+    "add": "Block number"
   }
 }

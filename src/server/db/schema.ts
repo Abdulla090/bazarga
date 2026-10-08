@@ -470,15 +470,41 @@ export const orders = pgTable(
     paymentMethod: paymentMethodEnum("payment_method").notNull(),
     paymentStatus: paymentStatusEnum("payment_status").notNull().default("unpaid"),
     locale: localeEnum("locale").notNull().default("ku"),
+    /**
+     * Fake-order signals found at checkout (src/lib/order-risk.ts), shown to the seller as "check before
+     * shipping". Never blocks an order by itself (migration 0006).
+     */
+    riskFlags: jsonb("risk_flags").$type<string[]>().notNull().default([]),
+    /** Fingerprint of the cart lines (product, variant, quantity) for duplicate detection; null on older orders. */
+    cartHash: text("cart_hash"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [
     uniqueIndex("orders_store_number_uq").on(t.storeId, t.number),
+    index("orders_store_phone_created_idx").on(t.storeId, t.customerPhone, t.createdAt),
     index("orders_store_created_idx").on(t.storeId, t.createdAt),
     index("orders_store_status_idx").on(t.storeId, t.status),
     check("orders_discount_nonneg", sql`${t.discountAmount} >= 0 AND ${t.discountAmount} <= ${t.subtotal}`),
   ],
+);
+
+/**
+ * Per-store blocklist of shopper phones (E.164, "+9647…"). Checkout refuses these numbers with a generic message;
+ * one store's list never affects another store (migration 0006).
+ */
+export const storeBlockedPhones = pgTable(
+  "store_blocked_phones",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    phone: text("phone").notNull(),
+    note: text("note"),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("store_blocked_phones_store_phone_uq").on(t.storeId, t.phone)],
 );
 
 export const orderItems = pgTable(

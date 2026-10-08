@@ -144,7 +144,8 @@ describe("checkout: stock", () => {
     const { store } = await seller(database, "race");
     const p = await product(database, store.id, 1_000, 1);
     const results = await Promise.allSettled(
-      [1, 2, 3].map(() => placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }]))),
+      // Three different shoppers (the same phone + cart would be a double tap and get the first order back).
+      [1, 2, 3].map((i) => placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: `+96477011122${30 + i}` }))),
     );
     expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
     expect(await stockOf(p.id)).toBe(0);
@@ -251,7 +252,7 @@ describe("quote & stats", () => {
     const { store, user } = await seller(database, "stats");
     const p = await product(database, store.id, 10_000, null);
     await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }]));
-    const c = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }]));
+    const c = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647701112299" }));
     await updateOrderStatus(database, store.id, c.id, "cancelled", user.id);
     const s = await storeStats(database, store.id);
     expect(s.ordersToday).toBe(1);
