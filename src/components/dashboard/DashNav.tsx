@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CreditCard, House, Icon, Menu, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Tags, TicketPercent, Truck, Users } from "@/components/ui/icons";
+import { ChartColumnIncreasing, CreditCard, House, Icon, Menu, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Tags, TicketPercent, Truck, Users } from "@/components/ui/icons";
 
 const ITEMS = [
   { href: "/dashboard", key: "home", icon: House, mobile: true },
   { href: "/dashboard/orders", key: "orders", icon: Receipt, mobile: true },
   { href: "/dashboard/products", key: "products", icon: ShoppingBag, mobile: true },
+  { href: "/dashboard/analytics", key: "analytics", icon: ChartColumnIncreasing, mobile: false },
   { href: "/dashboard/ai", key: "ai", icon: Sparkles, mobile: false },
   { href: "/dashboard/categories", key: "categories", icon: Tags, mobile: false },
   { href: "/dashboard/delivery", key: "delivery", icon: Truck, mobile: false },

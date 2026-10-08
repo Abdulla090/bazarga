@@ -507,6 +507,24 @@ export const storeBlockedPhones = pgTable(
   (t) => [uniqueIndex("store_blocked_phones_store_phone_uq").on(t.storeId, t.phone)],
 );
 
+/**
+ * Aggregate page-view counters for seller analytics (migration 0007): one row per store, Iraqi day and page
+ * ("home", a product id, or "*" = unique visitors that day). No per-visitor rows, no IPs, no cookies —
+ * see src/lib/analytics.ts.
+ */
+export const storePageViews = pgTable(
+  "store_page_views",
+  {
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    day: text("day").notNull(),
+    page: text("page").notNull(),
+    views: integer("views").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.storeId, t.day, t.page] })],
+);
+
 export const orderItems = pgTable(
   "order_items",
   {

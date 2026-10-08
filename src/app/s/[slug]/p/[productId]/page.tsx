@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewPixel } from "@/components/store/ViewPixel";
 import { cookies, headers } from "next/headers";
 import { pickDeliveryZone, shopperCityCookie } from "@/lib/shopper-city";
 import { notFound } from "next/navigation";
@@ -137,6 +138,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     // Bottom padding on phones so the sticky buy bar never covers the footer.
     <div className="grid gap-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
+      <ViewPixel slug={store.slug} productId={p.id} />
       <div className="grid gap-6 md:grid-cols-2 md:gap-10">
         <div className="min-w-0 md:sticky md:top-24 md:h-fit">
           <ProductGallery

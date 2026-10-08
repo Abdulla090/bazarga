@@ -92,6 +92,8 @@ export async function setup() {
       { name: "dashboard-delivery", path: "/dashboard/delivery", auth: true, openDetails: true },
       { name: "dashboard-more", path: "/dashboard/more", auth: true },
       { name: "dashboard-share", path: "/dashboard/share", auth: true },
+      { name: "dashboard-analytics", path: "/dashboard/analytics?range=30", auth: true, openDetails: true },
+      { name: "dashboard-customers", path: "/dashboard/customers", auth: true },
     ],
   };
 }

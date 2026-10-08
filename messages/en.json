@@ -143,7 +143,8 @@
     "shareTitle": "Your store link",
     "shareSub": "Put it in your Instagram bio and WhatsApp status.",
     "seeAll": "See all",
-    "discounts": "Discounts"
+    "discounts": "Discounts",
+    "analytics": "Analytics"
   },
   "setup": {
     "title": "Set up your store",
@@ -655,5 +656,29 @@
     "phone": "Phone number",
     "note": "Note (only you see it)",
     "add": "Block number"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "How shoppers find and buy from your store.",
+    "range": "{days} days",
+    "visitors": "Visitors",
+    "storeViews": "Store page views",
+    "productViews": "Product views",
+    "orders": "Orders",
+    "conversion": "Conversion",
+    "conversionHint": "orders per 100 visitors",
+    "revenue": "Revenue",
+    "byDay": "By day",
+    "visitorsPerDay": "Visitors per day",
+    "ordersPerDay": "Orders per day",
+    "table": "Show as table",
+    "day": "Day",
+    "topViewed": "Most viewed products",
+    "topSold": "Best sellers",
+    "views": "{count} views",
+    "units": "{count} sold",
+    "empty": "No data yet. Share your store link to get your first visitors.",
+    "privacy": "Counted on our own servers, without cookies or third-party trackers. Bots and link previews are not counted; each visitor counts once per page per day.",
+    "ordersNote": "Cancelled, refused and returned orders are left out."
   }
 }

@@ -11,6 +11,7 @@ import type { LucideIcon, LucideProps } from "lucide-react";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 export {
+  ChartColumnIncreasing,
   Check,
   CircleCheck,
   CreditCard,
