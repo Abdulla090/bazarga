@@ -12,6 +12,8 @@ export const BUDGETS = [
   { name: "storefront home", route: "/s/[slug]", max: 155 * KiB },
   { name: "product", route: "/s/[slug]/p/[productId]", max: 155 * KiB },
   { name: "cart", route: "/s/[slug]/cart", max: 155 * KiB },
+  { name: "order confirmation", route: "/s/[slug]/order/[publicId]", max: 155 * KiB },
+  { name: "order tracking", route: "/s/[slug]/track", max: 155 * KiB },
   { name: "dashboard", route: "/dashboard", max: 200 * KiB },
 ];
 // Every other dashboard route is held to the dashboard budget too.

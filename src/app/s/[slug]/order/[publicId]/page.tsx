@@ -10,13 +10,15 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { fullAddress, orderSummaryText, waLink } from "@/lib/whatsapp";
+import { trackingPath } from "@/lib/order-tracking";
+import { env } from "@/server/env";
 import dynamic from "next/dynamic";
 
 // Only online-payment orders need it (COD renders nothing): split so cash orders never download its code.
 const PaymentPanel = dynamic(() => import("@/components/store/PaymentPanel").then((m) => m.PaymentPanel));
 import { PAYMENT_PANEL_KEYS } from "@/components/store/cart-labels";
 import { pickLabels } from "@/lib/fmt";
-import { CircleCheck, Icon, MessageCircle } from "@/components/ui/icons";
+import { CircleCheck, Icon, MessageCircle, Truck } from "@/components/ui/icons";
 
 // Always fresh: reads the order directly (never through the storefront cache).
 export const metadata: Metadata = { robots: { index: false } };
@@ -54,6 +56,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       cityName: order.cityName,
       address: fullAddress(order),
       paymentLabel,
+      trackUrl: `${env().APP_URL.replace(/\/$/, "")}${trackingPath(store.slug, order.number)}`,
     },
     locale,
   );
@@ -96,6 +99,9 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
           <dt>{t("payment")}</dt><dd className="text-end">{paymentLabel}</dd>
         </dl>
       </div>
+      <Link href={trackingPath(store.slug, order.number)} className="btn-ghost" data-testid="track-link">
+        <Icon as={Truck} /> {t("trackOrder")}
+      </Link>
       <Link href={`/s/${store.slug}`} className="btn-ghost">{t("backToStore")}</Link>
     </div>
   );

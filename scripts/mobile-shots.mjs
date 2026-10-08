@@ -23,15 +23,16 @@ let overflowing = 0;
 for (const locale of LOCALES) {
   for (const width of WIDTHS) {
     const ctx = await browser.newContext({ viewport: { width, height: 800 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-    const cookies = (anon) => [
+    const cookies = (anon, extra = []) => [
       { name: "mm_locale", value: locale, domain: host, path: "/" },
       ...(anon ? [] : [{ name: session.name, value: session.value, domain: host, path: "/" }]),
+      ...extra.map((c) => ({ ...c, domain: host, path: "/" })),
     ];
     await ctx.addInitScript(([k, v]) => window.localStorage.setItem(k, v), [cart.key, cart.value]);
     const page = await ctx.newPage();
     for (const r of routes.filter((x) => !ONLY || ONLY.includes(x.name))) {
       await ctx.clearCookies();
-      await ctx.addCookies(cookies(r.anon));
+      await ctx.addCookies(cookies(r.anon, r.cookies));
       await page.goto(BASE + r.path, { waitUntil: "networkidle" });
       if (r.openDetails) await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
       await page.evaluate(() => document.fonts.ready);

@@ -20,13 +20,15 @@ type SummaryInput = {
   cityName: string;
   address: string;
   paymentLabel: string;
+  /** Absolute link to the store's order-tracking page (shopper can check status later). */
+  trackUrl?: string | null;
 };
 
 const L: Record<Locale, Record<string, string>> = {
-  ku: { hi: "سڵاو", order: "داواکاری", items: "کاڵاکان", subtotal: "کۆی کاڵاکان", discount: "داشکاندن", freeDelivery: "گەیاندنی بێبەرامبەر", delivery: "گەیاندن", total: "کۆی گشتی", to: "بۆ", pay: "پارەدان" },
-  ar: { hi: "مرحباً", order: "طلب", items: "المنتجات", subtotal: "مجموع المنتجات", discount: "خصم", freeDelivery: "توصيل مجاني", delivery: "التوصيل", total: "المجموع", to: "إلى", pay: "الدفع" },
-  en: { hi: "Hi", order: "Order", items: "Items", subtotal: "Subtotal", discount: "Discount", freeDelivery: "free delivery", delivery: "Delivery", total: "Total", to: "To", pay: "Payment" },
-  kmr: { hi: "Silav", order: "Daxwaz", items: "Berhem", subtotal: "Berhem bi tevahî", discount: "Daxistin", freeDelivery: "gihandina belaş", delivery: "Gihandin", total: "Giştî", to: "Ji bo", pay: "Dayîn" },
+  ku: { hi: "سڵاو", order: "داواکاری", items: "کاڵاکان", subtotal: "کۆی کاڵاکان", discount: "داشکاندن", freeDelivery: "گەیاندنی بێبەرامبەر", delivery: "گەیاندن", total: "کۆی گشتی", to: "بۆ", pay: "پارەدان", track: "بەدواداچوونی داواکاری" },
+  ar: { hi: "مرحباً", order: "طلب", items: "المنتجات", subtotal: "مجموع المنتجات", discount: "خصم", freeDelivery: "توصيل مجاني", delivery: "التوصيل", total: "المجموع", to: "إلى", pay: "الدفع", track: "تتبع الطلب" },
+  en: { hi: "Hi", order: "Order", items: "Items", subtotal: "Subtotal", discount: "Discount", freeDelivery: "free delivery", delivery: "Delivery", total: "Total", to: "To", pay: "Payment", track: "Track order" },
+  kmr: { hi: "Silav", order: "Daxwaz", items: "Berhem", subtotal: "Berhem bi tevahî", discount: "Daxistin", freeDelivery: "gihandina belaş", delivery: "Gihandin", total: "Giştî", to: "Ji bo", pay: "Dayîn", track: "Şopandina daxwazê" },
 };
 
 /** Human, short order summary for the customer → seller WhatsApp message. */
@@ -52,6 +54,7 @@ export function orderSummaryText(o: SummaryInput, locale: Locale): string {
     `${t.total}: ${formatIQD(o.total, locale)}`,
     `${t.pay}: ${o.paymentLabel}`,
     `${t.to}: ${o.customerName} — ${o.cityName}, ${o.address}`,
+    ...(o.trackUrl ? [`${t.track}: ${o.trackUrl}`] : []),
   ].join("\n");
 }
 

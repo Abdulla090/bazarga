@@ -413,7 +413,8 @@
     "zoom": "Zoom",
     "nextPhoto": "Next photo",
     "prevPhoto": "Previous photo",
-    "noReturnPolicy": "This store hasn't published a return policy yet. Ask the seller on WhatsApp before ordering."
+    "noReturnPolicy": "This store hasn't published a return policy yet. Ask the seller on WhatsApp before ordering.",
+    "trackOrder": "Track your order"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -511,5 +512,40 @@
     "activate": "Activate",
     "codeHint": "3–32 Latin letters, numbers, - or _",
     "status": "Status"
+  },
+  "track": {
+    "title": "Track your order",
+    "intro": "Enter your order number and the phone number you ordered with.",
+    "orderNumber": "Order number",
+    "orderNumberHint": "It's on your confirmation page and in your WhatsApp message, e.g. 1001",
+    "phone": "Phone number",
+    "phoneHint": "The mobile number you used at checkout",
+    "submit": "Track order",
+    "notFound": "We couldn't find an order with that number and phone. Check both and try again.",
+    "rateLimited": "Too many tries. Wait a few minutes and try again.",
+    "statusNow": "Status now",
+    "placedOn": "Placed {date}",
+    "timeline": "Order progress",
+    "step_pending": "Order received",
+    "step_confirmed": "Confirmed by the store",
+    "step_shipped": "On its way",
+    "step_delivered": "Delivered",
+    "step_postponed": "Postponed",
+    "step_refused": "Refused at delivery",
+    "step_returned": "Returned to the store",
+    "step_cancelled": "Cancelled",
+    "courier": "Courier",
+    "trackingNumber": "Tracking number",
+    "items": "Items",
+    "deliveryArea": "Delivery area",
+    "paymentStatus": "Payment status",
+    "pay_unpaid": "Not paid yet",
+    "pay_pending": "Payment pending",
+    "pay_paid": "Paid",
+    "pay_failed": "Payment failed",
+    "pay_refunded": "Refunded",
+    "askStore": "Ask the store on WhatsApp",
+    "waAbout": "Hi {store}, I have a question about order #{number}.",
+    "another": "Track another order"
   }
 }

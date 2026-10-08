@@ -10,7 +10,7 @@ Cash on Delivery (plus FIB / ZainCash when connected), WhatsApp order hand-off, 
 |---|---|
 | Stack | Next.js 16 (App Router, Turbopack) · React 19 · TypeScript (strict) · PostgreSQL + Drizzle ORM · Zod 4 · Tailwind CSS 4 · next-intl 4 |
 | Locales | `ku` Sorani (default, RTL) · `ar` Arabic (RTL) · `en` English (LTR) · `kmr` Kurmanji (Latin, scaffolded) |
-| Tests | Vitest (259 unit/integration tests on a real embedded Postgres) + an HTTP smoke test of the production build + Playwright mobile checks |
+| Tests | Vitest (295 unit/integration tests on a real embedded Postgres) + an HTTP smoke test of the production build + Playwright mobile checks |
 | Deploy | Docker / docker-compose (app + Postgres) on a VPS, or Vercel + Neon/Supabase + Cloudflare R2 |
 
 ---
@@ -145,7 +145,7 @@ src/
     (auth)/                   login, signup, forgot/reset password
     onboarding/               create store
     dashboard/                seller dashboard (mobile bottom nav, desktop sidebar)
-    s/[slug]/                 storefront: grid, product page, cart+checkout, order confirmation
+    s/[slug]/                 storefront: grid, product page, cart+checkout, order confirmation, order tracking
     api/
       health/                 liveness + DB check
       uploads/                seller image upload (session + Origin check)
@@ -189,7 +189,15 @@ are ignored) → merge duplicate lines → decrement stock with `UPDATE … SET 
 (zero rows → `OUT_OF_STOCK`, whole transaction rolls back) → allocate the per-store order number → upsert the
 customer → insert order, items and the first status event. After the response, the seller is notified via
 `after()`. The confirmation page builds a `wa.me` link to the seller pre-filled with the order summary in the
-customer's language.
+customer's language, ending with a link to the store's tracking page.
+
+**Order tracking** (`/s/<slug>/track`, `src/server/services/tracking.ts`): the shopper enters the order number and
+the phone they ordered with (normalised like checkout, `+9647…`). The lookup is scoped to the store, needs both,
+and every miss is the same "not found"; it is rate-limited per IP per store (10 / 10 min) and per order number
+across IPs (6 / 10 min) on the Postgres `rate_limits` table. The form is a plain `<form action>` (works without
+JS): a match stores the order's public id in an httpOnly `mm_track` cookie (30 min) and redirects, so the phone
+never appears in a URL. The page shows a status timeline from `order_events` (no seller notes), items, totals,
+delivery area and fee, payment method/status, courier + tracking number when set, and a WhatsApp button.
 
 **Order status flow:** `new → confirmed → out_for_delivery → delivered`, and `cancelled` from any open state.
 Cancelling restocks tracked items; delivering a COD order marks it paid. Updates use optimistic concurrency.
@@ -240,7 +248,7 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
 | Products CRUD (4-language name/description, IQD price, compare-at, stock, SKU, details table, category, images, active) | ✅ |
 | Categories, delivery zones (9 seeded Iraqi cities, editable/addable), payment toggles | ✅ |
 | Orders list/detail, status flow + history, customers list, stats (orders today, 7-day revenue, open) | ✅ |
-| Storefront grid, product page (swipe gallery + fullscreen zoom viewer, % off, stock, quantity, trust row, details table, related products, Product JSON-LD), cart (server-priced), checkout, confirmation, WhatsApp deep link | ✅ |
+| Storefront grid, product page (swipe gallery + fullscreen zoom viewer, % off, stock, quantity, trust row, details table, related products, Product JSON-LD), cart (server-priced), checkout, confirmation, WhatsApp deep link, shopper order tracking (number + phone) | ✅ |
 | Transactional stock decrement + restock on cancel | ✅ |
 | Cash on Delivery | ✅ |
 | FIB | 🟢 implemented from public docs (OAuth2 client credentials, create payment → QR/app links, status, cancel, callback re-verification). Needs sandbox credentials to validate end-to-end. `redirectUri` is marked TODO(verify). |
@@ -258,7 +266,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md) for what comes next.
 ## 7. Testing
 
 ```bash
-npm test                         # 259 tests, ~40 s
+npm test                         # 295 tests, ~75 s
 npm run build && npm run db:setup && (npm start &) && BASE_URL=http://localhost:3000 npm run test:smoke
 ```
 
