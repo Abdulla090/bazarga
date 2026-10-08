@@ -312,6 +312,7 @@
     "slipLandmark": "أقرب نقطة دالة",
     "slipQty": "الكمية",
     "slipTrack": "تتبع الطلب",
+    "slipScan": "امسح للتتبّع",
     "slipHint": "اختر حجم الورق A6 أو A5 في نافذة الطباعة."
   },
   "customers": {

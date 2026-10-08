@@ -11,15 +11,20 @@ import { formatIQD } from "@/lib/money";
 import { phoneDisplay } from "@/lib/phone";
 import { PAYMENT_LABEL } from "@/lib/order-status";
 import { trackingPath } from "@/lib/order-tracking";
+import { qrMatrix, qrPath } from "@/lib/share-kit";
 import { PrintButton } from "@/components/dashboard/PrintButton";
 import { ArrowBack } from "@/components/ui/icons";
 
-export const metadata = { title: "Packing slip", robots: { index: false } };
+export async function generateMetadata() {
+  const t = await getTranslations("orders");
+  return { title: t("packingSlip"), robots: { index: false } };
+}
 
 /**
  * Printable packing slip for one order of the seller's own store (A6/A5 friendly, no forced paper size).
  * Tenant-safe: the store comes from the session, an order of another store is a plain 404.
- * The tracking link is printed as text (no QR library on purpose).
+ * The tracking link is printed as text and as a QR code (uqr, server-only, so no client JS), so the courier or the
+ * customer can scan it from the parcel.
  */
 export default async function PackingSlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -41,6 +46,8 @@ export default async function PackingSlipPage({ params }: { params: Promise<{ id
     timeZone: "Asia/Baghdad",
   }).format(order.createdAt);
   const storePhone = slip.store.phone || slip.store.whatsapp;
+  const qr = qrMatrix(trackUrl);
+  const qrSize = qr.size + 8; // 4-module quiet zone on each side
 
   return (
     <div className="grid gap-4">
@@ -146,9 +153,25 @@ export default async function PackingSlipPage({ params }: { params: Promise<{ id
           </p>
         )}
 
-        <footer className="border-t border-line pt-2 text-xs">
-          <p className="font-semibold">{t("slipTrack")}</p>
-          <p className="num break-all text-ink-70" dir="ltr" data-testid="slip-track-url">{trackUrl}</p>
+        <footer className="flex items-center gap-3 border-t border-line pt-2 text-xs">
+          <svg
+            viewBox={`0 0 ${qrSize} ${qrSize}`}
+            width={88}
+            height={88}
+            shapeRendering="crispEdges"
+            role="img"
+            aria-label={t("slipScan")}
+            className="shrink-0"
+            data-testid="slip-qr"
+          >
+            <rect width={qrSize} height={qrSize} fill="#ffffff" />
+            <path fill="#000000" d={qrPath(qr, 4)} />
+          </svg>
+          <div className="min-w-0">
+            <p className="font-semibold">{t("slipTrack")}</p>
+            <p className="text-ink-70">{t("slipScan")}</p>
+            <p className="num break-all text-ink-70" dir="ltr" data-testid="slip-track-url">{trackUrl}</p>
+          </div>
         </footer>
       </article>
     </div>

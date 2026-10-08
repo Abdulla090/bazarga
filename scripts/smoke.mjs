@@ -222,8 +222,17 @@ if (smokeOrderId) {
   const slipHtml = await slip.text();
   ok(slip.status === 200 && slipHtml.includes('data-testid="packing-slip"') && slipHtml.includes('dir="rtl"'), "packing slip renders for the owner (Kurdish, RTL)");
   ok(slipHtml.includes("Shilan Smoke") && slipHtml.includes("Near the Bazaar Mosque") && slipHtml.includes('data-testid="slip-cod"') && slipHtml.includes(`/s/hawler-bazaar/track?n=${orderNumber}`), "slip shows customer, landmark, COD amount and the tracking URL");
+  ok(slipHtml.includes('data-testid="slip-qr"') && /<path[^>]+d="M\d/.test(slipHtml), "packing slip prints a QR code for the tracking link");
+  const backwards = await callAction("updateOrderStatusAction", [smokeOrderId, "confirmed", {}], { cookie: demoCookie, path: orderPath });
+  ok(backwards.text.includes("invalid_transition"), "server rejects an illegal status change (out for delivery → confirmed)");
   const anon = await fetch(`${BASE}${orderPath}/slip`, { redirect: "manual" });
-  ok(anon.status >= 300 && anon.status < 400 && (anon.headers.get("location") ?? "").includes("/login"), "packing slip redirects to login when logged out");
+  // With cacheComponents the dashboard shell can stream first, so the login redirect arrives either as a 3xx or
+  // in-stream (NEXT_REDIRECT → /login, 200). Either way none of the order may be in the response.
+  const anonHtml = await anon.text();
+  const anonRedirect =
+    (anon.status >= 300 && anon.status < 400 && (anon.headers.get("location") ?? "").includes("/login")) ||
+    (anon.status === 200 && anonHtml.includes("NEXT_REDIRECT;replace;/login"));
+  ok(anonRedirect && !anonHtml.includes("Shilan Smoke") && !anonHtml.includes('data-testid="packing-slip"'), "packing slip redirects to login when logged out (no order data)");
   const other = await fetch(`${BASE}${orderPath}/slip`, { headers: { Cookie: cookie }, redirect: "manual" });
   const otherHtml = await other.text();
   ok((other.status === 404 || otherHtml.includes("NEXT_HTTP_ERROR_FALLBACK;404")) && !otherHtml.includes("Shilan Smoke"), "another store's seller gets not-found for the slip");

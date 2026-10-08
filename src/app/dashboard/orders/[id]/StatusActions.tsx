@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { updateOrderStatusAction } from "@/server/actions/dashboard";
 import { CONFIRM_FIRST, ORDER_TRANSITIONS, PRIMARY_NEXT, type OrderStatus } from "@/lib/order-status";
 
@@ -30,6 +31,7 @@ export function StatusActions({
   const [error, setError] = useState<string>();
   const [confirming, setConfirming] = useState<OrderStatus | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const router = useRouter();
   const next = ORDER_TRANSITIONS[status];
   if (!next.length) return null;
 
@@ -42,6 +44,8 @@ export function StatusActions({
       const r = await updateOrderStatusAction(orderId, to, extra);
       setError(r.ok ? undefined : r.error);
       if (r.ok) dialog.current?.close();
+      // Someone else (another tab / device) moved the order first: reload so the buttons match its real status.
+      else if (r.error === "CONFLICT" || r.error === "invalid_transition") router.refresh();
     });
 
   const ask = (to: OrderStatus) => {

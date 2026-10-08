@@ -312,6 +312,7 @@
     "slipLandmark": "Landmark",
     "slipQty": "Qty",
     "slipTrack": "Track this order",
+    "slipScan": "Scan to track",
     "slipHint": "Pick A6 or A5 paper in the print dialog."
   },
   "customers": {
