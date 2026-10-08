@@ -707,7 +707,14 @@
     "units": "{count} sold",
     "empty": "No data yet. Share your store link to get your first visitors.",
     "privacy": "Counted on our own servers, without cookies or third-party trackers. Bots and link previews are not counted; each visitor counts once per page per day.",
-    "ordersNote": "Cancelled, refused and returned orders are left out."
+    "ordersNote": "Cancelled, refused and returned orders are left out.",
+    "byCity": "Sales by city",
+    "orderCount": "{count} orders",
+    "customersTitle": "Customers",
+    "customersTotal": "Customers",
+    "customersNew": "New",
+    "customersReturning": "Returning",
+    "customersHint": "Returning means this phone number has another order with you (any date)."
   },
   "payStatus": {
     "title": "Online payment",

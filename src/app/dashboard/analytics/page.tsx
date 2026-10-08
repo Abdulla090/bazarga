@@ -22,6 +22,8 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const nf = new Intl.NumberFormat(locale === "en" ? "en-US" : "ar-IQ-u-nu-latn");
   const dayFmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { day: "numeric", month: "short", timeZone: "UTC" });
   const label = (d: string) => dayFmt.format(new Date(`${d}T00:00:00Z`));
+  const topRevenue = Math.max(1, ...a.byCity.map((c) => c.revenue));
+  const cityShare = (v: number) => Math.max(v > 0 ? 3 : 0, Math.round((v / topRevenue) * 100));
   const empty = a.totals.visitors === 0 && a.totals.orders === 0;
 
   const kpis: { key: string; value: string; hint?: string }[] = [
@@ -128,6 +130,40 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
               ))}
             </ol>
           )}
+        </section>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-city" data-testid="by-city">
+          <h2 id="an-city" className="text-lg font-bold">{t("byCity")}</h2>
+          {a.byCity.length === 0 ? (
+            <p className="text-sm text-ink-50">—</p>
+          ) : (
+            <ol className="grid gap-2">
+              {a.byCity.map((c) => (
+                <li key={c.cityKey} className="grid min-w-0 gap-1" data-city={c.cityKey}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="min-w-0 truncate font-semibold">{c.city}</span>
+                    <span className="num shrink-0 text-sm text-ink-70">{t("orderCount", { count: c.orders })} · {formatIQD(c.revenue, locale)}</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
+                    <div className="h-full rounded-full bg-green" style={{ width: `${cityShare(c.revenue)}%` }} />
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+        <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-cust" data-testid="customers">
+          <h2 id="an-cust" className="text-lg font-bold">{t("customersTitle")}</h2>
+          <dl className="grid grid-cols-[repeat(3,minmax(0,1fr))] gap-2 text-center">
+            {([["customersTotal", a.customers.total], ["customersNew", a.customers.new], ["customersReturning", a.customers.returning]] as const).map(([k, v]) => (
+              <div key={k} className="grid min-w-0 gap-1" data-customers={k}>
+                <dd className="num order-2 text-xl font-extrabold" dir="ltr">{nf.format(v)}</dd>
+                <dt className="order-1 text-xs font-semibold text-ink-70">{t(k)}</dt>
+              </div>
+            ))}
+          </dl>
+          <p className="text-xs text-ink-50">{t("customersHint")}</p>
         </section>
       </div>
       <p className="text-xs text-ink-50">{t("privacy")}</p>

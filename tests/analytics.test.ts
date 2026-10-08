@@ -121,6 +121,32 @@ describe("store analytics (DB)", () => {
     expect(r.totals.conversion).toBeNull(); // no visitors recorded
   });
 
+  it("sales by city and new vs returning customers", async () => {
+    const { store, user } = await seller(database, "an4");
+    const p = await product(database, store.id, 5_000, null);
+    const now = new Date();
+    const a1 = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220001", cityKey: "erbil" }));
+    const a2 = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 2 }], { phone: "+9647702220001", cityKey: "erbil", address: "Other street 5" }));
+    const b = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220002", cityKey: "sulaymaniyah" }));
+    // Customer 3 ordered 20 days ago (outside 7 days) and again today → returning; the old order is not in the range.
+    const old = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220003", cityKey: "erbil", address: "Old street 1" }));
+    await database.update(orders).set({ createdAt: new Date(now.getTime() - 20 * 86_400_000) }).where(eq(orders.id, old.id));
+    const c = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220003", cityKey: "erbil", address: "New street 2" }));
+    // Customer 4's only other order was cancelled → still a new customer. A cancelled order never counts in a city.
+    const lost = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220004", cityKey: "duhok", address: "Gone street 3" }));
+    await updateOrderStatus(database, store.id, lost.id, "cancelled", user.id);
+    const d = await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647702220004", cityKey: "erbil", address: "Last street 4" }));
+
+    const r = await getStoreAnalytics(database, store.id, { days: 7, locale: "en", now });
+    expect(r.customers).toEqual({ total: 4, returning: 2, new: 2 });
+    expect(r.byCity.map((x) => x.cityKey)).toEqual(["erbil", "sulaymaniyah"]); // revenue order, no duhok, no old order
+    expect(r.byCity[0]).toMatchObject({ orders: 4, revenue: a1.total + a2.total + c.total + d.total });
+    expect(r.byCity[0]!.city).toBeTruthy();
+    expect(r.byCity[1]).toMatchObject({ orders: 1, revenue: b.total });
+    const month = await getStoreAnalytics(database, store.id, { days: 30, locale: "en", now });
+    expect(month.byCity[0]!.orders).toBe(5);
+  });
+
   it("tenant isolation: one store's views and orders never show in another's analytics", async () => {
     const x = await seller(database, "an3x");
     const y = await seller(database, "an3y");
@@ -132,6 +158,8 @@ describe("store analytics (DB)", () => {
     expect(ry.totals).toEqual({ visitors: 0, storeViews: 0, productViews: 0, orders: 0, revenue: 0, conversion: null });
     expect(ry.topViewed).toEqual([]);
     expect(ry.topSold).toEqual([]);
+    expect(ry.byCity).toEqual([]);
+    expect(ry.customers).toEqual({ total: 0, returning: 0, new: 0 });
     // A product id of store X recorded under store Y (forged pixel) gets no name and is dropped from "most viewed".
     await recordView(database, y.store.id, px.id, { newVisitor: false });
     expect((await getStoreAnalytics(database, y.store.id, { days: 7, locale: "en" })).topViewed).toEqual([]);
@@ -165,12 +193,13 @@ describe("analytics wiring", () => {
     expect(readFileSync("src/components/dashboard/DashNav.tsx", "utf8")).toContain('"/dashboard/analytics"');
   });
   it("ku, ar, en and kmr have every analytics string", () => {
-    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote"];
+    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote", "byCity", "orderCount", "customersTitle", "customersTotal", "customersNew", "customersReturning", "customersHint"];
     for (const l of ["ku", "ar", "en", "kmr"]) {
       const m = JSON.parse(readFileSync(`messages/${l}.json`, "utf8")) as { analytics: Record<string, string>; dash: Record<string, string> };
       for (const k of keys) expect(m.analytics[k], `${l}.analytics.${k}`).toBeTruthy();
       expect(m.analytics.range).toContain("{days}");
       expect(m.analytics.views).toContain("{count}");
+      expect(m.analytics.orderCount).toContain("{count}");
       expect(m.dash.analytics).toBeTruthy();
     }
   });

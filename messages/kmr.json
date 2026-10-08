@@ -482,7 +482,14 @@
     "units": "{count} firotî",
     "empty": "Hîn dane tune. Girêdana firoşgeha xwe parve bike da ku serdankerên te yên yekem bên.",
     "privacy": "Li ser serverên me tên jimartin, bê cookie û bê şopînerên aliyê sêyem. Bot û pêşdîtinên girêdanan nayên jimartin; her serdanker rojê carekê ji bo her rûpelê tê jimartin.",
-    "ordersNote": "Fermanên betalkirî, redkirî û vegerandî nayên jimartin."
+    "ordersNote": "Fermanên betalkirî, redkirî û vegerandî nayên jimartin.",
+    "byCity": "Firotin li gorî bajarî",
+    "orderCount": "{count} ferman",
+    "customersTitle": "Kirrîyar",
+    "customersTotal": "Kirrîyar",
+    "customersNew": "Nû",
+    "customersReturning": "Vegeriyayî",
+    "customersHint": "Vegeriyayî tê wateya ku vê jimara têlefonê fermanek din a li cem te heye (her dem)."
   },
   "payStatus": {
     "title": "Dayîna online",
