@@ -3,7 +3,7 @@ import { auditInPage, setup } from "./support.mjs";
 
 /**
  * No horizontal overflow at 360 px (the narrowest common Android width) on every key storefront and dashboard
- * route, in Sorani (RTL) and English (LTR): document.scrollingElement.scrollWidth <= innerWidth.
+ * route, in Sorani (RTL), English and Kurmanji (LTR): document.scrollingElement.scrollWidth <= innerWidth.
  * Covers the auth pages and the store-setup (onboarding) form of a freshly signed-up seller. Run the server with a
  * long APP_URL (the merge gate uses http://very-long-preview-host-name-1234567890.example-tunnel.net) so a long
  * tunnel/preview host in the store-link field can't silently widen the page again.
@@ -15,7 +15,7 @@ test.beforeAll(async () => {
   ctx = await setup();
 });
 
-for (const locale of ["ku", "en"]) {
+for (const locale of ["ku", "en", "kmr"]) {
   test(`no horizontal overflow at ${WIDTH}px (${locale})`, async ({ browser, baseURL }) => {
     const host = new URL(baseURL).hostname;
     const context = await browser.newContext({ viewport: { width: WIDTH, height: 800 }, isMobile: true, hasTouch: true });
