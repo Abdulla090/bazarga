@@ -28,6 +28,7 @@ export {
   ShoppingBag,
   ShoppingCart,
   Smartphone,
+  TriangleAlert,
   Sparkles,
   Tags,
   Trash2,

@@ -101,7 +101,8 @@ describe("variant checkout", () => {
     const { store } = await seller(database, "varrace");
     const d = await dress(store.id);
     const results = await Promise.allSettled(
-      [1, 2, 3].map(() => placeOrder(database, store, checkout([{ productId: d.p.id, variantId: d.vS.id, quantity: 1 }]))),
+      // Three different shoppers (the same phone + cart would be a double tap and get the first order back).
+      [1, 2, 3].map((i) => placeOrder(database, store, checkout([{ productId: d.p.id, variantId: d.vS.id, quantity: 1 }], { phone: `+96477011122${30 + i}` }))),
     );
     expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
     const rejected = results.find((r) => r.status === "rejected") as PromiseRejectedResult;

@@ -13,6 +13,7 @@ import {
   productImages,
   productOptionValues,
   productVariants,
+  storeBlockedPhones,
   storePaymentMethods,
   stores,
 } from "../db/schema";
@@ -31,6 +32,14 @@ import { governorateForCityKey } from "@/lib/governorates";
 import type { CheckoutInput } from "@/lib/validation";
 import { applyDiscount, DISCOUNT_CODE_RE, normalizeDiscountCode, type DiscountRejection, type DiscountRule } from "@/lib/discounts";
 import type { Store } from "./stores";
+import {
+  assessRisk,
+  cartFingerprint,
+  DUPLICATE_WINDOW_MS,
+  isHoneypotTripped,
+  MAX_ORDERS_PER_PHONE_PER_DAY,
+  REPLAY_WINDOW_MS,
+} from "@/lib/order-risk";
 
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
@@ -320,7 +329,8 @@ export async function quoteCart(
 }
 
 // ---------------------------------------------------------------- checkout
-export type PlacedOrder = Order & { items: OrderItem[] };
+/** `replayed`: the same phone sent the same cart again within minutes (a double tap) and got the first order back. */
+export type PlacedOrder = Order & { items: OrderItem[]; replayed?: boolean };
 
 export type PlaceOrderOptions = {
   /** Which non-COD providers are configured on this deployment (env credentials present). */
@@ -328,7 +338,7 @@ export type PlaceOrderOptions = {
   now?: Date;
 };
 
-type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode";
+type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode" | "hp" | "elapsedMs";
 /** Parsed checkout input; area, landmark and discount code are optional for callers that don't collect them. */
 export type PlaceOrderInput = Omit<CheckoutInput, OptionalCheckoutFields> & Partial<Pick<CheckoutInput, OptionalCheckoutFields>>;
 
@@ -341,7 +351,10 @@ export type PlaceOrderInput = Omit<CheckoutInput, OptionalCheckoutFields> & Part
  *  - decrements tracked stock (variant stock for variant lines) with a conditional UPDATE
  *    (fails → whole transaction rolls back),
  *  - allocates a per-store sequential order number,
- *  - upserts the customer record.
+ *  - upserts the customer record,
+ *  - fake-order protection (src/lib/order-risk.ts): honeypot / blocklisted phone / daily cap per phone are refused
+ *    with one generic error; a double tap (same phone + cart, first order still pending) returns the first order;
+ *    other signals are stored in `risk_flags` for the seller.
  */
 export async function placeOrder(
   database: Db,
@@ -362,6 +375,16 @@ export async function placeOrder(
       throw new AppError("VALIDATION", "payment_method_unavailable");
     }
 
+    // ---- fake-order protection. Serialise checkouts of one phone at one store so a double tap can't race itself.
+    const now = opts.now ?? new Date();
+    if (isHoneypotTripped(input.hp)) throw new AppError("VALIDATION", "order_rejected");
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`order:${storeId}:${input.phone}`}))`);
+    const blocked = await tx
+      .select({ id: storeBlockedPhones.id })
+      .from(storeBlockedPhones)
+      .where(and(eq(storeBlockedPhones.storeId, storeId), eq(storeBlockedPhones.phone, input.phone)))
+      .limit(1);
+    if (blocked.length) throw new AppError("VALIDATION", "order_rejected");
     const zone = await tx.query.deliveryZones.findFirst({
       where: and(
         eq(deliveryZones.storeId, storeId),
@@ -380,7 +403,6 @@ export async function placeOrder(
 
     const delivery = await resolveDelivery(tx as unknown as Db, storeId, zone, input.areaId, input.areaOther, input.locale);
     const totals = computeTotals(priced, delivery.fee);
-    const now = opts.now ?? new Date();
 
     // Discount code: validate for this cart, then claim one use atomically (rolls back with the order).
     let code: DiscountRow | null = null;
@@ -394,6 +416,59 @@ export async function placeOrder(
       now,
     );
     if (applied.rejection) throw new AppError("VALIDATION", `discount_${applied.rejection}`);
+
+    // ---- fake-order protection, part 2 (the submission is valid): double tap → first order; daily cap; risk flags.
+    const cartHash = cartFingerprint(items);
+    const recent = await tx
+      .select({
+        id: orders.id,
+        status: orders.status,
+        cartHash: orders.cartHash,
+        paymentMethod: orders.paymentMethod,
+        cityKey: orders.cityKey,
+        areaId: orders.areaId,
+        address: orders.address,
+        landmark: orders.landmark,
+        discountCode: orders.discountCode,
+        createdAt: orders.createdAt,
+      })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), eq(orders.customerPhone, input.phone), gte(orders.createdAt, new Date(now.getTime() - DUPLICATE_WINDOW_MS))))
+      .orderBy(desc(orders.createdAt));
+    // A replay is the very same submission (cart, payment, where to, code); a corrected address or code is a new order.
+    const typedCode = input.discountCode ? normalizeDiscountCode(input.discountCode) : null;
+    const replay = recent.find(
+      (o) =>
+        o.cartHash === cartHash &&
+        o.status === "pending" &&
+        now.getTime() - o.createdAt.getTime() <= REPLAY_WINDOW_MS &&
+        o.paymentMethod === input.paymentMethod &&
+        o.cityKey === input.cityKey &&
+        (o.areaId ?? null) === (input.areaId ?? null) &&
+        o.address === input.address &&
+        (o.landmark ?? null) === (input.landmark ?? null) &&
+        (o.discountCode ?? null) === typedCode,
+    );
+    if (replay) {
+      const first = await tx.query.orders.findFirst({ where: and(eq(orders.id, replay.id), eq(orders.storeId, storeId)) });
+      const firstItems = await tx.query.orderItems.findMany({ where: eq(orderItems.orderId, replay.id) });
+      if (first) return { ...first, items: firstItems, replayed: true };
+    }
+    if (recent.length >= MAX_ORDERS_PER_PHONE_PER_DAY) throw new AppError("RATE_LIMITED", "too_many_orders");
+    const [history] = await tx
+      .select({
+        open: sql<number>`count(*) filter (where ${inArray(orders.status, [...OPEN_ORDER_STATUSES])})`,
+        refused: sql<number>`count(*) filter (where ${inArray(orders.status, ["refused", "returned"])})`,
+      })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), eq(orders.customerPhone, input.phone)));
+    const riskFlags = assessRisk({
+      elapsedMs: input.elapsedMs,
+      sameCartRecent: recent.filter((o) => o.cartHash === cartHash && o.status !== "cancelled").length,
+      openFromPhone: Number(history?.open ?? 0),
+      refusedFromPhone: Number(history?.refused ?? 0),
+    });
+
     if (code && !(await claimDiscountUse(tx as unknown as Db, code.id, now))) throw new AppError("VALIDATION", "discount_used_up");
 
     // Atomic, race-safe stock decrement.
@@ -491,6 +566,8 @@ export async function placeOrder(
         paymentMethod: input.paymentMethod,
         paymentStatus: input.paymentMethod === "cod" ? "unpaid" : "pending",
         locale: input.locale,
+        riskFlags,
+        cartHash,
       })
       .returning();
     if (!order) throw new Error("order insert failed");

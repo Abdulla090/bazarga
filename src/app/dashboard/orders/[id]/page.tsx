@@ -16,6 +16,9 @@ import { ArrowBack, Icon, Printer } from "@/components/ui/icons";
 import { CopyButton } from "@/components/CopyButton";
 import { trackingPath } from "@/lib/order-tracking";
 import { env } from "@/server/env";
+import { isPhoneBlocked } from "@/server/services/blocklist";
+import { knownRiskFlags } from "@/lib/order-risk";
+import { BlockToggle } from "@/components/dashboard/BlockPhoneForms";
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,6 +30,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const tp = await getTranslations("payments");
   const tc = await getTranslations("common");
   const ts = await getTranslations("store");
+  const tr = await getTranslations("risk");
+  const flags = knownRiskFlags(order.riskFlags);
+  const blocked = await isPhoneBlocked(db(), store.id, order.customerPhone);
   const locale = await currentLocale();
   const trackUrl = `${env().APP_URL.replace(/\/$/, "")}${trackingPath(store.slug, order.number)}`;
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" });
@@ -39,6 +45,20 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <StatusBadge status={order.status} />
         <PaymentBadge status={order.paymentStatus} />
       </div>
+      {(flags.length > 0 || blocked) && (
+        <section className="card grid gap-2 border-gold" aria-labelledby="risk-title" data-testid="order-risk">
+          <h2 id="risk-title" className="font-bold">{tr("title")}</h2>
+          {flags.length > 0 && (
+            <>
+              <p className="text-sm text-ink-70">{tr("hint")}</p>
+              <ul className="list-disc ps-5 text-sm">
+                {flags.map((f) => <li key={f} data-risk={f}>{tr(`flag_${f}`)}</li>)}
+              </ul>
+            </>
+          )}
+          {blocked && <p className="text-sm font-semibold text-danger">{tr("blocked")}</p>}
+        </section>
+      )}
       <StatusActions
         orderId={order.id}
         number={order.number}
@@ -73,6 +93,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <a className="btn-ink btn-sm" href={waLink(order.customerPhone, `${store.name} — #${order.number}\n${t("slipTrack")}: ${trackUrl}`)} target="_blank" rel="noopener noreferrer">{t("whatsappCustomer")}</a>
             <a className="btn-ghost btn-sm" href={`tel:${phoneDisplay(order.customerPhone)}`}>{t("call")}</a>
           </div>
+          <BlockToggle phone={order.customerPhone} phoneLabel={phoneDisplay(order.customerPhone)} orderId={order.id} blocked={blocked} />
         </section>
         <section className="card">
           <h2 className="mb-2 font-bold">{t("items")}</h2>

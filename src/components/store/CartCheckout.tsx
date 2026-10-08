@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { maskIraqiMobile } from "@/lib/phone";
 import { fmt } from "@/lib/fmt";
 import type { CartLabels } from "./cart-labels";
@@ -35,6 +35,13 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const [error, setError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [placing, startPlacing] = useTransition();
+
+  // Fake-order protection: when the checkout form first appeared (bots submit instantly) — see src/lib/order-risk.ts.
+  const openedAt = useRef(0);
+  const hasLines = lines.length > 0;
+  useEffect(() => {
+    if (hasLines && !openedAt.current) openedAt.current = Date.now();
+  }, [hasLines]);
 
   const linesKey = JSON.stringify(lines);
   useEffect(() => {
@@ -75,6 +82,8 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         notes: fd.get("notes") || undefined,
         paymentMethod: method,
         locale,
+        hp: String(fd.get("website") ?? ""),
+        elapsedMs: openedAt.current ? Date.now() - openedAt.current : undefined,
       });
       if (!r.ok) {
         setError(r.error === "VALIDATION" ? undefined : r.error);
@@ -125,6 +134,11 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
 
       <form action={submit} className="card grid h-fit gap-4 lg:sticky lg:top-24">
         <h2 className="text-xl font-extrabold">{L.checkout}</h2>
+        {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
+        <div className="sr-only" aria-hidden="true">
+          <label htmlFor="co-website">Website</label>
+          <input id="co-website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </div>
         <div>
           <label className="label" htmlFor="co-city">{L.deliverTo}</label>
           <select

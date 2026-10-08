@@ -148,5 +148,28 @@
     "slipTrack": "Vê fermanê bişopîne",
     "slipScan": "Ji bo şopandinê skan bike",
     "slipHint": "Di pencereya çapê de kaxeza A6 an A5 hilbijêre."
+  },
+  "risk": {
+    "title": "Berî şandinê kontrol bike",
+    "hint": "Ev nîşanên fermaneke sexte ne. Berî şandinê li kiriyar bigere û piştrast bike.",
+    "flag_fast_submit": "Forma fermanê pir bi lez hate dagirtin.",
+    "flag_duplicate": "Heman jimarê di 24 demjimêrên dawî de heman tişt ferman kirin.",
+    "flag_many_open": "Fermanên din ên vê jimarê hîn vekirî ne.",
+    "flag_refused_before": "Vê jimarê berê fermanek red kir an vegerand.",
+    "badge": "Kontrol",
+    "block": "Vê jimarê asteng bike",
+    "unblock": "Astengiyê rake",
+    "blocked": "Ev jimar asteng e: fermanên nû jê têne red kirin.",
+    "blockConfirm": "{phone} asteng bibe? Fermanên nû ji vê jimarê dê werin red kirin.",
+    "listTitle": "Jimarên astengkirî",
+    "listHint": "Fermanên ji van jimaran bi peyameke bi rêz têne red kirin. Tenê firoşgeha te bandor dibe.",
+    "listEmpty": "Tu jimar nehatine asteng kirin.",
+    "phone": "Jimara telefonê",
+    "note": "Têbînî (tenê tu dibînî)",
+    "add": "Jimarê asteng bike"
+  },
+  "errors": {
+    "order_rejected": "Me nikarî vê fermanê tomar bikin. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin.",
+    "too_many_orders": "Te îro gelek ferman kirine. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin."
   }
 }

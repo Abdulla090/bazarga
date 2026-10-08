@@ -19,6 +19,7 @@ import { getProvider, isProviderAvailable } from "../payments/registry";
 import { latestPaymentForOrder, startPayment, syncPaymentFromProvider } from "../payments/service";
 import { cartItemSchema, cartSchema, checkoutSchema, localeSchema } from "@/lib/validation";
 import { toActionState, type ActionState } from "./util";
+import { CHECKOUT_PER_IP_PER_STORE } from "@/lib/order-risk";
 import { parseOrderNumber, trackingPath, TRACK_COOKIE, TRACK_COOKIE_TTL_SECONDS } from "@/lib/order-tracking";
 
 const slugSchema = z.string().regex(/^[a-z0-9-]{2,40}$/);
@@ -70,14 +71,22 @@ export async function placeOrderAction(slug: string, payload: unknown): Promise<
     const store = await storeOr404(slug);
     const ip = await clientIp();
     await enforceRateLimit(db(), `checkout:${ip}`, 20, 600);
+    // Per store too, so one IP can't flood a single seller with fake COD orders (src/lib/order-risk.ts). Skipped when
+    // no proxy reports the client IP: every shopper would share "unknown" and a busy store would lock itself out.
+    if (ip !== "unknown") await enforceRateLimit(db(), `checkout:${store.id}:${ip}`, CHECKOUT_PER_IP_PER_STORE.limit, CHECKOUT_PER_IP_PER_STORE.windowSeconds);
     const input = checkoutSchema.parse(payload);
     cartSchema.parse(input.items);
     const order = await placeOrder(db(), store, input, { isProviderAvailable });
-    // Stock went down: product pages and the grid's sold-out / "only N left" badges must not be served stale.
-    invalidateStock(store.id, order.items.map((i) => i.productId));
-    logger.info("order.created", { storeId: store.id, orderId: order.id, total: order.total, method: order.paymentMethod });
-    const appUrl = env().APP_URL;
-    after(() => notifySellerOfOrder(db(), store, order, appUrl));
+    if (order.replayed) {
+      // Double tap: the first order already decremented stock and notified the seller.
+      logger.info("order.replayed", { storeId: store.id, orderId: order.id });
+    } else {
+      // Stock went down: product pages and the grid's sold-out / "only N left" badges must not be served stale.
+      invalidateStock(store.id, order.items.map((i) => i.productId));
+      logger.info("order.created", { storeId: store.id, orderId: order.id, total: order.total, method: order.paymentMethod, risk: order.riskFlags });
+      const appUrl = env().APP_URL;
+      after(() => notifySellerOfOrder(db(), store, order, appUrl));
+    }
 
     const urls = paymentUrls(store.slug, order.publicId);
     if (order.paymentMethod === "cod") return { ok: true, redirectTo: urls.orderUrl };
