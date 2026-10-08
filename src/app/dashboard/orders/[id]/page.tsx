@@ -19,6 +19,8 @@ import { env } from "@/server/env";
 import { isPhoneBlocked } from "@/server/services/blocklist";
 import { knownRiskFlags } from "@/lib/order-risk";
 import { BlockToggle } from "@/components/dashboard/BlockPhoneForms";
+import { CheckPaymentButton } from "@/components/dashboard/CheckPaymentButton";
+import { listPaymentAttempts } from "@/server/payments/service";
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -32,7 +34,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const ts = await getTranslations("store");
   const tr = await getTranslations("risk");
   const flags = knownRiskFlags(order.riskFlags);
-  const blocked = await isPhoneBlocked(db(), store.id, order.customerPhone);
+  const online = order.paymentMethod !== "cod";
+  const [blocked, attempts, tps] = await Promise.all([
+    isPhoneBlocked(db(), store.id, order.customerPhone),
+    online ? listPaymentAttempts(db(), store.id, order.id) : Promise.resolve([]),
+    getTranslations("payStatus"),
+  ]);
   const locale = await currentLocale();
   const trackUrl = `${env().APP_URL.replace(/\/$/, "")}${trackingPath(store.slug, order.number)}`;
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" });
@@ -66,6 +73,36 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         courierName={order.courierName}
         trackingNumber={order.trackingNumber}
       />
+      {online && (
+        <section className="card grid gap-2" aria-labelledby="pay-title" data-testid="order-payment">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 id="pay-title" className="font-bold">{tps("title")} · {PAYMENT_LABEL[order.paymentMethod]}</h2>
+            <PaymentBadge status={order.paymentStatus} />
+          </div>
+          {order.expiredAt && order.paymentStatus !== "paid" && (
+            <p className="text-sm font-semibold text-ink-70" data-testid="order-expired">{tps("expired", { minutes: env().PAYMENT_ORDER_TTL_MINUTES })}</p>
+          )}
+          {order.status === "cancelled" && order.paymentStatus === "paid" && (
+            <p className="rounded-xl bg-danger/10 px-3 py-2 text-sm font-semibold text-danger" data-testid="paid-after-expiry">{tps("paidAfterExpiry")}</p>
+          )}
+          {attempts.length === 0 ? (
+            <p className="text-sm text-ink-70">{tps("noAttempts")}</p>
+          ) : (
+            <ul className="grid gap-1 text-sm">
+              {attempts.map((a) => (
+                <li key={a.id} className="flex flex-wrap items-center gap-x-3 gap-y-1" data-attempt-status={a.status}>
+                  <PaymentBadge status={a.status} />
+                  <span className="num text-ink-70" dir="ltr">{tps("ref")}: {a.providerRef.slice(0, 18)}</span>
+                  <span className="num text-ink-50">{fmt.format(a.createdAt)}</span>
+                  <span className="text-ink-50">{a.lastCheckedAt ? tps("checked", { time: fmt.format(a.lastCheckedAt) }) : tps("neverChecked")}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {attempts.length > 0 && order.paymentStatus !== "paid" && <CheckPaymentButton orderId={order.id} />}
+          <p className="text-xs text-ink-50">{tps("auto")}</p>
+        </section>
+      )}
       <section className="card grid gap-2" aria-label={t("copyTrackingLink")}>
         <div className="flex flex-wrap gap-2">
           <CopyButton text={trackUrl} label={t("copyTrackingLink")} className="btn-ink" testId="copy-tracking-link" />

@@ -65,6 +65,13 @@ const schema = z.object({
   ZAINCASH_SCOPE: z.string().default("payment:read payment:write"),
   FASTPAY_ENABLED: bool,
   QICARD_ENABLED: bool,
+  /**
+   * Payment reconciliation + abandoned-order expiry (src/server/payments/reconcile.ts). The cron route
+   * /api/cron/payments only runs with `Authorization: Bearer <CRON_SECRET>`; unset → the route is off (404).
+   */
+  CRON_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16).optional()),
+  /** Unpaid online orders still pending after this many minutes are cancelled and their stock released. */
+  PAYMENT_ORDER_TTL_MINUTES: z.coerce.number().int().min(5).max(7 * 24 * 60).default(60),
 
   // AI store builder
   AI_ENABLED: bool,

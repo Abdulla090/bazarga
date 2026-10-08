@@ -47,6 +47,7 @@ database: stop `npm run dev` before running `db:*` scripts against the same fold
 | `npm run budget` | Fails if gzipped first-load JS goes over budget (reads `.next/diagnostics/route-bundle-stats.json`; run after `npm run build`) |
 | `npm run test:mobile` | Playwright: no horizontal overflow at 360 px on storefront + dashboard routes (needs a running build + seeded demo) |
 | `npm run db:seed` | Seed the demo seller + "Hawler Bazaar" (idempotent) |
+| `npm run payments:reconcile` | Payment reconciliation + abandoned-order expiry once (for a system cron every 5 min; same as `POST /api/cron/payments`) |
 
 ---
 
@@ -75,6 +76,7 @@ See `.env.example` for a commented template.
 | FIB | `FIB_ENABLED`, `FIB_BASE_URL`, `FIB_CLIENT_ID`, `FIB_CLIENT_SECRET` | off, sandbox `https://fib.stage.fib.iq` |
 | ZainCash | `ZAINCASH_ENABLED`, `ZAINCASH_BASE_URL`, `ZAINCASH_CLIENT_ID`, `ZAINCASH_CLIENT_SECRET`, `ZAINCASH_API_KEY`, `ZAINCASH_SCOPE` | off, UAT `https://pg-api-uat.zaincash.iq`, `payment:read payment:write` |
 | FastPay / Qi | `FASTPAY_ENABLED`, `QICARD_ENABLED` | stubs — always unavailable |
+| Payment jobs | `CRON_SECRET` (≥16 chars; enables `GET/POST /api/cron/payments` with `Authorization: Bearer …`), `PAYMENT_ORDER_TTL_MINUTES` | route off (404); 60 min |
 | AI builder | `AI_ENABLED`, `AI_PROVIDER` (`openai`\|`mock`), `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL` | off; `https://api.openai.com/v1`, `gpt-4o-mini` |
 | Seed | `SEED_DEMO_EMAIL`, `SEED_DEMO_PASSWORD`; compose: `SEED_DEMO` | `demo@mymarket.app` / `mymarket-demo` |
 | docker-compose | `POSTGRES_USER`, `POSTGRES_PASSWORD` (required), `POSTGRES_DB`, `APP_PORT` | |
@@ -233,6 +235,14 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
   320/480/640/1024/1600 px (never upscaled); `npm run images:backfill` adds a newly introduced width to old uploads.
 * **Logging:** JSON-lines to stdout with secret-field redaction (`src/server/logger.ts`).
 * **Health:** `GET /api/health` → `200 {status:"ok",db:"ok"}` or `503`.
+* **Payment reconciliation:** every 5 min (`/api/cron/payments` with `CRON_SECRET`, or `npm run payments:reconcile`):
+  pending FIB / ZainCash attempts are re-checked with the provider (idempotent, forward-only status changes), and
+  online orders still unpaid after `PAYMENT_ORDER_TTL_MINUTES` are cancelled with their stock released once. A late
+  "paid" still lands and the seller's order page flags it (`src/server/payments/reconcile.ts`).
+* **Fake COD orders:** honeypot + fill time, double-tap replay, per-phone daily cap, per-store blocklist and seller-visible
+  risk flags (`src/lib/order-risk.ts`).
+* **Analytics:** counted server-side from a same-origin pixel, no cookies or third-party trackers, aggregate per-day
+  counters only (`src/lib/analytics.ts`).
 
 ---
 

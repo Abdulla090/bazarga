@@ -538,7 +538,8 @@
     "invalid_date": "That date isn’t valid.",
     "invalid_date_range": "The end date must be on or after the start date.",
     "order_rejected": "We couldn't place this order. Please contact the store on WhatsApp.",
-    "too_many_orders": "You've placed many orders today. Please contact the store on WhatsApp."
+    "too_many_orders": "You've placed many orders today. Please contact the store on WhatsApp.",
+    "payment_check_unavailable": "This payment provider isn't connected yet."
   },
   "pwa": {
     "installTitle": "Install Bazarga",
@@ -680,5 +681,16 @@
     "empty": "No data yet. Share your store link to get your first visitors.",
     "privacy": "Counted on our own servers, without cookies or third-party trackers. Bots and link previews are not counted; each visitor counts once per page per day.",
     "ordersNote": "Cancelled, refused and returned orders are left out."
+  },
+  "payStatus": {
+    "title": "Online payment",
+    "ref": "Reference",
+    "checked": "Last checked {time}",
+    "neverChecked": "Not checked with the provider yet",
+    "checkNow": "Check payment now",
+    "expired": "Not paid within {minutes} minutes, so this order was cancelled and its stock released.",
+    "paidAfterExpiry": "The customer paid after this order expired. Contact them to deliver it or refund the payment.",
+    "noAttempts": "No payment was started for this order.",
+    "auto": "Bazarga checks pending payments with the provider automatically."
   }
 }

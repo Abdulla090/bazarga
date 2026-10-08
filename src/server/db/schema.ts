@@ -477,6 +477,8 @@ export const orders = pgTable(
     riskFlags: jsonb("risk_flags").$type<string[]>().notNull().default([]),
     /** Fingerprint of the cart lines (product, variant, quantity) for duplicate detection; null on older orders. */
     cartHash: text("cart_hash"),
+    /** Set when an unpaid online order was cancelled by the abandoned-order expiry job (migration 0008). */
+    expiredAt: timestamp("expired_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -584,10 +586,18 @@ export const paymentTransactions = pgTable(
     status: paymentStatusEnum("status").notNull().default("pending"),
     amount: integer("amount").notNull(),
     raw: jsonb("raw").$type<Record<string, unknown>>().notNull().default({}),
+    /** Last time reconciliation asked the provider for this attempt's status (migration 0008). */
+    lastCheckedAt: timestamp("last_checked_at", { withTimezone: true }),
+    /** How many times reconciliation has checked it (backs off, gives up after RECONCILE_MAX_CHECKS). */
+    checkCount: integer("check_count").notNull().default(0),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [uniqueIndex("payment_tx_provider_ref_uq").on(t.provider, t.providerRef), index("payment_tx_order_idx").on(t.orderId)],
+  (t) => [
+    uniqueIndex("payment_tx_provider_ref_uq").on(t.provider, t.providerRef),
+    index("payment_tx_order_idx").on(t.orderId),
+    index("payment_tx_status_created_idx").on(t.status, t.createdAt),
+  ],
 );
 
 /** Processed webhook event ids, for idempotency. */
