@@ -31,11 +31,17 @@ export async function recordView(
 
 export type TopViewed = { productId: string; name: string; views: number };
 export type TopSold = { productId: string; name: string; units: number; revenue: number };
+export type CityRow = { cityKey: string; city: string; orders: number; revenue: number };
+export type CustomerSplit = { total: number; returning: number; new: number };
 export type StoreAnalytics = {
   days: DayPoint[];
   totals: { visitors: number; storeViews: number; productViews: number; orders: number; revenue: number; conversion: number | null };
   topViewed: TopViewed[];
   topSold: TopSold[];
+  /** Orders + revenue per delivery city in the range, best revenue first (top 8). */
+  byCity: CityRow[];
+  /** Distinct customers (by phone) who ordered in the range; "returning" = they have another live order at any time. */
+  customers: CustomerSplit;
 };
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -54,7 +60,7 @@ export async function getStoreAnalytics(
   // Orders that turned (or may still turn) into revenue: cancelled / refused / returned are left out.
   const live = and(eq(orders.storeId, storeId), gte(orders.createdAt, since), notInArray(orders.status, [...LOST_ORDER_STATUSES]));
 
-  const [viewRows, orderRows, soldRows] = await Promise.all([
+  const [viewRows, orderRows, soldRows, cityRows, customerRows] = await Promise.all([
     database
       .select({ day: storePageViews.day, page: storePageViews.page, views: storePageViews.views })
       .from(storePageViews)
@@ -77,6 +83,25 @@ export async function getStoreAnalytics(
       .groupBy(orderItems.productId)
       .orderBy(desc(sql`sum(${orderItems.quantity})`), desc(sql`sum(${orderItems.lineTotal})`))
       .limit(top),
+    database
+      .select({
+        cityKey: orders.cityKey,
+        city: sql<string>`max(${orders.cityName})`,
+        orders: sql<number>`count(*)`,
+        revenue: sql<number>`coalesce(sum(${orders.total}), 0)`,
+      })
+      .from(orders)
+      .where(live)
+      .groupBy(orders.cityKey)
+      .orderBy(desc(sql`coalesce(sum(${orders.total}), 0)`), desc(sql`count(*)`))
+      .limit(8),
+    // One row per customer who ordered in the range, with their live-order count over all time.
+    database
+      .select({ phone: orders.customerPhone, allTime: sql<number>`count(*)` })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), notInArray(orders.status, [...LOST_ORDER_STATUSES])))
+      .groupBy(orders.customerPhone)
+      .having(sql`count(*) filter (where ${orders.createdAt} >= ${since.toISOString()}::timestamptz) > 0`),
   ]);
 
   const perDay: Partial<DayPoint>[] = [];
@@ -117,10 +142,15 @@ export async function getStoreAnalytics(
     })
     .filter((x): x is TopViewed => x !== null);
 
+  const returning = customerRows.filter((r) => Number(r.allTime) >= 2).length;
+  const customers = { total: customerRows.length, returning, new: customerRows.length - returning };
+
   return {
     days: series,
     totals,
     topViewed,
     topSold: soldRows.map((r) => ({ productId: r.productId!, name: r.name, units: Number(r.units), revenue: Number(r.revenue) })),
+    byCity: cityRows.map((r) => ({ cityKey: r.cityKey, city: r.city, orders: Number(r.orders), revenue: Number(r.revenue) })),
+    customers,
   };
 }
