@@ -24,7 +24,7 @@ export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
 
   if (variant === "bottom") {
     return (
-      <nav aria-label="Dashboard" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav aria-label="Dashboard" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden print:hidden">
         <ul className="grid grid-cols-4">
           {ITEMS.filter((i) => i.mobile).map((i) => (
             <li key={i.href}>
