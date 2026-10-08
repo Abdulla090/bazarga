@@ -158,8 +158,7 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 
 - ~~Server-side counting + seller dashboard~~ shipped (`/dashboard/analytics`): visitors, store/product views,
   orders, conversion, revenue, by-day bars + table, best sellers, most viewed — same-origin pixel, no cookies,
-  daily-salted in-memory dedupe, aggregate counters only (`store_page_views`). Sales by city and new-vs-returning customers shipped too. Still open: funnel (add-to-cart,
-  checkout start), WhatsApp-click rate, optional pixels.
+  daily-salted in-memory dedupe, aggregate counters only (`store_page_views`). Sales by city and new-vs-returning customers shipped too. Funnel shipped too (visitors → opened a product → opened checkout with items → orders; checkout pixel `?c=1`). Still open: add-to-cart step, WhatsApp-click rate, optional pixels.
 
 - Privacy-light event table (`store_events`: view, add_to_cart, checkout_start, order) written server-side —
   no third-party trackers by default.

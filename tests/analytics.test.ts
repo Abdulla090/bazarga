@@ -5,6 +5,8 @@ import type { Db } from "@/server/db";
 import { orders, storePageViews } from "@/server/db/schema";
 import {
   barHeights,
+  buildFunnel,
+  CHECKOUT_PAGE,
   conversionRate,
   dayRange,
   fillDays,
@@ -14,6 +16,7 @@ import {
   isBot,
   isPrefetch,
   parseRange,
+  PRODUCT_VISITORS_PAGE,
   VISITORS_PAGE,
 } from "@/lib/analytics";
 import { firstSeen, _resetDedupe } from "@/server/analytics/dedupe";
@@ -69,6 +72,22 @@ describe("analytics helpers (pure)", () => {
     const src = readFileSync("src/server/analytics/dedupe.ts", "utf8");
     expect(src).toContain("createHash(\"sha256\")");
     expect(src).toMatch(/salt = randomBytes/);
+  });
+});
+
+describe("funnel (pure)", () => {
+  it("steps are unique visitors then orders, each as % of visitors", () => {
+    expect(buildFunnel({ visitors: 200, product: 100, checkout: 40, orders: 10 })).toEqual([
+      { key: "visitors", count: 200, pct: 100 },
+      { key: "product", count: 100, pct: 50 },
+      { key: "checkout", count: 40, pct: 20 },
+      { key: "orders", count: 10, pct: 5 },
+    ]);
+  });
+  it("never narrows the wrong way (blocked pixel, dedupe reset) and handles no traffic", () => {
+    const f = buildFunnel({ visitors: 3, product: 1, checkout: 0, orders: 4 });
+    expect(f.map((s) => s.count)).toEqual([4, 4, 4, 4]);
+    expect(buildFunnel({ visitors: 0, product: 0, checkout: 0, orders: 0 }).every((s) => s.count === 0 && s.pct === null)).toBe(true);
   });
 });
 
@@ -147,6 +166,28 @@ describe("store analytics (DB)", () => {
     expect(month.byCity[0]!.orders).toBe(5);
   });
 
+  it("funnel: product visitors + checkout visitors + orders over the range, per store", async () => {
+    const { store } = await seller(database, "an4");
+    const other = await seller(database, "an4o");
+    const p = await product(database, store.id, 3_000, null);
+    const now = new Date();
+    for (let i = 0; i < 10; i++) await recordView(database, store.id, HOME_PAGE, { newVisitor: true, now });
+    for (let i = 0; i < 6; i++) await recordView(database, store.id, p.id, { newVisitor: false, productVisitor: true, now });
+    for (let i = 0; i < 3; i++) await recordView(database, store.id, CHECKOUT_PAGE, { newVisitor: false, now });
+    await placeOrder(database, store, checkout([{ productId: p.id, quantity: 1 }], { phone: "+9647701110031" }));
+    await recordView(database, other.store.id, CHECKOUT_PAGE, { newVisitor: true, productVisitor: true, now });
+    const r = await getStoreAnalytics(database, store.id, { days: 7, locale: "en", now });
+    expect(r.funnel.map((s) => [s.key, s.count])).toEqual([["visitors", 10], ["product", 6], ["checkout", 3], ["orders", 1]]);
+    expect(r.funnel[1]!.pct).toBe(60);
+    // The funnel counters are not product ids or visitor rows: they never leak into the other totals.
+    expect(r.totals).toMatchObject({ visitors: 10, storeViews: 10, productViews: 6 });
+    expect(r.topViewed.map((x) => x.productId)).toEqual([p.id]);
+    const rows = await database.select().from(storePageViews).where(eq(storePageViews.storeId, store.id));
+    expect(rows.find((x) => x.page === PRODUCT_VISITORS_PAGE)!.views).toBe(6);
+    const o = await getStoreAnalytics(database, other.store.id, { days: 7, locale: "en", now });
+    expect(o.funnel.map((s) => s.count)).toEqual([1, 1, 1, 0]);
+  });
+
   it("tenant isolation: one store's views and orders never show in another's analytics", async () => {
     const x = await seller(database, "an3x");
     const y = await seller(database, "an3y");
@@ -184,6 +225,8 @@ describe("analytics wiring", () => {
     expect(route).toContain("isPrefetch(");
     expect(route).toContain('"no-store, max-age=0"');
     expect(route).toMatch(/after\(/);
+    expect(route).toContain('"c") === "1"');
+    expect(readFileSync("src/components/store/CartCheckout.tsx", "utf8")).toContain("<ViewPixel slug={slug} checkout />");
   });
   it("the analytics page is session-scoped and in the dashboard nav", () => {
     const page = readFileSync("src/app/dashboard/analytics/page.tsx", "utf8");
@@ -193,7 +236,7 @@ describe("analytics wiring", () => {
     expect(readFileSync("src/components/dashboard/DashNav.tsx", "utf8")).toContain('"/dashboard/analytics"');
   });
   it("ku, ar, en and kmr have every analytics string", () => {
-    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote", "byCity", "orderCount", "customersTitle", "customersTotal", "customersNew", "customersReturning", "customersHint"];
+    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote", "byCity", "orderCount", "customersTitle", "customersTotal", "customersNew", "customersReturning", "customersHint", "funnelTitle", "funnel_visitors", "funnel_product", "funnel_checkout", "funnel_orders", "funnelHint"];
     for (const l of ["ku", "ar", "en", "kmr"]) {
       const m = JSON.parse(readFileSync(`messages/${l}.json`, "utf8")) as { analytics: Record<string, string>; dash: Record<string, string> };
       for (const k of keys) expect(m.analytics[k], `${l}.analytics.${k}`).toBeTruthy();

@@ -714,7 +714,13 @@
     "customersTotal": "Customers",
     "customersNew": "New",
     "customersReturning": "Returning",
-    "customersHint": "Returning means this phone number has another order with you (any date)."
+    "customersHint": "Returning means this phone number has another order with you (any date).",
+    "funnelTitle": "From visit to order",
+    "funnel_visitors": "Visited your store",
+    "funnel_product": "Opened a product",
+    "funnel_checkout": "Opened checkout with items",
+    "funnel_orders": "Placed an order",
+    "funnelHint": "Unique visitors per day, added up over the range. A big drop between two steps shows where shoppers leave."
   },
   "payStatus": {
     "title": "Online payment",

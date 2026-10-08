@@ -3,23 +3,40 @@ import type { Db } from "../db";
 import { orderItems, orders, products, storePageViews } from "../db/schema";
 import { LOST_ORDER_STATUSES } from "@/lib/order-status";
 import { pickText, type Locale } from "@/lib/i18n";
-import { conversionRate, dayRange, fillDays, HOME_PAGE, iraqDay, iraqDayStart, VISITORS_PAGE, type DayPoint } from "@/lib/analytics";
+import {
+  buildFunnel,
+  CHECKOUT_PAGE,
+  conversionRate,
+  dayRange,
+  fillDays,
+  HOME_PAGE,
+  iraqDay,
+  iraqDayStart,
+  PRODUCT_VISITORS_PAGE,
+  VISITORS_PAGE,
+  type DayPoint,
+  type FunnelStep,
+} from "@/lib/analytics";
 
 /**
  * Seller analytics (src/lib/analytics.ts explains the counting). Every query is scoped to the caller's store id,
  * which must come from the session (requireStore).
  */
 
-/** Count one page view (and, when it is the visitor's first page of the store today, one visitor). */
+/**
+ * Count one page view (and, when it is the visitor's first page of the store today, one visitor; `productVisitor`
+ * adds one to the "viewed a product" funnel counter).
+ */
 export async function recordView(
   database: Db,
   storeId: string,
   page: string,
-  opts: { newVisitor: boolean; now?: Date },
+  opts: { newVisitor: boolean; productVisitor?: boolean; now?: Date },
 ): Promise<void> {
   const day = iraqDay(opts.now ?? new Date());
   const rows = [{ storeId, day, page, views: 1 }];
   if (opts.newVisitor) rows.push({ storeId, day, page: VISITORS_PAGE, views: 1 });
+  if (opts.productVisitor) rows.push({ storeId, day, page: PRODUCT_VISITORS_PAGE, views: 1 });
   await database
     .insert(storePageViews)
     .values(rows)
@@ -35,6 +52,8 @@ export type CityRow = { cityKey: string; city: string; orders: number; revenue: 
 export type CustomerSplit = { total: number; returning: number; new: number };
 export type StoreAnalytics = {
   days: DayPoint[];
+  /** Visitors → saw a product → opened checkout with items → orders (each step ≥ the next). */
+  funnel: FunnelStep[];
   totals: { visitors: number; storeViews: number; productViews: number; orders: number; revenue: number; conversion: number | null };
   topViewed: TopViewed[];
   topSold: TopSold[];
@@ -105,9 +124,13 @@ export async function getStoreAnalytics(
   ]);
 
   const perDay: Partial<DayPoint>[] = [];
+  let productVisitors = 0;
+  let checkoutVisitors = 0;
   const productViews = new Map<string, number>();
   for (const r of viewRows) {
     if (r.page === VISITORS_PAGE) perDay.push({ day: r.day, visitors: r.views });
+    else if (r.page === PRODUCT_VISITORS_PAGE) productVisitors += r.views;
+    else if (r.page === CHECKOUT_PAGE) checkoutVisitors += r.views;
     else if (r.page === HOME_PAGE) perDay.push({ day: r.day, storeViews: r.views });
     else if (UUID_RE.test(r.page)) {
       perDay.push({ day: r.day, productViews: r.views });
@@ -145,8 +168,11 @@ export async function getStoreAnalytics(
   const returning = customerRows.filter((r) => Number(r.allTime) >= 2).length;
   const customers = { total: customerRows.length, returning, new: customerRows.length - returning };
 
+  const funnel = buildFunnel({ visitors: totals.visitors, product: productVisitors, checkout: checkoutVisitors, orders: totals.orders });
+
   return {
     days: series,
+    funnel,
     totals,
     topViewed,
     topSold: soldRows.map((r) => ({ productId: r.productId!, name: r.name, units: Number(r.units), revenue: Number(r.revenue) })),
