@@ -40,8 +40,8 @@ for (const locale of ["ku", "en", "kmr"]) {
         innerWidth: window.innerWidth,
       }));
       const audit = await page.evaluate(auditInPage, WIDTH);
-      expect.soft(innerWidth, `${r.name}: layout viewport widened by content — ${audit.offenders.slice(0, 3).join(" | ")}`).toBe(WIDTH);
-      expect.soft(scrollWidth, `${r.name}: scrollWidth > innerWidth — ${audit.offenders.slice(0, 3).join(" | ")}`).toBeLessThanOrEqual(innerWidth);
+      expect.soft(innerWidth, `${r.name}: layout viewport widened by content — ${audit.offenders.slice(0, 8).join(" | ")}`).toBe(WIDTH);
+      expect.soft(scrollWidth, `${r.name}: scrollWidth > innerWidth — ${audit.offenders.slice(0, 8).join(" | ")}`).toBeLessThanOrEqual(innerWidth);
       expect.soft(audit.smallInputs, `${r.name}: inputs under 16px zoom on iOS`).toEqual([]);
     }
     await context.close();
