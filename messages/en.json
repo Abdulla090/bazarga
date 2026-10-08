@@ -174,7 +174,8 @@
     },
     "share": {
       "title": "Share your store link",
-      "desc": "Put it in your Instagram bio and WhatsApp status."
+      "desc": "Put it in your Instagram bio and WhatsApp status.",
+      "cta": "Share kit"
     }
   },
   "products": {

@@ -170,7 +170,7 @@ describe("setup checklist wiring", () => {
         const s = m.setup[step] as Record<string, string>;
         expect(s.title, `${l}.${step}.title`).toBeTruthy();
         expect(s.desc, `${l}.${step}.desc`).toBeTruthy();
-        if (step !== "share") expect(s.cta, `${l}.${step}.cta`).toBeTruthy();
+        expect(s.cta, `${l}.${step}.cta`).toBeTruthy();
       }
       expect((m.setup.delivery as Record<string, string>).confirm).toBeTruthy();
       expect(m.setup.progress).toContain("{done}");
@@ -182,5 +182,29 @@ describe("setup checklist wiring", () => {
     expect(sql).toMatch(/ALTER TABLE "stores" ADD COLUMN "link_shared_at" timestamp with time zone;/);
     expect(sql).toMatch(/ALTER TABLE "stores" ADD COLUMN "delivery_confirmed_at" timestamp with time zone;/);
     expect(sql).not.toMatch(/NOT NULL|DROP/);
+  });
+});
+
+describe("share step follow-up", () => {
+  it("the checklist's share step links to the share kit", () => {
+    const step = buildSetupChecklist(blank).steps.find((st) => st.key === "share")!;
+    expect(step.href).toBe("/dashboard/share");
+    const src = readFileSync("src/components/dashboard/SetupChecklist.tsx", "utf8");
+    expect(src).toMatch(/s\.key === "share"[\s\S]*ShareLinkButtons[\s\S]*href=\{s\.href\}/);
+  });
+
+  it("every share-kit copy / download / WhatsApp control sits inside a click recorder that calls markLinkSharedAction", () => {
+    const rec = readFileSync("src/components/dashboard/RecordShareClicks.tsx", "utf8");
+    expect(rec).toMatch(/^"use client";/);
+    expect(rec).toContain("markLinkSharedAction");
+    const page = readFileSync("src/app/dashboard/share/page.tsx", "utf8");
+    // Split into recorder blocks; every interactive control must be inside one.
+    const inside = [...page.matchAll(/<RecordShareClicks[\s\S]*?<\/RecordShareClicks>/g)].map((m) => m[0]).join("\n");
+    expect(page.match(/<RecordShareClicks/g)?.length).toBe(4);
+    for (const needle of ["<CopyButton text={url}", "<CopyButton text={bio}", "waShareLink(bio)", "/api/share/qr?format=png&download=1", "/api/share/qr?format=svg&download=1", "/api/share/story?lang=${l}&download=1"]) {
+      expect(inside, needle).toContain(needle);
+    }
+    const outside = page.slice(page.indexOf("return (")).replace(/<RecordShareClicks[\s\S]*?<\/RecordShareClicks>/g, "");
+    expect(outside).not.toMatch(/<CopyButton|download\b|wa\.me|waShareLink/);
   });
 });

@@ -29,7 +29,7 @@ const HREF: Record<SetupStepKey, string> = {
   product: "/dashboard/products/new",
   delivery: "/dashboard/delivery",
   whatsapp: "/dashboard/settings#f-whatsapp",
-  share: "/dashboard",
+  share: "/dashboard/share",
 };
 
 /** A WhatsApp number counts when it is a reachable mobile: Iraqi 07xx or an international number. */
