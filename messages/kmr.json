@@ -495,6 +495,8 @@
     "funnel_product": "Berhemek vekirin",
     "funnel_checkout": "Bi tiştan re kirrînê vekirin",
     "funnel_orders": "Ferman dan",
+    "funnel_whatsapp": "Li bişkoja WhatsAppê xistin",
+    "funnelWhatsappHint": "Serdankerên ku li bişkoja WhatsAppê xistin. Hinek ferman di sohbetê de diqedînin, ji ber vê li vir wekî ferman nayê dîtin.",
     "funnelHint": "Serdankerên yekta ji bo her rojê, di nav navberê de li hev hatine kirin. Daketina mezin di navbera du gavan de nîşan dide kirrîyar ji ku diçin."
   },
   "payStatus": {

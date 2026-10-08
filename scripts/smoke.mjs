@@ -372,6 +372,15 @@ await new Promise((r) => setTimeout(r, 1500));
 const an2 = await (await fetch(`${BASE}/dashboard/analytics`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
 ok(kpi(an2, "visitors") === 3 && kpi(an2, "storeViews") === 2 && kpi(an2, "productViews") === 1, "checkout pixel counts one visitor but no store or product view");
 ok(an2.includes('data-testid="funnel"') && ["visitors", "product", "checkout", "orders"].every((k) => an2.includes(`data-funnel="${k}"`)), "analytics shows the visitor-to-order funnel");
+// WhatsApp taps: ?w=1 counts a tapping visitor once per day; not a visitor, store view or product view; bots and mixes ignored.
+await (await px("?w=1", { "X-Forwarded-For": "10.77.0.8" })).arrayBuffer();
+await (await px("?w=1", { "X-Forwarded-For": "10.77.0.8" })).arrayBuffer(); // same visitor: once
+await (await px("?w=1", { "User-Agent": "WhatsApp/2.23.20.0", "X-Forwarded-For": "10.77.0.9" })).arrayBuffer(); // bot: ignored
+await (await px(`?w=1&p=${ids[0]}`, { "X-Forwarded-For": "10.77.0.10" })).arrayBuffer(); // mix: ignored
+await new Promise((r) => setTimeout(r, 1500));
+const an3 = await (await fetch(`${BASE}/dashboard/analytics`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
+ok(kpi(an3, "visitors") === 3 && kpi(an3, "storeViews") === 2 && kpi(an3, "productViews") === 1, "a WhatsApp tap is not a visitor, store view or product view");
+ok(/data-testid="wa-taps"[\s\S]*?<span[^>]*dir="ltr"[^>]*>\s*1\b/.test(an3), "analytics shows exactly one WhatsApp tap");
 const cartHtml = await (await fetch(`${BASE}/s/hawler-bazaar/cart`)).text();
 ok(!cartHtml.includes("?c=1"), "an empty cart (server render) never fires the checkout pixel");
 const anOther = await (await fetch(`${BASE}/dashboard/analytics?range=30`, { headers: { Cookie: `${cookie}; mm_locale=en` } })).text();

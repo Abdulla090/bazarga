@@ -720,6 +720,8 @@
     "funnel_product": "Opened a product",
     "funnel_checkout": "Opened checkout with items",
     "funnel_orders": "Placed an order",
+    "funnel_whatsapp": "Tapped a WhatsApp button",
+    "funnelWhatsappHint": "Visitors who tapped Chat on WhatsApp. Some finish their order in the chat, so it won't show up here as an order.",
     "funnelHint": "Unique visitors per day, added up over the range. A big drop between two steps shows where shoppers leave."
   },
   "payStatus": {

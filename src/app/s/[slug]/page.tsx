@@ -8,6 +8,7 @@ import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
 import { filterCatalog, DEFAULT_PAGE_SIZE } from "@/lib/catalog-filter";
 import { waLink } from "@/lib/whatsapp";
+import { WaTap } from "@/components/store/WaTap";
 import { buildSrcSet, SIZES } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
 import { Flame, Icon, MessageCircle, Search, TicketPercent, Truck, X } from "@/components/ui/icons";
@@ -222,7 +223,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       )}
 
       {wa && (
-        <a
+        <WaTap
+          slug={slug}
           href={waLink(wa, t("waStoreIntro", { store: store.name }))}
           target="_blank"
           rel="noopener noreferrer"
@@ -231,7 +233,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         >
           <Icon as={MessageCircle} className="h-6 w-6" />
           <span className="hidden sm:inline">{t("chatWhatsApp")}</span>
-        </a>
+        </WaTap>
       )}
     </div>
   );
