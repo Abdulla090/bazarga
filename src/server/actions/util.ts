@@ -21,7 +21,7 @@ const SPECIFIC = new Set([
   "discount_not_started", "discount_expired", "discount_used_up", "discount_below_minimum",
   "spec_label_required", "spec_value_required", "too_many_specs", "invalid_sku",
   "discount_code_taken", "invalid_discount_code", "invalid_percent", "invalid_date", "invalid_date_range",
-  "order_rejected", "too_many_orders",
+  "order_rejected", "too_many_orders", "payment_check_unavailable",
 ]);
 
 /** Convert any thrown error into a serialisable, translatable action result. Unexpected errors are logged, not leaked. */

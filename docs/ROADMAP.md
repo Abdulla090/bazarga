@@ -124,8 +124,9 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - **Per-store merchant accounts:** v1 uses one platform merchant account per provider (sellers are paid out
   manually). Next: per-store credentials (encrypted at rest) or a marketplace/split-payment agreement with FIB.
 - **FastPay and Qi Card:** obtain merchant API specs, implement the stubs in `src/server/payments/stubs.ts`.
-- **Reconciliation job:** a scheduled task that calls `syncPaymentFromProvider` for transactions pending > 15 min,
-  and expires abandoned online orders (restocking them).
+- ~~**Reconciliation job**~~ shipped: `/api/cron/payments` (Bearer `CRON_SECRET`) / `npm run payments:reconcile`
+  re-checks pending attempts and expires abandoned online orders (stock released once); seller sees attempts,
+  "check payment now" and "paid after it expired". Needs a real scheduler (Coolify/systemd/Vercel cron) in production.
 - **Refunds** from the dashboard (FIB `/refund`, ZainCash `/transaction/reverse`).
 
 ## 2. Sign in with WhatsApp OTP (weeks 2–4)
@@ -154,6 +155,11 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - Add each verified domain to the server-action allowed origins (or forward `X-Forwarded-Host`).
 
 ## 5. Analytics (weeks 5–8)
+
+- ~~Server-side counting + seller dashboard~~ shipped (`/dashboard/analytics`): visitors, store/product views,
+  orders, conversion, revenue, by-day bars + table, best sellers, most viewed — same-origin pixel, no cookies,
+  daily-salted in-memory dedupe, aggregate counters only (`store_page_views`). Still open: funnel (add-to-cart,
+  checkout start), revenue by city, repeat customers, WhatsApp-click rate, optional pixels.
 
 - Privacy-light event table (`store_events`: view, add_to_cart, checkout_start, order) written server-side —
   no third-party trackers by default.

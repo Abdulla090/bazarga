@@ -350,5 +350,25 @@ ok(kpi(anOther, "visitors") === 0 && kpi(anOther, "orders") === 0, "another sell
 const anAnon = await fetch(`${BASE}/dashboard/analytics`, { redirect: "manual" });
 ok(!(await anAnon.text()).includes('data-kpi="visitors"'), "analytics needs a seller session");
 
+// Payments: reconciliation / abandoned-order expiry cron (FIB / ZainCash stay disabled here; logic is unit-tested
+// with mocked providers). Without CRON_SECRET the route doesn't exist; with it (pass the same CRON_SECRET to the
+// server and to this script) a wrong token is refused and the right one runs both jobs.
+const cronSecret = process.env.CRON_SECRET;
+const cronNoAuth = await fetch(`${BASE}/api/cron/payments`, { method: "POST" });
+if (!cronSecret) {
+  ok(cronNoAuth.status === 404, "payments cron route is off without CRON_SECRET");
+} else {
+  const wrong = await fetch(`${BASE}/api/cron/payments`, { method: "POST", headers: { Authorization: "Bearer not-the-secret-123456" } });
+  const right = await fetch(`${BASE}/api/cron/payments`, { method: "POST", headers: { Authorization: `Bearer ${cronSecret}` } });
+  const body = right.status === 200 ? await right.json() : {};
+  ok(cronNoAuth.status === 401 && wrong.status === 401, "payments cron refuses a missing or wrong bearer token");
+  ok(body.ok === true && typeof body.reconcile?.checked === "number" && typeof body.expiry?.expired === "number", "payments cron runs reconciliation + expiry and reports counts");
+}
+if (smokeOrderId) {
+  const codPage = await (await fetch(`${BASE}/dashboard/orders/${smokeOrderId}`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
+  const foreignCheck = await callFormAction("checkOrderPaymentAction", { orderId: smokeOrderId }, { cookie, path: "/dashboard/orders" });
+  ok(!codPage.includes('data-testid="order-payment"') && foreignCheck.text.includes('"error":"NOT_FOUND"'), "COD orders show no online-payment panel; another seller can't check this order's payment");
+}
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

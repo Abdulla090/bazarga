@@ -171,7 +171,8 @@
   },
   "errors": {
     "order_rejected": "Me nikarî vê fermanê tomar bikin. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin.",
-    "too_many_orders": "Te îro gelek ferman kirine. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin."
+    "too_many_orders": "Te îro gelek ferman kirine. Ji kerema xwe bi WhatsAppê bi firoşgehê re têkilî daynin.",
+    "payment_check_unavailable": "Ev pêşkêşkerê dayînê hîn nehatiye girêdan."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -196,5 +197,16 @@
     "empty": "Hîn dane tune. Girêdana firoşgeha xwe parve bike da ku serdankerên te yên yekem bên.",
     "privacy": "Li ser serverên me tên jimartin, bê cookie û bê şopînerên aliyê sêyem. Bot û pêşdîtinên girêdanan nayên jimartin; her serdanker rojê carekê ji bo her rûpelê tê jimartin.",
     "ordersNote": "Fermanên betalkirî, redkirî û vegerandî nayên jimartin."
+  },
+  "payStatus": {
+    "title": "Dayîna online",
+    "ref": "Referans",
+    "checked": "Kontrola dawî {time}",
+    "neverChecked": "Hîn bi pêşkêşkerê re nehatiye kontrol kirin",
+    "checkNow": "Niha dayînê kontrol bike",
+    "expired": "Di nav {minutes} deqeyan de nehat dayîn, ji ber vê yekê ev ferman hate betal kirin û stoka wê hate vegerandin.",
+    "paidAfterExpiry": "Kiriyar piştî ku ev ferman qediya pere da. Bi wî re têkilî dayne da ku bişînî an pereyê vegerînî.",
+    "noAttempts": "Ji bo vê fermanê tu dayîn dest pê nekiriye.",
+    "auto": "Bazarga dayînên li bendê bixweber bi pêşkêşkerê re kontrol dike."
   }
 }

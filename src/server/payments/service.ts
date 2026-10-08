@@ -114,3 +114,12 @@ export async function syncPaymentFromProvider(database: Db, provider: PaymentPro
   const { status, raw } = await provider.fetchStatus(providerRef);
   return applyPaymentStatus(database, provider.id, providerRef, status, raw);
 }
+
+/** Payment attempts of one order of the caller's store (newest first) for the seller's order page. */
+export async function listPaymentAttempts(database: Db, storeId: string, orderId: string) {
+  return database.query.paymentTransactions.findMany({
+    where: and(eq(paymentTransactions.orderId, orderId), eq(paymentTransactions.storeId, storeId)),
+    orderBy: desc(paymentTransactions.createdAt),
+    limit: 10,
+  });
+}
