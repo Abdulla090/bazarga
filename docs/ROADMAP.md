@@ -76,6 +76,22 @@
 - Checks: unit tests for both screens and the migration; smoke covers discount + area create; 360 px mobile checks
   cover Discounts, Delivery (areas open) and More.
 
+**Shopper order tracking (v6)**
+- `/s/[slug]/track`: the shopper enters the order number + the phone they ordered with (normalised like checkout to
+  `+9647…`; `#1001`, Eastern Arabic/Kurdish digits and `00964`/`+964` forms accepted) and sees a status timeline
+  (received → confirmed → on its way → delivered, with postponed / refused / returned / cancelled shown where they
+  happened, dates in Baghdad time, courier + tracking number when the seller set them), items, totals, discount,
+  delivery city/area and fee, payment method and status, and a WhatsApp button to the store. noindex.
+- Tenant-safe: lookup scoped to the store, needs both number and phone, one generic "not found" for every miss;
+  shopper-safe shape (no address, notes, internal ids or seller history notes). Rate-limited per IP per store
+  (10 / 10 min) and per order number across IPs (6 / 10 min) on the existing Postgres limiter.
+- No-JS form (`<form action>` server action → 303): a match sets an httpOnly `mm_track` cookie (order public id,
+  30 min) so the phone never appears in a URL. No page-specific client JS (144.8 KiB gzip, under 155 KiB).
+- Confirmation page links to it; the WhatsApp order summary ends with the tracking link (ku/ar/en/kmr).
+- No schema change (orders already had a unique `(store_id, number)` index). 11 new Vitest tests (295 total), smoke
+  covers lookup / wrong phone / wrong number / unknown store / rate limit, 360 px mobile checks cover the form and a
+  looked-up order, budget now also holds the confirmation and tracking pages to the storefront budget.
+
 **Still open from this batch**
 - ~~Cover renditions~~ shipped in v4 (re-run Lighthouse on the store home to confirm the LCP gain).
 - Product page: the trust row's delivery line uses the store's home city; remember the shopper's last checkout
@@ -85,6 +101,9 @@
 - Run `npm run test:mobile` in CI (needs a seeded build + Chromium in the CI image).
 - ~~Dashboard UI for managing discount codes and delivery areas.~~ Shipped in v5.
 - ~~Legacy `9647…` phone backfill to `+9647…`.~~ Shipped in v5 (migration 0003, with duplicate-customer merge).
+- Order tracking follow-ups: a per-order "copy tracking link" for sellers in the dashboard; a Kurmanji (kmr) pass
+  on the `track.*` strings (falls back to English today); storefront `notFound()` answers 200 with the 404 boundary
+  (partial prerender streams it) — consider a real 404 status for unknown stores/orders.
 - Concurrency of discount claims is tested on PGlite (single connection, so transactions serialise); the
   conditional UPDATE is what makes it safe under Postgres READ COMMITTED — worth one integration run on real Postgres.
 
