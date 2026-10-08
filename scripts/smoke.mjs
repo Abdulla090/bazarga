@@ -308,7 +308,7 @@ const tap1 = /"redirectTo":"([^"]+)"/.exec((await foOrder({ elapsedMs: 400 }, "1
 const tap2 = /"redirectTo":"([^"]+)"/.exec((await foOrder({ elapsedMs: 400 }, "10.66.0.2")).text)?.[1];
 ok(!!tap1 && tap1 === tap2, "a double tap returns the first order instead of a duplicate");
 const riskList = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: demoCookie } })).text();
-ok((riskList.match(/Risk Test/g) ?? []).length === 1 && riskList.includes('data-testid="risk-badge"'), "seller sees one order, flagged 'check before shipping'");
+ok((riskList.match(/>Risk Test</g) ?? []).length === 1 && riskList.includes('data-testid="risk-badge"'), "seller sees one order, flagged 'check before shipping'");
 const riskId = /href="\/dashboard\/orders\/([0-9a-f-]{36})"[^>]*>(?:(?!<\/a>).)*Risk Test/s.exec(riskList)?.[1];
 const riskDetail = riskId ? await (await fetch(`${BASE}/dashboard/orders/${riskId}`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text() : "";
 ok(riskDetail.includes('data-testid="order-risk"') && riskDetail.includes('data-risk="fast_submit"') && riskDetail.includes('data-testid="block-phone"'), "order page explains the risk and offers to block the number");
