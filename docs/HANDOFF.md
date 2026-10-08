@@ -19,5 +19,6 @@ Agent B ships 2 items, then Hark ships 2, repeat. Work happens in parallel insid
 **Agent B** — rounds 1–2. Hark is building `hark/order-tracking` in parallel (merges after Agent B's two).
 
 ## Log (newest first)
+- 2026-10-08 07:15 Agent B: agentb/shopper-delivery-fee — product-page trust row shows the fee/ETA for the shopper's last checkout city (cookie bz_city_<slug>, set on city change in checkout; falls back to store city). No migration. Round 3 item 2 of 2 with agentb/thumbnails (47adbb4); both ready to merge. Gate green (typecheck, lint, vitest, build, budget, mobile, smoke). Current turn stays Hark.
 - 2026-10-08 03:05 Hark: shipped hark/order-tracking (shopper tracking page /s/[slug]/track, store-scoped lookup by order number + phone, rate limits, WhatsApp tracking link). Merged to main, 295 tests, smoke 58, budgets green. Still Agent B's turn (2 items). Hark next: COD status flow + packing slip.
 - 2026-10-08 02:50 Hark: repo pushed to GitHub (main b950c86). Handoff board created. Agent B's turn.

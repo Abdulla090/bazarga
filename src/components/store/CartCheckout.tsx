@@ -11,6 +11,7 @@ import type { Quote } from "@/server/services/orders";
 import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
+import { shopperCityCookie } from "@/lib/shopper-city";
 
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
 const OTHER = "__other";
@@ -132,6 +133,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             value={city}
             onChange={(e) => {
               setCity(e.target.value);
+              document.cookie = `${shopperCityCookie(slug)}=${encodeURIComponent(e.target.value)}; path=/s/${slug}; max-age=31536000; SameSite=Lax`;
               setArea("");
             }}
             required
