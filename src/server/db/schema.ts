@@ -18,6 +18,8 @@ import {
 export type LocalizedText = Partial<Record<"ku" | "ar" | "en" | "kmr", string>>;
 /** One row of a product's details table: both sides translatable (value may be the same in every locale). */
 export type ProductSpec = { label: LocalizedText; value: LocalizedText };
+/** Seller-set storefront badge (src/lib/merch.ts). */
+export type ProductBadge = "new" | "featured";
 
 export const localeEnum = pgEnum("locale", ["ku", "ar", "en", "kmr"]);
 /** COD-shaped lifecycle — see src/lib/order-status.ts (kept in sync by tests/schema-enums.test.ts). */
@@ -176,6 +178,8 @@ export const products = pgTable(
     sku: text("sku"),
     /** Seller-defined attributes shown as a table on the product page (Material, Size, Weight, Origin…). */
     specs: jsonb("specs").$type<ProductSpec[]>().notNull().default([]),
+    /** Seller's manual storefront badge ("New" / "Featured"); null = none (migration 0009). */
+    badge: text("badge").$type<ProductBadge>(),
     isActive: boolean("is_active").notNull().default(true),
     sort: integer("sort").notNull().default(0),
     createdAt: createdAt(),
@@ -185,6 +189,7 @@ export const products = pgTable(
     index("products_store_idx").on(t.storeId, t.isActive),
     check("products_price_nonneg", sql`${t.price} >= 0`),
     check("products_stock_nonneg", sql`${t.stock} IS NULL OR ${t.stock} >= 0`),
+    check("products_badge_known", sql`${t.badge} IS NULL OR ${t.badge} IN ('new', 'featured')`),
   ],
 );
 
@@ -382,6 +387,8 @@ export const discountCodes = pgTable(
     startsAt: timestamp("starts_at", { withTimezone: true }),
     endsAt: timestamp("ends_at", { withTimezone: true }),
     isActive: boolean("is_active").notNull().default(true),
+    /** Advertise this code on the storefront (offer banner on the store home + product pages); migration 0009. */
+    showOnStorefront: boolean("show_on_storefront").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

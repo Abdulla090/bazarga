@@ -7,18 +7,17 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { loadStore } from "../../data";
-import { getCatalog, getProductDetail, getStorefrontSettings } from "@/server/cache/storefront";
+import { getCatalog, getProductDetail, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { env } from "@/server/env";
 import { NONCE_HEADER } from "@/server/csp";
-import { pickText, type Locale } from "@/lib/i18n";
+import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
 import { normalizePhone } from "@/lib/phone";
 import { waLink } from "@/lib/whatsapp";
 import {
   absoluteUrl,
   descriptionParagraphs,
-  percentOff,
   productJsonLd,
   relatedProducts,
   serializeJsonLd,
@@ -27,9 +26,17 @@ import {
 import { ProductGallery } from "@/components/store/ProductGallery";
 import { ProductBuy, type BuyLabels } from "@/components/store/ProductBuy";
 import { DeliveryInfo, etaText } from "@/components/store/DeliveryInfo";
-import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
-import type { CatalogProduct } from "@/server/services/storefront";
+import { ProductStrip } from "@/components/store/MiniProductCard";
+import { MerchBadges } from "@/components/store/MerchBadges";
+import { OfferBanner } from "@/components/store/OfferBanner";
+import { merchLabels, offerLabels } from "@/components/store/merch-labels";
+import { pickBannerOffer } from "@/lib/merch";
 import { ArrowBack, Banknote, Icon, MessageCircle, Truck, Undo2 } from "@/components/ui/icons";
+
+/** Descriptions longer than this (or with more than two paragraphs) start clamped with a "Read more" toggle. */
+const LONG_DESCRIPTION = 280;
+const moreLink =
+  "inline-flex min-h-11 w-fit cursor-pointer items-center text-sm font-bold text-st-fg underline underline-offset-4 peer-focus-visible:outline-2 peer-focus-visible:outline-st-accent";
 
 async function load(slug: string, productId: string) {
   if (!z.uuid().safeParse(productId).success) notFound();
@@ -75,9 +82,10 @@ const chevron = (
 export default async function ProductPage({ params }: { params: Promise<{ slug: string; productId: string }> }) {
   const { slug, productId } = await params;
   const { store, p } = await load(slug, productId);
-  const [settings, catalog, t, tc, locale, nonce] = await Promise.all([
+  const [settings, catalog, codes, t, tc, locale, nonce] = await Promise.all([
     getStorefrontSettings(store.id),
     getCatalog(store.id),
+    getStoreOffers(store.id),
     getTranslations("store"),
     getTranslations("common"),
     currentLocale(),
@@ -108,7 +116,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     decrease: t("decrease"),
     increase: t("increase"),
     percentOff: t.raw("percentOff") as string,
+    youSave: t.raw("youSave") as string,
   };
+  const badges = merchLabels(t);
+  const offer = pickBannerOffer(codes);
+  const longDescription = description.length > LONG_DESCRIPTION || paragraphs.length > 2;
   const shareUrl = `${base()}/s/${store.slug}/p/${p.id}`;
   const wa = normalizePhone(store.whatsapp ?? store.phone ?? "");
 
@@ -139,8 +151,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <div className="grid gap-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <ViewPixel slug={store.slug} productId={p.id} />
-      <div className="grid gap-6 md:grid-cols-2 md:gap-10">
-        <div className="min-w-0 md:sticky md:top-24 md:h-fit">
+      <Link href={`/s/${store.slug}`} className="-mb-4 inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-st-muted md:-mb-2">
+        <ArrowBack /> {tc("back")}
+      </Link>
+      <div className="grid gap-5 md:grid-cols-2 md:gap-10">
+        <div className="relative min-w-0 md:sticky md:top-24 md:h-fit">
           <ProductGallery
             images={p.images}
             alt={name}
@@ -154,12 +169,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               zoom: t("zoom"),
             }}
           />
+          {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
+          <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="left" />
         </div>
         <div className="grid h-fit min-w-0 gap-5">
-          <Link href={`/s/${store.slug}`} className="inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-st-muted">
-            <ArrowBack /> {tc("back")}
-          </Link>
-          <h1 className="text-2xl font-extrabold leading-tight sm:text-3xl">{name}</h1>
           <ProductBuy
             slug={store.slug}
             productId={p.id}
@@ -178,6 +191,32 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             whatsapp={store.whatsapp ?? store.phone}
             shareUrl={shareUrl}
             labels={labels}
+            title={<h1 className="text-2xl font-extrabold leading-tight sm:text-3xl" data-testid="product-name">{name}</h1>}
+            info={
+              paragraphs.length > 0 ? (
+                <div className="grid gap-1" data-testid="product-summary">
+                  {longDescription ? (
+                    <>
+                      {/* CSS-only "Read more": no client JS; the checkbox is the toggle, the label its visible control. */}
+                      <input type="checkbox" id="desc-more" className="peer sr-only" />
+                      <div className="line-clamp-4 leading-relaxed text-st-muted peer-checked:line-clamp-none [&>p+p]:mt-2" data-testid="summary-text">
+                        <DescriptionText paragraphs={paragraphs} />
+                      </div>
+                      <label htmlFor="desc-more" className={`${moreLink} peer-checked:hidden`} data-testid="read-more">
+                        {t("readMore")}
+                      </label>
+                      <label htmlFor="desc-more" className={`${moreLink} hidden peer-checked:inline-flex`}>
+                        {t("readLess")}
+                      </label>
+                    </>
+                  ) : (
+                    <div className="leading-relaxed text-st-muted [&>p+p]:mt-2" data-testid="summary-text">
+                      <DescriptionText paragraphs={paragraphs} />
+                    </div>
+                  )}
+                </div>
+              ) : null
+            }
           />
 
           {/* Trust row */}
@@ -217,27 +256,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             )}
           </ul>
 
-          <div className="grid gap-3">
-            {paragraphs.length > 0 && (
-              <details className={section} open data-testid="section-description">
-                <summary className={summary}>
-                  {t("descriptionTitle")} {chevron}
-                </summary>
-                <div className="grid gap-3 px-4 pb-4 leading-relaxed text-st-muted">
-                  {paragraphs.map((lines, i) => (
-                    <p key={i}>
-                      {lines.map((l, j) => (
-                        <span key={j}>
-                          {j > 0 && <br />}
-                          {l}
-                        </span>
-                      ))}
-                    </p>
-                  ))}
-                </div>
-              </details>
-            )}
+          {(offer || store.freeDeliveryThreshold) && (
+            <div className="grid gap-2" data-testid="product-offers">
+              {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
+              {store.freeDeliveryThreshold ? (
+                <p className="flex items-center gap-2 rounded-xl border border-st-border bg-st-surface px-3 py-2 text-sm font-semibold" data-testid="free-delivery-note">
+                  <Icon as={Truck} className="shrink-0 text-st-accent" />
+                  <span>{t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}</span>
+                </p>
+              ) : null}
+            </div>
+          )}
 
+          <div className="grid gap-3">
             {specs.length > 0 && (
               <details className={section} open data-testid="section-details">
                 <summary className={summary}>
@@ -290,42 +321,29 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      {related.length > 0 && (
-        <section aria-labelledby="more-h" className="grid gap-3" data-testid="related">
-          <h2 id="more-h" className="text-lg font-extrabold">
-            {t("moreFromStore")}
-          </h2>
-          <ul className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {related.map((r) => (
-              <li key={r.id} className="w-36 shrink-0 snap-start sm:w-44">
-                <RelatedCard p={r} slug={store.slug} locale={locale} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ProductStrip
+        id="more-h"
+        title={t("moreFromStore")}
+        products={related}
+        slug={store.slug}
+        locale={locale}
+        labels={badges}
+        from={t.raw("from") as string}
+        testId="related"
+      />
     </div>
   );
 }
 
-/** Compact, server-only card for the "More from this store" strip (no add-to-cart island → no extra client JS). */
-function RelatedCard({ p, slug, locale }: { p: CatalogProduct; slug: string; locale: Locale }) {
-  const name = pickText(p.name, locale);
-  const pct = percentOff(p.price, p.compareAtPrice);
-  return (
-    <Link href={`/s/${slug}/p/${p.id}`} className="block overflow-hidden rounded-[var(--radius-card)] border border-st-border bg-st-surface">
-      <span className="relative block">
-        {p.image ? (
-          <ResponsiveImage image={p.image} alt="" sizes="176px" index={9} className="aspect-square w-full object-cover" />
-        ) : (
-          <span className="block aspect-square w-full bg-st-bg" />
-        )}
-        {pct !== null && <span className="chip num absolute start-2 top-2 bg-danger text-[#fff]">−{pct}%</span>}
-      </span>
-      <span className="grid gap-1 p-2.5">
-        <span className="line-clamp-2 min-h-10 text-sm font-bold leading-snug">{name}</span>
-        <span className="num text-sm font-extrabold">{formatIQD(p.price, locale)}</span>
-      </span>
-    </Link>
-  );
+function DescriptionText({ paragraphs }: { paragraphs: string[][] }) {
+  return paragraphs.map((lines, i) => (
+    <p key={i}>
+      {lines.map((l, j) => (
+        <span key={j}>
+          {j > 0 && <br />}
+          {l}
+        </span>
+      ))}
+    </p>
+  ));
 }

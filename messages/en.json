@@ -188,7 +188,7 @@
     "description": "Description",
     "price": "Price (IQD)",
     "compareAt": "Old price (IQD)",
-    "compareAtHint": "Shows as crossed out. Leave empty if none.",
+    "compareAtHint": "Set it above the price to put the product on sale: it shows crossed out with a −% badge and appears under Offers. Leave empty if none.",
     "stock": "Stock",
     "stockHint": "Leave empty if you don't count stock",
     "category": "Category",
@@ -211,7 +211,12 @@
     "specValue": "Value",
     "addSpec": "Add row",
     "removeSpec": "Remove row",
-    "specsInvalid": "Every row needs a label and a value."
+    "specsInvalid": "Every row needs a label and a value.",
+    "badge": "Badge",
+    "badgeNone": "No badge",
+    "badgeNew": "New",
+    "badgeFeatured": "Featured",
+    "badgeHint": "Shown on the product photo in your store. \"Best seller\" is added automatically from your orders."
   },
   "categories": {
     "title": "Categories",
@@ -482,7 +487,26 @@
     "nextPhoto": "Next photo",
     "prevPhoto": "Previous photo",
     "noReturnPolicy": "This store hasn't published a return policy yet. Ask the seller on WhatsApp before ordering.",
-    "trackOrder": "Track your order"
+    "trackOrder": "Track your order",
+    "bestSeller": "Best seller",
+    "bestSellers": "Best sellers",
+    "badgeNew": "New",
+    "badgeFeatured": "Featured",
+    "offers": "Offers",
+    "offersTitle": "On sale now",
+    "seeAll": "See all",
+    "allProducts": "All products",
+    "noOffers": "No offers right now — check back soon.",
+    "offerPercent": "{pct}% off with code {code}",
+    "offerFixed": "{amount} off with code {code}",
+    "offerFreeDelivery": "Free delivery with code {code}",
+    "offerMin": "On orders over {amount}",
+    "offerHowTo": "Type the code at checkout",
+    "offerLabel": "Offer",
+    "youSave": "You save {amount}",
+    "readMore": "Read more",
+    "readLess": "Show less",
+    "freeDeliveryOverShort": "Free delivery over {amount}"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -582,7 +606,10 @@
     "deactivate": "Deactivate",
     "activate": "Activate",
     "codeHint": "3–32 Latin letters, numbers, - or _",
-    "status": "Status"
+    "status": "Status",
+    "showOnStorefront": "Show on my store",
+    "showOnStorefrontHint": "Shoppers see this code as an offer banner on your store and product pages.",
+    "onStorefront": "On store"
   },
   "track": {
     "title": "Track your order",

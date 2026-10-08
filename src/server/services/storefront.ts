@@ -1,9 +1,12 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, notInArray, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import {
   categories,
   deliveryAreas,
   deliveryZones,
+  discountCodes,
+  orderItems,
+  orders,
   productImages,
   productOptionValues,
   productOptions,
@@ -12,8 +15,11 @@ import {
   storePaymentMethods,
   stores,
   type ImageRendition,
+  type ProductBadge,
   type ProductSpec,
 } from "../db/schema";
+import { BEST_SELLER_DAYS, rankBestSellers, type BannerCode, type SalesRow } from "@/lib/merch";
+import { LOST_ORDER_STATUSES } from "@/lib/order-status";
 import type { LocalizedText } from "@/lib/i18n";
 import type { PaymentMethod } from "@/lib/order-status";
 import type { ProductImage } from "./catalog";
@@ -130,9 +136,18 @@ export type CatalogProduct = {
   soldOut: boolean;
   hasVariants: boolean;
   image: ProductImage | null;
+  /** Seller's manual badge ("new" / "featured"). */
+  badge: ProductBadge | null;
+  /** Earns the "Best seller" badge (top sellers over the last 30 days, src/lib/merch.ts). */
+  bestSeller: boolean;
 };
 export type CatalogCategory = { id: string; name: LocalizedText };
-export type Catalog = { products: CatalogProduct[]; categories: CatalogCategory[] };
+export type Catalog = {
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  /** Product ids ranked by real orders (last 30 days, lost orders excluded); [] when nothing sold. */
+  bestSellers: string[];
+};
 
 /** Upper bound on what one store's grid holds in memory; pages of 24 are cut from it per request. */
 export const CATALOG_LIMIT = 1000;
@@ -140,12 +155,12 @@ export const CATALOG_LIMIT = 1000;
 export async function loadCatalog(database: Db, storeId: string): Promise<Catalog> {
   const list = await database.query.products.findMany({
     where: and(eq(products.storeId, storeId), eq(products.isActive, true)),
-    columns: { id: true, name: true, categoryId: true, price: true, compareAtPrice: true, stock: true },
+    columns: { id: true, name: true, categoryId: true, price: true, compareAtPrice: true, stock: true, badge: true },
     orderBy: [asc(products.sort), desc(products.createdAt)],
     limit: CATALOG_LIMIT,
   });
   const ids = list.map((p) => p.id);
-  const [covers, cats, variants] = await Promise.all([
+  const [covers, cats, variants, sales] = await Promise.all([
     ids.length
       ? database
           .select({
@@ -174,7 +189,10 @@ export async function loadCatalog(database: Db, storeId: string): Promise<Catalo
           columns: { productId: true, price: true, stock: true },
         })
       : Promise.resolve([]),
+    ids.length ? loadSales(database, storeId) : Promise.resolve([]),
   ]);
+  const best = rankBestSellers(sales, new Set(ids));
+  const badged = new Set(best.badged);
   const coverOf = new Map(covers.map(({ productId, ...img }) => [productId, img]));
   const products_ = list.map((p): CatalogProduct => {
     const vs = variants.filter((v) => v.productId === p.id);
@@ -191,6 +209,8 @@ export async function loadCatalog(database: Db, storeId: string): Promise<Catalo
         soldOut: p.stock !== null && p.stock <= 0,
         hasVariants: false,
         image,
+        badge: p.badge ?? null,
+        bestSeller: badged.has(p.id),
       };
     }
     const inStock = vs.filter((v) => v.stock === null || v.stock > 0);
@@ -208,10 +228,65 @@ export async function loadCatalog(database: Db, storeId: string): Promise<Catalo
       soldOut: inStock.length === 0,
       hasVariants: true,
       image,
+      badge: p.badge ?? null,
+      bestSeller: badged.has(p.id),
     };
   });
   const used = new Set(products_.map((p) => p.categoryId));
-  return { products: products_, categories: cats.filter((c) => used.has(c.id)) };
+  return { products: products_, categories: cats.filter((c) => used.has(c.id)), bestSellers: best.ranked };
+}
+
+/**
+ * Per-product sales over the last BEST_SELLER_DAYS days: separate orders and units, cancelled / refused /
+ * returned orders left out (the same rule as seller analytics). One grouped query on orders(store_id, created_at).
+ */
+export async function loadSales(database: Db, storeId: string, days = BEST_SELLER_DAYS): Promise<SalesRow[]> {
+  const since = new Date(Date.now() - days * 86_400_000);
+  const rows = await database
+    .select({
+      productId: orderItems.productId,
+      orders: sql<number>`count(distinct ${orders.id})`,
+      units: sql<number>`coalesce(sum(${orderItems.quantity}), 0)`,
+    })
+    .from(orderItems)
+    .innerJoin(orders, eq(orders.id, orderItems.orderId))
+    .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, since), notInArray(orders.status, [...LOST_ORDER_STATUSES])))
+    .groupBy(orderItems.productId);
+  return rows
+    .filter((r): r is typeof r & { productId: string } => !!r.productId)
+    .map((r) => ({ productId: r.productId, orders: Number(r.orders), units: Number(r.units) }));
+}
+
+// ---------------------------------------------------------------- offers (public discount codes)
+/**
+ * Codes the seller chose to advertise ("Show on storefront"), active or not — the page decides with the clock
+ * (src/lib/merch.ts pickBannerOffer), so a cached entry never shows a code past its end date.
+ */
+export async function loadStoreOffers(database: Db, storeId: string): Promise<BannerCode[]> {
+  const rows = await database.query.discountCodes.findMany({
+    where: and(eq(discountCodes.storeId, storeId), eq(discountCodes.showOnStorefront, true), eq(discountCodes.isActive, true)),
+    columns: {
+      code: true,
+      type: true,
+      value: true,
+      minSubtotal: true,
+      maxUses: true,
+      usedCount: true,
+      isActive: true,
+      showOnStorefront: true,
+      startsAt: true,
+      endsAt: true,
+      createdAt: true,
+    },
+    orderBy: desc(discountCodes.createdAt),
+    limit: 20,
+  });
+  return rows.map((r) => ({
+    ...r,
+    startsAt: r.startsAt ? r.startsAt.toISOString() : null,
+    endsAt: r.endsAt ? r.endsAt.toISOString() : null,
+    createdAt: r.createdAt.toISOString(),
+  }));
 }
 
 // ---------------------------------------------------------------- product detail

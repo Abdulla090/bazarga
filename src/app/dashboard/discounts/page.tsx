@@ -42,6 +42,9 @@ export default async function DiscountsPage() {
                   <span className="chip bg-gold/20 px-3 text-ink">
                     {c.type === "free_delivery" ? <Icon as={Truck} label={tdel("free")} /> : <bdi className="num">{c.type === "percentage" ? `${c.value}%` : formatIQD(c.value, locale)}</bdi>}
                   </span>
+                  {c.showOnStorefront && (
+                    <span className="chip bg-green/15 px-3 text-ink" data-testid="discount-on-storefront">{t("onStorefront")}</span>
+                  )}
                   <span className="ms-auto"><DiscountToggle id={c.id} isActive={c.isActive} /></span>
                 </div>
                 <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-ink-70 sm:grid-cols-4">
@@ -65,6 +68,7 @@ export default async function DiscountsPage() {
                           startsOn: start,
                           endsOn: end,
                           isActive: c.isActive,
+                          showOnStorefront: c.showOnStorefront,
                         }}
                       />
                     </div>

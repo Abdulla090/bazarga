@@ -79,9 +79,27 @@ for (const id of listed) {
   ok(Number(photos) >= 3 && Number(photos) <= 5, `product ${id.slice(0, 8)}: gallery has 3–5 photos (${photos})`);
   ok(html.includes('data-testid="specs-table"') && html.includes('data-testid="related"'), `product ${id.slice(0, 8)}: details table + related strip`);
   ok(data?.["@type"] === "Product" && data.offers?.priceCurrency === "IQD" && /og:image" content="http/.test(html), `product ${id.slice(0, 8)}: nonced Product JSON-LD (IQD) + og:image`);
-  if (html.includes('data-testid="pct-off"')) sale = id;
+  if (html.includes('data-testid="pct-off"') && html.includes("HB-HONEY-1KG")) sale = id;
+  if (html.includes("HB-HONEY-1KG")) {
+    const at = (needle) => html.indexOf(needle);
+    ok(
+      at('data-testid="product-name"') > at('data-testid="gallery"') &&
+        at('data-testid="product-summary"') > at('data-testid="price"') &&
+        at('data-testid="stock-status"') > at('data-testid="product-summary"') &&
+        at('data-testid="trust-row"') > at('data-testid="stock-status"'),
+      "product page: gallery → name → price → description → stock/options → trust row",
+    );
+    ok(html.includes('data-testid="you-save"') && html.includes('data-testid="badge-best"') && html.includes('data-testid="offer-code"'), "sale product shows 'you save', the best-seller badge and the advertised code");
+  }
 }
 ok(!!sale, "one demo product is on sale (compare-at price, % off badge)");
+const enHome = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
+ok(
+  enHome.includes('data-testid="best-sellers"') && enHome.includes("Best sellers") && enHome.includes('data-testid="offers-strip"') && /data-testid="offer-code"[^>]*>NEWROZ</.test(enHome),
+  "store home shows best sellers (from orders), the offers strip and the NEWROZ offer banner",
+);
+const offersPage = await (await fetch(`${BASE}/s/hawler-bazaar?offers=1`, { headers: { Cookie: "mm_locale=en" } })).text();
+ok((offersPage.match(/<article/g) ?? []).length === 2 && !offersPage.includes('data-testid="best-sellers"'), "offers filter lists only the 2 discounted products");
 
 const quote = await callAction("quoteAction", ["hawler-bazaar", [{ productId: ids[0], quantity: 2 }], "baghdad", "en"], { path: "/s/hawler-bazaar/cart" });
 const total = /"total":(\d+)/.exec(quote.text)?.[1];

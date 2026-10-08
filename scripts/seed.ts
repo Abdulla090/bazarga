@@ -2,14 +2,22 @@
  * Demo data: seller demo@mymarket.app / mymarket-demo  →  store "Hawler Bazaar" (/s/hawler-bazaar)
  * with four products (3–5 photos and a details table each, one on sale, a size-variant dress), the "bazaar" theme,
  * a cover photo with renditions, delivery areas in Erbil and Sulaymaniyah, the NEWROZ and WELCOME10 discount codes
- * and free delivery over 75,000 IQD. Idempotent: re-running does nothing if the store exists.
+ * (NEWROZ advertised on the storefront), free delivery over 75,000 IQD, and a few past orders so the storefront
+ * shows real best sellers: honey (3 orders) and the dress (2) earn the "Best seller" badge, the scarf (1) joins the
+ * strip, a cancelled skincare order counts for nothing. Honey and the scarf are on sale; the skincare set is "New".
+ * Idempotent: re-running does nothing if the store exists.
  */
-import { and, eq } from "drizzle-orm";
+import { randomBytes } from "node:crypto";
+import { and, eq, sql } from "drizzle-orm";
 import { createDb } from "../src/server/db";
 import {
   deliveryAreas,
   deliveryZones,
+  customers,
   discountCodes,
+  orderEvents,
+  orderItems,
+  orders,
   productOptionValues,
   productOptions,
   productVariants,
@@ -74,9 +82,9 @@ async function main() {
     ...base,
     name: { ku: "کراسی کوردی", ar: "فستان كردي", en: "Kurdish dress", kmr: "Kirasê kurdî" },
     description: {
-      ku: "کراسی کوردیی دەستدروست بە ڕەنگی گەش، گونجاو بۆ نەورۆز و ئاهەنگەکان.\n\nقوماشی مەخمەری سەوز بە چنینی زێڕین لە سنگ، قۆڵ و داوێن.\nهەر پارچەیەک لە بازاڕی هەولێر تەواو دەکرێت.",
-      ar: "فستان كردي مصنوع يدوياً بألوان زاهية، مناسب لنوروز والمناسبات.\n\nمخمل أخضر مع تطريز ذهبي على الصدر والأكمام والذيل.\nكل قطعة تُنهى يدوياً في سوق أربيل.",
-      en: "Hand-finished Kurdish dress in bright colours — made for Newroz and celebrations.\n\nGreen velvet with gold embroidery on the chest, sleeves and hem.\nEvery piece is finished by hand in the Erbil bazaar.",
+      ku: "کراسی کوردیی دەستدروست بە ڕەنگی گەش، گونجاو بۆ نەورۆز و ئاهەنگەکان.\n\nقوماشی مەخمەری سەوز بە چنینی زێڕین لە سنگ، قۆڵ و داوێن.\nهەر پارچەیەک لە بازاڕی هەولێر تەواو دەکرێت.\n\nقەبارەکان S، M و L ن؛ قەبارەی L درێژترە. ئەگەر دڵنیا نیت لە قەبارەکەت، لە واتسئاپ پێوانەکانت بنێرە و یارمەتیت دەدەین.",
+      ar: "فستان كردي مصنوع يدوياً بألوان زاهية، مناسب لنوروز والمناسبات.\n\nمخمل أخضر مع تطريز ذهبي على الصدر والأكمام والذيل.\nكل قطعة تُنهى يدوياً في سوق أربيل.\n\nالمقاسات S وM وL؛ مقاس L أطول. إن لم تكن متأكداً من مقاسك أرسل قياساتك على واتساب وسنساعدك.",
+      en: "Hand-finished Kurdish dress in bright colours — made for Newroz and celebrations.\n\nGreen velvet with gold embroidery on the chest, sleeves and hem.\nEvery piece is finished by hand in the Erbil bazaar.\n\nSizes S, M and L; the L is cut longer. Not sure about your size? Send your measurements on WhatsApp and we'll help.",
     },
     price: 85000,
     stock: 12,
@@ -90,7 +98,7 @@ async function main() {
     imageUrls: [],
     images: photos("product-dress", "product-dress-collar", "product-dress-hem", "product-dress-sleeve", "product-dress-full"),
   });
-  await createProduct(db, store.id, {
+  const honey = await createProduct(db, store.id, {
     ...base,
     name: { ku: "هەنگوینی چیا · ١ کیلۆ", ar: "عسل جبلي · 1 كغ", en: "Mountain honey · 1 kg", kmr: "Hingivê çiya · 1 kg" },
     description: {
@@ -111,8 +119,9 @@ async function main() {
     imageUrls: [],
     images: photos("product-honey", "product-honey-jar", "product-honey-dipper", "product-honey-pot"),
   });
-  await createProduct(db, store.id, {
+  const skincare = await createProduct(db, store.id, {
     ...base,
+    badge: "new",
     name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set", kmr: "Seta çermê xwezayî" },
     description: {
       ku: "سابوون، کرێم و ڕۆنی سروشتی — بێ مادەی کیمیایی.\n\nبۆ هەموو جۆرە پێستێک.\nبە دیاری پێچراوە.",
@@ -131,7 +140,7 @@ async function main() {
     imageUrls: [],
     images: photos("product-cosmetics", "product-cosmetics-serum", "product-cosmetics-cream", "product-cosmetics-flowers"),
   });
-  await createProduct(db, store.id, {
+  const scarf = await createProduct(db, store.id, {
     ...base,
     name: { ku: "لەچکی چنراوی کوردی", ar: "وشاح كردي منسوج", en: "Hand-woven Kurdish scarf", kmr: "Şala kurdî ya destçêkirî" },
     description: {
@@ -140,6 +149,7 @@ async function main() {
       en: "Red scarf hand-woven in the Erbil bazaar.\nWarm and light, for winter and spring.",
     },
     price: 35000,
+    compareAtPrice: 42000,
     stock: 8,
     sku: "HB-SCARF-RED",
     categoryId: clothing.id,
@@ -175,7 +185,7 @@ async function main() {
     })
     .where(eq(stores.id, store.id));
   await db.insert(discountCodes).values([
-    { storeId: store.id, code: "NEWROZ", type: "percentage", value: 10, minSubtotal: 30_000 },
+    { storeId: store.id, code: "NEWROZ", type: "percentage", value: 10, minSubtotal: 30_000, showOnStorefront: true },
     { storeId: store.id, code: "WELCOME10", type: "percentage", value: 10, minSubtotal: 30_000, maxUses: 100, isActive: true },
   ]);
 
@@ -213,7 +223,7 @@ async function main() {
     .insert(productOptionValues)
     .values(["S", "M", "L"].map((v, i) => ({ optionId: sizeOpt!.id, productId: dress.id, storeId: store.id, label: { en: v }, sort: i })))
     .returning();
-  await db.insert(productVariants).values(
+  const variants = await db.insert(productVariants).values(
     values.map((v, i) => ({
       productId: dress.id,
       storeId: store.id,
@@ -223,7 +233,95 @@ async function main() {
       price: i === 2 ? 90_000 : null,
       sort: i,
     })),
-  );
+  ).returning();
+
+  // ---- past orders (last three weeks) → real best sellers on the storefront and in analytics
+  const day = 86_400_000;
+  type Line = { productId: string; variantId?: string; name: string; variantTitle?: string; unitPrice: number; quantity: number };
+  const dressM = variants[1]!;
+  const L = {
+    honey: (q: number): Line => ({ productId: honey.id, name: "هەنگوینی چیا · ١ کیلۆ", unitPrice: 25_000, quantity: q }),
+    dress: (): Line => ({ productId: dress.id, variantId: dressM.id, name: "کراسی کوردی", variantTitle: "M", unitPrice: 85_000, quantity: 1 }),
+    scarf: (): Line => ({ productId: scarf.id, name: "لەچکی چنراوی کوردی", unitPrice: 35_000, quantity: 1 }),
+    skin: (): Line => ({ productId: skincare.id, name: "سێتی پێستی سروشتی", unitPrice: 40_000, quantity: 1 }),
+  };
+  const past: { name: string; phone: string; daysAgo: number; status: "delivered" | "cancelled"; lines: Line[] }[] = [
+    { name: "ئاڤان عومەر", phone: "+9647701000101", daysAgo: 18, status: "delivered", lines: [L.honey(2)] },
+    { name: "شیلان کەریم", phone: "+9647701000102", daysAgo: 12, status: "delivered", lines: [L.honey(1), L.scarf()] },
+    { name: "ڕێباز ئەحمەد", phone: "+9647701000103", daysAgo: 9, status: "delivered", lines: [L.dress()] },
+    { name: "هێمن عەلی", phone: "+9647701000104", daysAgo: 5, status: "delivered", lines: [L.dress(), L.honey(1)] },
+    { name: "دلنیا حەسەن", phone: "+9647701000105", daysAgo: 3, status: "cancelled", lines: [L.skin()] },
+  ];
+  for (const o of past) {
+    const at = new Date(Date.now() - o.daysAgo * day);
+    const subtotal = o.lines.reduce((a, l) => a + l.unitPrice * l.quantity, 0);
+    const deliveryFee = subtotal >= 75_000 ? 0 : 3_000;
+    const [seq] = await db
+      .update(stores)
+      .set({ orderSeq: sql`${stores.orderSeq} + 1` })
+      .where(eq(stores.id, store.id))
+      .returning({ n: stores.orderSeq });
+    const [customer] = await db
+      .insert(customers)
+      .values({
+        storeId: store.id,
+        name: o.name,
+        phone: o.phone,
+        cityKey: "erbil",
+        address: "هەولێر",
+        ordersCount: 1,
+        totalSpent: o.status === "delivered" ? subtotal + deliveryFee : 0,
+        lastOrderAt: at,
+      })
+      .returning({ id: customers.id });
+    const [order] = await db
+      .insert(orders)
+      .values({
+        storeId: store.id,
+        number: seq!.n,
+        publicId: randomBytes(12).toString("base64url"),
+        customerId: customer!.id,
+        customerName: o.name,
+        customerPhone: o.phone,
+        cityKey: "erbil",
+        cityName: "هەولێر",
+        governorateKey: erbil?.governorateKey ?? null,
+        address: "هەولێر",
+        landmark: "نزیک قەڵا",
+        subtotal,
+        deliveryFee,
+        total: subtotal + deliveryFee,
+        status: o.status,
+        paymentMethod: "cod",
+        paymentStatus: o.status === "delivered" ? "paid" : "unpaid",
+        locale: "ku",
+        restockedAt: o.status === "cancelled" ? at : null,
+        createdAt: at,
+        updatedAt: at,
+      })
+      .returning({ id: orders.id });
+    await db.insert(orderItems).values(
+      o.lines.map((l) => ({
+        orderId: order!.id,
+        productId: l.productId,
+        variantId: l.variantId ?? null,
+        name: l.name,
+        variantTitle: l.variantTitle ?? null,
+        unitPrice: l.unitPrice,
+        quantity: l.quantity,
+        lineTotal: l.unitPrice * l.quantity,
+      })),
+    );
+    const steps = o.status === "delivered" ? (["pending", "confirmed", "shipped", "delivered"] as const) : (["pending", "cancelled"] as const);
+    await db.insert(orderEvents).values(
+      steps.map((to, i) => ({
+        orderId: order!.id,
+        fromStatus: i === 0 ? null : steps[i - 1]!,
+        toStatus: to,
+        createdAt: new Date(at.getTime() + i * 6 * 3_600_000),
+      })),
+    );
+  }
 
   console.log(`[seed] created Hawler Bazaar → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
   process.exit(0);

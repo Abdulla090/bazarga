@@ -188,7 +188,7 @@
     "description": "الوصف",
     "price": "السعر (د.ع)",
     "compareAt": "السعر القديم (د.ع)",
-    "compareAtHint": "يظهر مشطوباً. اتركه فارغاً إن لم يوجد.",
+    "compareAtHint": "ضعه أعلى من السعر لوضع المنتج في التخفيضات: يظهر مشطوباً مع شارة −٪ ويظهر في قسم العروض. اتركه فارغاً إن لم يوجد.",
     "stock": "المخزون",
     "stockHint": "اتركه فارغاً إن كنت لا تعدّ المخزون",
     "category": "القسم",
@@ -211,7 +211,12 @@
     "specValue": "القيمة",
     "addSpec": "أضف صفاً",
     "removeSpec": "احذف الصف",
-    "specsInvalid": "كل صف يحتاج عنواناً وقيمة."
+    "specsInvalid": "كل صف يحتاج عنواناً وقيمة.",
+    "badge": "شارة",
+    "badgeNone": "بدون شارة",
+    "badgeNew": "جديد",
+    "badgeFeatured": "مميّز",
+    "badgeHint": "تظهر على صورة المنتج في متجرك. شارة «الأكثر مبيعاً» تُضاف تلقائياً من طلباتك."
   },
   "categories": {
     "title": "الأقسام",
@@ -482,7 +487,26 @@
     "nextPhoto": "الصورة التالية",
     "prevPhoto": "الصورة السابقة",
     "noReturnPolicy": "لم ينشر هذا المتجر سياسة إرجاع بعد. اسأل البائع عبر واتساب قبل الطلب.",
-    "trackOrder": "تتبّع طلبك"
+    "trackOrder": "تتبّع طلبك",
+    "bestSeller": "الأكثر مبيعاً",
+    "bestSellers": "الأكثر مبيعاً",
+    "badgeNew": "جديد",
+    "badgeFeatured": "مميّز",
+    "offers": "العروض",
+    "offersTitle": "عروض الآن",
+    "seeAll": "عرض الكل",
+    "allProducts": "كل المنتجات",
+    "noOffers": "لا توجد عروض حالياً — عُد قريباً.",
+    "offerPercent": "خصم {pct}٪ بالكود {code}",
+    "offerFixed": "خصم {amount} بالكود {code}",
+    "offerFreeDelivery": "توصيل مجاني بالكود {code}",
+    "offerMin": "للطلبات فوق {amount}",
+    "offerHowTo": "اكتب الكود عند إتمام الطلب",
+    "offerLabel": "عرض",
+    "youSave": "توفّر {amount}",
+    "readMore": "اقرأ المزيد",
+    "readLess": "عرض أقل",
+    "freeDeliveryOverShort": "توصيل مجاني فوق {amount}"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",
@@ -582,7 +606,10 @@
     "deactivate": "إيقاف",
     "activate": "تفعيل",
     "codeHint": "3–32 حرفاً لاتينياً أو أرقاماً أو - أو _",
-    "status": "الحالة"
+    "status": "الحالة",
+    "showOnStorefront": "اعرضه في متجري",
+    "showOnStorefrontHint": "يرى المتسوقون هذا الكود كلافتة عرض في متجرك وصفحات المنتجات.",
+    "onStorefront": "في المتجر"
   },
   "track": {
     "title": "تتبّع طلبك",

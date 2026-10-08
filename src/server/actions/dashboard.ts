@@ -33,7 +33,7 @@ import { specsFromForm,
   storeThemeSchema,
   storeStorefrontSchema,
 } from "@/lib/validation";
-import { RESTOCK_ON } from "@/lib/order-status";
+import { LOST_ORDER_STATUSES, RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
 
 const uuid = z.uuid();
@@ -141,6 +141,7 @@ function productInputFromForm(fd: FormData) {
     sku: emptyToNull(fd.get("sku")),
     specs: specsFromForm(fd),
     categoryId: emptyToNull(fd.get("categoryId")),
+    badge: emptyToNull(fd.get("badge")),
     isActive: fd.get("isActive") === "on" || fd.get("isActive") === "true",
     imageUrls: fd.getAll("imageUrls").filter((v): v is string => typeof v === "string" && v.length > 0),
     images: imagesFromForm(fd),
@@ -297,6 +298,7 @@ function discountInputFromForm(fd: FormData) {
     startsOn: o.startsOn ?? "",
     endsOn: o.endsOn ?? "",
     isActive: o.isActive === "on" || o.isActive === "true",
+    showOnStorefront: o.showOnStorefront === "on" || o.showOnStorefront === "true",
   });
 }
 
@@ -350,7 +352,8 @@ export async function updateOrderStatusAction(
       input.status === "shipped" ? { courierName: input.courierName ?? null, trackingNumber: input.trackingNumber ?? null } : undefined;
     await updateOrderStatus(db(), store.id, input.orderId, input.status, user.id, input.note, shipping);
     // Cancelled / returned orders put stock back: product pages and "sold out" badges change.
-    if (RESTOCK_ON.includes(input.status)) invalidateCatalog(store.id);
+    // Lost orders (cancelled / refused / returned) also drop out of the storefront's best sellers.
+    if (RESTOCK_ON.includes(input.status) || LOST_ORDER_STATUSES.includes(input.status)) invalidateCatalog(store.id);
     revalidatePath(`/dashboard/orders/${input.orderId}`);
     revalidatePath(`/dashboard/orders/${input.orderId}/slip`);
     revalidatePath("/dashboard/orders");

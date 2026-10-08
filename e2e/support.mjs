@@ -91,6 +91,13 @@ export async function setup() {
   const ordersHtml = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: `${session.name}=${session.value}` } })).text();
   const orderId = /\/dashboard\/orders\/([0-9a-f-]{36})/.exec(ordersHtml)?.[1];
 
+  // The demo honey jar: on sale, a best seller, advertised offer banner on its page.
+  let saleId = null;
+  for (const id of listed) {
+    const page = await (await fetch(`${BASE}/s/${SLUG}/p/${id}`)).text();
+    if (page.includes("HB-HONEY-1KG")) saleId = id;
+  }
+
   const cart = JSON.stringify([{ productId: buyable[0], variantId: null, quantity: 2 }]);
   return {
     session,
@@ -98,6 +105,8 @@ export async function setup() {
     cart: { key: `mm_cart_${SLUG}`, value: cart },
     routes: [
       { name: "storefront-home", path: `/s/${SLUG}` },
+      { name: "storefront-offers", path: `/s/${SLUG}?offers=1` },
+      ...(saleId ? [{ name: "product-sale", path: `/s/${SLUG}/p/${saleId}`, openDetails: true }] : []),
       // The richest demo page: the variant product (not buyable straight from the grid) — 5 photos, sizes, specs.
       { name: "product", path: `/s/${SLUG}/p/${listed.find((id) => !buyable.includes(id)) ?? listed[0]}` },
       { name: "checkout", path: `/s/${SLUG}/cart`, cart: true },

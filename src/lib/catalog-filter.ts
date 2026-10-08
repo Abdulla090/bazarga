@@ -1,5 +1,6 @@
 import type { Locale, LocalizedText } from "@/lib/i18n";
 import { pickText } from "@/lib/i18n";
+import { percentOff } from "@/lib/product-page";
 
 /**
  * Storefront grid filtering — pure, so the server page and tests share it.
@@ -24,7 +25,7 @@ export function normalizeSearchText(s: string): string {
     .trim();
 }
 
-export type FilterableProduct = { name: LocalizedText; categoryId: string | null };
+export type FilterableProduct = { name: LocalizedText; categoryId: string | null; price?: number; compareAtPrice?: number | null };
 
 export type CatalogFilter = {
   q?: string | null;
@@ -33,6 +34,8 @@ export type CatalogFilter = {
   page?: number | string | null;
   pageSize?: number;
   locale: Locale;
+  /** "Offers" filter: only products on sale (compare-at above price). */
+  offers?: boolean;
 };
 
 export type FilterResult<T> = { items: T[]; total: number; hasMore: boolean; page: number };
@@ -50,6 +53,7 @@ export function filterCatalog<T extends FilterableProduct>(products: readonly T[
   const terms = q ? q.split(" ") : [];
   const matches = products.filter((p) => {
     if (f.c && p.categoryId !== f.c) return false;
+    if (f.offers && !(p.price !== undefined && percentOff(p.price, p.compareAtPrice) !== null)) return false;
     if (!terms.length) return true;
     const hay = normalizeSearchText([pickText(p.name, f.locale), ...Object.values(p.name)].filter(Boolean).join(" "));
     return terms.every((t) => hay.includes(t));

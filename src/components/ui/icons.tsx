@@ -46,6 +46,7 @@ export {
   Banknote,
   Undo2,
   TicketPercent,
+  Flame,
   Download,
   QrCode,
 } from "lucide-react";

@@ -16,6 +16,7 @@ export type DiscountFormValues = {
   startsOn: string;
   endsOn: string;
   isActive: boolean;
+  showOnStorefront: boolean;
 };
 
 /** Create (no `initial`) or edit a code. Field errors come back keyed by the zod path. */
@@ -84,6 +85,13 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
       <label className="flex min-h-11 items-center gap-2 font-semibold">
         <input type="checkbox" name="isActive" defaultChecked={initial?.isActive ?? true} className="h-5 w-5 accent-green" />
         {t("active")}
+      </label>
+      <label className="flex min-h-11 items-start gap-2 sm:col-span-2">
+        <input type="checkbox" name="showOnStorefront" defaultChecked={initial?.showOnStorefront ?? false} className="mt-0.5 h-5 w-5 shrink-0 accent-green" aria-describedby={`${p}-banner-hint`} />
+        <span className="min-w-0">
+          <span className="font-semibold">{t("showOnStorefront")}</span>
+          <span id={`${p}-banner-hint`} className="hint block">{t("showOnStorefrontHint")}</span>
+        </span>
       </label>
       <button className="btn-gold sm:col-span-2" disabled={pending}>
         {state.ok && !pending ? <><Icon as={Check} /> {tc("saved")}</> : initial ? tc("save") : `+ ${tc("create")}`}

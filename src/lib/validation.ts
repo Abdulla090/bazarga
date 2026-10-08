@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PRODUCT_BADGES } from "./merch";
 import { LOCALES } from "./i18n";
 import { normalizeIraqiMobile, normalizePhone } from "./phone";
 import { isValidSlug } from "./slug";
@@ -204,6 +205,8 @@ export const productSchema = z
     sku: skuSchema.nullable().optional(),
     specs: productSpecsSchema.default([]),
     categoryId: uuid.nullable().optional(),
+    /** Manual storefront badge; "" / absent = none. */
+    badge: z.preprocess((v) => (v === "" || v === undefined ? null : v), z.enum(PRODUCT_BADGES).nullable()).optional(),
     isActive: z.coerce.boolean().default(true),
     /** Legacy/simple form: bare URLs (no responsive metadata). Ignored when `images` is given. */
     imageUrls: z.array(imageUrlSchema).max(8).default([]),
@@ -393,6 +396,8 @@ export const discountCodeSchema = z
     startsOn: optionalDay,
     endsOn: optionalDay,
     isActive: z.coerce.boolean().default(true),
+    /** Advertise on the storefront (offer banner). */
+    showOnStorefront: z.coerce.boolean().default(false),
   })
   .superRefine((v, ctx) => {
     if (v.type === "percentage" && (v.value < 1 || v.value > MAX_DISCOUNT_PERCENT))

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "./cart";
 import { GALLERY_EVENT } from "./ProductGallery";
@@ -46,6 +46,8 @@ export type BuyLabels = {
   increase: string;
   /** "{pct}% off" */
   percentOff: string;
+  /** "You save {amount}" */
+  youSave: string;
 };
 
 const MAX_QTY = 99;
@@ -54,7 +56,10 @@ export const fill = (tpl: string, vars: Record<string, string | number>) =>
   tpl.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
 /**
- * Price, option pickers, add to cart / buy now, WhatsApp question and share — plus a sticky bottom bar on phones
+ * Product info block in shopping order: title → price (sale + % off) → `info` (short description, server-rendered)
+ * → option pickers → stock → quantity → add to cart / buy now, WhatsApp question and share — plus a sticky bottom
+ * bar on phones that slides in once the inline buttons scroll out of view (respects the iOS home-indicator safe area).
+ * Price, add to cart / buy now, WhatsApp question and share — plus a sticky bottom bar on phones
  * that slides in once the inline buttons scroll out of view (respects the iOS home-indicator safe area).
  */
 export function ProductBuy({
@@ -71,6 +76,8 @@ export function ProductBuy({
   whatsapp,
   shareUrl,
   labels,
+  title,
+  info,
 }: {
   slug: string;
   productId: string;
@@ -85,6 +92,10 @@ export function ProductBuy({
   whatsapp: string | null;
   shareUrl: string;
   labels: BuyLabels;
+  /** Product name heading (server-rendered). */
+  title?: ReactNode;
+  /** Short description etc., shown right under the price and before the option pickers. */
+  info?: ReactNode;
 }) {
   const router = useRouter();
   const { add } = useCart(slug);
@@ -202,7 +213,8 @@ export function ProductBuy({
   return (
     <>
       <div className="grid gap-4">
-        <div className="grid gap-1.5">
+        <div className="grid gap-2">
+          {title}
           <p className="num flex flex-wrap items-center gap-x-3 gap-y-1 text-2xl" aria-live="polite" data-testid="price">
             <span className="font-extrabold">{priceText}</span>
             {compareAt && compareAt > price && <s className="text-lg text-ink-50">{formatIQD(compareAt, locale)}</s>}
@@ -212,24 +224,14 @@ export function ProductBuy({
               </span>
             )}
           </p>
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" data-testid="stock-status">
-            {status.kind === "out" ? (
-              <span className="font-bold text-danger">{labels.soldOutStatus}</span>
-            ) : status.kind === "low" ? (
-              <span className="font-bold text-danger">{fill(labels.onlyLeft, { count: status.count })}</span>
-            ) : !hasVariants || variant ? (
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <span aria-hidden className="h-2 w-2 rounded-full bg-green" />
-                {labels.inStock}
-              </span>
-            ) : null}
-            {shownSku && (
-              <span className="text-ink-70" data-testid="sku">
-                {labels.skuLabel}: <bdi className="num">{shownSku}</bdi>
-              </span>
-            )}
-          </p>
+          {pct !== null && compareAt && (
+            <p className="text-sm font-bold text-danger" data-testid="you-save">
+              {fill(labels.youSave, { amount: formatIQD(compareAt - price, locale) })}
+            </p>
+          )}
         </div>
+
+        {info}
 
         {options.length > 0 && (
           <div ref={pickerRef} className="grid scroll-mt-24 gap-4">
@@ -283,6 +285,24 @@ export function ProductBuy({
             )}
           </div>
         )}
+
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" data-testid="stock-status">
+          {status.kind === "out" ? (
+            <span className="font-bold text-danger">{labels.soldOutStatus}</span>
+          ) : status.kind === "low" ? (
+            <span className="font-bold text-danger">{fill(labels.onlyLeft, { count: status.count })}</span>
+          ) : !hasVariants || variant ? (
+            <span className="inline-flex items-center gap-1.5 font-semibold">
+              <span aria-hidden className="h-2 w-2 rounded-full bg-green" />
+              {labels.inStock}
+            </span>
+          ) : null}
+          {shownSku && (
+            <span className="text-ink-70" data-testid="sku">
+              {labels.skuLabel}: <bdi className="num">{shownSku}</bdi>
+            </span>
+          )}
+        </p>
 
         {!soldOut && (
           <div className="flex items-center gap-3">
