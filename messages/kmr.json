@@ -489,7 +489,13 @@
     "customersTotal": "Kirrîyar",
     "customersNew": "Nû",
     "customersReturning": "Vegeriyayî",
-    "customersHint": "Vegeriyayî tê wateya ku vê jimara têlefonê fermanek din a li cem te heye (her dem)."
+    "customersHint": "Vegeriyayî tê wateya ku vê jimara têlefonê fermanek din a li cem te heye (her dem).",
+    "funnelTitle": "Ji serdanê heta fermanê",
+    "funnel_visitors": "Serdana firoşgeha te kirin",
+    "funnel_product": "Berhemek vekirin",
+    "funnel_checkout": "Bi tiştan re kirrînê vekirin",
+    "funnel_orders": "Ferman dan",
+    "funnelHint": "Serdankerên yekta ji bo her rojê, di nav navberê de li hev hatine kirin. Daketina mezin di navbera du gavan de nîşan dide kirrîyar ji ku diçin."
   },
   "payStatus": {
     "title": "Dayîna online",

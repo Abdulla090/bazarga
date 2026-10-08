@@ -66,6 +66,27 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
 
       {empty && <p className="card text-ink-70" data-testid="analytics-empty">{t("empty")}</p>}
 
+      <section className="card grid grid-cols-1 gap-3" aria-labelledby="an-funnel" data-testid="funnel">
+        <h2 id="an-funnel" className="text-lg font-bold">{t("funnelTitle")}</h2>
+        <ol className="grid gap-3">
+          {a.funnel.map((s) => (
+            <li key={s.key} className="grid min-w-0 gap-1" data-funnel={s.key}>
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="min-w-0 font-semibold">{t(`funnel_${s.key}`)}</span>
+                <span className="num shrink-0 text-sm text-ink-70" dir="ltr">
+                  {nf.format(s.count)}
+                  {s.pct !== null && s.key !== "visitors" ? ` · ${nf.format(s.pct)}%` : ""}
+                </span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-line" aria-hidden="true">
+                <div className="h-full rounded-full bg-green" style={{ width: `${s.pct === null ? 0 : Math.max(s.count > 0 ? 3 : 0, Math.min(100, s.pct))}%` }} />
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="text-xs text-ink-50">{t("funnelHint")}</p>
+      </section>
+
       <section className="card grid grid-cols-1 gap-4" aria-labelledby="an-days">
         <h2 id="an-days" className="text-lg font-bold">{t("byDay")}</h2>
         <Bars title={t("visitorsPerDay")} days={a.days} pick={(d) => d.visitors} label={label} nf={nf} />

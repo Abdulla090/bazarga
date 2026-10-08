@@ -12,6 +12,7 @@ import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
 import { shopperCityCookie } from "@/lib/shopper-city";
+import { ViewPixel } from "./ViewPixel";
 
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
 const OTHER = "__other";
@@ -106,6 +107,8 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      {/* Seller analytics funnel: counted only when the cart has something in it (rendered after hydration). */}
+      <ViewPixel slug={slug} checkout />
       {/* minmax(0,…) tracks: a long product name truncates instead of widening the page at 360 px. */}
       <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] gap-2">
         <h1 className="text-2xl font-extrabold">{L.cart}</h1>

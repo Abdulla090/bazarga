@@ -364,6 +364,16 @@ const an = await (await fetch(`${BASE}/dashboard/analytics`, { headers: { Cookie
 ok(an.includes('data-testid="analytics"') && kpi(an, "visitors") === 2 && kpi(an, "storeViews") === 2 && kpi(an, "productViews") === 1, "analytics counts 2 visitors, 2 store views, 1 product view (bots/prefetch/dupes ignored)");
 ok(kpi(an, "orders") > 0 && an.includes('data-testid="top-sold"') && an.includes('data-testid="analytics-table"'), "analytics shows orders, best sellers and the by-day table");
 ok(an.includes('data-testid="by-city"') && an.includes('data-testid="customers"') && /data-city="[a-z-]+"/.test(an), "analytics shows sales by city and the customers split");
+// Funnel: the checkout pixel (?c=1, rendered by the cart page when it has items) counts a visitor, not a store/product view.
+await (await px("?c=1", { "X-Forwarded-For": "10.77.0.6" })).arrayBuffer();
+await (await px("?c=1", { "X-Forwarded-For": "10.77.0.6" })).arrayBuffer(); // same visitor: once
+await (await px("?c=1&p=00000000-0000-4000-8000-000000000000", { "X-Forwarded-For": "10.77.0.7" })).arrayBuffer(); // malformed mix: ignored
+await new Promise((r) => setTimeout(r, 1500));
+const an2 = await (await fetch(`${BASE}/dashboard/analytics`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
+ok(kpi(an2, "visitors") === 3 && kpi(an2, "storeViews") === 2 && kpi(an2, "productViews") === 1, "checkout pixel counts one visitor but no store or product view");
+ok(an2.includes('data-testid="funnel"') && ["visitors", "product", "checkout", "orders"].every((k) => an2.includes(`data-funnel="${k}"`)), "analytics shows the visitor-to-order funnel");
+const cartHtml = await (await fetch(`${BASE}/s/hawler-bazaar/cart`)).text();
+ok(!cartHtml.includes("?c=1"), "an empty cart (server render) never fires the checkout pixel");
 const anOther = await (await fetch(`${BASE}/dashboard/analytics?range=30`, { headers: { Cookie: `${cookie}; mm_locale=en` } })).text();
 ok(kpi(anOther, "visitors") === 0 && kpi(anOther, "orders") === 0, "another seller's analytics stay empty (tenant isolation)");
 const anAnon = await fetch(`${BASE}/dashboard/analytics`, { redirect: "manual" });

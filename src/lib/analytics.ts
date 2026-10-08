@@ -11,6 +11,10 @@
 export const HOME_PAGE = "home";
 /** The row that counts unique visitors of the store that day (any page). */
 export const VISITORS_PAGE = "*";
+/** Counts visitors who opened at least one product page that day (funnel step 2). */
+export const PRODUCT_VISITORS_PAGE = "pv";
+/** Counts visitors who opened the cart/checkout page with something in the cart that day (funnel step 3). */
+export const CHECKOUT_PAGE = "checkout";
 export const ANALYTICS_RANGES = [7, 30, 90] as const;
 export type AnalyticsRange = (typeof ANALYTICS_RANGES)[number];
 
@@ -60,6 +64,28 @@ export function isPrefetch(h: { get(name: string): string | null }): boolean {
 export function conversionRate(orders: number, visitors: number): number | null {
   if (visitors <= 0) return null;
   return Math.round((orders / visitors) * 1000) / 10;
+}
+
+export type FunnelStep = { key: "visitors" | "product" | "checkout" | "orders"; count: number; /** % of visitors, 0–100 (null when there were no visitors) */ pct: number | null };
+
+/**
+ * Visitors → saw a product → opened checkout with items → orders. The first three steps are unique visitors per
+ * day; the last is the order count. Every step is at least as big as the one after it (someone who ordered must
+ * have opened checkout and a product, even if a blocked pixel or a restart of the in-memory dedupe missed them),
+ * so the funnel never narrows the wrong way.
+ */
+export function buildFunnel(c: { visitors: number; product: number; checkout: number; orders: number }): FunnelStep[] {
+  const orders = Math.max(0, c.orders);
+  const checkout = Math.max(0, c.checkout, orders);
+  const product = Math.max(0, c.product, checkout);
+  const visitors = Math.max(0, c.visitors, product);
+  const pct = (n: number) => (visitors > 0 ? Math.round((n / visitors) * 1000) / 10 : null);
+  return [
+    { key: "visitors", count: visitors, pct: pct(visitors) },
+    { key: "product", count: product, pct: pct(product) },
+    { key: "checkout", count: checkout, pct: pct(checkout) },
+    { key: "orders", count: orders, pct: pct(orders) },
+  ];
 }
 
 export type DayPoint = { day: string; visitors: number; storeViews: number; productViews: number; orders: number; revenue: number };

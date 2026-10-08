@@ -2,8 +2,8 @@
  * Privacy-friendly view counter for seller analytics: a same-origin 1×1 image, no JavaScript, no cookies.
  * Server component; see src/app/api/v/[slug]/route.ts and src/lib/analytics.ts.
  */
-export function ViewPixel({ slug, productId }: { slug: string; productId?: string }) {
-  const src = `/api/v/${slug}${productId ? `?p=${productId}` : ""}`;
+export function ViewPixel({ slug, productId, checkout }: { slug: string; productId?: string; checkout?: boolean }) {
+  const src = `/api/v/${slug}${productId ? `?p=${productId}` : checkout ? "?c=1" : ""}`;
   return (
     // eslint-disable-next-line @next/next/no-img-element -- a counting pixel, not content
     <img
