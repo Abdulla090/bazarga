@@ -1,6 +1,6 @@
 export const LOCALES = ["ku", "ar", "en", "kmr"] as const;
 export type Locale = (typeof LOCALES)[number];
-/** Locales offered in the UI switcher. Kurmanji (kmr) is scaffolded: falls back to English strings where missing. */
+/** Locales offered in the UI switcher. Kurmanji (kmr) has every UI string (needs native review); English still backs any key added later. */
 export const UI_LOCALES: readonly Locale[] = ["ku", "ar", "en", "kmr"];
 export const DEFAULT_LOCALE: Locale = "ku";
 export const LOCALE_COOKIE = "mm_locale";

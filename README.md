@@ -9,7 +9,7 @@ Cash on Delivery (plus FIB / ZainCash when connected), WhatsApp order hand-off, 
 | | |
 |---|---|
 | Stack | Next.js 16 (App Router, Turbopack) · React 19 · TypeScript (strict) · PostgreSQL + Drizzle ORM · Zod 4 · Tailwind CSS 4 · next-intl 4 |
-| Locales | `ku` Sorani (default, RTL) · `ar` Arabic (RTL) · `en` English (LTR) · `kmr` Kurmanji (Latin, scaffolded) |
+| Locales | `ku` Sorani (default, RTL) · `ar` Arabic (RTL) · `en` English (LTR) · `kmr` Kurmanji (Latin, full UI, needs native review) |
 | Tests | Vitest (295 unit/integration tests on a real embedded Postgres) + an HTTP smoke test of the production build + Playwright mobile checks |
 | Deploy | Docker / docker-compose (app + Postgres) on a VPS, or Vercel + Neon/Supabase + Cloudflare R2 |
 
@@ -267,7 +267,7 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
 | FastPay, Qi Card | 🔴 stubs with TODOs (merchant APIs are not publicly documented) |
 | Notifications (console, Telegram, WhatsApp Cloud API, email) on new order | ✅ (WhatsApp business-initiated messages need an approved template — TODO noted) |
 | AI "createProductsFromPhotos" (endpoint + dashboard review/confirm UI, OpenAI-compatible vision, mock provider) | ✅ behind `AI_ENABLED` |
-| Kurmanji (kmr) | 🟡 scaffold: partial strings, falls back to English; needs native translation |
+| Kurmanji (kmr) | 🟡 every UI string translated (storefront, tracking, checkout errors, auth, landing, dashboard); needs native-speaker review |
 | Docker, docker-compose, CI (lint, typecheck, test, build, smoke, docker build) | ✅ |
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md) for what comes next.

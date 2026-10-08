@@ -34,7 +34,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   ];
 
   return (
-    <div className="grid gap-4" data-testid="analytics">
+    <div className="grid grid-cols-1 gap-4" data-testid="analytics">
       <div>
         <h1 className="text-2xl font-extrabold">{t("title")}</h1>
         <p className="text-ink-70">{t("subtitle")}</p>
@@ -52,9 +52,9 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         ))}
       </nav>
 
-      <dl className="grid grid-cols-2 gap-2 md:grid-cols-3">
+      <dl className="grid grid-cols-[repeat(2,minmax(0,1fr))] gap-2 md:grid-cols-3">
         {kpis.map((k) => (
-          <div key={k.key} className="card grid gap-1 p-3" data-kpi={k.key}>
+          <div key={k.key} className="card grid min-w-0 gap-1 p-3" data-kpi={k.key}>
             <dt className="text-sm font-semibold text-ink-70">{t(k.key)}</dt>
             <dd className="num text-xl font-extrabold" dir="ltr">{k.value}</dd>
             {k.hint && <dd className="text-xs text-ink-50">{k.hint}</dd>}
@@ -64,7 +64,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
 
       {empty && <p className="card text-ink-70" data-testid="analytics-empty">{t("empty")}</p>}
 
-      <section className="card grid gap-4" aria-labelledby="an-days">
+      <section className="card grid grid-cols-1 gap-4" aria-labelledby="an-days">
         <h2 id="an-days" className="text-lg font-bold">{t("byDay")}</h2>
         <Bars title={t("visitorsPerDay")} days={a.days} pick={(d) => d.visitors} label={label} nf={nf} />
         <Bars title={t("ordersPerDay")} days={a.days} pick={(d) => d.orders} label={label} nf={nf} />
@@ -99,7 +99,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="card grid gap-2" aria-labelledby="an-sold" data-testid="top-sold">
+        <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-sold" data-testid="top-sold">
           <h2 id="an-sold" className="text-lg font-bold">{t("topSold")}</h2>
           {a.topSold.length === 0 ? (
             <p className="text-sm text-ink-50">—</p>
@@ -114,7 +114,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             </ol>
           )}
         </section>
-        <section className="card grid gap-2" aria-labelledby="an-viewed" data-testid="top-viewed">
+        <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-viewed" data-testid="top-viewed">
           <h2 id="an-viewed" className="text-lg font-bold">{t("topViewed")}</h2>
           {a.topViewed.length === 0 ? (
             <p className="text-sm text-ink-50">—</p>
