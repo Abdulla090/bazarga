@@ -278,7 +278,14 @@ export const checkoutSchema = z.object({
 });
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
-export const orderStatusSchema = z.object({ orderId: uuid, status: z.enum(ORDER_STATUSES), note: trimmed(300).optional() });
+export const orderStatusSchema = z.object({
+  orderId: uuid,
+  status: z.enum(ORDER_STATUSES),
+  note: trimmed(300).optional().transform((v) => v || undefined),
+  /** Only used when marking "out for delivery" (shipped); blank → cleared. */
+  courierName: trimmed(80).optional(),
+  trackingNumber: trimmed(80).optional(),
+});
 
 // ---------------------------------------------------------------- marketing
 export const waitlistSchema = z.object({
