@@ -147,3 +147,14 @@ body {
   unicode-bidi: isolate;
   font-variant-numeric: tabular-nums;
 }
+
+/* Packing slip (/dashboard/orders/[id]/slip): a named page with small margins. No size is forced, so the seller
+   picks A6 / A5 / A4 in the print dialog. */
+@page slip {
+  margin: 6mm;
+}
+@media print {
+  .slip-sheet {
+    page: slip;
+  }
+}

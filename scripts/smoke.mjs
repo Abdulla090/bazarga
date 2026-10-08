@@ -2,7 +2,7 @@
  * End-to-end smoke test against a running build (no browser needed):
  *   BASE_URL=http://localhost:3000 node scripts/smoke.mjs
  * Exercises: health, landing, storefront, server-side cart quote, COD checkout, confirmation page +
- * WhatsApp deep link, order tracking (lookup, wrong phone/number, rate limit), seller signup → onboarding → dashboard order list, tenant isolation over HTTP.
+ * WhatsApp deep link, order tracking (lookup, wrong phone/number, rate limit), seller signup → onboarding → dashboard order list, COD status change + packing slip, tenant isolation over HTTP.
  * Server action ids are read from the build manifest, so run it from the repo root after `npm run build`.
  */
 import { readFileSync } from "node:fs";
@@ -206,6 +206,37 @@ const demoLogin = await callFormAction("logInAction", { email: "demo@mymarket.ap
 const demoCookie = (demoLogin.res.headers.get("set-cookie") ?? "").split(";")[0];
 const demoDash = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: demoCookie } })).text();
 ok(demoDash.includes("Shilan Smoke"), "demo seller sees the new order in the dashboard");
+
+// COD status flow: confirm → out for delivery with courier + tracking number; the packing slip is owner-only.
+const smokeOrderId = /href="\/dashboard\/orders\/([0-9a-f-]{36})"[^>]*>(?:(?!<\/a>).)*Shilan Smoke/s.exec(demoDash)?.[1];
+ok(!!smokeOrderId, "dashboard order list links to the new order");
+if (smokeOrderId) {
+  const orderPath = `/dashboard/orders/${smokeOrderId}`;
+  const confirmed = await callAction("updateOrderStatusAction", [smokeOrderId, "confirmed", {}], { cookie: demoCookie, path: orderPath });
+  const shipped = await callAction("updateOrderStatusAction", [smokeOrderId, "shipped", { courierName: "Smoke Express", trackingNumber: "SMK-123" }], { cookie: demoCookie, path: orderPath });
+  ok(confirmed.text.includes('"ok":true') && shipped.text.includes('"ok":true'), "seller confirms and sends the order out with courier + tracking number");
+  const detail = await (await fetch(`${BASE}${orderPath}`, { headers: { Cookie: `${demoCookie}; mm_locale=en` } })).text();
+  ok(detail.includes('data-testid="order-courier"') && detail.includes("Smoke Express") && detail.includes("SMK-123"), "order detail shows the courier and tracking number");
+  ok(detail.includes('data-testid="copy-tracking-link"') && detail.includes('data-testid="packing-slip-link"'), "order detail has copy-tracking-link and packing-slip buttons");
+  const slip = await fetch(`${BASE}${orderPath}/slip`, { headers: { Cookie: demoCookie }, redirect: "manual" });
+  const slipHtml = await slip.text();
+  ok(slip.status === 200 && slipHtml.includes('data-testid="packing-slip"') && slipHtml.includes('dir="rtl"'), "packing slip renders for the owner (Kurdish, RTL)");
+  ok(slipHtml.includes("Shilan Smoke") && slipHtml.includes("Near the Bazaar Mosque") && slipHtml.includes('data-testid="slip-cod"') && slipHtml.includes(`/s/hawler-bazaar/track?n=${orderNumber}`), "slip shows customer, landmark, COD amount and the tracking URL");
+  ok(slipHtml.includes('data-testid="slip-qr"') && /<path[^>]+d="M\d/.test(slipHtml), "packing slip prints a QR code for the tracking link");
+  const backwards = await callAction("updateOrderStatusAction", [smokeOrderId, "confirmed", {}], { cookie: demoCookie, path: orderPath });
+  ok(backwards.text.includes("invalid_transition"), "server rejects an illegal status change (out for delivery → confirmed)");
+  const anon = await fetch(`${BASE}${orderPath}/slip`, { redirect: "manual" });
+  // With cacheComponents the dashboard shell can stream first, so the login redirect arrives either as a 3xx or
+  // in-stream (NEXT_REDIRECT → /login, 200). Either way none of the order may be in the response.
+  const anonHtml = await anon.text();
+  const anonRedirect =
+    (anon.status >= 300 && anon.status < 400 && (anon.headers.get("location") ?? "").includes("/login")) ||
+    (anon.status === 200 && anonHtml.includes("NEXT_REDIRECT;replace;/login"));
+  ok(anonRedirect && !anonHtml.includes("Shilan Smoke") && !anonHtml.includes('data-testid="packing-slip"'), "packing slip redirects to login when logged out (no order data)");
+  const other = await fetch(`${BASE}${orderPath}/slip`, { headers: { Cookie: cookie }, redirect: "manual" });
+  const otherHtml = await other.text();
+  ok((other.status === 404 || otherHtml.includes("NEXT_HTTP_ERROR_FALLBACK;404")) && !otherHtml.includes("Shilan Smoke"), "another store's seller gets not-found for the slip");
+}
 
 // Seller uploads a photo (magic-byte check) and creates a product that shows up in the storefront.
 const photo = new FormData();

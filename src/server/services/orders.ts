@@ -550,9 +550,45 @@ export async function getOrderByPublicId(database: Db, storeId: string, publicId
   return { ...order, items };
 }
 
+/** What the printable packing slip shows (dashboard-only). */
+export type PackingSlip = {
+  store: { name: string; slug: string; logoUrl: string | null; phone: string | null; whatsapp: string | null };
+  order: Order;
+  items: OrderItem[];
+  /** Amount the courier collects at the door: the total for unpaid COD orders, otherwise 0. */
+  codToCollect: number;
+};
+
+/**
+ * Packing slip for one order of the seller's own store. `storeId` must come from the session (requireStore):
+ * an order of another store is simply not found, exactly like getOrder.
+ */
+export async function getPackingSlip(database: Db, storeId: string, orderId: string): Promise<PackingSlip | null> {
+  const store = await database.query.stores.findFirst({ where: eq(stores.id, storeId) });
+  if (!store) return null;
+  const order = await database.query.orders.findFirst({ where: and(eq(orders.id, orderId), eq(orders.storeId, storeId)) });
+  if (!order) return null;
+  const items = await database.query.orderItems.findMany({ where: eq(orderItems.orderId, order.id), orderBy: asc(orderItems.name) });
+  return {
+    store: { name: store.name, slug: store.slug, logoUrl: store.logoUrl, phone: store.phone, whatsapp: store.whatsapp },
+    order,
+    items,
+    codToCollect: codAmountToCollect(order),
+  };
+}
+
+/** COD amount the courier has to collect: the order total while a COD order is unpaid, else nothing. */
+export function codAmountToCollect(order: Pick<Order, "paymentMethod" | "paymentStatus" | "total">): number {
+  return order.paymentMethod === "cod" && order.paymentStatus !== "paid" && order.paymentStatus !== "refunded" ? order.total : 0;
+}
+
 /**
  * Move an order along its COD lifecycle (src/lib/order-status.ts).
- * - cancelled / returned restock tracked items (refused doesn't: the parcel is still with the courier);
+ * - only transitions in ORDER_TRANSITIONS are allowed (enforced here, not just in the UI);
+ * - cancelled / returned restock tracked items exactly once: the restock is claimed with
+ *   `UPDATE orders SET restocked_at = now() WHERE restocked_at IS NULL`, so a retried or racing change, or any
+ *   future path back out of a terminal state, can never put the same stock back twice
+ *   (refused doesn't restock: the parcel is still with the courier);
  * - delivering a COD order marks it paid; returning a paid COD order marks it refunded;
  * - courier name / tracking number, when given, are saved on the order and snapshotted in the history row.
  */
@@ -573,8 +609,10 @@ export async function updateOrderStatus(
     const patch: Partial<typeof orders.$inferInsert> = { status: to, updatedAt: new Date() };
     if (to === "delivered" && order.paymentMethod === "cod") patch.paymentStatus = "paid";
     if (to === "returned" && order.paymentMethod === "cod" && order.paymentStatus === "paid") patch.paymentStatus = "refunded";
-    if (shipping?.courierName !== undefined) patch.courierName = shipping.courierName?.trim() || null;
-    if (shipping?.trackingNumber !== undefined) patch.trackingNumber = shipping.trackingNumber?.trim() || null;
+    // Courier / tracking number belong to "out for delivery"; other changes keep what the order has.
+    const ship = to === "shipped" ? shipping : undefined;
+    if (ship?.courierName !== undefined) patch.courierName = ship.courierName?.trim() || null;
+    if (ship?.trackingNumber !== undefined) patch.trackingNumber = ship.trackingNumber?.trim() || null;
 
     // Optimistic concurrency: only update if status is still what we read.
     const [updated] = await tx
@@ -584,7 +622,16 @@ export async function updateOrderStatus(
       .returning();
     if (!updated) throw new AppError("CONFLICT", "order_changed");
 
+    let restock = false;
     if (RESTOCK_ON.includes(to)) {
+      const claimed = await tx
+        .update(orders)
+        .set({ restockedAt: new Date() })
+        .where(and(eq(orders.id, orderId), eq(orders.storeId, storeId), isNull(orders.restockedAt)))
+        .returning({ id: orders.id });
+      restock = claimed.length > 0;
+    }
+    if (restock) {
       const items = await tx.query.orderItems.findMany({ where: eq(orderItems.orderId, orderId) });
       for (const it of items) {
         if (it.variantId) {
