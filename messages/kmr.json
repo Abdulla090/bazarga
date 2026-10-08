@@ -48,5 +48,28 @@
     "pushDenied": "Agahdarî hatine astengkirin. Di mîhengên gerokê de destûrê bide.",
     "pushUnsupported": "Ev gerok agahdariyan piştgirî nake. Li iPhone pêşî sepanê saz bike.",
     "pushError": "Xeletiyek çêbû, dîsa biceribîne."
+  },
+  "dash": {
+    "share": "Parvekirin"
+  },
+  "shareKit": {
+    "title": "Amûrên parvekirinê",
+    "subtitle": "Her tiştê ku ji bo anîna kirrîyaran bo firoşgeha te lazim e.",
+    "linkTitle": "Girêdana firoşgeha te",
+    "linkHint": "Wê têxe bioya Instagramê: ew girêdana ku kirrîyar lê dikin e.",
+    "bioTitle": "Rêzeke amade ji bo bioyê",
+    "bioLine": "🛍️ Bi înternetê siparîş bide, pere di gihandinê de bide 👇\n{url}",
+    "whatsapp": "Li WhatsAppê parve bike",
+    "qrTitle": "Koda QR",
+    "qrHint": "Wê li ser çente, fatûre û maseya dikana xwe çap bike. Kirrîyar wê skan dikin û firoşgeha te vedibe.",
+    "qrAlt": "Koda QR ji bo {url}",
+    "downloadPng": "PNG daxe",
+    "downloadSvg": "SVG daxe (ji bo çapê)",
+    "storyTitle": "Story ya Instagramê",
+    "storyHint": "Storyeke amade ya 1080×1920 bi logo, nav û koda QR ya firoşgeha te. Biweşîne û stickera girêdana firoşgehê lê zêde bike.",
+    "storyAlt": "Pêşdîtina wêneya story",
+    "storyDownload": "Daxistin bi zimanê:",
+    "storyCta": "Niha bi înternetê siparîş bide",
+    "storyScan": "Skan bike da ku firoşgeh vebe"
   }
 }

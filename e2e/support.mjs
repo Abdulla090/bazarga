@@ -91,6 +91,7 @@ export async function setup() {
       { name: "dashboard-discounts", path: "/dashboard/discounts", auth: true, openDetails: true },
       { name: "dashboard-delivery", path: "/dashboard/delivery", auth: true, openDetails: true },
       { name: "dashboard-more", path: "/dashboard/more", auth: true },
+      { name: "dashboard-share", path: "/dashboard/share", auth: true },
     ],
   };
 }
