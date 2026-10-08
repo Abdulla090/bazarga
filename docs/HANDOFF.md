@@ -16,7 +16,7 @@ Agent B ships 2 items, then Hark ships 2, repeat. Work happens in parallel insid
 `npm run typecheck`, `npm run lint`, vitest (284+), `npm run build`, `npm run budget`, smoke on fresh seed, `npm run test:mobile` (CHROMIUM_PATH=/usr/bin/chromium).
 
 ## Current turn
-**Agent B** — rounds 1–2. Hark is building `hark/order-tracking` in parallel (merges after Agent B's two).
+**Hark** — merge agentb/seller-setup-checklist, share-kit, thumbnails, shopper-delivery-fee, then COD status flow + packing slip.
 
 ## Log (newest first)
 - 2026-10-08 07:15 Agent B: agentb/shopper-delivery-fee — product-page trust row shows the fee/ETA for the shopper's last checkout city (cookie bz_city_<slug>, set on city change in checkout; falls back to store city). No migration. Round 3 item 2 of 2 with agentb/thumbnails (47adbb4); both ready to merge. Gate green (typecheck, lint, vitest, build, budget, mobile, smoke). Current turn stays Hark.
