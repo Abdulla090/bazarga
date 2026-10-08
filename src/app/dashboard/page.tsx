@@ -7,14 +7,20 @@ import { listOrders, storeStats } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { StatusBadge } from "@/components/dashboard/Badges";
-import { CopyButton } from "@/components/CopyButton";
+import { ShareLinkButtons } from "@/components/dashboard/ShareLinkButtons";
+import { SetupChecklist } from "@/components/dashboard/SetupChecklist";
+import { getSetupChecklist } from "@/server/services/setup";
 import { LazyInstallPrompt } from "@/components/pwa/lazy";
 
 export default async function DashboardHome() {
   const { store, user } = await requireStore();
   const t = await getTranslations("dash");
   const locale = await currentLocale();
-  const [stats, recent] = await Promise.all([storeStats(db(), store.id), listOrders(db(), store.id, { limit: 5 })]);
+  const [stats, recent, checklist] = await Promise.all([
+    storeStats(db(), store.id),
+    listOrders(db(), store.id, { limit: 5 }),
+    getSetupChecklist(db(), store.id),
+  ]);
   const link = `${env().APP_URL}/s/${store.slug}`;
   const cards = [
     { label: t("ordersToday"), value: stats.ordersToday.toLocaleString("en-US") },
@@ -25,6 +31,7 @@ export default async function DashboardHome() {
     <div className="grid gap-6">
       <h1 className="text-2xl font-extrabold">{t("hello", { name: user.name })}</h1>
       <LazyInstallPrompt />
+      <SetupChecklist checklist={checklist} storeUrl={link} storeName={store.name} />
       <div className="grid gap-3 sm:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="card">
@@ -38,7 +45,7 @@ export default async function DashboardHome() {
         <p className="text-sm text-paper/70">{t("shareSub")}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <code className="num rounded-lg bg-white/10 px-3 py-2 text-sm" dir="ltr">{link}</code>
-          <CopyButton text={link} />
+          <ShareLinkButtons url={link} title={store.name} variant="gold" />
         </div>
       </div>
       <section className="card">
