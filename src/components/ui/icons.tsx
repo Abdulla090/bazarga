@@ -20,6 +20,7 @@ export {
   MessageCircle,
   Package,
   Plus,
+  Printer,
   Receipt,
   RotateCcw,
   Scissors,
