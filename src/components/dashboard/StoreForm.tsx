@@ -40,7 +40,7 @@ export function StoreForm({
   const fe = state.fieldErrors ?? {};
 
   return (
-    <form action={formAction} className="card grid gap-4">
+    <form action={formAction} className="card grid min-w-0 grid-cols-1 gap-4">
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       {state.ok && <p role="status" className="rounded-xl bg-green/10 px-3 py-2 font-semibold text-green">{tc("saved")}</p>}
       <Field
@@ -51,10 +51,15 @@ export function StoreForm({
         error={fe.name}
         onChange={(e) => !slugTouched && setSlug(slugify(e.target.value))}
       />
-      <div>
+      <div className="min-w-0">
         <label className="label" htmlFor="f-slug">{t("slug")}</label>
-        <div className="flex items-stretch overflow-hidden rounded-xl border border-line bg-white focus-within:border-ink" dir="ltr">
-          <span className="num flex min-w-0 shrink items-center truncate bg-paper px-3 text-sm text-ink-50">{rootDomain}/s/</span>
+        {/* The host can be long (preview tunnels, long custom domains): the prefix is capped, never sets the field's
+            min-content width, and truncates from its start so the "…/s/" end stays visible next to the slug. The
+            full resulting link is shown on its own wrapping line below. */}
+        <div className="flex w-full min-w-0 items-stretch overflow-hidden rounded-xl border border-line bg-white focus-within:border-ink" dir="ltr">
+          <span className="num flex min-w-0 max-w-[55%] shrink items-center bg-paper ps-3 pe-1 text-sm text-ink-50" title={`${rootDomain}/s/`} aria-hidden="true">
+            <span dir="rtl" className="block min-w-0 truncate">{"\u2066"}{rootDomain}/s/{"\u2069"}</span>
+          </span>
           <input
             id="f-slug"
             name="slug"
@@ -69,6 +74,7 @@ export function StoreForm({
             aria-invalid={!!fe.slug || undefined}
           />
         </div>
+        <p className="hint min-w-0 break-all"><bdi dir="ltr" className="num">{rootDomain}/s/{slug || "…"}</bdi></p>
         {fe.slug ? <SlugError code={fe.slug} /> : <p className="hint">{t("slugHint")}</p>}
         {mode === "edit" && <p className="hint">{ts("danger")}</p>}
       </div>
@@ -80,7 +86,7 @@ export function StoreForm({
           ))}
         </select>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("whatsapp")} name="whatsapp" inputMode="tel" ltr placeholder="0750 123 4567" defaultValue={initial?.whatsapp ?? ""} hint={t("whatsappHint")} error={fe.whatsapp} />
         <Field label={t("phone")} name="phone" inputMode="tel" ltr placeholder="0750 123 4567" defaultValue={initial?.phone ?? ""} error={fe.phone} />
         <Field label={t("instagram")} name="instagram" ltr placeholder="@yourshop" defaultValue={initial?.instagram ?? ""} error={fe.instagram} />
