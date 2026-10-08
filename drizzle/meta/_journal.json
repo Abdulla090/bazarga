@@ -36,6 +36,13 @@
       "when": 1791417447312,
       "tag": "0004_seller_setup_checklist",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791459574509,
+      "tag": "0005_order_restocked_at",
+      "breakpoints": true
     }
   ]
 }

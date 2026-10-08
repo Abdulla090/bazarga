@@ -338,14 +338,21 @@ export async function togglePaymentAction(method: string, enabled: boolean) {
 }
 
 // ---------------------------------------------------------------- orders
-export async function updateOrderStatusAction(orderId: string, status: string): Promise<ActionState> {
+export async function updateOrderStatusAction(
+  orderId: string,
+  status: string,
+  extra: { note?: string; courierName?: string; trackingNumber?: string } = {},
+): Promise<ActionState> {
   try {
     const { store, user } = await requireStore();
-    const input = orderStatusSchema.parse({ orderId, status });
-    await updateOrderStatus(db(), store.id, input.orderId, input.status, user.id);
+    const input = orderStatusSchema.parse({ orderId, status, ...extra });
+    const shipping =
+      input.status === "shipped" ? { courierName: input.courierName ?? null, trackingNumber: input.trackingNumber ?? null } : undefined;
+    await updateOrderStatus(db(), store.id, input.orderId, input.status, user.id, input.note, shipping);
     // Cancelled / returned orders put stock back: product pages and "sold out" badges change.
     if (RESTOCK_ON.includes(input.status)) invalidateCatalog(store.id);
     revalidatePath(`/dashboard/orders/${input.orderId}`);
+    revalidatePath(`/dashboard/orders/${input.orderId}/slip`);
     revalidatePath("/dashboard/orders");
     revalidatePath("/dashboard");
     return { ok: true };

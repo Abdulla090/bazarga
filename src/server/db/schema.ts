@@ -462,6 +462,11 @@ export const orders = pgTable(
     status: orderStatusEnum("status").notNull().default("pending"),
     courierName: text("courier_name"),
     trackingNumber: text("tracking_number"),
+    /**
+     * Set once, when a cancelled / returned order put its stock back (migration 0005). The restock is claimed
+     * with `UPDATE … WHERE restocked_at IS NULL`, so no path can restock the same order twice.
+     */
+    restockedAt: timestamp("restocked_at", { withTimezone: true }),
     paymentMethod: paymentMethodEnum("payment_method").notNull(),
     paymentStatus: paymentStatusEnum("payment_status").notNull().default("unpaid"),
     locale: localeEnum("locale").notNull().default("ku"),

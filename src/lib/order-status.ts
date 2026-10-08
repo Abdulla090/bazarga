@@ -3,9 +3,11 @@
  *
  *   pending ─► confirmed ─► shipped ─► delivered ─► returned
  *      │           │           ├─► refused ─► returned
+ *      │           │           ├─► returned (courier brought it straight back)
  *      │           │           └─► postponed ─► (confirmed | shipped | cancelled)
  *      └───────────┴─► cancelled / postponed
  *
+ * - `shipped`   out for delivery (with the courier); the seller can record courier name + tracking number.
  * - `pending`   new order, seller hasn't called the customer yet (v1 "new").
  * - `postponed` customer asked to deliver later / couldn't be reached.
  * - `refused`   customer refused the parcel at the door (goods still with courier).
@@ -38,7 +40,7 @@ export const LEGACY_ORDER_STATUS: Readonly<Record<string, OrderStatus>> = {
 export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
   pending: ["confirmed", "postponed", "cancelled"],
   confirmed: ["shipped", "postponed", "cancelled"],
-  shipped: ["delivered", "postponed", "refused"],
+  shipped: ["delivered", "postponed", "refused", "returned"],
   postponed: ["confirmed", "shipped", "cancelled"],
   delivered: ["returned"],
   refused: ["returned"],
@@ -67,3 +69,13 @@ export const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   fastpay: "FastPay",
   qicard: "Qi Card",
 };
+
+/** The next step on the happy path, shown as the big primary action in the dashboard. */
+export const PRIMARY_NEXT: Partial<Record<OrderStatus, OrderStatus>> = {
+  pending: "confirmed",
+  confirmed: "shipped",
+  postponed: "shipped",
+  shipped: "delivered",
+};
+/** Changes the seller confirms in a dialog first (they take the order off the delivery path). */
+export const CONFIRM_FIRST: readonly OrderStatus[] = ["cancelled", "refused", "returned"];
