@@ -40,6 +40,28 @@ async function login(email, password) {
   return { name, value: rest.join("=") };
 }
 
+/** Signs a brand-new seller up through the real signup action; the session lands on /onboarding (no store yet). */
+async function signUpFresh() {
+  const fd = new FormData();
+  const tag = `${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+  fd.append("_1_name", "فرۆشیار تاقیکردنەوە");
+  fd.append("_1_email", `mobile-${tag}@example.com`);
+  fd.append("_1_password", "mobile-check-pass-123");
+  fd.append("_1_locale", "ku");
+  fd.append("0", JSON.stringify([{}, "$K1"]));
+  const res = await fetch(`${BASE}/signup`, {
+    method: "POST",
+    // Own client IP so the per-IP signup limit never collides with the smoke run.
+    headers: { "Next-Action": actionId("signUpAction"), Accept: "text/x-component", Origin: BASE, "X-Forwarded-For": `10.77.${tag.length % 250}.${Math.floor(Math.random() * 250)}` },
+    body: fd,
+    redirect: "manual",
+  });
+  const c = (res.headers.get("set-cookie") ?? "").split(";")[0];
+  const [name, ...rest] = c.split("=");
+  if (!name || !rest.length) throw new Error(`signup did not start a session (status ${res.status})`);
+  return { name, value: rest.join("=") };
+}
+
 export async function setup() {
   const html = await (await fetch(`${BASE}/s/${SLUG}`)).text();
   const buyable = [...new Set([...html.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
@@ -62,6 +84,7 @@ export async function setup() {
   const tracked = await fetch(`${BASE}/s/${SLUG}/track`, { method: "POST", headers: { Origin: BASE }, body: fd, redirect: "manual" });
   const [trackName, ...trackRest] = (tracked.headers.get("set-cookie") ?? "").split(";")[0].split("=");
   const trackCookie = trackName === "mm_track" ? { name: trackName, value: trackRest.join("=") } : null;
+  const freshSeller = await signUpFresh();
   const session = await login(process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app", process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo");
   const dashProducts = await (await fetch(`${BASE}/dashboard/products`, { headers: { Cookie: `${session.name}=${session.value}` } })).text();
   const editId = /\/dashboard\/products\/([0-9a-f-]{36})/.exec(dashProducts)?.[1];
@@ -71,6 +94,7 @@ export async function setup() {
   const cart = JSON.stringify([{ productId: buyable[0], variantId: null, quantity: 2 }]);
   return {
     session,
+    freshSeller,
     cart: { key: `mm_cart_${SLUG}`, value: cart },
     routes: [
       { name: "storefront-home", path: `/s/${SLUG}` },
@@ -81,6 +105,11 @@ export async function setup() {
       { name: "track-order", path: `/s/${SLUG}/track`, anon: true },
       ...(trackCookie ? [{ name: "track-result", path: `/s/${SLUG}/track`, anon: true, cookies: [trackCookie] }] : []),
       { name: "login", path: "/login", anon: true },
+      { name: "signup", path: "/signup", anon: true },
+      { name: "forgot-password", path: "/forgot-password", anon: true },
+      { name: "reset-password", path: "/reset-password?token=mobile-overflow-check-not-a-real-token", anon: true },
+      // A fresh seller with no store yet: the store-setup form, whose link field carries the APP_URL host.
+      { name: "onboarding", path: "/onboarding", fresh: true },
       { name: "dashboard-home", path: "/dashboard", auth: true },
       { name: "dashboard-products", path: "/dashboard/products", auth: true },
       { name: "dashboard-product-editor", path: editId ? `/dashboard/products/${editId}` : "/dashboard/products/new", auth: true },
@@ -92,6 +121,7 @@ export async function setup() {
       { name: "dashboard-delivery", path: "/dashboard/delivery", auth: true, openDetails: true },
       { name: "dashboard-more", path: "/dashboard/more", auth: true },
       { name: "dashboard-share", path: "/dashboard/share", auth: true },
+      { name: "dashboard-payments", path: "/dashboard/payments", auth: true, openDetails: true },
       { name: "dashboard-analytics", path: "/dashboard/analytics?range=30", auth: true, openDetails: true },
       { name: "dashboard-customers", path: "/dashboard/customers", auth: true },
     ],

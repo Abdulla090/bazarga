@@ -4,6 +4,9 @@ import { auditInPage, setup } from "./support.mjs";
 /**
  * No horizontal overflow at 360 px (the narrowest common Android width) on every key storefront and dashboard
  * route, in Sorani (RTL) and English (LTR): document.scrollingElement.scrollWidth <= innerWidth.
+ * Covers the auth pages and the store-setup (onboarding) form of a freshly signed-up seller. Run the server with a
+ * long APP_URL (the merge gate uses http://very-long-preview-host-name-1234567890.example-tunnel.net) so a long
+ * tunnel/preview host in the store-link field can't silently widen the page again.
  */
 const WIDTH = 360;
 let ctx;
@@ -22,11 +25,12 @@ for (const locale of ["ku", "en"]) {
       await context.clearCookies();
       await context.addCookies([
         { name: "mm_locale", value: locale, domain: host, path: "/" },
-        ...(r.anon ? [] : [{ name: ctx.session.name, value: ctx.session.value, domain: host, path: "/" }]),
+        ...(r.anon ? [] : [{ ...(r.fresh ? ctx.freshSeller : ctx.session), domain: host, path: "/" }]),
         ...(r.cookies ?? []).map((c) => ({ ...c, domain: host, path: "/" })),
       ]);
       const res = await page.goto(r.path, { waitUntil: "networkidle" });
       expect(res?.status(), `${r.name} status`).toBeLessThan(400);
+      if (r.fresh) expect(new URL(page.url()).pathname, `${r.name} landed`).toBe(r.path);
       if (r.openDetails) {
         await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
         await page.waitForTimeout(100);
