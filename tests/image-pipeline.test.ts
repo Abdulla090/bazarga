@@ -5,6 +5,9 @@ import {
   MAX_INPUT_PIXELS,
   RENDITION_KEY_RE,
   RENDITION_WIDTHS,
+  addMissingRenditions,
+  missingRenditionWidths,
+  parseRenditionKey,
   pickDefaultRendition,
   processImage,
   renditionKey,
@@ -12,7 +15,7 @@ import {
   storeImage,
   type ImageSink,
 } from "@/server/storage/pipeline";
-import { buildSrcSet, imageProps, loadingFor, placeholderStyle } from "@/lib/responsive-image";
+import { SIZES, buildSrcSet, imageProps, loadingFor, placeholderStyle } from "@/lib/responsive-image";
 import { productImageSchema } from "@/lib/validation";
 
 /** A JPEG with EXIF incl. GPS + orientation 6 (rotate 90° CW), 2400×1200 stored → 1200×2400 displayed. */
@@ -53,9 +56,10 @@ const STORE = "11111111-2222-4333-8444-555555555555";
 describe("renditionWidths", () => {
   it("never upscales and keeps the source width as the top size", () => {
     expect(renditionWidths(4000)).toEqual([...RENDITION_WIDTHS]);
-    expect(renditionWidths(1600)).toEqual([320, 640, 1024, 1600]);
-    expect(renditionWidths(1200)).toEqual([320, 640, 1024, 1200]);
-    expect(renditionWidths(500)).toEqual([320, 500]);
+    expect(renditionWidths(1600)).toEqual([320, 480, 640, 1024, 1600]);
+    expect(renditionWidths(1200)).toEqual([320, 480, 640, 1024, 1200]);
+    expect(renditionWidths(500)).toEqual([320, 480, 500]);
+    expect(renditionWidths(480)).toEqual([320, 480]);
     expect(renditionWidths(200)).toEqual([200]);
     expect(() => renditionWidths(0)).toThrow();
   });
@@ -83,7 +87,7 @@ describe("processImage", () => {
   it("applies orientation, emits WebP sizes, strips EXIF/GPS/XMP/ICC", async () => {
     const out = await processImage(await jpegWithGps(), { maxMb: 5 });
     // 2400×1200 rotated 90° → 1200×2400 portrait
-    expect(out.renditions.map((r) => r.width)).toEqual([320, 640, 1024, 1200]);
+    expect(out.renditions.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1200]);
     expect(out.width).toBe(1200);
     expect(out.height).toBe(2400);
     for (const r of out.renditions) {
@@ -142,7 +146,7 @@ describe("storeImage (through the abstract storage sink)", () => {
   it("writes every rendition under the store prefix and returns metadata the product form accepts", async () => {
     const sink = new MemorySink();
     const stored = await storeImage(sink, STORE, await jpegWithGps(2000, 1500, 1), { maxMb: 5 });
-    expect(stored.renditions.map((r) => r.width)).toEqual([320, 640, 1024, 1600]);
+    expect(stored.renditions.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1600]);
     expect([...sink.files.keys()].every((k) => RENDITION_KEY_RE.test(k) && k.startsWith(`stores/${STORE}/`))).toBe(true);
     expect([...sink.files.values()].every((f) => f.type === "image/webp")).toBe(true);
     expect(stored.url).toMatch(/-1024\.webp$/);
@@ -151,6 +155,67 @@ describe("storeImage (through the abstract storage sink)", () => {
     expect(stored.renditions.every((r) => r.bytes > 0 && r.height === Math.round((r.width * 3) / 4))).toBe(true);
     expect(productImageSchema.safeParse(stored).success).toBe(true);
     expect(renditionKey(STORE, STORE, 320)).toBe(`stores/${STORE}/${STORE}-320.webp`);
+  });
+});
+
+describe("rendition backfill (480 w for images uploaded before it existed)", () => {
+  const OTHER = "99999999-2222-4333-8444-555555555555";
+  /** An upload as the old pipeline stored it: 320/640/1024/1600, no 480. */
+  async function legacyUpload(sink: MemorySink) {
+    const stored = await storeImage(sink, STORE, await jpegWithGps(2000, 1500, 1), { maxMb: 5 });
+    const old = stored.renditions.filter((r) => r.width !== 480);
+    for (const k of [...sink.files.keys()]) if (k.endsWith("-480.webp")) sink.files.delete(k);
+    return old;
+  }
+
+  it("lists only the widths the pipeline would emit below the stored top size", () => {
+    expect(missingRenditionWidths([320, 640, 1024, 1600])).toEqual([480]);
+    expect(missingRenditionWidths([320, 480, 640, 1024, 1600])).toEqual([]);
+    expect(missingRenditionWidths([320, 500])).toEqual([480]);
+    expect(missingRenditionWidths([300])).toEqual([]);
+    expect(missingRenditionWidths([])).toEqual([]);
+  });
+
+  it("parses pipeline keys and rejects seed/legacy keys", () => {
+    expect(parseRenditionKey(renditionKey(STORE, OTHER, 640))).toEqual({ storeId: STORE, imageId: OTHER, width: 640 });
+    expect(parseRenditionKey("seed/product-dress-640.webp")).toBeNull();
+    expect(parseRenditionKey("stores/../x-1.webp")).toBeNull();
+  });
+
+  it("adds the 480 file next to the others from the largest rendition and returns the merged list", async () => {
+    const sink = new MemorySink();
+    const old = await legacyUpload(sink);
+    const top = old[old.length - 1]!;
+    const next = await addMissingRenditions(sink, STORE, old, sink.files.get(top.key)!.body);
+    expect(next!.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1600]);
+    const added = next!.find((r) => r.width === 480)!;
+    expect(added.key).toBe(top.key.replace(/-1600\.webp$/, "-480.webp"));
+    expect(added.height).toBe(360);
+    expect(sink.files.get(added.key)?.type).toBe("image/webp");
+    expect((await sharp(sink.files.get(added.key)!.body).metadata()).width).toBe(480);
+    expect(productImageSchema.safeParse({ url: top.url, renditions: next }).success).toBe(true);
+    // Idempotent: nothing left to add.
+    expect(await addMissingRenditions(sink, STORE, next!, sink.files.get(top.key)!.body)).toBeNull();
+  });
+
+  it("never writes into another store's prefix and skips seed rows", async () => {
+    const sink = new MemorySink();
+    const old = await legacyUpload(sink);
+    const before = sink.files.size;
+    const src = sink.files.get(old[old.length - 1]!.key)!.body;
+    expect(await addMissingRenditions(sink, OTHER, old, src)).toBeNull();
+    const seed = old.map((r) => ({ ...r, key: `seed/x-${r.width}.webp` }));
+    expect(await addMissingRenditions(sink, STORE, seed, src)).toBeNull();
+    expect(sink.files.size).toBe(before);
+  });
+});
+
+describe("product grid sizes", () => {
+  it("describes the real phone tile (container padding + gap subtracted) so DPR-2 phones pick 480 w", () => {
+    expect(SIZES.productGrid).toBe("(min-width: 1024px) 280px, (min-width: 640px) calc(33vw - 24px), calc(50vw - 22px)");
+    // 390 px phone: (390/2 − 22) × 2 = 346 device px → smallest rendition ≥ 346 is 480, not 640.
+    const slot = (390 / 2 - 22) * 2;
+    expect(RENDITION_WIDTHS.find((w) => w >= slot)).toBe(480);
   });
 });
 

@@ -19,8 +19,11 @@ nonce, no `unsafe-inline` scripts all pass), so no fixes were needed there.
   phones download the 1024 px file with no `srcset`. Fix: keep the upload pipeline's renditions for the cover
   (as product images already do) and render it through `ResponsiveImage` with `sizes="100vw"`.
   The 320/640/1200 seed renditions already exist in `public/images/seed/`.
-- **Image delivery:** product grid thumbnails at DPR 1.75 pick the 640 rendition for a ~182 px slot
-  (est. 96 KB savings on home). A 480 w rendition would close most of the gap.
+- **Image delivery:** ~~product grid thumbnails at DPR 1.75 pick the 640 rendition for a ~182 px slot
+  (est. 96 KB savings on home)~~. Fixed on `agentb/thumbnails`: the pipeline adds a 480 w rendition and the grid's
+  `sizes` is now `calc(50vw - 22px)` on phones (padding + gap subtracted), so a 390 px phone picks 320 w at DPR 1.75
+  and 480 w at DPR 2 instead of 640 w (seed: dress tile 46 KB → 27 KB at DPR 2). Existing uploads get the new
+  width with `npm run images:backfill` (`-- --dry` to count first).
 - **Unused / legacy JS:** ~27 KB unused and ~14 KB of polyfills Lighthouse considers legacy (from the framework
   runtime; browserslist tuning could drop some).
 - **Render-blocking CSS:** the single 10 KB CSS chunk (~150–210 ms simulated). Acceptable; inlining critical

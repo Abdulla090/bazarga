@@ -14,6 +14,13 @@
         "bytes": 12948
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-dress-480.webp",
+        "url": "/images/seed/product-dress-480.webp",
+        "bytes": 27518
+      },
+      {
         "width": 640,
         "height": 640,
         "key": "seed/product-dress-640.webp",
@@ -44,6 +51,13 @@
         "bytes": 23066
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-dress-collar-480.webp",
+        "url": "/images/seed/product-dress-collar-480.webp",
+        "bytes": 45824
+      },
+      {
         "width": 500,
         "height": 500,
         "key": "seed/product-dress-collar-500.webp",
@@ -65,6 +79,13 @@
         "key": "seed/product-dress-hem-320.webp",
         "url": "/images/seed/product-dress-hem-320.webp",
         "bytes": 15454
+      },
+      {
+        "width": 480,
+        "height": 352,
+        "key": "seed/product-dress-hem-480.webp",
+        "url": "/images/seed/product-dress-hem-480.webp",
+        "bytes": 31182
       },
       {
         "width": 600,
@@ -113,6 +134,13 @@
         "bytes": 12734
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-dress-full-480.webp",
+        "url": "/images/seed/product-dress-full-480.webp",
+        "bytes": 26982
+      },
+      {
         "width": 640,
         "height": 640,
         "key": "seed/product-dress-full-640.webp",
@@ -141,6 +169,13 @@
         "key": "seed/product-honey-320.webp",
         "url": "/images/seed/product-honey-320.webp",
         "bytes": 9790
+      },
+      {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-honey-480.webp",
+        "url": "/images/seed/product-honey-480.webp",
+        "bytes": 18172
       },
       {
         "width": 640,
@@ -173,6 +208,13 @@
         "bytes": 13310
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-honey-jar-480.webp",
+        "url": "/images/seed/product-honey-jar-480.webp",
+        "bytes": 24768
+      },
+      {
         "width": 560,
         "height": 560,
         "key": "seed/product-honey-jar-560.webp",
@@ -194,6 +236,13 @@
         "key": "seed/product-honey-dipper-320.webp",
         "url": "/images/seed/product-honey-dipper-320.webp",
         "bytes": 12104
+      },
+      {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-honey-dipper-480.webp",
+        "url": "/images/seed/product-honey-dipper-480.webp",
+        "bytes": 21380
       },
       {
         "width": 560,
@@ -219,6 +268,13 @@
         "bytes": 3964
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-honey-pot-480.webp",
+        "url": "/images/seed/product-honey-pot-480.webp",
+        "bytes": 6638
+      },
+      {
         "width": 524,
         "height": 524,
         "key": "seed/product-honey-pot-524.webp",
@@ -240,6 +296,13 @@
         "key": "seed/product-cosmetics-320.webp",
         "url": "/images/seed/product-cosmetics-320.webp",
         "bytes": 6854
+      },
+      {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-cosmetics-480.webp",
+        "url": "/images/seed/product-cosmetics-480.webp",
+        "bytes": 12242
       },
       {
         "width": 640,
@@ -295,6 +358,13 @@
         "bytes": 10558
       },
       {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-cosmetics-cream-480.webp",
+        "url": "/images/seed/product-cosmetics-cream-480.webp",
+        "bytes": 18864
+      },
+      {
         "width": 520,
         "height": 520,
         "key": "seed/product-cosmetics-cream-520.webp",
@@ -341,6 +411,13 @@
         "bytes": 13944
       },
       {
+        "width": 480,
+        "height": 268,
+        "key": "seed/hero-480.webp",
+        "url": "/images/seed/hero-480.webp",
+        "bytes": 24154
+      },
+      {
         "width": 640,
         "height": 357,
         "key": "seed/hero-640.webp",
@@ -378,6 +455,13 @@
         "bytes": 9104
       },
       {
+        "width": 480,
+        "height": 216,
+        "key": "seed/product-scarf-480.webp",
+        "url": "/images/seed/product-scarf-480.webp",
+        "bytes": 16220
+      },
+      {
         "width": 600,
         "height": 270,
         "key": "seed/product-scarf-600.webp",
@@ -399,6 +483,13 @@
         "key": "seed/product-scarf-seller-320.webp",
         "url": "/images/seed/product-scarf-seller-320.webp",
         "bytes": 19318
+      },
+      {
+        "width": 480,
+        "height": 480,
+        "key": "seed/product-scarf-seller-480.webp",
+        "url": "/images/seed/product-scarf-seller-480.webp",
+        "bytes": 33548
       },
       {
         "width": 630,

@@ -97,7 +97,8 @@
 - Product page: the trust row's delivery line uses the store's home city; remember the shopper's last checkout
   city (cookie) to show their own fee. Specs labels could offer presets (Material, Size, Weight, Origin).
 - Lightbox pinch zoom is verified in desktop Chromium with touch emulation only; check on real iOS Safari / Android.
-- Product-grid thumbnails: add a ~480 w rendition (Lighthouse estimates ~96 KB savings on store home).
+- ~~Product-grid thumbnails: add a ~480 w rendition~~ shipped (agentb/thumbnails): pipeline emits 320/480/640/1024/1600,
+  grid `sizes` subtracts padding + gaps, `npm run images:backfill` adds 480 w to existing uploads and covers.
 - Run `npm run test:mobile` in CI (needs a seeded build + Chromium in the CI image).
 - ~~Dashboard UI for managing discount codes and delivery areas.~~ Shipped in v5.
 - ~~Legacy `9647…` phone backfill to `+9647…`.~~ Shipped in v5 (migration 0003, with duplicate-customer merge).
