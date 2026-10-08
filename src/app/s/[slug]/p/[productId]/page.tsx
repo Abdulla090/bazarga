@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { pickDeliveryZone, shopperCityCookie } from "@/lib/shopper-city";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -111,7 +112,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const wa = normalizePhone(store.whatsapp ?? store.phone ?? "");
 
   // Trust row: delivery to the home city (the checkout's default city) with fee + ETA.
-  const home = settings.zones.find((zn) => zn.key === store.city) ?? settings.zones[0];
+  const rememberedCity = (await cookies()).get(shopperCityCookie(store.slug))?.value;
+  const home = pickDeliveryZone(settings.zones, rememberedCity, store.city);
   const tt = t as unknown as (k: string, v?: Record<string, number>) => string;
   const homeEta = home ? etaText(tt, home.etaMinDays, home.etaMaxDays) : null;
   const homeFee = home ? (home.fee === 0 ? t("free") : formatIQD(home.fee, locale)) : null;
