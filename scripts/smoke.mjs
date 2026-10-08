@@ -233,5 +233,16 @@ ok(area.text.includes('"ok":true'), "seller adds a delivery area");
 const cartPage = await (await fetch(`${BASE}/s/hawler-bazaar/cart`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok(cartPage.includes(areaName), "checkout offers the new area (storefront cache invalidated)");
 
+// Dashboard home → setup checklist for the brand-new seller, progress from real data.
+const stepDone = (html, key) => new RegExp(`data-step="${key}" data-done="true"`).test(html);
+let home = await (await fetch(`${BASE}/dashboard`, { headers: { Cookie: cookie } })).text();
+ok(home.includes('data-testid="setup-checklist"') && stepDone(home, "whatsapp") && !stepDone(home, "product") && !stepDone(home, "share"), "new seller sees the setup checklist (WhatsApp done, product + share open)");
+const shared = await callAction("markLinkSharedAction", [], { cookie, path: "/dashboard" });
+const fees = await callFormAction("confirmDeliveryFeesAction", {}, { cookie, path: "/dashboard" });
+home = await (await fetch(`${BASE}/dashboard`, { headers: { Cookie: cookie } })).text();
+ok(shared.text.includes('"ok":true') && fees.res.status < 400 && stepDone(home, "share") && stepDone(home, "delivery"), "copying the link and 'fees look right' tick their steps");
+const demoHome = await (await fetch(`${BASE}/dashboard`, { headers: { Cookie: demoCookie } })).text();
+ok(!demoHome.includes('data-testid="setup-checklist"') || stepDone(demoHome, "product"), "the demo store's checklist reflects its own products");
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nall smoke checks passed");
 process.exit(failures ? 1 : 0);

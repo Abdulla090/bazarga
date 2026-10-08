@@ -126,6 +126,11 @@ export const stores = pgTable(
     // ---- promotions
     /** Subtotal (IQD) at or above which delivery is free; null = never. */
     freeDeliveryThreshold: integer("free_delivery_threshold"),
+    // ---- seller setup checklist (src/lib/setup-checklist.ts)
+    /** First time the seller copied/shared their store link from the dashboard; null = never. */
+    linkSharedAt: timestamp("link_shared_at", { withTimezone: true }),
+    /** Seller confirmed the seeded delivery fees as-is ("fees look right"); null = not confirmed. */
+    deliveryConfirmedAt: timestamp("delivery_confirmed_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

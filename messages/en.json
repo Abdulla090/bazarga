@@ -144,6 +144,38 @@
     "seeAll": "See all",
     "discounts": "Discounts"
   },
+  "setup": {
+    "title": "Set up your store",
+    "subtitle": "A few steps and your store is ready for its first order.",
+    "progress": "{done} of {total} done",
+    "done": "Done",
+    "shareNative": "Share",
+    "logo": {
+      "title": "Add your logo",
+      "desc": "Shoppers trust a store with a face. Upload your logo or brand photo.",
+      "cta": "Add logo"
+    },
+    "product": {
+      "title": "Add your first product",
+      "desc": "A photo, a name and a price is enough to start.",
+      "cta": "Add product"
+    },
+    "delivery": {
+      "title": "Check your delivery fees",
+      "desc": "We filled in a fee for every city. Change them or add your own areas.",
+      "cta": "Review fees",
+      "confirm": "Fees look right"
+    },
+    "whatsapp": {
+      "title": "Add your WhatsApp number",
+      "desc": "Orders and customer questions reach you on WhatsApp.",
+      "cta": "Add number"
+    },
+    "share": {
+      "title": "Share your store link",
+      "desc": "Put it in your Instagram bio and WhatsApp status."
+    }
+  },
   "products": {
     "title": "Products",
     "new": "New product",

@@ -16,6 +16,38 @@
     "login": "Têkeve",
     "dashboard": "Dikana min"
   },
+  "setup": {
+    "title": "Firoşgeha xwe amade bike",
+    "subtitle": "Çend gav û firoşgeha te ji bo siparîşa yekem amade ye.",
+    "progress": "{done} ji {total} temam",
+    "done": "Temam",
+    "shareNative": "Parve bike",
+    "logo": {
+      "title": "Logoya xwe zêde bike",
+      "desc": "Kirrîyar bêtir bawerî bi firoşgeheke xwedî nasname dikin. Logo an wêneya marqeya xwe bar bike.",
+      "cta": "Logo zêde bike"
+    },
+    "product": {
+      "title": "Berhema xwe ya yekem zêde bike",
+      "desc": "Wêneyek, navek û bihayek ji bo destpêkê bes e.",
+      "cta": "Berhem zêde bike"
+    },
+    "delivery": {
+      "title": "Bihayên gihandinê kontrol bike",
+      "desc": "Me ji bo her bajarî bihayek danî. Biguherîne an herêmên xwe zêde bike.",
+      "cta": "Bihayan kontrol bike",
+      "confirm": "Biha rast in"
+    },
+    "whatsapp": {
+      "title": "Hejmara xwe ya WhatsAppê zêde bike",
+      "desc": "Siparîş û pirsên kirrîyaran li ser WhatsAppê digihîjin te.",
+      "cta": "Hejmarê zêde bike"
+    },
+    "share": {
+      "title": "Girêdana firoşgeha xwe parve bike",
+      "desc": "Wê têxe bioya Instagramê û statûya WhatsAppê."
+    }
+  },
   "landing": {
     "heroEyebrow": "Ji bo firoşkarên Instagram û WhatsApp",
     "heroSub": "Wêne û bihayan bi zimanê xwe bişîne. Dikana te dikeve ser înternetê.",
