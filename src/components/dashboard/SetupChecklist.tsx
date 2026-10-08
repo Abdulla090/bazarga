@@ -51,7 +51,12 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
                     <p className="text-sm text-ink-70">{t(`${s.key}.desc`)}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {s.key === "share" ? (
-                        <ShareLinkButtons url={storeUrl} title={storeName} variant={isNext ? "ink" : "ghost"} />
+                        <>
+                          <ShareLinkButtons url={storeUrl} title={storeName} variant={isNext ? "ink" : "ghost"} />
+                          <Link href={s.href} className="btn-ghost btn-sm" data-testid="setup-share-kit">
+                            {t("share.cta")} <ChevronForward />
+                          </Link>
+                        </>
                       ) : (
                         <Link href={s.href} className={isNext ? "btn-ink btn-sm" : "btn-ghost btn-sm"}>
                           {t(`${s.key}.cta`)} <ChevronForward />

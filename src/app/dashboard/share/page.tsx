@@ -2,13 +2,17 @@ import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
 import { env } from "@/server/env";
 import { CopyButton } from "@/components/CopyButton";
+import { RecordShareClicks } from "@/components/dashboard/RecordShareClicks";
 import { Download, Icon, MessageCircle } from "@/components/ui/icons";
 import { LOCALE_LABEL, LOCALES, dirOf } from "@/lib/i18n";
 import { qrMatrix, qrPath, storeUrl, waShareLink } from "@/lib/share-kit";
 
 export const metadata = { title: "Share kit" };
 
-/** Share kit: bio link, QR code and Instagram story image. Server-rendered; no client JS beyond the copy buttons. */
+/**
+ * Share kit: bio link, QR code and Instagram story image. Server-rendered; no client JS beyond the copy buttons
+ * and the click recorder: copy / download / WhatsApp all tick the setup checklist's "share" step.
+ */
 export default async function ShareKitPage() {
   const { store } = await requireStore();
   const t = await getTranslations("shareKit");
@@ -28,18 +32,18 @@ export default async function ShareKitPage() {
       <section className="card grid gap-3" aria-labelledby="sk-link">
         <h2 id="sk-link" className="text-lg font-bold">{t("linkTitle")}</h2>
         <p className="text-sm text-ink-70">{t("linkHint")}</p>
-        <div className="flex flex-wrap items-center gap-2">
+        <RecordShareClicks className="flex flex-wrap items-center gap-2">
           <code className="num min-w-0 max-w-full break-all rounded-lg bg-ink/5 px-3 py-2 text-sm" dir="ltr" data-testid="share-url">{url}</code>
-          <CopyButton text={url} />
-        </div>
+          <CopyButton text={url} testId="share-copy-url" />
+        </RecordShareClicks>
         <p className="label mt-2">{t("bioTitle")}</p>
         <p className="whitespace-pre-line break-words rounded-lg border border-line bg-white p-3 text-sm" data-testid="share-bio">{bio}</p>
-        <div className="flex flex-wrap gap-2">
-          <CopyButton text={bio} />
+        <RecordShareClicks className="flex flex-wrap gap-2">
+          <CopyButton text={bio} testId="share-copy-bio" />
           <a href={waShareLink(bio)} target="_blank" rel="noopener noreferrer" className="btn-ghost btn-sm">
             <Icon as={MessageCircle} /> {t("whatsapp")}
           </a>
-        </div>
+        </RecordShareClicks>
       </section>
 
       <section className="card grid gap-3" aria-labelledby="sk-qr">
@@ -55,10 +59,10 @@ export default async function ShareKitPage() {
         >
           <path fill="#0f1b2d" d={qrPath(qr, 4)} />
         </svg>
-        <div className="flex flex-wrap gap-2">
+        <RecordShareClicks className="flex flex-wrap gap-2">
           <a href="/api/share/qr?format=png&download=1" download className="btn-ink btn-sm"><Icon as={Download} /> {t("downloadPng")}</a>
           <a href="/api/share/qr?format=svg&download=1" download className="btn-ghost btn-sm"><Icon as={Download} /> {t("downloadSvg")}</a>
-        </div>
+        </RecordShareClicks>
       </section>
 
       <section className="card grid gap-3" aria-labelledby="sk-story">
@@ -76,7 +80,7 @@ export default async function ShareKitPage() {
           data-testid="share-story-preview"
         />
         <p className="label">{t("storyDownload")}</p>
-        <div className="flex flex-wrap gap-2">
+        <RecordShareClicks className="flex flex-wrap gap-2">
           {LOCALES.map((l) => (
             <a
               key={l}
@@ -89,7 +93,7 @@ export default async function ShareKitPage() {
               <Icon as={Download} /> {LOCALE_LABEL[l]}
             </a>
           ))}
-        </div>
+        </RecordShareClicks>
       </section>
     </div>
   );
