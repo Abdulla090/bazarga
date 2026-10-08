@@ -15,6 +15,7 @@ import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
 import { normalizePhone } from "@/lib/phone";
 import { waLink } from "@/lib/whatsapp";
+import { WaTap } from "@/components/store/WaTap";
 import {
   absoluteUrl,
   descriptionParagraphs,
@@ -243,7 +244,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </li>
             {wa && (
               <li className="flex">
-                <a
+                <WaTap
+                  slug={slug}
                   href={waLink(wa, [t("waIntro", { store: store.name }), name, shareUrl].join("\n"))}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -251,7 +253,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 >
                   <Icon as={MessageCircle} className="mt-0.5 shrink-0 text-st-accent" />
                   <span className="font-semibold">{t("trustAsk")}</span>
-                </a>
+                </WaTap>
               </li>
             )}
           </ul>

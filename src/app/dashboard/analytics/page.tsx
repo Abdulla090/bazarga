@@ -84,6 +84,16 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             </li>
           ))}
         </ol>
+        <div className="grid min-w-0 gap-1 border-t border-line pt-3" data-testid="wa-taps">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="min-w-0 font-semibold">{t("funnel_whatsapp")}</span>
+            <span className="num shrink-0 text-sm text-ink-70" dir="ltr">
+              {nf.format(a.whatsappTaps)}
+              {a.totals.visitors > 0 ? ` · ${nf.format(Math.min(100, Math.round((a.whatsappTaps / a.totals.visitors) * 1000) / 10))}%` : ""}
+            </span>
+          </div>
+          <p className="text-xs text-ink-50">{t("funnelWhatsappHint")}</p>
+        </div>
         <p className="text-xs text-ink-50">{t("funnelHint")}</p>
       </section>
 

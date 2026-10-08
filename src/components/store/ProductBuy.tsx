@@ -6,6 +6,7 @@ import { GALLERY_EVENT } from "./ProductGallery";
 import { formatIQD } from "@/lib/money";
 import type { Locale } from "@/lib/i18n";
 import { waLink } from "@/lib/whatsapp";
+import { WaTap } from "./WaTap";
 import { initialSelection, isValueAvailable, matchVariant, priceRange, type Selection } from "@/lib/variants";
 import { percentOff, stockStatus } from "@/lib/product-page";
 import { Check, Icon, MessageCircle, Share2, ShoppingBag } from "@/components/ui/icons";
@@ -337,9 +338,9 @@ export function ProductBuy({
 
         <div className="flex flex-wrap gap-2">
           {waHref && (
-            <a href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-sm flex-1 bg-whatsapp text-[#0b3d1f] hover:brightness-95">
+            <WaTap slug={slug} href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-sm flex-1 bg-whatsapp text-[#0b3d1f] hover:brightness-95">
               <Icon as={MessageCircle} /> {labels.askWhatsApp}
-            </a>
+            </WaTap>
           )}
           <button type="button" onClick={share} className="btn-ghost btn-sm flex-1">
             <Icon as={copied ? Check : Share2} /> <span aria-live="polite">{copied ? labels.linkCopied : labels.share}</span>

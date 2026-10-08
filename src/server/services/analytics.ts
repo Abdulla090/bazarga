@@ -14,6 +14,7 @@ import {
   iraqDayStart,
   PRODUCT_VISITORS_PAGE,
   VISITORS_PAGE,
+  WHATSAPP_PAGE,
   type DayPoint,
   type FunnelStep,
 } from "@/lib/analytics";
@@ -57,6 +58,8 @@ export type StoreAnalytics = {
   totals: { visitors: number; storeViews: number; productViews: number; orders: number; revenue: number; conversion: number | null };
   topViewed: TopViewed[];
   topSold: TopSold[];
+  /** Visitors (per day, summed over the range) who tapped a WhatsApp button. Not a funnel step: chats may finish outside the store. */
+  whatsappTaps: number;
   /** Orders + revenue per delivery city in the range, best revenue first (top 8). */
   byCity: CityRow[];
   /** Distinct customers (by phone) who ordered in the range; "returning" = they have another live order at any time. */
@@ -126,11 +129,13 @@ export async function getStoreAnalytics(
   const perDay: Partial<DayPoint>[] = [];
   let productVisitors = 0;
   let checkoutVisitors = 0;
+  let whatsappTaps = 0;
   const productViews = new Map<string, number>();
   for (const r of viewRows) {
     if (r.page === VISITORS_PAGE) perDay.push({ day: r.day, visitors: r.views });
     else if (r.page === PRODUCT_VISITORS_PAGE) productVisitors += r.views;
     else if (r.page === CHECKOUT_PAGE) checkoutVisitors += r.views;
+    else if (r.page === WHATSAPP_PAGE) whatsappTaps += r.views;
     else if (r.page === HOME_PAGE) perDay.push({ day: r.day, storeViews: r.views });
     else if (UUID_RE.test(r.page)) {
       perDay.push({ day: r.day, productViews: r.views });
@@ -173,6 +178,7 @@ export async function getStoreAnalytics(
   return {
     days: series,
     funnel,
+    whatsappTaps,
     totals,
     topViewed,
     topSold: soldRows.map((r) => ({ productId: r.productId!, name: r.name, units: Number(r.units), revenue: Number(r.revenue) })),

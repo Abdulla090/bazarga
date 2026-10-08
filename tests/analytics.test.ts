@@ -18,6 +18,7 @@ import {
   parseRange,
   PRODUCT_VISITORS_PAGE,
   VISITORS_PAGE,
+  WHATSAPP_PAGE,
 } from "@/lib/analytics";
 import { firstSeen, _resetDedupe } from "@/server/analytics/dedupe";
 import { getStoreAnalytics, recordView } from "@/server/services/analytics";
@@ -188,6 +189,21 @@ describe("store analytics (DB)", () => {
     expect(o.funnel.map((s) => s.count)).toEqual([1, 1, 1, 0]);
   });
 
+  it("whatsapp taps: counted per store, not a visitor, view or funnel step", async () => {
+    const { store } = await seller(database, "an5");
+    const other = await seller(database, "an5o");
+    const now = new Date();
+    for (let i = 0; i < 4; i++) await recordView(database, store.id, HOME_PAGE, { newVisitor: true, now });
+    for (let i = 0; i < 2; i++) await recordView(database, store.id, WHATSAPP_PAGE, { newVisitor: false, now });
+    await recordView(database, other.store.id, WHATSAPP_PAGE, { newVisitor: false, now });
+    const r = await getStoreAnalytics(database, store.id, { days: 7, locale: "en", now });
+    expect(r.whatsappTaps).toBe(2);
+    expect(r.totals).toMatchObject({ visitors: 4, storeViews: 4, productViews: 0 });
+    expect(r.funnel.map((s) => s.count)).toEqual([4, 0, 0, 0]);
+    expect(r.topViewed).toEqual([]);
+    expect((await getStoreAnalytics(database, other.store.id, { days: 7, locale: "en", now })).whatsappTaps).toBe(1);
+  });
+
   it("tenant isolation: one store's views and orders never show in another's analytics", async () => {
     const x = await seller(database, "an3x");
     const y = await seller(database, "an3y");
@@ -196,6 +212,7 @@ describe("store analytics (DB)", () => {
     await recordView(database, x.store.id, px.id, { newVisitor: false });
     await placeOrder(database, x.store, checkout([{ productId: px.id, quantity: 1 }], { phone: "+9647701110021" }));
     const ry = await getStoreAnalytics(database, y.store.id, { days: 30, locale: "en" });
+    expect(ry.whatsappTaps).toBe(0);
     expect(ry.totals).toEqual({ visitors: 0, storeViews: 0, productViews: 0, orders: 0, revenue: 0, conversion: null });
     expect(ry.topViewed).toEqual([]);
     expect(ry.topSold).toEqual([]);
@@ -236,7 +253,7 @@ describe("analytics wiring", () => {
     expect(readFileSync("src/components/dashboard/DashNav.tsx", "utf8")).toContain('"/dashboard/analytics"');
   });
   it("ku, ar, en and kmr have every analytics string", () => {
-    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote", "byCity", "orderCount", "customersTitle", "customersTotal", "customersNew", "customersReturning", "customersHint", "funnelTitle", "funnel_visitors", "funnel_product", "funnel_checkout", "funnel_orders", "funnelHint"];
+    const keys = ["title", "subtitle", "range", "visitors", "storeViews", "productViews", "orders", "conversion", "conversionHint", "revenue", "byDay", "visitorsPerDay", "ordersPerDay", "table", "day", "topViewed", "topSold", "views", "units", "empty", "privacy", "ordersNote", "byCity", "orderCount", "customersTitle", "customersTotal", "customersNew", "customersReturning", "customersHint", "funnelTitle", "funnel_visitors", "funnel_product", "funnel_checkout", "funnel_orders", "funnelHint", "funnel_whatsapp", "funnelWhatsappHint"];
     for (const l of ["ku", "ar", "en", "kmr"]) {
       const m = JSON.parse(readFileSync(`messages/${l}.json`, "utf8")) as { analytics: Record<string, string>; dash: Record<string, string> };
       for (const k of keys) expect(m.analytics[k], `${l}.analytics.${k}`).toBeTruthy();

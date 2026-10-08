@@ -15,6 +15,8 @@ export const VISITORS_PAGE = "*";
 export const PRODUCT_VISITORS_PAGE = "pv";
 /** Counts visitors who opened the cart/checkout page with something in the cart that day (funnel step 3). */
 export const CHECKOUT_PAGE = "checkout";
+/** Counts visitors who tapped a WhatsApp button (chat with the store / ask about a product) that day. */
+export const WHATSAPP_PAGE = "wa";
 export const ANALYTICS_RANGES = [7, 30, 90] as const;
 export type AnalyticsRange = (typeof ANALYTICS_RANGES)[number];
 
