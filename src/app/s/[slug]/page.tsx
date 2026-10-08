@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
-import { getCatalog, getStorefrontSettings } from "@/server/cache/storefront";
+import { getCatalog, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { ProductCard } from "@/components/store/ProductCard";
 import { pickText } from "@/lib/i18n";
@@ -10,17 +10,22 @@ import { filterCatalog, DEFAULT_PAGE_SIZE } from "@/lib/catalog-filter";
 import { waLink } from "@/lib/whatsapp";
 import { buildSrcSet, SIZES } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
-import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
+import { Flame, Icon, MessageCircle, Search, TicketPercent, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
+import { ProductStrip } from "@/components/store/MiniProductCard";
+import { OfferBanner } from "@/components/store/OfferBanner";
+import { bestSellerStrip, pickBannerOffer, saleProducts } from "@/lib/merch";
+import { merchLabels, offerLabels } from "@/components/store/merch-labels";
 
-type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[] };
+type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[] };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)?.trim() || undefined;
 
 /** Build a store-home href keeping only the params that are set. */
-function homeHref(slug: string, p: { q?: string; c?: string; page?: number }) {
+function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offers?: boolean }) {
   const sp = new URLSearchParams();
   if (p.q) sp.set("q", p.q);
   if (p.c) sp.set("c", p.c);
+  if (p.offers) sp.set("offers", "1");
   if (p.page && p.page > 1) sp.set("page", String(p.page));
   const s = sp.toString();
   return `/s/${slug}${s ? `?${s}` : ""}`;
@@ -35,19 +40,33 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const sp = await searchParams;
   const q = one(sp.q)?.slice(0, 80);
   const c = one(sp.c);
+  const offers = one(sp.offers) === "1";
   const store = await loadStore(slug);
   const t = await getTranslations("store");
   const locale = await currentLocale();
-  const [{ products, categories: usedCats }, { zones }] = await Promise.all([getCatalog(store.id), getStorefrontSettings(store.id)]);
-  const { items, total, hasMore, page } = filterCatalog(products, { q, c, page: one(sp.page), locale, pageSize: DEFAULT_PAGE_SIZE });
+  const [{ products, categories: usedCats, bestSellers }, { zones }, codes] = await Promise.all([
+    getCatalog(store.id),
+    getStorefrontSettings(store.id),
+    getStoreOffers(store.id),
+  ]);
+  const { items, total, hasMore, page } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: DEFAULT_PAGE_SIZE });
+  const badges = merchLabels(t);
+  const from = t.raw("from") as string;
   const cardLabels = {
     add: t("addToCart"),
     added: t("added"),
     soldOut: t("outOfStock"),
     chooseOptions: t("chooseOptions"),
-    from: t.raw("from") as string,
+    from,
     onlyLeft: t.raw("onlyLeft") as string,
+    badges,
   };
+  const offer = pickBannerOffer(codes);
+  const onSale = saleProducts(products);
+  // Merchandising strips only on the plain store home (not while searching, filtering or paging).
+  const browsing = !q && !c && !offers && page === 1;
+  const best = browsing ? bestSellerStrip(products, bestSellers) : [];
+  const saleStrip = browsing ? onSale.slice(0, 8) : [];
   const minFee = zones.length ? Math.min(...zones.map((z) => z.fee)) : null;
   const tagline = pickText(store.tagline, locale);
   const about = pickText(store.about, locale);
@@ -91,6 +110,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         </div>
       </section>
 
+      {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
+
       {minFee !== null && (
         <p className="flex items-center gap-2 rounded-xl border border-st-border bg-st-surface px-3 py-2 text-sm font-semibold text-st-fg">
           <Icon as={Truck} className="shrink-0 text-st-accent" />
@@ -104,6 +125,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       {/* Plain GET form: works without JS, keeps the category. */}
       <form action={`/s/${slug}`} method="get" role="search" className="flex items-center gap-2">
         {c && <input type="hidden" name="c" value={c} />}
+        {offers && <input type="hidden" name="offers" value="1" />}
         <label className="relative flex-1">
           <span className="sr-only">{t("search")}</span>
           <Icon as={Search} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-st-muted" />
@@ -120,9 +142,19 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         <button type="submit" className="h-11 shrink-0 rounded-xl bg-st-accent px-4 font-bold text-st-on-accent">{t("search")}</button>
       </form>
 
-      {usedCats.length > 0 && (
+      {(usedCats.length > 0 || onSale.length > 0) && (
         <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1" aria-label={t("products")}>
-          <Link href={homeHref(slug, { q })} aria-current={!c ? "page" : undefined} className={`${chip} ${!c ? chipOn : chipOff}`}>{t("all")}</Link>
+          <Link href={homeHref(slug, { q })} aria-current={!c && !offers ? "page" : undefined} className={`${chip} ${!c && !offers ? chipOn : chipOff}`}>{t("all")}</Link>
+          {onSale.length > 0 && (
+            <Link
+              href={homeHref(slug, { q, offers: true })}
+              aria-current={offers ? "page" : undefined}
+              className={`${chip} gap-1 ${offers ? chipOn : "border border-danger/40 bg-danger/5 text-danger"}`}
+              data-testid="offers-chip"
+            >
+              <Icon as={TicketPercent} /> {t("offers")}
+            </Link>
+          )}
           {usedCats.map((cat) => (
             <Link key={cat.id} href={homeHref(slug, { q, c: cat.id })} aria-current={c === cat.id ? "page" : undefined} className={`${chip} ${c === cat.id ? chipOn : chipOff}`}>
               {pickText(cat.name, locale)}
@@ -134,14 +166,41 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       {q && (
         <p className="flex items-center justify-between gap-2 text-sm text-st-muted" aria-live="polite">
           <span>{t("resultsFor", { q, count: total })}</span>
-          <Link href={homeHref(slug, { c })} className="inline-flex items-center gap-1 font-semibold text-st-fg underline">
+          <Link href={homeHref(slug, { c, offers })} className="inline-flex items-center gap-1 font-semibold text-st-fg underline">
             <Icon as={X} /> {t("clearSearch")}
           </Link>
         </p>
       )}
 
+      <ProductStrip
+        id="best-h"
+        title={t("bestSellers")}
+        icon={<Icon as={Flame} className="text-danger" />}
+        products={best}
+        slug={store.slug}
+        locale={locale}
+        labels={badges}
+        from={from}
+        testId="best-sellers"
+      />
+      <ProductStrip
+        id="offers-h"
+        title={t("offersTitle")}
+        icon={<Icon as={TicketPercent} className="text-danger" />}
+        products={saleStrip}
+        slug={store.slug}
+        locale={locale}
+        labels={badges}
+        from={from}
+        seeAll={onSale.length > 1 ? { href: homeHref(slug, { offers: true }), label: t("seeAll") } : undefined}
+        testId="offers-strip"
+      />
+      {(best.length > 0 || saleStrip.length > 0 || offers) && items.length > 0 && (
+        <h2 className="text-lg font-extrabold" data-testid="grid-title">{offers ? t("offers") : t("allProducts")}</h2>
+      )}
+
       {items.length === 0 ? (
-        <p className="rounded-[var(--radius-card)] border border-st-border bg-st-surface p-6 text-center text-st-muted">{q ? t("noResults", { q }) : t("noProducts")}</p>
+        <p className="rounded-[var(--radius-card)] border border-st-border bg-st-surface p-6 text-center text-st-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((p, i) => (
@@ -154,7 +213,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
       {hasMore && (
         <Link
-          href={`${homeHref(slug, { q, c, page: page + 1 })}#p${items.length}`}
+          href={`${homeHref(slug, { q, c, offers, page: page + 1 })}#p${items.length}`}
           scroll={false}
           className="mx-auto rounded-xl border border-st-border bg-st-surface px-5 py-3 font-bold text-st-fg"
         >

@@ -94,7 +94,7 @@ describe("storefront cache: tags", () => {
       .map((b) => b.slice(0, b.indexOf("(")));
     expect(offenders).toEqual([]);
     // Restocking status changes and checkout both touch stock.
-    expect(src).toMatch(/RESTOCK_ON\.includes\(input\.status\)\) invalidateCatalog/);
+    expect(src).toMatch(/RESTOCK_ON\.includes\(input\.status\) \|\| LOST_ORDER_STATUSES\.includes\(input\.status\)\) invalidateCatalog/);
     expect(readFileSync("src/server/actions/storefront.ts", "utf8")).toMatch(/invalidateStock\(store\.id, order\.items/);
   });
 });
@@ -107,7 +107,8 @@ describe("storefront read models", () => {
     const { p: gone } = await withVariants(store.id, 20_000, [0, 0]);
     const before = queryCount();
     const cat = await loadCatalog(database, store.id);
-    expect(queryCount() - before).toBeLessThanOrEqual(4);
+    // products, covers, categories, variants + one grouped best-seller sales query (all but the first in parallel).
+    expect(queryCount() - before).toBeLessThanOrEqual(5);
     const by = (id: string) => cat.products.find((x) => x.id === id)!;
     expect(by(simple.id)).toMatchObject({ price: 10_000, lowStock: 3, soldOut: false, hasVariants: false });
     // Out-of-stock variants don't set the "from" price; an untracked variant means no low-stock badge.

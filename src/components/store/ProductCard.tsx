@@ -5,8 +5,10 @@ import { pickText, type Locale } from "@/lib/i18n";
 import type { CatalogProduct } from "@/server/services/storefront";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
+import { isOnSale } from "@/lib/merch";
+import { MerchBadges, type MerchBadgeLabels } from "./MerchBadges";
 
-export type ProductCardLabels = AddToCartLabels & { chooseOptions: string; from: string; onlyLeft: string };
+export type ProductCardLabels = AddToCartLabels & { chooseOptions: string; from: string; onlyLeft: string; badges: MerchBadgeLabels };
 
 const fill = (tpl: string, vars: Record<string, string | number>) => tpl.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
@@ -29,7 +31,7 @@ export function ProductCard({
 }) {
   const name = pickText(p.name, locale);
   const href = `/s/${slug}/p/${p.id}`;
-  const onSale = p.compareAtPrice !== null && p.compareAtPrice > p.price;
+  const onSale = isOnSale(p);
   return (
     <article className="flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
       <Link href={href} className="relative block">
@@ -38,9 +40,7 @@ export function ProductCard({
         ) : (
           <span className="block aspect-square w-full bg-paper" />
         )}
-        {onSale && (
-          <span className="chip num absolute start-2 top-2 bg-danger text-[#fff]">−{Math.round((1 - p.price / p.compareAtPrice!) * 100)}%</span>
-        )}
+        <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} labels={labels.badges} />
       </Link>
       <div className="flex flex-1 flex-col gap-1.5 p-3">
         <Link href={href} className="line-clamp-2 min-h-11 font-bold leading-snug">
@@ -57,7 +57,7 @@ export function ProductCard({
               {labels.chooseOptions}
             </Link>
           ) : (
-            <AddToCart slug={slug} productId={p.id} disabled={p.soldOut} labels={labels} />
+            <AddToCart slug={slug} productId={p.id} disabled={p.soldOut} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} />
           )}
         </div>
       </div>

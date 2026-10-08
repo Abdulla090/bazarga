@@ -143,6 +143,7 @@ export async function createProduct(database: Db, storeId: string, input: Produc
         sku: input.sku ?? null,
         specs: input.specs ?? [],
         categoryId: input.categoryId ?? null,
+        badge: input.badge ?? null,
         isActive: input.isActive,
       })
       .returning();
@@ -165,6 +166,7 @@ export async function updateProduct(database: Db, storeId: string, id: string, i
         sku: input.sku ?? null,
         specs: input.specs ?? [],
         categoryId: input.categoryId ?? null,
+        badge: input.badge ?? null,
         isActive: input.isActive,
         updatedAt: new Date(),
       })

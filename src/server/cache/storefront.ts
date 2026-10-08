@@ -6,12 +6,14 @@ import {
   loadProductDetail,
   loadStorefrontSettings,
   loadStorefrontStore,
+  loadStoreOffers,
   type Catalog,
   type ProductDetail,
   type StorefrontSettings,
   type StorefrontStore,
 } from "../services/storefront";
 import { cacheTags } from "./tags";
+import type { BannerCode } from "@/lib/merch";
 
 /**
  * Cached storefront data layer (Next 16 `"use cache"`, cacheComponents on).
@@ -54,4 +56,15 @@ export async function getProductDetail(storeId: string, productId: string): Prom
   cacheLife("storefront");
   cacheTag(cacheTags.catalog(storeId), cacheTags.product(productId));
   return loadProductDetail(db(), storeId, productId);
+}
+
+/**
+ * Codes the seller advertises on the storefront. Tagged store (discount saves call invalidateStore) and catalog
+ * (every order invalidates the catalog, so a code that just hit its use limit drops off).
+ */
+export async function getStoreOffers(storeId: string): Promise<BannerCode[]> {
+  "use cache";
+  cacheLife("storefront");
+  cacheTag(cacheTags.store(storeId), cacheTags.catalog(storeId));
+  return loadStoreOffers(db(), storeId);
 }

@@ -21,6 +21,7 @@ type Values = {
   sku: string | null;
   specs: SpecRow[];
   categoryId: string | null;
+  badge?: "new" | "featured" | null;
   isActive: boolean;
   images: ProductImageInput[];
 };
@@ -89,6 +90,15 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
+        </div>
+        <div>
+          <label className="label" htmlFor="f-badge">{t("badge")}</label>
+          <select id="f-badge" name="badge" className="input" defaultValue={initial.badge ?? ""} aria-describedby="f-badge-hint">
+            <option value="">{t("badgeNone")}</option>
+            <option value="new">{t("badgeNew")}</option>
+            <option value="featured">{t("badgeFeatured")}</option>
+          </select>
+          <p id="f-badge-hint" className="hint">{t("badgeHint")}</p>
         </div>
         <label className="flex min-h-11 items-center gap-2 font-semibold sm:col-span-2">
           <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />

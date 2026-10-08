@@ -35,6 +35,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           sku: product.sku,
           specs: product.specs,
           categoryId: product.categoryId,
+          badge: product.badge ?? null,
           isActive: product.isActive,
           images: product.images.map((i) => ({
             url: i.url,
