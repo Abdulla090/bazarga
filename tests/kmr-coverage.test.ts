@@ -19,6 +19,8 @@ function flat(o: Json, prefix = ""): Record<string, string> {
 const placeholders = (s: string) => (s.match(/\{[^}]*\}/g) ?? []).sort();
 const E = flat(en as Json);
 const K = flat(kmr as Json);
+const e = (k: string) => E[k] ?? "";
+const m = (k: string) => K[k] ?? "";
 
 describe("Kurmanji (kmr) messages", () => {
   it("translates every key English has, with no stray keys", () => {
@@ -27,16 +29,16 @@ describe("Kurmanji (kmr) messages", () => {
   });
 
   it("keeps every {placeholder} the English string has (bioLine carries a raw {url})", () => {
-    const bad = Object.keys(K).filter((k) => k in E && placeholders(E[k]).join() !== placeholders(K[k]).join());
+    const bad = Object.keys(K).filter((k) => k in E && placeholders(e(k)).join() !== placeholders(m(k)).join());
     expect(bad).toEqual([]);
   });
 
   it("is real Latin-script Kurmanji, not copied English or Sorani", () => {
     const arabicScript = /[\u0600-\u06FF]/;
     // ai.messagePlaceholder is a deliberate Sorani example prompt.
-    const stray = Object.keys(K).filter((k) => k !== "ai.messagePlaceholder" && arabicScript.test(K[k]));
+    const stray = Object.keys(K).filter((k) => k !== "ai.messagePlaceholder" && arabicScript.test(m(k)));
     expect(stray).toEqual([]);
-    const sameAsEnglish = Object.keys(K).filter((k) => K[k] === E[k] && /[a-z]{4,}/i.test(K[k]));
+    const sameAsEnglish = Object.keys(K).filter((k) => m(k) === e(k) && /[a-z]{4,}/i.test(m(k)));
     // Brand names / codes may legitimately match (Bazarga, FastPay, Qi Card, ZainCash, Instagram, WhatsApp, Logo, Kod...).
     expect(sameAsEnglish.length).toBeLessThan(15);
   });
