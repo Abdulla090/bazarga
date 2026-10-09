@@ -5,6 +5,8 @@ import { logOutAction } from "@/server/actions/auth";
 import { Logo } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { IntlProvider } from "@/components/IntlProvider";
+import { db } from "@/server/db";
+import { countNewOrders } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { DashNav } from "@/components/dashboard/DashNav";
 import { ExternalLink, Icon } from "@/components/ui/icons";
@@ -16,6 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const t = await getTranslations("dash");
   const tc = await getTranslations("common");
   const locale = await currentLocale();
+  const newOrders = await countNewOrders(db(), store.id);
   return (
     <IntlProvider>
     <div className="min-h-dvh pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 print:min-h-0 print:pb-0">
@@ -31,14 +34,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </header>
       <div className="mx-auto flex max-w-7xl gap-6 px-4 py-6 print:block print:max-w-none print:p-0">
         <aside className="sticky top-20 hidden h-fit w-56 shrink-0 md:block print:hidden">
-          <DashNav variant="side" />
+          <DashNav variant="side" newOrders={newOrders} />
           <form action={logOutAction} className="mt-6">
             <button className="btn-ghost btn-sm w-full">{tc("logout")}</button>
           </form>
         </aside>
         <main className="min-w-0 flex-1">{children}</main>
       </div>
-      <DashNav variant="bottom" />
+      <DashNav variant="bottom" newOrders={newOrders} />
     </div>
     </IntlProvider>
   );

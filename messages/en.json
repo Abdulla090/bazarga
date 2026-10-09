@@ -122,6 +122,7 @@
     "create": "Create my store"
   },
   "dash": {
+    "newOrders": "{count} new orders",
     "home": "Home",
     "products": "Products",
     "categories": "Categories",

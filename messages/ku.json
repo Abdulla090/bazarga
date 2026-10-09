@@ -122,6 +122,7 @@
     "create": "دوکانەکەم دروست بکە"
   },
   "dash": {
+    "newOrders": "{count} داواکاری نوێ",
     "home": "سەرەکی",
     "products": "کاڵاکان",
     "categories": "پۆلەکان",

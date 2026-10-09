@@ -786,3 +786,12 @@ export async function listOrdersForExport(database: Db, storeId: string, opts: {
   const items = await database.query.orderItems.findMany({ where: inArray(orderItems.orderId, rows.map((r) => r.id)) });
   return rows.map((o) => ({ ...o, items: items.filter((i) => i.orderId === o.id) }));
 }
+
+/** Orders still waiting for the seller's first reply (status pending). Store-scoped. */
+export async function countNewOrders(database: Db, storeId: string): Promise<number> {
+  const [row] = await database
+    .select({ n: sql<number>`count(*)::int` })
+    .from(orders)
+    .where(and(eq(orders.storeId, storeId), eq(orders.status, "pending")));
+  return row?.n ?? 0;
+}
