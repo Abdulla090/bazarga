@@ -465,6 +465,7 @@
     "removeCode": "إزالة",
     "discount": "الخصم",
     "codeApplied": "تم تطبيق {code}",
+    "orderViaWhatsapp": "اطلب عبر واتساب بدلاً من ذلك",
     "freeDeliveryUnlocked": "التوصيل مجاني لطلبك",
     "freeDeliveryProgress": "أضف {amount} للحصول على توصيل مجاني",
     "placing": "جارٍ إرسال طلبك…",

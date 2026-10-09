@@ -26,6 +26,8 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
       locale={locale}
       zones={zones.map((z) => ({ key: z.key, name: pickText(z.name, locale), fee: z.fee, areas: z.areas.map((a) => ({ id: a.id, name: pickText(a.name, locale), fee: a.fee })) }))}
       payments={payments}
+      whatsapp={store.whatsapp ?? store.phone ?? null}
+      storeName={store.name}
       defaultCity={store.city ?? zones[0]?.key ?? ""}
     />
   );
