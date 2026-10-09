@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+### 2026-10-09 19:00 Agent B: order page map link
+agentb/call-map-links: Map button on seller order page (lib/maps.ts, 4 locales, tests/maps.test.ts).
+
 - Oct 9 18:00 Agent B: cart free-delivery progress bar (agentb/free-delivery-bar), gate green.
 
 ### Oct 9 17:00 Agent B: quick-reply WhatsApp templates (agentb/quick-replies)
