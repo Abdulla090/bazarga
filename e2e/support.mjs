@@ -123,6 +123,7 @@ export async function setup() {
       { name: "dashboard-products", path: "/dashboard/products", auth: true },
       { name: "dashboard-product-editor", path: editId ? `/dashboard/products/${editId}` : "/dashboard/products/new", auth: true },
       { name: "dashboard-orders", path: "/dashboard/orders", auth: true },
+      { name: "dashboard-orders-courier", path: "/dashboard/orders/courier", auth: true },
       { name: "dashboard-order-detail", path: orderId ? `/dashboard/orders/${orderId}` : "/dashboard/orders", auth: true },
       { name: "dashboard-settings", path: "/dashboard/settings", auth: true },
       // Collapsed sections (new-code / edit forms, per-city area forms) are opened before measuring.
