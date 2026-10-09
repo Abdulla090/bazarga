@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+### Oct 9 17:00 Agent B: quick-reply WhatsApp templates (agentb/quick-replies)
+Order page gets 3 one-tap WhatsApp replies (confirmed, on the way, need landmark) in the shopper's locale. src/lib/quick-replies.ts + tests. No migration.
+
 - Oct 9 16:30 Agent B: `agentb/new-orders-badge`: dashboard Orders nav (side + bottom bar) shows a red badge with the count of pending orders (`countNewOrders`, store-scoped, one count query in the dashboard layout; no migration, next free 0010). Strings in 4 locales, DB test.
 
 ### Oct 9 15:xx Agent B: remind-to-pay button on order page (WhatsApp, unpaid online orders). Gate green.

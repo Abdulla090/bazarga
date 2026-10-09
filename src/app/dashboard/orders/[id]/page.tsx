@@ -20,6 +20,7 @@ import { isPhoneBlocked } from "@/server/services/blocklist";
 import { knownRiskFlags } from "@/lib/order-risk";
 import { BlockToggle } from "@/components/dashboard/BlockPhoneForms";
 import { CheckPaymentButton } from "@/components/dashboard/CheckPaymentButton";
+import { quickReplyLink, QUICK_REPLY_KINDS, type QuickReplyKind } from "@/lib/quick-replies";
 import { payReminderLink } from "@/lib/pay-reminder";
 import { listPaymentAttempts } from "@/server/payments/service";
 
@@ -106,6 +107,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             return href ? <a className="btn-ghost btn-sm w-fit" href={href} target="_blank" rel="noopener noreferrer" data-testid="remind-pay">{tps("remind")}</a> : null;
           })()}
           <p className="text-xs text-ink-50">{tps("auto")}</p>
+        </section>
+      )}
+      {order.status !== "cancelled" && order.customerPhone.replace(/\D/g, "") && (
+        <section className="card grid gap-2" aria-label={t("quickReplies")}>
+          <h2 className="text-sm font-semibold">{t("quickReplies")}</h2>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_REPLY_KINDS.map((k: QuickReplyKind) => {
+              const href = quickReplyLink(k, { storeName: store.name, orderNumber: order.number, total: order.total, customerPhone: order.customerPhone }, locale);
+              const label = { confirmed: t("qrConfirmed"), onTheWay: t("qrOnTheWay"), needLandmark: t("qrNeedLandmark") }[k];
+              return href ? <a key={k} className="btn-ghost btn-sm" href={href} target="_blank" rel="noopener noreferrer" data-testid={`quick-reply-${k}`}>{label}</a> : null;
+            })}
+          </div>
         </section>
       )}
       <section className="card grid gap-2" aria-label={t("copyTrackingLink")}>
