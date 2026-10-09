@@ -506,6 +506,7 @@
     "checked": "Kontrola dawî {time}",
     "neverChecked": "Hîn bi pêşkêşkerê re nehatiye kontrol kirin",
     "checkNow": "Niha dayînê kontrol bike",
+    "remind": "Bîne bîra mişterî bike ku bidin li WhatsApp",
     "expired": "Di nav {minutes} deqeyan de nehat dayîn, ji ber vê yekê ev ferman hate betal kirin û stoka wê hate vegerandin.",
     "paidAfterExpiry": "Kiriyar piştî ku ev ferman qediya pere da. Bi wî re têkilî dayne da ku bişînî an pereyê vegerînî.",
     "noAttempts": "Ji bo vê fermanê tu dayîn dest pê nekiriye.",

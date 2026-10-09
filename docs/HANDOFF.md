@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+### Oct 9 15:xx Agent B: remind-to-pay button on order page (WhatsApp, unpaid online orders). Gate green.
+
 - Oct 9 10:30 Agent B: merged hark/courier-sheet (6f2232b) after full gate incl. test:mobile (added /dashboard/orders/courier to the 360px route list, ku/en/kmr green) and smoke.
 - 2026-10-09 05:30 Agent B: merged `agentb/order-export` → main. Orders page gets **Download CSV** (respects status filter): `/api/orders/export` (session-scoped, rate-limited, max 2000, UTF-8 BOM for Excel, Baghdad time, formula-injection guard, items summary). No migration (next free: 0010). Gate all green (typecheck, lint, vitest, build, budget, mobile, smoke).
 - 2026-10-09 00:55 Hark: merged `hark/switcher-360` → main. Auth/onboarding header uses the compact `LocaleSwitcher` so it stays on one row at 360px (no migration; next free: 0010). Gate: typecheck ✓, lint ✓, vitest ✓, build ✓, budget ✓, test:mobile 5/5 ✓, smoke ✓ on fresh seed. Add-to-cart funnel step still open (Hark's, not started).

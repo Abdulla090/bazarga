@@ -20,6 +20,7 @@ import { isPhoneBlocked } from "@/server/services/blocklist";
 import { knownRiskFlags } from "@/lib/order-risk";
 import { BlockToggle } from "@/components/dashboard/BlockPhoneForms";
 import { CheckPaymentButton } from "@/components/dashboard/CheckPaymentButton";
+import { payReminderLink } from "@/lib/pay-reminder";
 import { listPaymentAttempts } from "@/server/payments/service";
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -100,6 +101,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </ul>
           )}
           {attempts.length > 0 && order.paymentStatus !== "paid" && <CheckPaymentButton orderId={order.id} />}
+          {order.paymentStatus !== "paid" && order.status !== "cancelled" && (() => {
+            const href = payReminderLink({ storeName: store.name, orderNumber: order.number, total: order.total, customerPhone: order.customerPhone, payUrl: trackUrl }, locale);
+            return href ? <a className="btn-ghost btn-sm w-fit" href={href} target="_blank" rel="noopener noreferrer" data-testid="remind-pay">{tps("remind")}</a> : null;
+          })()}
           <p className="text-xs text-ink-50">{tps("auto")}</p>
         </section>
       )}
