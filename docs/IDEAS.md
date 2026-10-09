@@ -16,4 +16,6 @@
 - [proposed] Shopper can drop a WhatsApp location pin on checkout (optional link field) so couriers skip phone calls. Why: landmark addresses cause failed deliveries. Owner: unassigned.
 - [proposed] "Delivered? Rate us" one-tap WhatsApp message after delivered status. Why: reviews build trust for new Instagram stores. Owner: unassigned.
 - [proposed] Seller "price list image" auto-generator: one tall branded PNG of in-stock products + prices to post as an Instagram story. Why: sellers screenshot their catalogue by hand. Owner: unassigned.
-- [proposed] Shopper "save my details" on checkout (name/phone/landmark remembered on-device). Why: repeat buyers retype the same address on slow mobile. Owner: unassigned.
+- [done agentb/save-my-details] Shopper "save my details" on checkout (name/phone/landmark remembered on-device). Why: repeat buyers retype the same address on slow mobile. Owner: unassigned.
+- [proposed] Seller "closing hours" auto-reply banner: store shows "orders after 9pm ship tomorrow" from a one-line setting. Why: sets expectations, cuts late-night WhatsApp pings. Owner: unassigned.
+- [proposed] Bundle price ("buy 2 for 25,000") on product page. Why: common Instagram selling pattern, lifts basket size. Owner: unassigned.
