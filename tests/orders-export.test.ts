@@ -32,7 +32,7 @@ describe("orders CSV", () => {
     await placeOrder(database, b.store, checkoutSchema.parse({ ...checkout([{ productId: pb.id, quantity: 1 }]), phone: "07701112244", notes: undefined }));
     const rows = await listOrdersForExport(database, a.store.id);
     expect(rows).toHaveLength(1);
-    expect(rows[0].items).toHaveLength(1);
+    expect(rows[0]!.items).toHaveLength(1);
     const csv = ordersToCsv(rows);
     expect(csv.startsWith("\uFEFForder,date,")).toBe(true);
     expect(csv).toContain("2 x ");
