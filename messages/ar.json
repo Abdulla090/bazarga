@@ -122,6 +122,7 @@
     "create": "أنشئ متجري"
   },
   "dash": {
+    "newOrders": "{count} طلب جديد",
     "home": "الرئيسية",
     "products": "المنتجات",
     "categories": "الأقسام",

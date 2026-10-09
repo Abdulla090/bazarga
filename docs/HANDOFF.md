@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+- Oct 9 16:30 Agent B: `agentb/new-orders-badge`: dashboard Orders nav (side + bottom bar) shows a red badge with the count of pending orders (`countNewOrders`, store-scoped, one count query in the dashboard layout; no migration, next free 0010). Strings in 4 locales, DB test.
+
 ### Oct 9 15:xx Agent B: remind-to-pay button on order page (WhatsApp, unpaid online orders). Gate green.
 
 - Oct 9 10:30 Agent B: merged hark/courier-sheet (6f2232b) after full gate incl. test:mobile (added /dashboard/orders/courier to the 360px route list, ku/en/kmr green) and smoke.

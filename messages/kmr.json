@@ -273,6 +273,7 @@
     "pushError": "Xeletiyek çêbû, dîsa biceribîne."
   },
   "dash": {
+    "newOrders": "{count} daxwaza nû",
     "share": "Parvekirin",
     "analytics": "Analîtîk",
     "home": "Mal",

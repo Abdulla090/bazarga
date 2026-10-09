@@ -44,3 +44,19 @@ describe("orders CSV", () => {
     for (const m of [en, ku, ar, kmr]) expect((m as { orders: Record<string, string> }).orders.export).toBeTruthy();
   });
 });
+
+describe("new-orders badge count", () => {
+  it("counts only this store's pending orders", async () => {
+    const { countNewOrders } = await import("@/server/services/orders");
+    const a = await seller(database, "cnta");
+    const b = await seller(database, "cntb");
+    const pa = await product(database, a.store.id, 20_000);
+    const pb = await product(database, b.store.id, 20_000);
+    expect(await countNewOrders(database, a.store.id)).toBe(0);
+    await placeOrder(database, a.store, checkoutSchema.parse({ ...checkout([{ productId: pa.id, quantity: 1 }]), phone: "07701119911", notes: undefined }));
+    await placeOrder(database, b.store, checkoutSchema.parse({ ...checkout([{ productId: pb.id, quantity: 1 }]), phone: "07701119922", notes: undefined }));
+    expect(await countNewOrders(database, a.store.id)).toBe(1);
+    expect(await countNewOrders(database, b.store.id)).toBe(1);
+    for (const m of [en, ku, ar, kmr]) expect((m as { dash: Record<string, string> }).dash.newOrders).toContain("{count");
+  });
+});

@@ -19,9 +19,15 @@ const ITEMS = [
   { href: "/dashboard/settings", key: "settings", icon: Settings, mobile: false },
 ] as const;
 
-export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
+export function DashNav({ variant, newOrders = 0 }: { variant: "side" | "bottom" | "more"; newOrders?: number }) {
   const t = useTranslations("dash");
   const path = usePathname();
+  const badge = (key: string) =>
+    key === "orders" && newOrders > 0 ? (
+      <span data-testid="new-orders-badge" aria-label={t("newOrders", { count: newOrders })} className="ms-1 inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[0.7rem] font-bold leading-5 text-white">
+        {newOrders > 99 ? "99+" : newOrders}
+      </span>
+    ) : null;
   const active = (href: string) => (href === "/dashboard" ? path === href : path.startsWith(href));
 
   if (variant === "bottom") {
@@ -32,7 +38,7 @@ export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
             <li key={i.href}>
               <Link href={i.href} aria-current={active(i.href) ? "page" : undefined} className={`flex min-h-14 flex-col items-center justify-center text-xs font-semibold ${active(i.href) ? "text-ink" : "text-ink-50"}`}>
                 <Icon as={i.icon} className="text-xl" />
-                {t(i.key)}
+                <span>{t(i.key)}{badge(i.key)}</span>
               </Link>
             </li>
           ))}
@@ -58,7 +64,7 @@ export function DashNav({ variant }: { variant: "side" | "bottom" | "more" }) {
               className={`flex min-h-11 items-center gap-3 rounded-xl px-3 font-semibold ${active(i.href) ? "bg-ink text-paper" : "text-ink-70 hover:bg-ink/5"}`}
             >
               <Icon as={i.icon} />
-              {t(i.key)}
+              <span>{t(i.key)}{badge(i.key)}</span>
             </Link>
           </li>
         ))}
