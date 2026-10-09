@@ -13,6 +13,7 @@ import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
 import { shopperCityCookie } from "@/lib/shopper-city";
 import { checkoutFallbackLink } from "@/lib/checkout-fallback";
+import { SAVED_DETAILS_KEY, parseDetails, serializeDetails } from "@/lib/saved-details";
 import { ViewPixel } from "./ViewPixel";
 
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
@@ -45,6 +46,18 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
     if (hasLines && !openedAt.current) openedAt.current = Date.now();
   }, [hasLines]);
 
+  const nameRef = useRef<HTMLInputElement>(null);
+  const landmarkRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    try {
+      const d = parseDetails(localStorage.getItem(SAVED_DETAILS_KEY));
+      if (!d) return;
+      if (nameRef.current && !nameRef.current.value) nameRef.current.value = d.name;
+      if (landmarkRef.current && !landmarkRef.current.value) landmarkRef.current.value = d.landmark;
+      if (d.phone) setPhone((p) => p || maskIraqiMobile(d.phone));
+    } catch {}
+  }, []);
+
   const linesKey = JSON.stringify(lines);
   useEffect(() => {
     let live = true;
@@ -74,6 +87,9 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   function submit(fd: FormData) {
     setError(undefined);
     setFieldErrors({});
+    try {
+      localStorage.setItem(SAVED_DETAILS_KEY, serializeDetails({ name: String(fd.get("customerName") ?? ""), phone: String(fd.get("phone") ?? ""), landmark: String(fd.get("landmark") ?? "") }));
+    } catch {}
     startPlacing(async () => {
       const r = await placeOrderAction(slug, {
         items: available.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
@@ -191,7 +207,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         )}
         <fieldset className="grid gap-3">
           <legend className="label">{L.yourDetails}</legend>
-          <input name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
+          <input ref={nameRef} name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
           {fe("customerName")}
           <div>
             <input
@@ -212,7 +228,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             {fieldErrors.phone ? fe("phone") : <p id="co-phone-hint" className="hint">{L.phoneHint}</p>}
           </div>
           <div>
-            <input name="landmark" className="input w-full" placeholder={L.landmarkHint} aria-label={L.landmark} maxLength={200} />
+            <input ref={landmarkRef} name="landmark" className="input w-full" placeholder={L.landmarkHint} aria-label={L.landmark} maxLength={200} />
             {fe("landmark")}
           </div>
           <textarea name="address" className="input min-h-16" placeholder={L.addressDetails} aria-label={L.address} maxLength={300} />

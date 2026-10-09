@@ -25,6 +25,18 @@
   --font-latin: var(--font-inter), var(--font-inter-ext), var(--font-vazirmatn), system-ui, sans-serif;
 
   --radius-card: 1.25rem;
+
+  /* Elevation (layered, low-opacity ink) */
+  --shadow-e1: 0 1px 2px rgb(15 27 45 / 0.06);
+  --shadow-e2: 0 2px 6px rgb(15 27 45 / 0.07), 0 1px 2px rgb(15 27 45 / 0.05);
+  --shadow-e3: 0 12px 28px -8px rgb(15 27 45 / 0.18), 0 4px 10px rgb(15 27 45 / 0.06);
+
+  /* Motion: 150-250 ms, decelerate in, accelerate out */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
 }
 
 /* Storefront theme tokens: utilities like bg-st-accent read the --st-* variables at use site. */
@@ -98,8 +110,9 @@ body {
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
 }
 @utility btn {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-base font-semibold transition
-    disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-base font-semibold
+    transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out
+    active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
 }
 @utility btn-gold {
   @apply btn bg-gold text-on-gold hover:bg-gold-600 active:translate-y-px;
@@ -118,7 +131,7 @@ body {
   @apply min-h-11 px-3 text-sm sm:min-h-9;
 }
 @utility card {
-  @apply rounded-[var(--radius-card)] border border-line bg-white p-4 sm:p-5;
+  @apply rounded-[var(--radius-card)] border border-line bg-white p-4 shadow-e1 sm:p-5;
 }
 @utility label {
   @apply mb-1 block text-sm font-semibold text-ink-70;
@@ -126,7 +139,8 @@ body {
 @utility input {
   /* text-base (16 px) on purpose: anything smaller makes iOS Safari zoom on focus. */
   @apply block min-h-11 w-full rounded-xl border border-line bg-white px-3 py-2 text-base text-ink
-    placeholder:text-ink-50 focus:border-ink focus:outline-none;
+    placeholder:text-ink-50 transition-[border-color,box-shadow] duration-150 focus:border-ink focus:outline-none
+    focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-gold)_35%,transparent)];
 }
 @utility hint {
   @apply mt-1 text-xs text-ink-50;
@@ -140,6 +154,37 @@ body {
 @utility chip {
   @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
 }
+
+/* Motion primitives */
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  to { background-position-x: -200%; }
+}
+@utility animate-sheet-in { animation: sheet-in var(--duration-slow) var(--ease-out-expo) both; }
+@utility animate-toast-in { animation: toast-in var(--duration-base) var(--ease-out-expo) both; }
+@utility skeleton {
+  @apply rounded-xl;
+  background: linear-gradient(90deg, var(--color-line) 25%, color-mix(in srgb, var(--color-line) 40%, white) 50%, var(--color-line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--duration-base); }
 
 /* Numbers and Latin bits inside RTL text stay readable. */
 .num {
