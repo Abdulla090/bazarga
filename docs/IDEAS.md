@@ -8,8 +8,10 @@
 - [proposed] Per-city delivery ETA shown on product page ("Erbil: 1 day, Basra: 3 days"). Why: shoppers hesitate on COD without a date. Owner: unassigned.
 - [proposed] Store "last seen / replies within" badge from WhatsApp tap data. Why: trust for new Instagram stores. Owner: unassigned.
 - [proposed] Seller "quick reply" templates on the order page (confirmed / on the way / need a landmark) as WhatsApp links in the shopper's language. Why: sellers retype the same 3 messages all day. Owner: Agent B.
-- [proposed] "Tap to call" + Google Maps link for the courier from the delivery landmark. Why: Iraqi addresses are landmarks; drivers need a pin. Owner: unassigned.
+- [done] Google Maps link on the order page from city + landmark (call already existed). Owner: Agent B.
 - [done] Seller quick-reply WhatsApp templates (confirmed / on the way / need landmark) on the order page. Owner: Agent B (agentb/quick-replies).
 - [done agentb] Free-delivery progress bar in cart ("add 8,000 IQD for free delivery"). Why: lifts basket size on mobile with zero seller effort. Owner: unassigned.
 - [proposed] "Order via WhatsApp" fallback button on checkout when the form fails on weak 3G. Why: Iraqi mobile networks drop; a pre-filled WhatsApp message saves the sale. Owner: unassigned.
 - [proposed] Seller "restock" alert: WhatsApp-ready note when a product hits 0 stock. Why: sellers lose sales silently on sold-out items. Owner: unassigned.
+- [proposed] Shopper can drop a WhatsApp location pin on checkout (optional link field) so couriers skip phone calls. Why: landmark addresses cause failed deliveries. Owner: unassigned.
+- [proposed] "Delivered? Rate us" one-tap WhatsApp message after delivered status. Why: reviews build trust for new Instagram stores. Owner: unassigned.

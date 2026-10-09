@@ -277,6 +277,7 @@
     "cancel": "Cancel order",
     "whatsappCustomer": "Message on WhatsApp",
     "call": "Call",
+    "openMap": "Map",
     "status_pending": "Pending",
     "status_confirmed": "Confirmed",
     "status_shipped": "Out for delivery",

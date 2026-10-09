@@ -1,3 +1,4 @@
+import { mapsLink } from "@/lib/maps";
 import Link from "next/link";
 import { phoneDisplay } from "@/lib/phone";
 import { notFound } from "next/navigation";
@@ -147,6 +148,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="mt-2 flex flex-wrap gap-2">
             <a className="btn-ink btn-sm" href={waLink(order.customerPhone, `${store.name} — #${order.number}\n${t("slipTrack")}: ${trackUrl}`)} target="_blank" rel="noopener noreferrer">{t("whatsappCustomer")}</a>
             <a className="btn-ghost btn-sm" href={`tel:${phoneDisplay(order.customerPhone)}`}>{t("call")}</a>
+            <a className="btn-ghost btn-sm" href={mapsLink(order.cityName, fullAddress(order))} target="_blank" rel="noopener noreferrer" data-testid="order-map-link">{t("openMap")}</a>
           </div>
           <BlockToggle phone={order.customerPhone} phoneLabel={phoneDisplay(order.customerPhone)} orderId={order.id} blocked={blocked} />
         </section>
