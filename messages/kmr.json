@@ -346,7 +346,7 @@
     "confirmKeep": "Na, vegere",
     "copyTrackingLink": "Girêdana şopandinê kopî bike",
     "trackingLinkHint": "Ji kiriyar re bişîne: ew hejmara têlefona xwe dinivîse û fermanê dibîne.",
-    "courier": "Gihandkar",
+    "courier": "Lîsteya kuryer",
     "tracking": "Hejmara şopandinê",
     "packingSlip": "Pusûleya pakêtê",
     "print": "Çap bike",
@@ -736,5 +736,17 @@
     "showOnStorefront": "Di firoşgeha min de nîşan bide",
     "showOnStorefrontHint": "Kirrîyar vê kodê wekî pêşniyareke li ser rûpelên firoşgeh û berhemê dibînin.",
     "onStorefront": "Di firoşgehê de"
+  },
+  "courier": {
+    "title": "Radestkirina bo kuryer",
+    "back": "Daxwaz",
+    "hint": "Daxwazên pejirandî yên amade ne bo kuryer. Bi yek tikê WhatsApp vedibe bi nav, telefon, navnîşan û drav.",
+    "courierPhone": "Hejmara WhatsApp a kuryer (bi daxwaz)",
+    "save": "Tomar bike",
+    "empty": "Daxwazeke pejirandî tune ye.",
+    "sendAll": "Hemû {count} daxwazan bişîne",
+    "send": "Bişîne",
+    "paid": "Hatiye dayîn",
+    "link": "Lîsteya kuryer"
   }
 }

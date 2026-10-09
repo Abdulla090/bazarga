@@ -307,7 +307,7 @@
     "confirmKeep": "No, go back",
     "copyTrackingLink": "Copy tracking link",
     "trackingLinkHint": "Send it to the customer: they enter their phone number to see the order.",
-    "courier": "Courier",
+    "courier": "Courier sheet",
     "tracking": "Tracking no.",
     "packingSlip": "Packing slip",
     "print": "Print",
@@ -735,5 +735,17 @@
     "paidAfterExpiry": "The customer paid after this order expired. Contact them to deliver it or refund the payment.",
     "noAttempts": "No payment was started for this order.",
     "auto": "Bazarga checks pending payments with the provider automatically."
+  },
+  "courier": {
+    "title": "Courier hand-off",
+    "back": "Orders",
+    "hint": "Confirmed orders, ready to hand to your courier. One tap opens WhatsApp with the name, phone, address and cash to collect.",
+    "courierPhone": "Courier's WhatsApp number (optional)",
+    "save": "Save",
+    "empty": "No confirmed orders to hand over.",
+    "sendAll": "Send all {count} orders",
+    "send": "Send",
+    "paid": "Paid",
+    "link": "Courier sheet"
   }
 }
