@@ -318,6 +318,7 @@
     "storyScan": "Skan bike da ku firoşgeh vebe"
   },
   "orders": {
+    "export": "CSV dakêşe",
     "status": "Rewş",
     "status_pending": "Li bendê",
     "status_confirmed": "Piştrastkirî",
