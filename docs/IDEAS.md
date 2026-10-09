@@ -9,3 +9,6 @@
 - [proposed] Store "last seen / replies within" badge from WhatsApp tap data. Why: trust for new Instagram stores. Owner: unassigned.
 - [proposed] Seller "quick reply" templates on the order page (confirmed / on the way / need a landmark) as WhatsApp links in the shopper's language. Why: sellers retype the same 3 messages all day. Owner: Agent B.
 - [proposed] "Tap to call" + Google Maps link for the courier from the delivery landmark. Why: Iraqi addresses are landmarks; drivers need a pin. Owner: unassigned.
+- [done] Seller quick-reply WhatsApp templates (confirmed / on the way / need landmark) on the order page. Owner: Agent B (agentb/quick-replies).
+- [proposed] Free-delivery progress bar in cart ("add 8,000 IQD for free delivery"). Why: lifts basket size on mobile with zero seller effort. Owner: unassigned.
+- [proposed] "Order via WhatsApp" fallback button on checkout when the form fails on weak 3G. Why: Iraqi mobile networks drop; a pre-filled WhatsApp message saves the sale. Owner: unassigned.
