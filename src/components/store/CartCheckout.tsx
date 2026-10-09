@@ -260,7 +260,12 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           )}
         </div>
         {quote && quote.freeDeliveryRemaining !== null && (
-          <p className="rounded-xl bg-gold/15 px-3 py-2 text-sm font-semibold">{fmt(L.freeDeliveryProgress, { amount: formatIQD(quote.freeDeliveryRemaining, locale) })}</p>
+          <div className="rounded-xl bg-gold/15 px-3 py-2 text-sm font-semibold">
+            <p>{fmt(L.freeDeliveryProgress, { amount: formatIQD(quote.freeDeliveryRemaining, locale) })}</p>
+            <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)} className="mt-2 h-2 overflow-hidden rounded-full bg-black/10">
+              <div className="h-full rounded-full bg-green" style={{ width: `${freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)}%` }} />
+            </div>
+          </div>
         )}
         {quote && quote.freeDelivery && quote.subtotal > 0 && (
           <p className="rounded-xl bg-green/10 px-3 py-2 text-sm font-semibold text-green">{L.freeDeliveryUnlocked}</p>
@@ -286,4 +291,10 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
       </form>
     </div>
   );
+}
+
+export function freeDeliveryPercent(subtotal: number, remaining: number): number {
+  const total = subtotal + remaining;
+  if (total <= 0) return 100;
+  return Math.max(0, Math.min(100, Math.round((subtotal / total) * 100)));
 }
