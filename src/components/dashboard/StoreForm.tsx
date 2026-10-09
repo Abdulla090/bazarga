@@ -80,7 +80,7 @@ export function StoreForm({
       </div>
       <div>
         <label className="label" htmlFor="f-locale">{t("defaultLanguage")}</label>
-        <select id="f-locale" name="defaultLocale" className="input" defaultValue={initial?.defaultLocale ?? "ku"}>
+        <select id="f-locale" name="defaultLocale" className="select" defaultValue={initial?.defaultLocale ?? "ku"}>
           {UI_LOCALES.map((l) => (
             <option key={l} value={l}>{LOCALE_LABEL[l]}</option>
           ))}
@@ -92,7 +92,7 @@ export function StoreForm({
         <Field label={t("instagram")} name="instagram" ltr placeholder="@yourshop" defaultValue={initial?.instagram ?? ""} error={fe.instagram} />
         <div>
           <label className="label" htmlFor="f-city">{t("city")}</label>
-          <select id="f-city" name="city" className="input" defaultValue={initial?.city ?? "erbil"}>
+          <select id="f-city" name="city" className="select" defaultValue={initial?.city ?? "erbil"}>
             {cities.map((c) => (
               <option key={c.key} value={c.key}>{c.name}</option>
             ))}
