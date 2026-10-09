@@ -33,10 +33,10 @@ export function ProductCard({
   const href = `/s/${slug}/p/${p.id}`;
   const onSale = isOnSale(p);
   return (
-    <article className="flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
-      <Link href={href} className="relative block">
+    <article className="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-st-border bg-st-surface shadow-e1 transition-[box-shadow,transform] duration-[var(--duration-base)] ease-[var(--ease-out-expo)] motion-safe:hover:-translate-y-0.5 hover:shadow-e2">
+      <Link href={href} className="relative block overflow-hidden">
         {p.image ? (
-          <ResponsiveImage image={p.image} alt={name} sizes={SIZES.productGrid} index={index} aboveTheFold={2} className="aspect-square w-full object-cover" />
+          <ResponsiveImage image={p.image} alt={name} sizes={SIZES.productGrid} index={index} aboveTheFold={2} className="aspect-square w-full object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] motion-safe:group-hover:scale-[1.03]" />
         ) : (
           <span className="block aspect-square w-full bg-paper" />
         )}
