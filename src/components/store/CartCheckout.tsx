@@ -54,7 +54,8 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
       if (!d) return;
       if (nameRef.current && !nameRef.current.value) nameRef.current.value = d.name;
       if (landmarkRef.current && !landmarkRef.current.value) landmarkRef.current.value = d.landmark;
-      if (d.phone) setPhone((p) => p || maskIraqiMobile(d.phone));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore from localStorage
+      if (d.phone) queueMicrotask(() => setPhone((p) => p || maskIraqiMobile(d.phone)));
     } catch {}
   }, []);
 
