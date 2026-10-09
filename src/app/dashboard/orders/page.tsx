@@ -24,11 +24,14 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+        <div className="flex flex-wrap gap-2">
+        <Link href="/dashboard/orders/courier" className="btn-ghost btn-sm" data-testid="orders-courier">{t("courier")}</Link>
         {orders.length > 0 && (
           <a href={status ? `/api/orders/export?status=${status}` : "/api/orders/export"} download className="btn-ghost btn-sm" data-testid="orders-export">
             {t("export")}
           </a>
         )}
+        </div>
       </div>
       <nav className="-mx-1 flex gap-1 overflow-x-auto pb-1" aria-label={t("status")}>
         {[undefined, ...ORDER_STATUSES].map((s) => (
