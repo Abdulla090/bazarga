@@ -35,7 +35,7 @@ export function WaitlistForm({ cities }: { cities: { key: string; name: string }
       </div>
       <div>
         <label className="label" htmlFor="w-sells">{t("fSells")}</label>
-        <select id="w-sells" name="sells" required className="input" defaultValue="">
+        <select id="w-sells" name="sells" required className="select" defaultValue="">
           <option value="" disabled>{t("choose")}</option>
           {(["c1", "c2", "c3", "c4", "c5", "other"] as const).map((k) => (
             <option key={k} value={k}>{t(k)}</option>
@@ -45,7 +45,7 @@ export function WaitlistForm({ cities }: { cities: { key: string; name: string }
       </div>
       <div className="sm:col-span-2">
         <label className="label" htmlFor="w-city">{t("fCity")}</label>
-        <select id="w-city" name="city" required className="input" defaultValue="">
+        <select id="w-city" name="city" required className="select" defaultValue="">
           <option value="" disabled>{t("choose")}</option>
           {cities.map((c) => (
             <option key={c.key} value={c.key}>{c.name}</option>

@@ -84,7 +84,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
         <Field label={t("sku")} name="sku" ltr maxLength={64} autoComplete="off" defaultValue={initial.sku ?? ""} hint={t("skuHint")} error={fe.sku} />
         <div>
           <label className="label" htmlFor="f-cat">{t("category")}</label>
-          <select id="f-cat" name="categoryId" className="input" defaultValue={initial.categoryId ?? ""}>
+          <select id="f-cat" name="categoryId" className="select" defaultValue={initial.categoryId ?? ""}>
             <option value="">{t("noCategory")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -93,7 +93,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
         </div>
         <div>
           <label className="label" htmlFor="f-badge">{t("badge")}</label>
-          <select id="f-badge" name="badge" className="input" defaultValue={initial.badge ?? ""} aria-describedby="f-badge-hint">
+          <select id="f-badge" name="badge" className="select" defaultValue={initial.badge ?? ""} aria-describedby="f-badge-hint">
             <option value="">{t("badgeNone")}</option>
             <option value="new">{t("badgeNew")}</option>
             <option value="featured">{t("badgeFeatured")}</option>

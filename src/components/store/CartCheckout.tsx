@@ -168,7 +168,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <label className="label" htmlFor="co-city">{L.deliverTo}</label>
           <select
             id="co-city"
-            className="input"
+            className="select"
             value={city}
             onChange={(e) => {
               setCity(e.target.value);
@@ -187,7 +187,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         {zone && zone.areas.length > 0 && (
           <div>
             <label className="label" htmlFor="co-area">{L.area}</label>
-            <select id="co-area" name="areaId" className="input" value={area} onChange={(e) => setArea(e.target.value)} required>
+            <select id="co-area" name="areaId" className="select" value={area} onChange={(e) => setArea(e.target.value)} required>
               <option value="" disabled>{L.chooseArea}</option>
               {zone.areas.map((a) => (
                 <option key={a.id} value={a.id}>
