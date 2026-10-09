@@ -774,3 +774,15 @@ export async function storeStats(database: Db, storeId: string, now = new Date()
     openOrders: Number(row?.openOrders ?? 0),
   };
 }
+
+/** Orders with their item lines for the seller CSV export (store-scoped; newest first; max 2000). */
+export async function listOrdersForExport(database: Db, storeId: string, opts: { status?: OrderStatus } = {}) {
+  const rows = await database.query.orders.findMany({
+    where: opts.status ? and(eq(orders.storeId, storeId), eq(orders.status, opts.status)) : eq(orders.storeId, storeId),
+    orderBy: desc(orders.createdAt),
+    limit: 2000,
+  });
+  if (rows.length === 0) return [];
+  const items = await database.query.orderItems.findMany({ where: inArray(orderItems.orderId, rows.map((r) => r.id)) });
+  return rows.map((o) => ({ ...o, items: items.filter((i) => i.orderId === o.id) }));
+}
