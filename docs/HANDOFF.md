@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+- Oct 9 20:xx Agent B: checkout "Order via WhatsApp" fallback button (lib/checkout-fallback.ts, 4 locales). Gate: vitest 450, mobile 5/5, smoke OK. Next: per-city ETA / save-my-details.
+
 ### 2026-10-09 19:00 Agent B: order page map link
 agentb/call-map-links: Map button on seller order page (lib/maps.ts, 4 locales, tests/maps.test.ts).
 
