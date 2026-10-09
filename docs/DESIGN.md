@@ -11,6 +11,6 @@ Source of truth: `src/app/globals.css` (`@theme`). Brand: Sun Gold, Deep Ink, Mo
 
 ## Status
 - [x] Foundation tokens, motion, skeleton, press states (this branch)
-- [ ] Primitives: Select, Badge, Sheet, Toast, Empty state components
+- [~] Primitives: Badge + EmptyState done (badge*, empty-state utilities, ui/EmptyState); Select, Sheet, Toast pending
 - [ ] Self-hosted Kurdish subset font + line-height tuning
 - [ ] Storefront: home, product, cart, checkout, order status

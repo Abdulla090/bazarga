@@ -203,3 +203,19 @@ body {
     page: slip;
   }
 }
+
+@utility badge {
+  @apply inline-flex min-h-6 items-center gap-1 rounded-full border border-line bg-paper px-2.5 text-xs font-semibold leading-none text-ink-70;
+}
+@utility badge-gold {
+  @apply badge border-gold/40 bg-gold/15 text-ink;
+}
+@utility badge-green {
+  @apply badge border-green/30 bg-green/10 text-green;
+}
+@utility badge-danger {
+  @apply badge border-danger/30 bg-danger/5 text-danger;
+}
+@utility empty-state {
+  @apply flex flex-col items-center gap-2 rounded-[var(--radius-card)] border border-dashed border-line bg-paper px-6 py-10 text-center;
+}
