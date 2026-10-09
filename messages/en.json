@@ -731,6 +731,7 @@
     "checked": "Last checked {time}",
     "neverChecked": "Not checked with the provider yet",
     "checkNow": "Check payment now",
+    "remind": "Remind customer to pay on WhatsApp",
     "expired": "Not paid within {minutes} minutes, so this order was cancelled and its stock released.",
     "paidAfterExpiry": "The customer paid after this order expired. Contact them to deliver it or refund the payment.",
     "noAttempts": "No payment was started for this order.",
