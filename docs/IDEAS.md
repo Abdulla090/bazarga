@@ -11,7 +11,9 @@
 - [done] Google Maps link on the order page from city + landmark (call already existed). Owner: Agent B.
 - [done] Seller quick-reply WhatsApp templates (confirmed / on the way / need landmark) on the order page. Owner: Agent B (agentb/quick-replies).
 - [done agentb] Free-delivery progress bar in cart ("add 8,000 IQD for free delivery"). Why: lifts basket size on mobile with zero seller effort. Owner: unassigned.
-- [proposed] "Order via WhatsApp" fallback button on checkout when the form fails on weak 3G. Why: Iraqi mobile networks drop; a pre-filled WhatsApp message saves the sale. Owner: unassigned.
+- [done agentb/checkout-whatsapp-fallback] "Order via WhatsApp" fallback button on checkout when the form fails on weak 3G. Why: Iraqi mobile networks drop; a pre-filled WhatsApp message saves the sale. Owner: unassigned.
 - [proposed] Seller "restock" alert: WhatsApp-ready note when a product hits 0 stock. Why: sellers lose sales silently on sold-out items. Owner: unassigned.
 - [proposed] Shopper can drop a WhatsApp location pin on checkout (optional link field) so couriers skip phone calls. Why: landmark addresses cause failed deliveries. Owner: unassigned.
 - [proposed] "Delivered? Rate us" one-tap WhatsApp message after delivered status. Why: reviews build trust for new Instagram stores. Owner: unassigned.
+- [proposed] Seller "price list image" auto-generator: one tall branded PNG of in-stock products + prices to post as an Instagram story. Why: sellers screenshot their catalogue by hand. Owner: unassigned.
+- [proposed] Shopper "save my details" on checkout (name/phone/landmark remembered on-device). Why: repeat buyers retype the same address on slow mobile. Owner: unassigned.

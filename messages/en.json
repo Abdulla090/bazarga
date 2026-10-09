@@ -465,6 +465,7 @@
     "removeCode": "Remove",
     "discount": "Discount",
     "codeApplied": "{code} applied",
+    "orderViaWhatsapp": "Order via WhatsApp instead",
     "freeDeliveryUnlocked": "You get free delivery",
     "freeDeliveryProgress": "Add {amount} more for free delivery",
     "placing": "Placing your order…",

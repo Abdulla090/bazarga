@@ -12,6 +12,7 @@ import { formatIQD } from "@/lib/money";
 import { PAYMENT_LABEL, type PaymentMethod } from "@/lib/order-status";
 import type { Locale } from "@/lib/i18n";
 import { shopperCityCookie } from "@/lib/shopper-city";
+import { checkoutFallbackLink } from "@/lib/checkout-fallback";
 import { ViewPixel } from "./ViewPixel";
 
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
@@ -19,7 +20,7 @@ const OTHER = "__other";
 
 
 
-export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity }: { labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {
+export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity, whatsapp, storeName }: { whatsapp?: string | null; storeName?: string; labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {
   const te = (k: string) => L.errors[k] ?? L.errors.generic ?? k;
   const router = useRouter();
   const { lines, setQty, clear } = useCart(slug);
@@ -65,6 +66,10 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   }
 
   const available = quote?.lines.filter((l) => l.available) ?? [];
+  const waFallback = checkoutFallbackLink(
+    { whatsapp, storeName: storeName ?? "", lines: available, total: quote?.total, cityName: zones.find((z) => z.key === city)?.name },
+    locale,
+  );
 
   function submit(fd: FormData) {
     setError(undefined);
@@ -288,6 +293,11 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <button className="btn-gold" disabled={placing || !available.length || !city}>
           {placing ? L.placing : L.placeOrder}
         </button>
+        {waFallback && (
+          <a href={waFallback} target="_blank" rel="noopener noreferrer" className="btn min-h-12 bg-whatsapp text-ink hover:brightness-95" data-testid="checkout-whatsapp-fallback">
+            {L.orderViaWhatsapp}
+          </a>
+        )}
       </form>
     </div>
   );
