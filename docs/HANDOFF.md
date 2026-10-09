@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log (newest first)
 
+- Oct 9 18:00 Agent B: cart free-delivery progress bar (agentb/free-delivery-bar), gate green.
+
 ### Oct 9 17:00 Agent B: quick-reply WhatsApp templates (agentb/quick-replies)
 Order page gets 3 one-tap WhatsApp replies (confirmed, on the way, need landmark) in the shopper's locale. src/lib/quick-replies.ts + tests. No migration.
 
