@@ -95,8 +95,8 @@ for (const id of listed) {
 ok(!!sale, "one demo product is on sale (compare-at price, % off badge)");
 const enHome = await (await fetch(`${BASE}/s/hawler-bazaar`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok(
-  enHome.includes('data-testid="best-sellers"') && enHome.includes("Best sellers") && enHome.includes('data-testid="offers-strip"') && /data-testid="offer-code"[^>]*>NEWROZ</.test(enHome),
-  "store home shows best sellers (from orders), the offers strip and the NEWROZ offer banner",
+  enHome.includes('data-testid="best-sellers"') && enHome.includes("Best sellers") && enHome.includes('data-testid="offers-strip"') && /data-testid="offer-code"[^>]*>SAVE10</.test(enHome),
+  "store home shows best sellers (from orders), the offers strip and the SAVE10 offer banner",
 );
 const offersPage = await (await fetch(`${BASE}/s/hawler-bazaar?offers=1`, { headers: { Cookie: "mm_locale=en" } })).text();
 ok((offersPage.match(/<article/g) ?? []).length === 2 && !offersPage.includes('data-testid="best-sellers"'), "offers filter lists only the 2 discounted products");

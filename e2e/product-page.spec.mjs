@@ -49,7 +49,7 @@ test("product page: info first, gallery, viewer, offers, details and JSON-LD (ku
   await expect(page.getByTestId("pct-off")).toContainText("17");
   await expect(page.getByTestId("you-save")).toBeVisible();
   await expect(page.getByTestId("badge-best").first()).toContainText("پڕفرۆشترین"); // on the gallery photo
-  await expect(page.getByTestId("offer-code")).toHaveText("NEWROZ");
+  await expect(page.getByTestId("offer-code")).toHaveText("SAVE10");
   await expect(page.getByTestId("free-delivery-note")).toBeVisible();
 
   await expect(page.getByTestId("gallery-counter")).toHaveText("1/4");
@@ -106,7 +106,7 @@ test("store home: offer banner, best sellers, offers strip and filter (ku, 360px
   const page = await context.newPage();
   await page.goto(`/s/${SLUG}`, { waitUntil: "networkidle" });
   await expect(page.getByTestId("offer-banner")).toBeVisible();
-  await expect(page.getByTestId("offer-code")).toHaveText("NEWROZ");
+  await expect(page.getByTestId("offer-code")).toHaveText("SAVE10");
   // Seeded orders: honey ×3, dress ×2, scarf ×1 (a cancelled skincare order doesn't count); the overflow spec's
   // setup may have added one more order, so the scarf can reach 2 orders and its own badge.
   await expect(page.getByTestId("best-sellers").locator("li")).toHaveCount(3);
