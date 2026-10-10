@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 11 01:20 Agent B: layout v3 step 5 (states)
+Route skeletons, storefront error state, empty states, focus ring. Gate green (vitest 453, mobile 5/5, smoke; product 160.5 KiB). Next: step 6 cart composition.
+
 ### Oct 11 00:45 Agent B: layout v3 step 4 (add-to-cart drawer)
 Slide-over 'Added to cart' dialog + header count bump; shared mm:cart-added event. Gate green (vitest 453, mobile 5/5, smoke; product 159.7 KiB). Next: step 5 states.
 
