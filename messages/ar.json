@@ -521,7 +521,7 @@
     "contact": "تواصل",
     "language": "اللغة",
     "collections": "تسوّق حسب القسم",
-    "itemsCount": "{count, plural, zero {لا منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+    "itemsCount": "المنتجات: {count}",
     "view": "عرض"
   },
   "errors": {

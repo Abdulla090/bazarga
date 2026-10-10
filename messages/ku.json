@@ -521,7 +521,7 @@
     "contact": "پەیوەندی",
     "language": "زمان",
     "collections": "پۆلەکان",
-    "itemsCount": "{count} کاڵا",
+    "itemsCount": "کاڵا: {count}",
     "view": "بینین"
   },
   "errors": {

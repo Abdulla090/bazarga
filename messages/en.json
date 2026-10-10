@@ -521,7 +521,7 @@
     "contact": "Contact",
     "language": "Language",
     "collections": "Shop by category",
-    "itemsCount": "{count, plural, one {# item} other {# items}}",
+    "itemsCount": "Products: {count}",
     "view": "View"
   },
   "errors": {

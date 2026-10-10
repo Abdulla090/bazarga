@@ -263,7 +263,7 @@
     "contact": "Têkilî",
     "language": "Ziman",
     "collections": "Li gorî kategoriyê",
-    "itemsCount": "{count} berhem",
+    "itemsCount": "Berhem: {count}",
     "view": "Bibîne"
   },
   "pwa": {
