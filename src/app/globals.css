@@ -474,3 +474,7 @@ html:lang(ar) .t-label { font-variant-numeric: normal; }
 .cart-bump { animation: cart-bump 300ms var(--ease-out-expo); }
 /* The page behind the open drawer doesn't scroll. */
 html:has(dialog.cart-drawer[open]) { overflow: hidden; }
+
+/* Focus (Layout v3 §6): 2 px blue ring at 2 px offset everywhere in the storefront; never removed, only refined. */
+.storefront :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+/* Skeleton blocks are shapes only: no shimmer for people who asked for less motion (global rule stops it at one frame). */

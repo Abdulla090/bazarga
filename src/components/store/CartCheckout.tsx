@@ -72,8 +72,8 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
 
   if (!lines.length) {
     return (
-      <div className="mx-auto grid max-w-md justify-items-center gap-6 py-16 text-center sm:py-24">
-        <p className="display text-[28px] sm:text-[40px]">{L.emptyCart}</p>
+      <div className="mx-auto grid max-w-xl justify-items-center gap-8 py-20 text-center sm:py-32" data-testid="empty-cart">
+        <p className="t-display">{L.emptyCart}</p>
         <Link href={`/s/${slug}`} className="btn-gold min-h-12 px-7">{L.continue}</Link>
       </div>
     );

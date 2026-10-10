@@ -257,7 +257,14 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         )}
 
         {items.length === 0 ? (
-          <p className="border-y border-st-border py-12 text-center text-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
+          <div className="grid justify-items-center gap-6 border-y border-st-border px-4 py-16 text-center sm:py-24" data-testid="empty-results">
+            <p className="t-headline max-w-xl break-words">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
+            {(q || c || offers) && (
+              <Link href={`${homeHref(slug, {})}#products`} className="btn-ghost min-h-12 px-7">
+                {q ? t("clearSearch") : t("all")}
+              </Link>
+            )}
+          </div>
         ) : (
           <div className="grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-y-12">
             {items.map((p, i) => (
