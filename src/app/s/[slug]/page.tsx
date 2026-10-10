@@ -188,13 +188,13 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         testId="offers-strip"
       />
       {(best.length > 0 || saleStrip.length > 0 || offers) && items.length > 0 && (
-        <div className="mt-8 sm:mt-14"><SectionHead title={offers ? t("offers") : t("allProducts")} testId="grid-title" /></div>
+        <div className="section"><SectionHead title={offers ? t("offers") : t("allProducts")} testId="grid-title" /></div>
       )}
 
       {items.length === 0 ? (
         <p className="border-y border-st-border py-12 text-center text-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
       ) : (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-x-5 sm:gap-y-12">
+        <div className="grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-y-12">
           {items.map((p, i) => (
             <div key={p.id} id={`p${i}`} className="scroll-mt-24">
               <ProductCard p={p} slug={store.slug} locale={locale} index={i} labels={cardLabels} />

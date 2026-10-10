@@ -517,7 +517,9 @@
     "freeDeliveryOverShort": "گەیاندنی بەخۆڕایی سەرووی {amount}",
     "shopNow": "ئێستا بیکڕە",
     "copyCode": "کۆپی",
-    "codeCopied": "کۆپی کرا"
+    "codeCopied": "کۆپی کرا",
+    "contact": "پەیوەندی",
+    "language": "زمان"
   },
   "errors": {
     "generic": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.",

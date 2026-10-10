@@ -324,3 +324,90 @@ html:lang(ar) .display {
     animation: none !important;
   }
 }
+
+/* ---- Layout v3 "Composed Commerce" (docs/LAYOUT-V3.md) ---- */
+/* 12-col grid, 8 px spacing scale, modular type. Storefront only; the dashboard keeps container-page. */
+:root {
+  --page-max: 80rem;
+  --page-margin: 1rem;
+  --grid-gap: 0.75rem;
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-6: 1.5rem; --s-8: 2rem;
+  --s-12: 3rem; --s-16: 4rem; --s-24: 6rem; --s-32: 8rem;
+  --section-gap: var(--s-16);
+}
+@media (min-width: 640px) { :root { --page-margin: 1.5rem; --grid-gap: 1rem; --section-gap: var(--s-24); } }
+@media (min-width: 1024px) { :root { --page-margin: 2.5rem; --grid-gap: 1.5rem; --section-gap: var(--s-32); } }
+
+/* overflow-x: clip (not hidden) so full-bleed bands never widen the page and position: sticky keeps working. */
+.storefront { overflow-x: clip; }
+
+@utility store-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: calc(var(--page-max) + 2 * var(--page-margin));
+  padding-inline: var(--page-margin);
+}
+/* 12 columns from 768 px, 4 below. */
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  @media (min-width: 768px) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+/* Vertical rhythm between top-level sections: 64 phone / 96 tablet / 128 desktop. */
+@utility section { margin-top: var(--section-gap); }
+/* Full-bleed band from inside the page container (the storefront clips horizontal overflow). */
+@utility bleed {
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+}
+
+/* Type scale (ratio ≈ 1.333). Light display weights, tight Latin tracking; Arabic script keeps 0 tracking. */
+@utility t-hero {
+  font-weight: 350;
+  font-size: 3.25rem;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  @media (min-width: 768px) { font-size: clamp(4rem, 8.5vw, 8rem); line-height: 0.92; }
+}
+@utility t-display {
+  font-weight: 350;
+  font-size: 2.25rem;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  @media (min-width: 1024px) { font-size: 3.5rem; line-height: 1; }
+}
+@utility t-headline {
+  font-weight: 350;
+  font-size: 1.75rem;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  @media (min-width: 1024px) { font-size: 2.5rem; line-height: 1.05; }
+}
+@utility t-title {
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  @media (min-width: 1024px) { font-size: 1.5rem; }
+}
+@utility t-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+html:lang(ckb) :is(.t-hero, .t-display, .t-headline, .t-title, .t-label),
+html:lang(ar) :is(.t-hero, .t-display, .t-headline, .t-title, .t-label) {
+  letter-spacing: 0;
+}
+html:lang(ckb) :is(.t-hero, .t-display, .t-headline),
+html:lang(ar) :is(.t-hero, .t-display, .t-headline) {
+  font-weight: 400;
+  line-height: 1.25;
+}
+/* Section index ("01"): the only ornament. */
+.section-index { font-family: var(--font-latin); color: color-mix(in srgb, var(--st-fg) 40%, transparent); }
