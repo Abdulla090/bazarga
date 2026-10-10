@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 23:10 Agent B: redesign step 7 (cart/checkout/order status)
+Cart, checkout, confirmation, tracking and payment panel on the v2 system (hairline lists, display headings, monochrome timeline, no green/gold fills). Gate green (vitest 453, mobile 5/5, smoke). Redesign v2 steps 1-7 complete; final screenshots next.
+
 ### Oct 10 22:45 Agent B: redesign step 6 (motion)
 Scroll-driven reveals (pure CSS, fallback = no animation) + product image shared-element View Transition from card to product page; all motion off under prefers-reduced-motion. Gate green (vitest 453, mobile 5/5, smoke). Next: step 7 cart/checkout/order status.
 
