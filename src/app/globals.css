@@ -241,3 +241,7 @@ body {
 @utility sheet {
   @apply animate-sheet-in fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl bg-paper p-5 shadow-e3;
 }
+
+/* order thank-you: success icon pop (CSS only, reduced-motion neutralised globally) */
+@keyframes success-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+.order-success-ring{animation:success-pop var(--duration-slow,250ms) var(--ease-out-expo,ease-out) both}

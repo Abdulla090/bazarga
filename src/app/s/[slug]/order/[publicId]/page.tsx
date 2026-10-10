@@ -63,8 +63,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 
   return (
     <div className="mx-auto grid max-w-lg gap-4">
-      <div className="card text-center">
-        <Icon as={CircleCheck} className="text-5xl text-green" />
+      <div className="card text-center shadow-e2">
+        <span className="order-success-ring mx-auto grid size-20 place-items-center rounded-full bg-green/10"><Icon as={CircleCheck} className="text-5xl text-green" /></span>
         <h1 className="mt-2 text-2xl font-extrabold">{t("orderReceived")}</h1>
         <p className="num mt-1 text-lg font-bold"><bdi>{t("orderNumber", { number: order.number })}</bdi></p>
         <p className="mt-2 text-ink-70">{t("orderThanks", { name: order.customerName })}</p>
@@ -78,7 +78,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
         </a>
       )}
 
-      <div className="card">
+      <div className="card shadow-e1">
         <ul className="divide-y divide-line">
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-2 py-2">
