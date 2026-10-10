@@ -14,3 +14,4 @@ Source of truth: `src/app/globals.css` (`@theme`). Brand: Sun Gold, Deep Ink, Mo
 - [~] Primitives: Badge + EmptyState done (badge*, empty-state utilities, ui/EmptyState); Select done (`select` utility, chevron flips in RTL); Toast + Sheet utilities and ui/Toast done
 - [ ] Self-hosted Kurdish subset font + line-height tuning
 - [~] Storefront: product card elevation+hover done; home, product, cart, checkout, order status
+- [~] Cart: line cards elevation, 80px thumbs, pill stepper; ku/ar line-height 1.75
