@@ -264,7 +264,10 @@
     "language": "Ziman",
     "collections": "Li gorî kategoriyê",
     "itemsCount": "Berhem: {count}",
-    "view": "Bibîne"
+    "view": "Bibîne",
+    "addedToCart": "Li selikê hate zêdekirin",
+    "viewCart": "Selikê bibîne",
+    "inCart": "Di selika te de: {count}"
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

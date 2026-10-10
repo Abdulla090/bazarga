@@ -522,7 +522,10 @@
     "language": "Language",
     "collections": "Shop by category",
     "itemsCount": "Products: {count}",
-    "view": "View"
+    "view": "View",
+    "addedToCart": "Added to cart",
+    "viewCart": "View cart",
+    "inCart": "In your cart: {count}"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

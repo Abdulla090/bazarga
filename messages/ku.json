@@ -522,7 +522,10 @@
     "language": "زمان",
     "collections": "پۆلەکان",
     "itemsCount": "کاڵا: {count}",
-    "view": "بینین"
+    "view": "بینین",
+    "addedToCart": "خرایە سەبەتەوە",
+    "viewCart": "بینینی سەبەتە",
+    "inCart": "لە سەبەتەکەتدا: {count}"
   },
   "errors": {
     "generic": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.",

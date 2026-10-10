@@ -159,7 +159,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
       </section>
 
-      <form action={submit} className="grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24" data-testid="checkout-form">
+      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24" data-testid="checkout-form">
         <h2 className="display text-[22px] sm:text-[28px]">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">

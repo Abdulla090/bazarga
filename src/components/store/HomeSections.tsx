@@ -141,6 +141,7 @@ export function Spotlight({
                 slug={slug}
                 productId={p.id}
                 labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
                 className="btn-ghost min-h-12 flex-1 px-8 sm:flex-none"
               />
             )}
