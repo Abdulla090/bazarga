@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 23:55 Agent B: layout v3 step 2 (home composition)
+Asymmetric hero, collections bento, count-aware sets (no half rows), spotlight band, numbered sections, header search. Gate green (vitest 453, mobile 5/5, smoke). Next: step 3 product page.
+
 ### Oct 10 23:30 Agent B: layout v3 step 1 (foundation)
 Grid/spacing/type tokens, wider page, section rhythm, new footer + sign-off. Gate green (vitest, build, budget: home 154.1 / product 158.8 KiB, mobile, smoke). Next: step 2 home composition.
 
