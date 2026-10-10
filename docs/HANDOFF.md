@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 22:20 Agent B: redesign step 4 (product page declutter)
+One hairline trust row (3 items) + accordions; no you-save / duplicate coupon / delivery banner / WhatsApp tile; buy bar only after the buttons scroll out, with page padding. e2e product spec + smoke updated (trust row = 3, no you-save/product-offers). Gate green (vitest 453, mobile 5/5, smoke). Next: step 5 neutral seed.
+
 ### Oct 10 21:55 Agent B: redesign step 3 (cards + grids/rails)
 Dawn-style cards (4:5, title+price, one bottom-start badge, desktop hover pill), auto-fill grid, scroll-snap rails, outline chips, pill search, one-line coupon row with copy pill. Gate: typecheck, lint, vitest 453, build, budget, mobile 5/5, smoke green. Next: step 4 product page.
 
