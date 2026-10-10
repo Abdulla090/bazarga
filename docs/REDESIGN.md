@@ -34,7 +34,7 @@ Raw studies: docs/design-study/elevenlabs.md, docs/design-study/shopify.md. This
 - Replace seed photos with neutral modern product shots (ceramics, candles, headphones, tote, skincare, tees) on plain backgrounds, and a neutral store name (e.g. "Hawler Studio" → "Studio Hawler" is fine; avoid "Bazaar"). Keep slug for tests or update tests.
 
 ## Rollout order (one per loop run, each with 390 ku + 1280 en screenshots reviewed)
-1. Tokens + Button (two variants) + chips + badge colours.
+1. Tokens + Button (two variants) + chips + badge colours. **DONE (Oct 10 20:xx)**: btn-gold=ink pill, btn-ghost=ink outline pill, WhatsApp outline, Sale badge blue, canvas #FAFAF9.
 2. Header + hero.
 3. Product card + grids/rails.
 4. Product page declutter + sticky bar fix.

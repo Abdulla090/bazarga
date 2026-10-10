@@ -73,7 +73,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       {order.paymentMethod !== "cod" && <PaymentPanel labels={pickLabels((k) => t(k), PAYMENT_PANEL_KEYS)} slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />}
 
       {sellerPhone && (
-        <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn min-h-14 bg-whatsapp text-ink hover:brightness-95">
+        <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn btn-ghost min-h-14">
           <Icon as={MessageCircle} /> {t("messageSeller")}
         </a>
       )}

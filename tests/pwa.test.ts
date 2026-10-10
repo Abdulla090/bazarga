@@ -10,7 +10,7 @@ describe("web app manifest", () => {
     expect(m.dir).toBe("rtl");
     expect(m.lang).toBe("ku");
     expect(m.theme_color).toBe("#0A0A0B");
-    expect(m.background_color).toBe("#FAFAFB");
+    expect(m.background_color).toBe("#FAFAF9");
     expect(m.display).toBe("standalone");
   });
   it("ships maskable 192/512 PNG icons that exist on disk", () => {

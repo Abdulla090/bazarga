@@ -162,7 +162,7 @@ function TrackedOrderView({
           href={waLink(sellerPhone, t("waAbout", { store: storeName, number: order.number }))}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn min-h-14 bg-whatsapp text-ink hover:brightness-95"
+          className="btn btn-ghost min-h-14"
           data-testid="track-whatsapp"
         >
           <Icon as={MessageCircle} /> {t("askStore")}

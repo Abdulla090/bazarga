@@ -338,7 +338,7 @@ export function ProductBuy({
 
         <div className="flex flex-wrap gap-2">
           {waHref && (
-            <WaTap slug={slug} href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-sm flex-1 bg-whatsapp text-[#0b3d1f] hover:brightness-95">
+            <WaTap slug={slug} href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm flex-1">
               <Icon as={MessageCircle} /> {labels.askWhatsApp}
             </WaTap>
           )}

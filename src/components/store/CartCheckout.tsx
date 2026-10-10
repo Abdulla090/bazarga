@@ -311,7 +311,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           {placing ? L.placing : L.placeOrder}
         </button>
         {waFallback && (
-          <a href={waFallback} target="_blank" rel="noopener noreferrer" className="btn min-h-12 bg-whatsapp text-ink hover:brightness-95" data-testid="checkout-whatsapp-fallback">
+          <a href={waFallback} target="_blank" rel="noopener noreferrer" className="btn btn-ghost min-h-12" data-testid="checkout-whatsapp-fallback">
             {L.orderViaWhatsapp}
           </a>
         )}

@@ -15,8 +15,8 @@
   --color-green: #1f8a5b;
   /* Mountain Green for white text (AA 5.3:1); plain green is for icons/large text. */
   --color-green-deep: #1a7a50;
-  --color-paper: #fafafb;
-  --color-line: #e5e7eb;
+  --color-paper: #fafaf9;
+  --color-line: #e7e5e4;
   --color-danger: #b42318;
   --color-whatsapp: #25d366;
 
@@ -55,15 +55,15 @@
 
 /* Defaults = "bazaar" preset (src/lib/theme.ts PRESET_TOKENS.bazaar). */
 :root {
-  --st-bg: #fafafb;
+  --st-bg: #fafaf9;
   --st-surface: #ffffff;
   --st-fg: #0a0a0b;
   --st-muted: #4b5563;
-  --st-border: #e5e7eb;
+  --st-border: #e7e5e4;
   --st-accent: #2563eb;
   --st-on-accent: #ffffff;
   --st-hero: #0a0a0b;
-  --st-on-hero: #fafafb;
+  --st-on-hero: #fafaf9;
   --st-radius: 1rem;
 }
 
@@ -114,18 +114,18 @@ body {
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
 }
 @utility btn {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-base font-semibold
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium
     transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out
     active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
 }
 @utility btn-gold {
-  @apply btn bg-gold text-on-gold hover:bg-gold-600 active:translate-y-px;
+  @apply btn bg-ink text-paper hover:opacity-85 active:translate-y-px;
 }
 @utility btn-ink {
   @apply btn bg-ink text-paper hover:bg-ink-70;
 }
 @utility btn-ghost {
-  @apply btn border border-line bg-white text-ink hover:border-ink-50;
+  @apply btn border border-ink bg-white text-ink hover:bg-paper;
 }
 @utility btn-danger {
   @apply btn border border-danger/30 bg-white text-danger hover:bg-danger/5;
@@ -219,7 +219,7 @@ body {
   @apply inline-flex min-h-6 items-center gap-1 rounded-full border border-line bg-paper px-2.5 text-xs font-semibold leading-none text-ink-70;
 }
 @utility badge-gold {
-  @apply badge border-gold/40 bg-gold/15 text-ink;
+  @apply badge border-gold bg-gold text-on-gold;
 }
 @utility badge-green {
   @apply badge border-green/30 bg-green/10 text-green;
