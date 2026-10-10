@@ -267,7 +267,8 @@
     "view": "Bibîne",
     "addedToCart": "Li selikê hate zêdekirin",
     "viewCart": "Selikê bibîne",
-    "inCart": "Di selika te de: {count}"
+    "inCart": "Di selika te de: {count}",
+    "addNote": "Notekê ji firoşkar re zêde bike"
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

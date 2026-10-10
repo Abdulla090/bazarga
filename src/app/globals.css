@@ -478,3 +478,7 @@ html:has(dialog.cart-drawer[open]) { overflow: hidden; }
 /* Focus (Layout v3 §6): 2 px blue ring at 2 px offset everywhere in the storefront; never removed, only refined. */
 .storefront :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
 /* Skeleton blocks are shapes only: no shimmer for people who asked for less motion (global rule stops it at one frame). */
+
+/* Phone checkout: the Place-order bar rides the bottom of the screen, except while a field is being edited (the
+   on-screen keyboard is up and the bar would cover the field) — then it drops back into the form's flow. */
+form:has(:is(input, textarea, select):focus) .co-submit { position: static; }
