@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 22:45 Agent B: redesign step 6 (motion)
+Scroll-driven reveals (pure CSS, fallback = no animation) + product image shared-element View Transition from card to product page; all motion off under prefers-reduced-motion. Gate green (vitest 453, mobile 5/5, smoke). Next: step 7 cart/checkout/order status.
+
 ### Oct 10 22:25 Agent B: redesign step 5 (neutral seed)
 'Studio Hawler' demo store with 4 generated studio product photos + still-life hero (webp srcsets regenerated). e2e/support + product spec updated for new names. Gate green (vitest 453, mobile 5/5, smoke). Next: step 6 motion.
 
