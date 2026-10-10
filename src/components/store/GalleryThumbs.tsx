@@ -42,7 +42,7 @@ export default function GalleryThumbs({
             onClick={() => onPick(i)}
             aria-label={`${label.photo} ${i + 1} ${label.of} ${images.length}`}
             aria-current={i === active || undefined}
-            className={`block h-14 w-14 overflow-hidden rounded-xl border-2 md:h-auto md:w-full ${i === active ? "border-st-fg" : "border-transparent opacity-70 hover:opacity-100"}`}
+            className={`block h-14 w-14 overflow-hidden rounded-xl border bg-[#F4F4F5] md:h-auto md:w-full ${i === active ? "border-st-fg" : "border-transparent opacity-70 hover:opacity-100"}`}
           >
             <ResponsiveImage image={img} alt="" sizes={SIZES.thumb} index={i} aboveTheFold={0} className="aspect-square h-full w-full object-cover" />
           </button>

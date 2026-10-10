@@ -286,3 +286,7 @@ html:lang(ar) .display {
 /* Horizontal product rails: scroll-snap, no visible scrollbar. */
 .rail { scrollbar-width: none; overscroll-behavior-x: contain; }
 .rail::-webkit-scrollbar { display: none; }
+/* Phone buy bar (ProductBuy) is up: pad the storefront so the bar never covers the footer or the last section. */
+@media (max-width: 767px) {
+  html[data-buybar] .storefront { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+}

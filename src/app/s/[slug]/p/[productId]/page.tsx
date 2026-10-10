@@ -7,15 +7,12 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { loadStore } from "../../data";
-import { getCatalog, getProductDetail, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
+import { getCatalog, getProductDetail, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { env } from "@/server/env";
 import { NONCE_HEADER } from "@/server/csp";
 import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
-import { normalizePhone } from "@/lib/phone";
-import { waLink } from "@/lib/whatsapp";
-import { WaTap } from "@/components/store/WaTap";
 import {
   absoluteUrl,
   descriptionParagraphs,
@@ -26,13 +23,11 @@ import {
 } from "@/lib/product-page";
 import { ProductGallery } from "@/components/store/ProductGallery";
 import { ProductBuy, type BuyLabels } from "@/components/store/ProductBuy";
-import { DeliveryInfo, etaText } from "@/components/store/DeliveryInfo";
+import { DeliveryInfo } from "@/components/store/DeliveryInfo";
 import { ProductStrip } from "@/components/store/MiniProductCard";
 import { MerchBadges } from "@/components/store/MerchBadges";
-import { OfferBanner } from "@/components/store/OfferBanner";
-import { merchLabels, offerLabels } from "@/components/store/merch-labels";
-import { pickBannerOffer } from "@/lib/merch";
-import { ArrowBack, Banknote, Icon, MessageCircle, Truck, Undo2 } from "@/components/ui/icons";
+import { merchLabels } from "@/components/store/merch-labels";
+import { ArrowBack, Banknote, ChevronDown, Icon, Truck, Undo2 } from "@/components/ui/icons";
 
 /** Descriptions longer than this (or with more than two paragraphs) start clamped with a "Read more" toggle. */
 const LONG_DESCRIPTION = 280;
@@ -69,24 +64,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-/** Whole trust tile is the tap target (≥ 44 px). */
-const trustLink = "flex min-h-11 w-full items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1 transition-[border-color,box-shadow,transform] duration-200 hover:shadow-e2 active:scale-[0.98] motion-reduce:transition-none";
-const section = "group rounded-[var(--radius-card)] border border-st-border bg-st-surface shadow-e1";
+const section = "group border-b border-st-border";
 const summary =
-  "flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 font-bold [&::-webkit-details-marker]:hidden";
-const chevron = (
-  <span aria-hidden className="text-lg leading-none text-st-muted transition-transform group-open:rotate-180">
-    ⌄
-  </span>
-);
+  "flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-medium [&::-webkit-details-marker]:hidden";
+const chevron = <Icon as={ChevronDown} className="text-muted transition-transform duration-150 group-open:rotate-180" />;
+/** One item of the hairline trust row: small icon over a short label. */
+const trustItem = "flex min-h-11 flex-col items-center justify-start gap-1.5 px-1.5 py-3 text-center text-xs leading-snug text-balance text-muted";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string; productId: string }> }) {
   const { slug, productId } = await params;
   const { store, p } = await load(slug, productId);
-  const [settings, catalog, codes, t, tc, locale, nonce] = await Promise.all([
+  const [settings, catalog, t, tc, locale, nonce] = await Promise.all([
     getStorefrontSettings(store.id),
     getCatalog(store.id),
-    getStoreOffers(store.id),
     getTranslations("store"),
     getTranslations("common"),
     currentLocale(),
@@ -117,19 +107,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     decrease: t("decrease"),
     increase: t("increase"),
     percentOff: t.raw("percentOff") as string,
-    youSave: t.raw("youSave") as string,
   };
   const badges = merchLabels(t);
-  const offer = pickBannerOffer(codes);
   const longDescription = description.length > LONG_DESCRIPTION || paragraphs.length > 2;
   const shareUrl = `${base()}/s/${store.slug}/p/${p.id}`;
-  const wa = normalizePhone(store.whatsapp ?? store.phone ?? "");
 
   // Trust row: delivery to the home city (the checkout's default city) with fee + ETA.
   const rememberedCity = (await cookies()).get(shopperCityCookie(store.slug))?.value;
   const home = pickDeliveryZone(settings.zones, rememberedCity, store.city);
-  const tt = t as unknown as (k: string, v?: Record<string, number>) => string;
-  const homeEta = home ? etaText(tt, home.etaMinDays, home.etaMaxDays) : null;
   const homeFee = home ? (home.fee === 0 ? t("free") : formatIQD(home.fee, locale)) : null;
 
   // Catalog entry carries the computed price range / sold-out state used by the JSON-LD and related strip.
@@ -149,13 +134,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     // Bottom padding on phones so the sticky buy bar never covers the footer.
-    <div className="grid gap-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="grid gap-6">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <ViewPixel slug={store.slug} productId={p.id} />
-      <Link href={`/s/${store.slug}`} className="-mb-4 inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-st-muted md:-mb-2">
+      <Link href={`/s/${store.slug}`} className="-mb-4 -mt-3 inline-flex min-h-11 w-fit items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-st-fg md:-mb-2">
         <ArrowBack /> {tc("back")}
       </Link>
-      <div className="grid gap-5 md:grid-cols-2 md:gap-10">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-12 lg:gap-16">
         <div className="relative min-w-0 md:sticky md:top-24 md:h-fit">
           <ProductGallery
             images={p.images}
@@ -171,9 +156,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             }}
           />
           {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
-          <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="left" />
+          <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="gallery" />
         </div>
-        <div className="grid h-fit min-w-0 gap-5">
+        <div className="grid h-fit min-w-0 gap-8">
           <ProductBuy
             slug={store.slug}
             productId={p.id}
@@ -192,7 +177,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             whatsapp={store.whatsapp ?? store.phone}
             shareUrl={shareUrl}
             labels={labels}
-            title={<h1 className="text-2xl font-extrabold leading-tight sm:text-3xl" data-testid="product-name">{name}</h1>}
+            title={<h1 className="display text-[28px] sm:text-[40px]" data-testid="product-name">{name}</h1>}
             info={
               paragraphs.length > 0 ? (
                 <div className="grid gap-1" data-testid="product-summary">
@@ -200,7 +185,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     <>
                       {/* CSS-only "Read more": no client JS; the checkbox is the toggle, the label its visible control. */}
                       <input type="checkbox" id="desc-more" className="peer sr-only" />
-                      <div className="line-clamp-4 leading-relaxed text-st-muted peer-checked:line-clamp-none [&>p+p]:mt-2" data-testid="summary-text">
+                      <div className="line-clamp-4 text-[15px] leading-relaxed text-muted peer-checked:line-clamp-none [&>p+p]:mt-2" data-testid="summary-text">
                         <DescriptionText paragraphs={paragraphs} />
                       </div>
                       <label htmlFor="desc-more" className={`${moreLink} peer-checked:hidden`} data-testid="read-more">
@@ -211,7 +196,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       </label>
                     </>
                   ) : (
-                    <div className="leading-relaxed text-st-muted [&>p+p]:mt-2" data-testid="summary-text">
+                    <div className="text-[15px] leading-relaxed text-muted [&>p+p]:mt-2" data-testid="summary-text">
                       <DescriptionText paragraphs={paragraphs} />
                     </div>
                   )}
@@ -220,71 +205,41 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             }
           />
 
-          {/* Trust row */}
-          <ul className="grid grid-cols-2 gap-2 text-sm" data-testid="trust-row">
-            <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1">
-              <Icon as={Banknote} className="mt-0.5 shrink-0 text-st-accent" />
-              <span className="font-semibold">{t("trustCod")}</span>
+          {/* One hairline row: cash on delivery · delivery to the shopper's city · returns. */}
+          <ul className={`grid ${home && homeFee ? "grid-cols-3" : "grid-cols-2"} divide-x divide-st-border border-y border-st-border`} data-testid="trust-row">
+            <li className={trustItem}>
+              <Icon as={Banknote} className="h-5 w-5 text-st-fg" />
+              <span>{t("trustCod")}</span>
             </li>
             {home && homeFee && (
-              <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1">
-                <Icon as={Truck} className="mt-0.5 shrink-0 text-st-accent" />
-                <span className="font-semibold">
-                  {homeEta
-                    ? t("trustDeliveryEta", { city: pickText(home.name, locale), fee: homeFee, eta: homeEta })
-                    : t("trustDelivery", { city: pickText(home.name, locale), fee: homeFee })}
-                </span>
+              <li className={trustItem}>
+                <Icon as={Truck} className="h-5 w-5 text-st-fg" />
+                <span>{t("trustDelivery", { city: pickText(home.name, locale), fee: homeFee })}</span>
               </li>
             )}
             <li className="flex">
-              <a href="#delivery-returns" className={`${trustLink} hover:border-st-fg`}>
-                <Icon as={Undo2} className="mt-0.5 shrink-0 text-st-accent" />
-                <span className="font-semibold">{returnPolicy ? t("trustReturns") : t("trustNoReturns")}</span>
+              <a href="#delivery-returns" className={`${trustItem} w-full transition-colors duration-150 hover:text-st-fg`}>
+                <Icon as={Undo2} className="h-5 w-5 text-st-fg" />
+                <span>{returnPolicy ? t("trustReturns") : t("trustNoReturns")}</span>
               </a>
             </li>
-            {wa && (
-              <li className="flex">
-                <WaTap
-                  slug={slug}
-                  href={waLink(wa, [t("waIntro", { store: store.name }), name, shareUrl].join("\n"))}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${trustLink} hover:border-st-fg`}
-                >
-                  <Icon as={MessageCircle} className="mt-0.5 shrink-0 text-st-accent" />
-                  <span className="font-semibold">{t("trustAsk")}</span>
-                </WaTap>
-              </li>
-            )}
           </ul>
 
-          {(offer || store.freeDeliveryThreshold) && (
-            <div className="grid gap-2" data-testid="product-offers">
-              {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
-              {store.freeDeliveryThreshold ? (
-                <p className="flex items-center gap-2 rounded-xl border border-st-border bg-st-surface px-3 py-2 text-sm font-semibold" data-testid="free-delivery-note">
-                  <Icon as={Truck} className="shrink-0 text-st-accent" />
-                  <span>{t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}</span>
-                </p>
-              ) : null}
-            </div>
-          )}
-
-          <div className="grid gap-3">
+          <div className="-mt-4 grid">
             {specs.length > 0 && (
               <details className={section} open data-testid="section-details">
                 <summary className={summary}>
                   {t("detailsTitle")} {chevron}
                 </summary>
-                <div className="px-4 pb-4">
+                <div className="pb-5">
                   <table className="w-full border-collapse text-sm" data-testid="specs-table">
                     <tbody>
                       {specs.map((r, i) => (
                         <tr key={i} className="border-t border-st-border first:border-t-0">
-                          <th scope="row" className="w-2/5 py-2.5 pe-3 text-start align-top font-semibold text-st-muted">
+                          <th scope="row" className="w-2/5 py-2.5 pe-3 text-start align-top font-normal text-muted">
                             {r.label}
                           </th>
-                          <td className="py-2.5 align-top font-semibold">
+                          <td className="py-2.5 align-top">
                             <bdi>{r.value}</bdi>
                           </td>
                         </tr>
@@ -299,7 +254,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <summary className={summary}>
                 {t("deliveryReturnsTitle")} {chevron}
               </summary>
-              <div className="grid gap-3 px-4 pb-4">
+              <div className="grid gap-5 pb-5">
                 <DeliveryInfo
                   zones={settings.zones}
                   homeCity={store.city}
@@ -308,13 +263,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   locale={locale}
                 />
                 <div>
-                  <h3 className="mb-1 flex items-center gap-2 font-bold">
-                    <Icon as={Undo2} className="text-st-accent" /> {t("returnPolicy")}
-                  </h3>
+                  <h3 className="mb-1 text-[13px] font-medium">{t("returnPolicy")}</h3>
                   {returnPolicy ? (
-                    <p className="whitespace-pre-line text-sm leading-relaxed text-st-muted">{returnPolicy}</p>
+                    <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{returnPolicy}</p>
                   ) : (
-                    <p className="text-sm text-st-muted">{t("noReturnPolicy")}</p>
+                    <p className="text-sm text-muted">{t("noReturnPolicy")}</p>
                   )}
                 </div>
               </div>

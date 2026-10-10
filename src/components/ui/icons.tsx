@@ -15,6 +15,7 @@ import {
   Add01Icon,
   Alert02Icon,
   Analytics01Icon,
+  ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
   Cancel01Icon,
@@ -98,6 +99,7 @@ export const ArrowRight = ArrowRight01Icon;
 export const ArrowLeft = ArrowLeft01Icon;
 export const ChevronRight = ArrowRight01Icon;
 export const ChevronLeft = ArrowLeft01Icon;
+export const ChevronDown = ArrowDown01Icon;
 
 export type LucideIcon = IconSvgElement;
 export type IconProps = { label?: string; className?: string; size?: number | string; strokeWidth?: number };
