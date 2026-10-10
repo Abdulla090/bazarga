@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useCart } from "./cart";
+import { announceAdded, useCart, type AddedItem } from "./cart";
 
 export type AddToCartLabels = { add: string; added: string; soldOut: string };
 
@@ -10,12 +10,15 @@ export function AddToCart({
   productId,
   disabled,
   labels,
+  item,
   className = "btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur",
 }: {
   slug: string;
   productId: string;
   disabled?: boolean;
   labels: AddToCartLabels;
+  /** Shown in the "Added to cart" drawer. */
+  item?: Omit<AddedItem, "qty">;
   className?: string;
 }) {
   const { add } = useCart(slug);
@@ -27,6 +30,7 @@ export function AddToCart({
       className={className}
       onClick={() => {
         add({ productId });
+        if (item) announceAdded({ ...item, qty: 1 });
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);
       }}

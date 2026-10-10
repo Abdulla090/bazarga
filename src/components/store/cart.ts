@@ -59,6 +59,14 @@ function subscribe(cb: () => void) {
   };
 }
 
+/** Window event fired after an add-to-cart (opens the CartDrawer, bumps the header count). */
+export const CART_ADDED = "mm:cart-added";
+/** What the drawer shows about the line just added (display strings only — the server still prices the cart). */
+export type AddedItem = { name: string; image: string | null; price: string; variant?: string; qty: number };
+export function announceAdded(item: AddedItem) {
+  window.dispatchEvent(new CustomEvent<AddedItem>(CART_ADDED, { detail: item }));
+}
+
 /** Per-store cart in localStorage. Prices are never stored client-side — the server quotes them. */
 export function useCart(slug: string) {
   const lines = useSyncExternalStore(subscribe, () => read(slug), () => EMPTY);

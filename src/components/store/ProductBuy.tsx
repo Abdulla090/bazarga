@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "./cart";
+import { announceAdded, useCart } from "./cart";
 import { GALLERY_EVENT } from "./ProductGallery";
 import { formatIQD } from "@/lib/money";
 import type { Locale } from "@/lib/i18n";
@@ -77,6 +77,7 @@ export function ProductBuy({
   labels,
   title,
   info,
+  photos = [],
 }: {
   slug: string;
   productId: string;
@@ -95,6 +96,8 @@ export function ProductBuy({
   title?: ReactNode;
   /** Short description etc., shown right under the price and before the option pickers. */
   info?: ReactNode;
+  /** Product photos (id → url) for the "Added to cart" drawer; a variant with its own photo shows that one. */
+  photos?: { id: string; url: string }[];
 }) {
   const router = useRouter();
   const { add } = useCart(slug);
@@ -159,6 +162,9 @@ export function ProductBuy({
     return () => root.removeAttribute("data-buybar");
   }, [inlineVisible]);
 
+  const valueLabel = (id: string) => options.flatMap((o) => o.values).find((v) => v.id === id)?.label;
+  const variantTitle = variant ? variant.optionValueIds.map(valueLabel).filter(Boolean).join(" / ") : "";
+
   function pick(optionId: string, valueId: string) {
     const next = { ...sel, [optionId]: valueId };
     setSel(next);
@@ -176,16 +182,21 @@ export function ProductBuy({
     return false;
   }
 
-  function addToCart(): boolean {
+  function addToCart(announce = true): boolean {
     if (!ready() || soldOut) return false;
-    add({ productId, variantId: variant?.id ?? null }, Math.min(qty, maxQty));
+    const n = Math.min(qty, maxQty);
+    add({ productId, variantId: variant?.id ?? null }, n);
+    if (announce) {
+      const photo = photos.find((ph) => ph.id === variant?.imageId) ?? photos[0];
+      announceAdded({ name, image: photo?.url ?? null, price: formatIQD(price, locale), variant: variantTitle || undefined, qty: n });
+    }
     setAdded(true);
     setTimeout(() => setAdded(false), 1400);
     return true;
   }
 
   function buyNow() {
-    if (addToCart()) router.push(`/s/${slug}/cart`);
+    if (addToCart(false)) router.push(`/s/${slug}/cart`);
   }
 
   async function share() {
@@ -206,8 +217,6 @@ export function ProductBuy({
     }
   }
 
-  const valueLabel = (id: string) => options.flatMap((o) => o.values).find((v) => v.id === id)?.label;
-  const variantTitle = variant ? variant.optionValueIds.map(valueLabel).filter(Boolean).join(" / ") : "";
   const waHref = whatsapp
     ? waLink(whatsapp, [labels.waIntro, `${name}${variantTitle ? ` (${variantTitle})` : ""}`, formatIQD(price, locale), shareUrl].join("\n"))
     : null;
@@ -222,7 +231,7 @@ export function ProductBuy({
 
   const buttons = (compact: boolean) => (
     <div className={compact ? "grid flex-1 grid-cols-2 gap-2" : "grid gap-2"}>
-      <button type="button" onClick={addToCart} disabled={soldOut} className={`btn-ghost ${compact ? "btn-sm min-h-11 px-2" : "min-h-12 w-full"}`} data-testid={compact ? undefined : "buy-add"}>
+      <button type="button" onClick={() => addToCart()} disabled={soldOut} className={`btn-ghost ${compact ? "btn-sm min-h-11 px-2" : "min-h-12 w-full"}`} data-testid={compact ? undefined : "buy-add"}>
         {added && !compact && <Icon as={Check} />}
         <span className="truncate">{ctaLabel}</span>
       </button>

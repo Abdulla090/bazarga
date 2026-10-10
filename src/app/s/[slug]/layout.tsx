@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { CartLink } from "@/components/store/CartLink";
+import { CartDrawer } from "@/components/store/CartDrawer";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Awning } from "@/components/Logo";
 import { Icon, Search } from "@/components/ui/icons";
@@ -54,6 +55,10 @@ export default async function StoreLayout({ children, params }: { children: Reac
         </div>
       </header>
       <main className="store-page flex-1 pt-6 sm:pt-10">{children}</main>
+      <CartDrawer
+        slug={store.slug}
+        labels={{ added: t("addedToCart"), viewCart: t("viewCart"), checkout: t("checkout"), continue: t("continue"), close: t("closeViewer"), inCart: t.raw("inCart") as string }}
+      />
       {/* Sign-off: the store name set very large and faint as a closing statement (Layout v3 §8). */}
       <div className="store-page section pb-6 sm:pb-8" aria-hidden data-testid="sign-off">
         <p className="t-hero select-none break-words text-st-fg/[0.08]">{store.name}</p>

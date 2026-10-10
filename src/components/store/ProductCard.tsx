@@ -69,7 +69,12 @@ export function ProductCard({
               {labels.chooseOptions}
             </Link>
           ) : !p.soldOut ? (
-            <AddToCart slug={slug} productId={p.id} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} />
+            <AddToCart
+              slug={slug}
+              productId={p.id}
+              labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+              item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+            />
           ) : null}
         </div>
       </div>

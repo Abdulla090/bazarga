@@ -182,6 +182,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             whatsapp={store.whatsapp ?? store.phone}
             shareUrl={shareUrl}
             labels={labels}
+            photos={p.images.map((i) => ({ id: i.id, url: i.url }))}
             title={<h1 className="t-headline" data-testid="product-name">{name}</h1>}
             info={
               paragraphs.length > 0 ? (
