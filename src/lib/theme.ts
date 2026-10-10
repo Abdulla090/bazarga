@@ -1,15 +1,15 @@
 /**
  * Brand tokens and storefront theme presets.
- * Brand: Sun Gold #F5B700 · Deep Ink #0F1B2D · Mountain Green #1F8A5B · Paper #FAF7F0.
+ * Brand: Blue #2563EB · Ink #0A0A0B · Paper #FAFAFB.
  * A store picks a preset (`stores.theme_preset`) and may override the accent (`stores.accent_color`).
  * Presets only ever emit CSS custom properties — the storefront layout sets them on its wrapper, components read
  * them through Tailwind tokens (`bg-accent`, `text-on-accent`, `bg-surface`…), so no per-store CSS is generated.
  */
 export const BRAND = {
-  gold: "#F5B700",
-  ink: "#0F1B2D",
+  gold: "#2563EB",
+  ink: "#0A0A0B",
   green: "#1F8A5B",
-  paper: "#FAF7F0",
+  paper: "#FAFAFB",
   /** Mountain Green darkened for white text: brand green on white is 4.33:1 (fails AA for body text), this is 5.33:1. */
   greenDeep: "#1A7A50",
 } as const;
@@ -44,15 +44,15 @@ export type ThemeTokens = {
 };
 
 export const PRESET_TOKENS: Record<ThemePreset, ThemeTokens> = {
-  /** Warm paper + Sun Gold — the Bazarga house style. */
+  /** Clean white + blue — the Bazarga house style. */
   bazaar: {
     bg: BRAND.paper,
     surface: "#FFFFFF",
     fg: BRAND.ink,
     muted: "#4B5563",
-    border: "#E7E1D4",
-    accent: BRAND.gold,
-    onAccent: BRAND.ink,
+    border: "#E5E7EB",
+    accent: "#2563EB",
+    onAccent: "#FFFFFF",
     hero: BRAND.ink,
     onHero: BRAND.paper,
     radius: "1rem",
@@ -73,13 +73,13 @@ export const PRESET_TOKENS: Record<ThemePreset, ThemeTokens> = {
   /** Dark, premium — fashion, electronics, perfume. */
   night: {
     bg: BRAND.ink,
-    surface: "#16263D",
+    surface: "#16181D",
     fg: BRAND.paper,
-    muted: "#B8C2D1",
-    border: "#26385A",
-    accent: BRAND.gold,
+    muted: "#A8AFBD",
+    border: "#2A2E37",
+    accent: "#60A5FA",
     onAccent: BRAND.ink,
-    hero: "#081120",
+    hero: "#000000",
     onHero: BRAND.paper,
     radius: "0.5rem",
   },

@@ -157,7 +157,7 @@ export async function renderStoryPng(input: StoryInput): Promise<Buffer> {
   // QR card stays fully on the canvas even when the name/tagline wrapped to several lines.
   const footer = scan.height + 24 + url.height + 40 + powered.height + 70;
   y = Math.min(y, H - footer - CARD);
-  layers.push({ input: Buffer.from(qrCardSvg(input.url, CARD, "#0f1b2d")), left: center(CARD), top: y });
+  layers.push({ input: Buffer.from(qrCardSvg(input.url, CARD, "#0a0a0b")), left: center(CARD), top: y });
   y += CARD + 28;
   layers.push({ input: scan.data, left: center(scan.width), top: y });
   y += scan.height + 12;

@@ -57,7 +57,7 @@ export default async function ShareKitPage() {
           aria-label={t("qrAlt", { url })}
           data-testid="share-qr"
         >
-          <path fill="#0f1b2d" d={qrPath(qr, 4)} />
+          <path fill="#0a0a0b" d={qrPath(qr, 4)} />
         </svg>
         <RecordShareClicks className="flex flex-wrap gap-2">
           <a href="/api/share/qr?format=png&download=1" download className="btn-ink btn-sm"><Icon as={Download} /> {t("downloadPng")}</a>

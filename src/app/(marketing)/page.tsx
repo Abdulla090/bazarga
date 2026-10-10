@@ -121,7 +121,7 @@ export default async function LandingPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {why.map((w) => (
                 <div key={w.title} className="rounded-[var(--radius-card)] border border-white/10 bg-white/5 p-5">
-                  <span className="num inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-gold px-2 font-extrabold text-ink">{w.icon}</span>
+                  <span className="num inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-gold px-2 font-extrabold text-on-gold">{w.icon}</span>
                   <h3 className="mt-3 text-lg font-bold">{w.title}</h3>
                   <p className="mt-1 text-paper/75">{w.body}</p>
                 </div>

@@ -21,7 +21,10 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 > Hark: Abdulla is unhappy that you stopped checking email and the board and left four branches unmerged for 10+ hours. Agent B has taken over merging and your lane until Abdulla says otherwise. He'll be checking on you tonight. Do not push to main or hark/* without reading this board first.
 
-## Log (newest first)
+## Log 
+### Oct 10 12:50 Agent B: design-recolor (step 1 of new direction)
+Tokens now ink #0A0A0B + one blue #2563EB (night preset accent #60A5FA), cool grays, white/paper #FAFAFB; gold token names kept as aliases for the blue accent; logo/icon/offline/manifest recolored; no amber/yellow/orange left. Next: Hugeicons swap, then declutter, neutral seed.
+(newest first)
 - Oct 10 11:00 Agent B: design-home — store home hero e2, search e1/e2 focus, chip+button press motion. Gate green. Next: self-hosted Kurdish font, cart polish.
 
 - Oct 9 20:xx Agent B: checkout "Order via WhatsApp" fallback button (lib/checkout-fallback.ts, 4 locales). Gate: vitest 450, mobile 5/5, smoke OK. Next: per-city ETA / save-my-details.

@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Brand: Sun Gold #F5B700 · Deep Ink #0F1B2D · Mountain Green #1F8A5B · Paper #FAF7F0
+ * Design tokens. Brand: Blue #2563EB · Ink #0A0A0B · Paper #FAFAFB
  * (mirrored in src/lib/theme.ts → BRAND; tests check the storefront presets for contrast).
  */
 @theme {
-  --color-gold: #f5b700;
-  --color-gold-600: #d99f00;
+  --color-gold: #2563eb;
+  --color-gold-600: #1d4ed8;
   /* Text on gold buttons. Storefronts remap it to the theme's on-accent colour. */
-  --color-on-gold: #0f1b2d;
-  --color-ink: #0f1b2d;
-  --color-ink-70: #3c4757;
+  --color-on-gold: #ffffff;
+  --color-ink: #0a0a0b;
+  --color-ink-70: #3f4654;
   --color-ink-50: #6b7480;
   --color-green: #1f8a5b;
   /* Mountain Green for white text (AA 5.3:1); plain green is for icons/large text. */
   --color-green-deep: #1a7a50;
-  --color-paper: #faf7f0;
-  --color-line: #e7e1d3;
+  --color-paper: #fafafb;
+  --color-line: #e5e7eb;
   --color-danger: #b42318;
   --color-whatsapp: #25d366;
 
@@ -27,9 +27,9 @@
   --radius-card: 1.25rem;
 
   /* Elevation (layered, low-opacity ink) */
-  --shadow-e1: 0 1px 2px rgb(15 27 45 / 0.06);
-  --shadow-e2: 0 2px 6px rgb(15 27 45 / 0.07), 0 1px 2px rgb(15 27 45 / 0.05);
-  --shadow-e3: 0 12px 28px -8px rgb(15 27 45 / 0.18), 0 4px 10px rgb(15 27 45 / 0.06);
+  --shadow-e1: 0 1px 2px rgb(10 10 11 / 0.06);
+  --shadow-e2: 0 2px 6px rgb(10 10 11 / 0.07), 0 1px 2px rgb(10 10 11 / 0.05);
+  --shadow-e3: 0 12px 28px -8px rgb(10 10 11 / 0.18), 0 4px 10px rgb(10 10 11 / 0.06);
 
   /* Motion: 150-250 ms, decelerate in, accelerate out */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -55,15 +55,15 @@
 
 /* Defaults = "bazaar" preset (src/lib/theme.ts PRESET_TOKENS.bazaar). */
 :root {
-  --st-bg: #faf7f0;
+  --st-bg: #fafafb;
   --st-surface: #ffffff;
-  --st-fg: #0f1b2d;
+  --st-fg: #0a0a0b;
   --st-muted: #4b5563;
-  --st-border: #e7e1d4;
-  --st-accent: #f5b700;
-  --st-on-accent: #0f1b2d;
-  --st-hero: #0f1b2d;
-  --st-on-hero: #faf7f0;
+  --st-border: #e5e7eb;
+  --st-accent: #2563eb;
+  --st-on-accent: #ffffff;
+  --st-hero: #0a0a0b;
+  --st-on-hero: #fafafb;
   --st-radius: 1rem;
 }
 
