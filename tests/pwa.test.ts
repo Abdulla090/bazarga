@@ -9,8 +9,8 @@ describe("web app manifest", () => {
     expect(m.name).toBe("Bazarga / بازارگە");
     expect(m.dir).toBe("rtl");
     expect(m.lang).toBe("ku");
-    expect(m.theme_color).toBe("#0F1B2D");
-    expect(m.background_color).toBe("#FAF7F0");
+    expect(m.theme_color).toBe("#0A0A0B");
+    expect(m.background_color).toBe("#FAFAFB");
     expect(m.display).toBe("standalone");
   });
   it("ships maskable 192/512 PNG icons that exist on disk", () => {

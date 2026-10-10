@@ -173,10 +173,10 @@ describe("theme presets", () => {
     }
   });
   it("accent override picks a contrasting text colour; junk falls back", () => {
-    expect(readableOn("#F5B700")).toBe("#0F1B2D");
+    expect(readableOn("#F5B700")).toBe("#0A0A0B");
     expect(readableOn("#1A7A50")).toBe("#FFFFFF");
     expect(resolveTheme("mountain", "#C2185B")).toMatchObject({ accent: "#C2185B", onAccent: "#FFFFFF" });
     expect(resolveTheme("nope", "red")).toEqual(PRESET_TOKENS.bazaar);
-    expect(themeStyle(PRESET_TOKENS.night)["--st-accent"]).toBe("#F5B700");
+    expect(themeStyle(PRESET_TOKENS.night)["--st-accent"]).toBe("#60A5FA");
   });
 });

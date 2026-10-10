@@ -6,7 +6,7 @@ const STATUS_STYLE: Record<OrderStatus, string> = {
   confirmed: "bg-ink/10 text-ink",
   shipped: "bg-blue-100 text-blue-900",
   delivered: "bg-green/15 text-green",
-  postponed: "bg-orange-100 text-orange-900",
+  postponed: "bg-violet-100 text-violet-900",
   refused: "bg-danger/10 text-danger",
   returned: "bg-ink/10 text-ink-70",
   cancelled: "bg-danger/10 text-danger",

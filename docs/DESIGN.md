@@ -19,3 +19,6 @@ Source of truth: `src/app/globals.css` (`@theme`). Brand: Sun Gold, Deep Ink, Mo
 - [~] Checkout: payment option cards (selected elevation, focus ring, press), header rule
 - [~] Order status/thank-you: success icon pop + elevation
 - [~] Store home: hero e2 elevation, search field e1/e2 focus, chip + button press motion
+
+## Direction Oct 10 12:45
+Blue/black only, Hugeicons, declutter, nothing cultural. Status: 1 recolor DONE (tokens in globals.css + theme.ts); 2 icons, 3 declutter, 4 neutral seed, 5 fix queue pending.
