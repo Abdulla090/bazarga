@@ -111,7 +111,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
       </div>
 
       <div className="card">
-        <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-dashed border-line" aria-hidden />}>
+        <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-line" aria-hidden />}>
           <ImageUploader initial={initial.images} maxMb={maxMb} />
         </Suspense>
       </div>
