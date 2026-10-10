@@ -32,7 +32,7 @@ function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offe
   return `/s/${slug}${s ? `?${s}` : ""}`;
 }
 
-const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold transition-colors";
+const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold transition-[colors,transform] duration-[var(--duration-fast)] active:scale-[0.97]";
 const chipOn = "bg-st-accent text-st-on-accent";
 const chipOff = "border border-st-border bg-st-surface text-st-fg";
 
@@ -78,7 +78,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     <div className="grid gap-5">
       <ViewPixel slug={store.slug} />
       {/* Hero: cover photo (LCP, eager) with a scrim, or the theme's hero colour as a gradient. */}
-      <section className="relative -mt-2 overflow-hidden rounded-[var(--radius-card)] bg-gradient-to-br from-st-hero to-st-hero/80 text-st-on-hero">
+      <section className="relative -mt-2 overflow-hidden rounded-[var(--radius-card)] shadow-e2 bg-gradient-to-br from-st-hero to-st-hero/80 text-st-on-hero">
         {store.coverImageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -137,10 +137,10 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             placeholder={t("searchPlaceholder")}
             enterKeyHint="search"
             maxLength={80}
-            className="h-11 w-full rounded-xl border border-st-border bg-st-surface ps-10 pe-3 text-base text-st-fg placeholder:text-st-muted focus:outline-2 focus:outline-st-accent"
+            className="h-11 w-full rounded-xl border border-st-border bg-st-surface ps-10 pe-3 text-base shadow-e1 transition-shadow duration-[var(--duration-fast)] focus:shadow-e2 text-st-fg placeholder:text-st-muted focus:outline-2 focus:outline-st-accent"
           />
         </label>
-        <button type="submit" className="h-11 shrink-0 rounded-xl bg-st-accent px-4 font-bold text-st-on-accent">{t("search")}</button>
+        <button type="submit" className="h-11 shrink-0 rounded-xl bg-st-accent px-4 font-bold text-st-on-accent shadow-e1 transition-transform duration-[var(--duration-fast)] active:scale-[0.97]">{t("search")}</button>
       </form>
 
       {(usedCats.length > 0 || onSale.length > 0) && (

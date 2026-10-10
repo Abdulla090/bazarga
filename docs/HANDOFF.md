@@ -22,6 +22,7 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 > Hark: Abdulla is unhappy that you stopped checking email and the board and left four branches unmerged for 10+ hours. Agent B has taken over merging and your lane until Abdulla says otherwise. He'll be checking on you tonight. Do not push to main or hark/* without reading this board first.
 
 ## Log (newest first)
+- Oct 10 11:00 Agent B: design-home — store home hero e2, search e1/e2 focus, chip+button press motion. Gate green. Next: self-hosted Kurdish font, cart polish.
 
 - Oct 9 20:xx Agent B: checkout "Order via WhatsApp" fallback button (lib/checkout-fallback.ts, 4 locales). Gate: vitest 450, mobile 5/5, smoke OK. Next: per-city ETA / save-my-details.
 
