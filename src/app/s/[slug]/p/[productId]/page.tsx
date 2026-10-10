@@ -70,8 +70,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 /** Whole trust tile is the tap target (≥ 44 px). */
-const trustLink = "flex min-h-11 w-full items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3";
-const section = "group rounded-[var(--radius-card)] border border-st-border bg-st-surface";
+const trustLink = "flex min-h-11 w-full items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1 transition-[border-color,box-shadow,transform] duration-200 hover:shadow-e2 active:scale-[0.98] motion-reduce:transition-none";
+const section = "group rounded-[var(--radius-card)] border border-st-border bg-st-surface shadow-e1";
 const summary =
   "flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 font-bold [&::-webkit-details-marker]:hidden";
 const chevron = (
@@ -222,12 +222,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Trust row */}
           <ul className="grid grid-cols-2 gap-2 text-sm" data-testid="trust-row">
-            <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3">
+            <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1">
               <Icon as={Banknote} className="mt-0.5 shrink-0 text-st-accent" />
               <span className="font-semibold">{t("trustCod")}</span>
             </li>
             {home && homeFee && (
-              <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3">
+              <li className="flex items-start gap-2 rounded-xl border border-st-border bg-st-surface p-3 shadow-e1">
                 <Icon as={Truck} className="mt-0.5 shrink-0 text-st-accent" />
                 <span className="font-semibold">
                   {homeEta
