@@ -135,19 +135,19 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
       <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] gap-2">
         <h1 className="text-2xl font-extrabold">{L.cart}</h1>
         {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
-          <div key={l.key} className={`card flex items-center gap-3 p-3 ${l.available ? "" : "opacity-60"}`}>
+          <div key={l.key} className={`card flex items-center gap-3 p-3 shadow-e1 transition-shadow duration-150 hover:shadow-e2 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={l.image} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+              <img src={l.image} alt="" className="h-20 w-20 shrink-0 rounded-xl border border-line object-cover" />
             ) : (
-              <span className="h-16 w-16 shrink-0 rounded-xl bg-paper" />
+              <span className="h-20 w-20 shrink-0 rounded-xl border border-line bg-paper" />
             )}
             <div className="min-w-0 flex-1">
               <p className="truncate font-bold">{l.name}</p>
               {l.variantTitle && <p className="truncate text-sm text-ink-70">{l.variantTitle}</p>}
               {l.available ? <p className="num text-sm text-ink-70">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-semibold text-danger">{L.unavailableLine}</p>}
             </div>
-            <div className="flex items-center gap-1" aria-label={L.qty}>
+            <div className="flex items-center gap-1 rounded-full bg-paper p-1" aria-label={L.qty}>
               <button type="button" className="btn-ghost btn-sm w-11 px-0 sm:w-9" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
               <span className="num w-6 text-center font-bold">{l.quantity}</span>
               <button type="button" className="btn-ghost btn-sm w-11 px-0 sm:w-9" onClick={() => setQty(l, l.quantity + 1)} aria-label="+" disabled={l.stock !== null && l.quantity >= l.stock}>+</button>
@@ -157,7 +157,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <Link href={`/s/${slug}`} className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold underline">{L.continue}</Link>
       </section>
 
-      <form action={submit} className="card grid h-fit gap-4 lg:sticky lg:top-24">
+      <form action={submit} className="card grid h-fit gap-4 shadow-e2 lg:sticky lg:top-24">
         <h2 className="text-xl font-extrabold">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">
