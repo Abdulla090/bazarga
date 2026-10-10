@@ -79,8 +79,8 @@ for (const id of listed) {
   ok(Number(photos) >= 3 && Number(photos) <= 5, `product ${id.slice(0, 8)}: gallery has 3–5 photos (${photos})`);
   ok(html.includes('data-testid="specs-table"') && html.includes('data-testid="related"'), `product ${id.slice(0, 8)}: details table + related strip`);
   ok(data?.["@type"] === "Product" && data.offers?.priceCurrency === "IQD" && /og:image" content="http/.test(html), `product ${id.slice(0, 8)}: nonced Product JSON-LD (IQD) + og:image`);
-  if (html.includes('data-testid="pct-off"') && html.includes("HB-HONEY-1KG")) sale = id;
-  if (html.includes("HB-HONEY-1KG")) {
+  if (html.includes('data-testid="pct-off"') && html.includes("SH-MUG-SET")) sale = id;
+  if (html.includes("SH-MUG-SET")) {
     const at = (needle) => html.indexOf(needle);
     ok(
       at('data-testid="product-name"') > at('data-testid="gallery"') &&
@@ -260,7 +260,7 @@ if (smokeOrderId) {
 
 // Seller uploads a photo (magic-byte check) and creates a product that shows up in the storefront.
 const photo = new FormData();
-photo.append("file", new Blob([readFileSync("public/images/product-honey.jpg")], { type: "image/jpeg" }), "honey.jpg");
+photo.append("file", new Blob([readFileSync("public/images/product-mugs.jpg")], { type: "image/jpeg" }), "mugs.jpg");
 const up = await fetch(`${BASE}/api/uploads`, { method: "POST", headers: { Cookie: demoCookie, Origin: BASE }, body: photo });
 const upJson = await up.json();
 ok(up.status === 200 && typeof upJson.url === "string", "seller image upload accepted");

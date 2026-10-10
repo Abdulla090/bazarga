@@ -25,19 +25,19 @@ test("product page: info first, gallery, viewer, offers, details and JSON-LD (ku
   const errors = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 
-  // The honey jar: a simple product on sale with 4 photos, a best seller in the seeded orders.
+  // The mug set (historically the honey jar): a simple product on sale with 4 photos, a best seller in the seeded orders.
   await page.goto(`/s/${SLUG}`);
   const html = await page.content();
   const ids = [...new Set([...html.matchAll(new RegExp(`/s/${SLUG}/p/([0-9a-f-]{36})`, "g"))].map((m) => m[1]))];
   let found = null;
   for (const id of ids) {
     await page.goto(`/s/${SLUG}/p/${id}`, { waitUntil: "networkidle" });
-    if ((await page.getByTestId("sku").textContent().catch(() => ""))?.includes("HB-HONEY-1KG")) {
+    if ((await page.getByTestId("sku").textContent().catch(() => ""))?.includes("SH-MUG-SET")) {
       found = id;
       break;
     }
   }
-  expect(found, "the demo honey jar").not.toBeNull();
+  expect(found, "the demo mug set").not.toBeNull();
 
   // Order on a phone: gallery → name → price → description → stock → quantity → buy buttons → trust row → accordions.
   const order = await Promise.all(
@@ -65,7 +65,7 @@ test("product page: info first, gallery, viewer, offers, details and JSON-LD (ku
   await page.keyboard.press("Escape");
   await expect(viewer).toHaveCount(0);
 
-  await expect(page.getByTestId("sku")).toContainText("HB-HONEY-1KG");
+  await expect(page.getByTestId("sku")).toContainText("SH-MUG-SET");
   await page.getByRole("button", { name: "زیادکردن" }).first().click();
   await expect(page.getByTestId("qty")).toHaveText("2");
   await expect(page.getByTestId("specs-table").locator("tr")).toHaveCount(3);
