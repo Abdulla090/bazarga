@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 22:50 Agent B: Layout v3 spec
+docs/LAYOUT-V3.md "Composed Commerce": 12-col grid + 8px scale, modular type, editorial home (asymmetric hero, bento, count-aware sets, spotlight), sticky-info product page, cart drawer, states, RTL rules. 6-step rollout follows.
+
 ### Oct 10 23:10 Agent B: redesign step 7 (cart/checkout/order status)
 Cart, checkout, confirmation, tracking and payment panel on the v2 system (hairline lists, display headings, monochrome timeline, no green/gold fills). Gate green (vitest 453, mobile 5/5, smoke). Redesign v2 steps 1-7 complete; final screenshots next.
 
