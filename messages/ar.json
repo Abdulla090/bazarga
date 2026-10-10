@@ -519,7 +519,10 @@
     "copyCode": "نسخ",
     "codeCopied": "تم النسخ",
     "contact": "تواصل",
-    "language": "اللغة"
+    "language": "اللغة",
+    "collections": "تسوّق حسب القسم",
+    "itemsCount": "{count, plural, zero {لا منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+    "view": "عرض"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",

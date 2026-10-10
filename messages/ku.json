@@ -519,7 +519,10 @@
     "copyCode": "کۆپی",
     "codeCopied": "کۆپی کرا",
     "contact": "پەیوەندی",
-    "language": "زمان"
+    "language": "زمان",
+    "collections": "پۆلەکان",
+    "itemsCount": "{count} کاڵا",
+    "view": "بینین"
   },
   "errors": {
     "generic": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.",

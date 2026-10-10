@@ -411,3 +411,19 @@ html:lang(ar) :is(.t-hero, .t-display, .t-headline) {
 }
 /* Section index ("01"): the only ornament. */
 .section-index { font-family: var(--font-latin); color: color-mix(in srgb, var(--st-fg) 40%, transparent); }
+/* Bleeds: both edges on phones; the inline-end edge to the viewport from md (hero photo). */
+@utility bleed-x { margin-inline: calc(-1 * var(--page-margin)); }
+@utility bleed-end {
+  margin-inline-end: calc(-1 * (var(--page-margin) + max(0px, (100vw - var(--page-max) - 2 * var(--page-margin)) / 2)));
+}
+/* Hero name on canvas plates: legible over any photo, mirrors in RTL (padding on the inline end only). */
+.hero-plate {
+  background: var(--st-bg);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0.04em 0.22em 0.08em 0;
+  padding-inline: 0 0.22em;
+}
+/* Vazirmatn's tabular figures slant oddly next to Kurdish/Arabic text: plain figures there. */
+html:lang(ckb) .t-label,
+html:lang(ar) .t-label { font-variant-numeric: normal; }
