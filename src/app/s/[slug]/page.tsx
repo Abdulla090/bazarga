@@ -96,12 +96,6 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         {store.coverImageUrl && <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" aria-hidden />}
         <div className={`relative flex min-h-40 flex-col justify-end gap-2 p-4 sm:min-h-56 sm:p-6 ${store.coverImageUrl ? "text-white" : ""}`}>
           <div className="flex items-center gap-3">
-            {store.logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={store.logoUrl} alt="" width={56} height={56} className="h-14 w-14 shrink-0 rounded-full border-2 border-white/80 bg-st-surface object-cover" />
-            ) : (
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-st-accent text-2xl font-extrabold text-st-on-accent">{store.name.slice(0, 1)}</span>
-            )}
             <div className="min-w-0">
               <h1 className="truncate text-2xl font-extrabold leading-tight">{store.name}</h1>
               {tagline && <p className="line-clamp-2 text-sm opacity-90">{tagline}</p>}

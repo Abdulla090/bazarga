@@ -69,9 +69,9 @@ export function ProductStrip({
           </Link>
         )}
       </div>
-      <ul className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="-mx-4 flex snap-x lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {products.map((r) => (
-          <li key={r.id} className="w-36 shrink-0 snap-start sm:w-44">
+          <li key={r.id} className="w-36 shrink-0 snap-start sm:w-44 lg:w-auto">
             <MiniProductCard p={r} slug={slug} locale={locale} labels={labels} from={from} />
           </li>
         ))}
