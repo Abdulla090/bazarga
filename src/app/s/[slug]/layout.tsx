@@ -25,24 +25,22 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const store = await loadStore(slug);
   const t = await getTranslations("store");
   const locale = await currentLocale();
-  const tagline = pickText(store.tagline, locale);
   const about = pickText(store.about, locale);
   const returns = pickText(store.returnPolicy, locale);
   const theme = resolveTheme(store.themePreset, store.accentColor);
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={themeStyle(theme)}>
       <header className="sticky top-0 z-20 border-b border-line bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur">
-        <div className="container-page flex min-h-16 items-center gap-3 py-2">
+        <div className="container-page flex min-h-14 items-center gap-3 py-1.5">
           <Link href={`/s/${store.slug}`} className="me-auto flex min-w-0 items-center gap-3">
             {store.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={store.logoUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
+              <img src={store.logoUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-st-hero text-lg font-extrabold text-st-on-hero">{store.name.slice(0, 1)}</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-st-hero text-sm font-bold text-st-on-hero">{store.name.slice(0, 1)}</span>
             )}
             <span className="min-w-0">
-              <span className="block truncate text-lg font-extrabold">{store.name}</span>
-              {tagline && <span className="block truncate text-xs text-ink-70">{tagline}</span>}
+              <span className="block truncate text-base font-semibold">{store.name}</span>
             </span>
           </Link>
           <CartLink slug={store.slug} label={t("cart")} />
