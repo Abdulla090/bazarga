@@ -15,4 +15,5 @@ Source of truth: `src/app/globals.css` (`@theme`). Brand: Sun Gold, Deep Ink, Mo
 - [ ] Self-hosted Kurdish subset font + line-height tuning
 - [~] Storefront: product card elevation+hover done; home, product, cart, checkout, order status
 - [~] Cart: line cards elevation, 80px thumbs, pill stepper; ku/ar line-height 1.75
+- [~] Product page: trust tiles + detail sections get e1 elevation, hover/press motion
 - [~] Checkout: payment option cards (selected elevation, focus ring, press), header rule
