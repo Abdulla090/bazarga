@@ -138,11 +138,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <div className="grid gap-6">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <ViewPixel slug={store.slug} productId={p.id} />
-      <Link href={`/s/${store.slug}`} className="-mb-4 -mt-3 inline-flex min-h-11 w-fit items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-st-fg md:-mb-2">
+      <Link href={`/s/${store.slug}`} className="-mb-4 -mt-3 inline-flex min-h-11 w-fit items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-st-fg md:-mb-1">
         <ArrowBack /> {tc("back")}
       </Link>
-      <div className="grid gap-6 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-12 lg:gap-16">
-        <div className="relative min-w-0 md:sticky md:top-24 md:h-fit">
+      {/* Layout v3 §5: photos stacked in columns 1–7 (the page is the gallery), info sticky in 9–12 with column 8 as air.
+          A tall info column scrolls inside itself (max-height) so nothing is ever unreachable. */}
+      <div className="grid-12 items-start gap-y-6">
+        <div className="relative col-span-4 min-w-0 md:col-span-7 md:row-start-1">
           <ViewTransition name={`product-${p.id}`} share="product-morph">
             <ProductGallery
               images={p.images}
@@ -161,7 +163,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
           <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="gallery" />
         </div>
-        <div className="grid h-fit min-w-0 gap-8">
+        <div className="info-col col-span-4 grid min-w-0 gap-8 md:sticky md:top-24 md:col-span-5 md:col-start-8 md:row-span-2 md:row-start-1 md:max-h-[calc(100dvh-7rem)] md:overflow-y-auto md:pb-6 lg:col-span-4 lg:col-start-9">
           <ProductBuy
             slug={store.slug}
             productId={p.id}
@@ -180,7 +182,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             whatsapp={store.whatsapp ?? store.phone}
             shareUrl={shareUrl}
             labels={labels}
-            title={<h1 className="display text-[28px] sm:text-[40px]" data-testid="product-name">{name}</h1>}
+            title={<h1 className="t-headline" data-testid="product-name">{name}</h1>}
             info={
               paragraphs.length > 0 ? (
                 <div className="grid gap-1" data-testid="product-summary">
@@ -228,54 +230,56 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </li>
           </ul>
 
-          <div className="reveal -mt-4 grid">
-            {specs.length > 0 && (
-              <details className={section} open data-testid="section-details">
-                <summary className={summary}>
-                  {t("detailsTitle")} {chevron}
-                </summary>
-                <div className="pb-5">
-                  <table className="w-full border-collapse text-sm" data-testid="specs-table">
-                    <tbody>
-                      {specs.map((r, i) => (
-                        <tr key={i} className="border-t border-st-border first:border-t-0">
-                          <th scope="row" className="w-2/5 py-2.5 pe-3 text-start align-top font-normal text-muted">
-                            {r.label}
-                          </th>
-                          <td className="py-2.5 align-top">
-                            <bdi>{r.value}</bdi>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </details>
-            )}
-
-            <details className={`${section} scroll-mt-24`} id="delivery-returns" data-testid="section-delivery">
+        </div>
+      {/* Details + delivery: under the info on phones, under the photos (columns 1–7) from md, so the sticky info
+          column stays short enough to fit the viewport. */}
+      <div className="reveal col-span-4 -mt-4 grid md:col-span-7 md:col-start-1 md:row-start-2 md:mt-6">
+          {specs.length > 0 && (
+            <details className={section} open data-testid="section-details">
               <summary className={summary}>
-                {t("deliveryReturnsTitle")} {chevron}
+                {t("detailsTitle")} {chevron}
               </summary>
-              <div className="grid gap-5 pb-5">
-                <DeliveryInfo
-                  zones={settings.zones}
-                  homeCity={store.city}
-                  freeDeliveryThreshold={store.freeDeliveryThreshold}
-                  hasReturnPolicy={false}
-                  locale={locale}
-                />
-                <div>
-                  <h3 className="mb-1 text-[13px] font-medium">{t("returnPolicy")}</h3>
-                  {returnPolicy ? (
-                    <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{returnPolicy}</p>
-                  ) : (
-                    <p className="text-sm text-muted">{t("noReturnPolicy")}</p>
-                  )}
-                </div>
+              <div className="pb-5">
+                <table className="w-full border-collapse text-sm" data-testid="specs-table">
+                  <tbody>
+                    {specs.map((r, i) => (
+                      <tr key={i} className="border-t border-st-border first:border-t-0">
+                        <th scope="row" className="w-2/5 py-2.5 pe-3 text-start align-top font-normal text-muted">
+                          {r.label}
+                        </th>
+                        <td className="py-2.5 align-top">
+                          <bdi>{r.value}</bdi>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </details>
-          </div>
+          )}
+
+          <details className={`${section} scroll-mt-24`} id="delivery-returns" data-testid="section-delivery">
+            <summary className={summary}>
+              {t("deliveryReturnsTitle")} {chevron}
+            </summary>
+            <div className="grid gap-5 pb-5">
+              <DeliveryInfo
+                zones={settings.zones}
+                homeCity={store.city}
+                freeDeliveryThreshold={store.freeDeliveryThreshold}
+                hasReturnPolicy={false}
+                locale={locale}
+              />
+              <div>
+                <h3 className="mb-1 text-[13px] font-medium">{t("returnPolicy")}</h3>
+                {returnPolicy ? (
+                  <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{returnPolicy}</p>
+                ) : (
+                  <p className="text-sm text-muted">{t("noReturnPolicy")}</p>
+                )}
+              </div>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -287,6 +291,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         locale={locale}
         labels={badges}
         from={t.raw("from") as string}
+        view={t("view")}
         testId="related"
       />
     </div>

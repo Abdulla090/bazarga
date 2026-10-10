@@ -427,3 +427,10 @@ html:lang(ar) :is(.t-hero, .t-display, .t-headline) {
 /* Vazirmatn's tabular figures slant oddly next to Kurdish/Arabic text: plain figures there. */
 html:lang(ckb) .t-label,
 html:lang(ar) .t-label { font-variant-numeric: normal; }
+
+/* Product info column (desktop): sticky, scrolls inside itself when taller than the viewport; no visible scrollbar,
+   a little inline padding so focus rings are never clipped by the overflow box. */
+@media (min-width: 768px) {
+  .info-col { scrollbar-width: none; padding-inline: 4px; margin-inline: -4px; padding-top: 4px; }
+  .info-col::-webkit-scrollbar { display: none; }
+}

@@ -31,7 +31,9 @@ export const SIZES = {
    */
   productGrid: "(min-width: 1024px) 280px, (min-width: 640px) calc(33vw - 24px), calc(50vw - 22px)",
   /** Product page main image. */
-  productHero: "(min-width: 1024px) 560px, 100vw",
+  productHero: "(min-width: 1024px) 700px, (min-width: 768px) 58vw, 100vw",
+  /** Product page photos shown two-up in the desktop stack (Layout v3 §5). */
+  productHalf: "(min-width: 1024px) 350px, (min-width: 768px) 29vw, 100vw",
   /** Store cover band. */
   cover: "100vw",
   thumb: "80px",

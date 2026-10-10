@@ -32,7 +32,7 @@ export default function GalleryThumbs({
   return (
     <ul
       ref={list}
-      className="flex gap-2 overflow-x-auto px-0.5 py-0.5 [scrollbar-width:none] md:order-1 md:grid md:content-start md:overflow-visible [&::-webkit-scrollbar]:hidden"
+      className="flex gap-2 overflow-x-auto px-0.5 py-0.5 [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden"
       data-testid="gallery-thumbs"
     >
       {images.map((img, i) => (
@@ -42,7 +42,7 @@ export default function GalleryThumbs({
             onClick={() => onPick(i)}
             aria-label={`${label.photo} ${i + 1} ${label.of} ${images.length}`}
             aria-current={i === active || undefined}
-            className={`block h-14 w-14 overflow-hidden rounded-xl border bg-[#F4F4F5] md:h-auto md:w-full ${i === active ? "border-st-fg" : "border-transparent opacity-70 hover:opacity-100"}`}
+            className={`block h-14 w-14 overflow-hidden rounded-xl border bg-[#F4F4F5] ${i === active ? "border-st-fg" : "border-transparent opacity-70 hover:opacity-100"}`}
           >
             <ResponsiveImage image={img} alt="" sizes={SIZES.thumb} index={i} aboveTheFold={0} className="aspect-square h-full w-full object-cover" />
           </button>
