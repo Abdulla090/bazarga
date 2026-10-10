@@ -42,17 +42,17 @@ export default async function TrackOrderPage({ params, searchParams }: { params:
   const sellerPhone = store.whatsapp ?? store.phone;
 
   return (
-    <div className="mx-auto grid max-w-lg gap-4">
+    <div className="mx-auto grid max-w-xl gap-6">
       {order ? (
         <TrackedOrderView order={order} storeName={store.name} sellerPhone={sellerPhone} locale={locale} t={t} ts={ts} tp={tp} />
       ) : (
-        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+        <h1 className="display pt-2 text-[28px] sm:pt-6 sm:text-[40px]">{t("title")}</h1>
       )}
 
-      <form action={trackOrderAction} className="card grid gap-3" data-testid="track-form">
-        {order ? <h2 className="text-lg font-bold">{t("another")}</h2> : <p className="text-ink-70">{t("intro")}</p>}
+      <form action={trackOrderAction} className="grid gap-4 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6" data-testid="track-form">
+        {order ? <h2 className="display text-[22px]">{t("another")}</h2> : <p className="text-[15px] text-muted">{t("intro")}</p>}
         {error && (
-          <p role="alert" className="rounded-xl border border-danger/30 bg-danger/5 p-3 text-danger" data-testid="track-error">
+          <p role="alert" className="rounded-xl border border-danger/30 px-4 py-3 text-sm font-medium text-danger" data-testid="track-error">
             {error === "rl" ? t("rateLimited") : t("notFound")}
           </p>
         )}
@@ -93,7 +93,7 @@ export default async function TrackOrderPage({ params, searchParams }: { params:
         <button type="submit" className="btn-gold min-h-12 w-full">{t("submit")}</button>
       </form>
 
-      <Link href={`/s/${store.slug}`} className="btn-ghost">{ts("backToStore")}</Link>
+      <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{ts("backToStore")}</Link>
     </div>
   );
 }
@@ -123,29 +123,29 @@ function TrackedOrderView({
   const paymentLabel = order.paymentMethod === "cod" ? tp("cod") : PAYMENT_LABEL[order.paymentMethod];
   return (
     <>
-      <section className="card" data-testid="track-result" aria-labelledby="trk-title">
-        <h1 id="trk-title" className="num text-2xl font-extrabold"><bdi>{ts("orderNumber", { number: order.number })}</bdi></h1>
-        <p className="mt-1 text-sm text-ink-70">{t("placedOn", { date: fmt.format(order.createdAt) })}</p>
-        <p className="mt-3 text-sm font-semibold text-ink-70">{t("statusNow")}</p>
-        <p className={`text-xl font-extrabold ${toneText(current)}`} data-testid="track-status">{t(`step_${current.status}`)}</p>
+      <section className="grid gap-1 pt-2 sm:pt-6" data-testid="track-result" aria-labelledby="trk-title">
+        <h1 id="trk-title" className="display num text-[28px] sm:text-[40px]"><bdi>{ts("orderNumber", { number: order.number })}</bdi></h1>
+        <p className="text-sm text-muted">{t("placedOn", { date: fmt.format(order.createdAt) })}</p>
+        <p className="mt-5 text-[13px] font-medium text-muted">{t("statusNow")}</p>
+        <p className={`text-xl font-medium ${toneText(current)}`} data-testid="track-status">{t(`step_${current.status}`)}</p>
       </section>
 
-      <section className="card" aria-labelledby="trk-timeline">
-        <h2 id="trk-timeline" className="mb-3 text-lg font-bold">{t("timeline")}</h2>
+      <section className="rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6" aria-labelledby="trk-timeline">
+        <h2 id="trk-timeline" className="mb-4 text-[13px] font-medium text-muted">{t("timeline")}</h2>
         <ol className="grid" data-testid="track-timeline">
           {steps.map((s, i) => (
             <li key={`${s.status}-${i}`} className="relative flex gap-3 pb-4 last:pb-0" aria-current={s.state === "current" ? "step" : undefined}>
               {i < steps.length - 1 && (
-                <span aria-hidden className={`absolute start-[0.9375rem] top-8 bottom-0 w-0.5 ${s.state === "done" ? "bg-green" : "bg-line"}`} />
+                <span aria-hidden className={`absolute start-[0.9375rem] top-8 bottom-0 w-0.5 ${s.state === "done" ? "bg-st-fg" : "bg-st-border"}`} />
               )}
-              <span aria-hidden className={`relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 ${dotClass(s)}`}>
+              <span aria-hidden className={`relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${dotClass(s)}`}>
                 <Icon as={stepIcon(s)} className="text-base" />
               </span>
               <div className="min-w-0 pt-1">
-                <p className={`font-semibold ${s.state === "upcoming" ? "text-ink-50" : toneText(s)}`}>{t(`step_${s.status}`)}</p>
-                {s.at && <p className="num text-sm text-ink-70">{fmt.format(s.at)}</p>}
+                <p className={`font-medium ${s.state === "upcoming" ? "text-faint" : toneText(s)}`}>{t(`step_${s.status}`)}</p>
+                {s.at && <p className="num text-sm text-muted">{fmt.format(s.at)}</p>}
                 {s.status === "shipped" && s.state !== "upcoming" && (order.courierName || order.trackingNumber) && (
-                  <p className="text-sm text-ink-70">
+                  <p className="text-sm text-muted">
                     {order.courierName && <>{t("courier")}: <bdi>{order.courierName}</bdi></>}
                     {order.courierName && order.trackingNumber && " · "}
                     {order.trackingNumber && <>{t("trackingNumber")}: <bdi className="num">{order.trackingNumber}</bdi></>}
@@ -162,27 +162,27 @@ function TrackedOrderView({
           href={waLink(sellerPhone, t("waAbout", { store: storeName, number: order.number }))}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-ghost min-h-14"
+          className="btn btn-ghost min-h-12"
           data-testid="track-whatsapp"
         >
           <Icon as={MessageCircle} /> {t("askStore")}
         </a>
       )}
 
-      <section className="card" aria-labelledby="trk-items">
-        <h2 id="trk-items" className="mb-1 text-lg font-bold">{t("items")}</h2>
-        <ul className="divide-y divide-line">
+      <section className="rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6" aria-labelledby="trk-items">
+        <h2 id="trk-items" className="mb-1 text-[13px] font-medium text-muted">{t("items")}</h2>
+        <ul className="divide-y divide-st-border">
           {order.items.map((i) => (
-            <li key={i.id} className="flex justify-between gap-2 py-2">
+            <li key={i.id} className="flex justify-between gap-3 py-3 text-[15px]">
               <span className="min-w-0 break-words">
                 {i.name}
-                {i.variantTitle && <span className="text-ink-70"> · {i.variantTitle}</span>} <span className="num text-ink-70">×{i.quantity}</span>
+                {i.variantTitle && <span className="text-muted"> · {i.variantTitle}</span>} <span className="num text-muted">×{i.quantity}</span>
               </span>
               <span className="num shrink-0">{formatIQD(i.lineTotal, locale)}</span>
             </li>
           ))}
         </ul>
-        <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 border-t border-line pt-2">
+        <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 border-t border-st-border pt-3 text-sm">
           <dt>{ts("subtotal")}</dt>
           <dd className="num text-end">{formatIQD(order.subtotal, locale)}</dd>
           {order.discountAmount > 0 && (
@@ -193,15 +193,15 @@ function TrackedOrderView({
           )}
           <dt>{ts("delivery")} · {order.cityName}</dt>
           <dd className="num text-end">{formatIQD(order.deliveryFee, locale)}</dd>
-          <dt className="font-extrabold">{ts("total")}</dt>
-          <dd className="num text-end font-extrabold">{formatIQD(order.total, locale)}</dd>
+          <dt className="font-medium">{ts("total")}</dt>
+          <dd className="num text-end font-medium">{formatIQD(order.total, locale)}</dd>
         </dl>
-        <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 border-t border-line pt-2 text-sm">
-          <dt className="text-ink-70">{t("deliveryArea")}</dt>
+        <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 border-t border-st-border pt-3 text-sm text-sm">
+          <dt className="text-muted">{t("deliveryArea")}</dt>
           <dd className="text-end" data-testid="track-area">{[order.cityName, order.areaName].filter(Boolean).join(" · ")}</dd>
-          <dt className="text-ink-70">{ts("payment")}</dt>
+          <dt className="text-muted">{ts("payment")}</dt>
           <dd className="text-end">{paymentLabel}</dd>
-          <dt className="text-ink-70">{t("paymentStatus")}</dt>
+          <dt className="text-muted">{t("paymentStatus")}</dt>
           <dd className="text-end">{t(`pay_${order.paymentStatus}`)}</dd>
         </dl>
       </section>
@@ -217,13 +217,15 @@ function stepIcon(s: TimelineStep) {
 }
 
 function dotClass(s: TimelineStep) {
-  if (s.tone === "bad") return "border-danger bg-danger text-white";
-  if (s.tone === "warn") return "border-gold bg-gold text-on-gold";
-  if (s.state === "done") return "border-green bg-green text-white";
-  if (s.state === "current") return "border-gold bg-white text-ink";
-  return "border-line bg-white text-ink-50";
+  // Monochrome timeline: done = ink fill, current = ink ring, upcoming = hairline; problems (refused/cancelled) ink too,
+  // told apart by their icon and label rather than colour.
+  if (s.tone === "bad" || s.tone === "warn") return "border-st-fg bg-st-surface text-st-fg";
+  if (s.state === "done") return "border-st-fg bg-st-fg text-st-bg";
+  if (s.state === "current") return "border-st-fg bg-st-surface text-st-fg ring-2 ring-st-fg/15";
+  return "border-st-border bg-st-surface text-faint";
 }
 
 function toneText(s: TimelineStep) {
-  return s.tone === "bad" ? "text-danger" : s.tone === "warn" ? "text-ink" : s.state === "done" && s.status === "delivered" ? "text-green" : "text-ink";
+  void s;
+  return "text-st-fg";
 }
