@@ -514,7 +514,8 @@
     "youSave": "توفّر {amount}",
     "readMore": "اقرأ المزيد",
     "readLess": "عرض أقل",
-    "freeDeliveryOverShort": "توصيل مجاني فوق {amount}"
+    "freeDeliveryOverShort": "توصيل مجاني فوق {amount}",
+    "shopNow": "تسوّق الآن"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",

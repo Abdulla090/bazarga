@@ -514,7 +514,8 @@
     "youSave": "You save {amount}",
     "readMore": "Read more",
     "readLess": "Show less",
-    "freeDeliveryOverShort": "Free delivery over {amount}"
+    "freeDeliveryOverShort": "Free delivery over {amount}",
+    "shopNow": "Shop now"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
