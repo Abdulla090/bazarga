@@ -111,7 +111,7 @@ test("store home: offer banner, best sellers, offers strip and filter (ku, 360px
   // setup may have added one more order, so the scarf can reach 2 orders and its own badge.
   await expect(page.getByTestId("best-sellers").locator("li")).toHaveCount(3);
   const badged = await page.getByTestId("best-sellers").getByTestId("badge-best").count();
-  expect(badged).toBeGreaterThanOrEqual(2);
+  expect(badged).toBeGreaterThanOrEqual(1); // a sale item shows only its "−%" badge
   expect(badged).toBeLessThanOrEqual(3);
   await expect(page.getByTestId("offers-strip").locator("li")).toHaveCount(2);
   await expect(page.getByTestId("badge-new").first()).toBeVisible();
