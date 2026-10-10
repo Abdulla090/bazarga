@@ -329,7 +329,7 @@ async function main() {
     );
   }
 
-  console.log(`[seed] created Hawler Bazaar → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
+  console.log(`[seed] created Studio Hawler → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
   process.exit(0);
 }
 
