@@ -1,6 +1,6 @@
 /**
  * Brand tokens and storefront theme presets.
- * Brand: Blue #2563EB · Ink #0A0A0B · Paper #FAFAFB.
+ * Brand: Blue #2563EB · Ink #0A0A0B · Paper #FAFAF9.
  * A store picks a preset (`stores.theme_preset`) and may override the accent (`stores.accent_color`).
  * Presets only ever emit CSS custom properties — the storefront layout sets them on its wrapper, components read
  * them through Tailwind tokens (`bg-accent`, `text-on-accent`, `bg-surface`…), so no per-store CSS is generated.
@@ -9,7 +9,7 @@ export const BRAND = {
   gold: "#2563EB",
   ink: "#0A0A0B",
   green: "#1F8A5B",
-  paper: "#FAFAFB",
+  paper: "#FAFAF9",
   /** Mountain Green darkened for white text: brand green on white is 4.33:1 (fails AA for body text), this is 5.33:1. */
   greenDeep: "#1A7A50",
 } as const;
@@ -50,7 +50,7 @@ export const PRESET_TOKENS: Record<ThemePreset, ThemeTokens> = {
     surface: "#FFFFFF",
     fg: BRAND.ink,
     muted: "#4B5563",
-    border: "#E5E7EB",
+    border: "#E7E5E4",
     accent: "#2563EB",
     onAccent: "#FFFFFF",
     hero: BRAND.ink,

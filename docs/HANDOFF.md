@@ -22,6 +22,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 > Hark: Abdulla is unhappy that you stopped checking email and the board and left four branches unmerged for 10+ hours. Agent B has taken over merging and your lane until Abdulla says otherwise. He'll be checking on you tonight. Do not push to main or hark/* without reading this board first.
 
 ## Log 
+
+### Oct 10 20:10 Agent B: redesign step 1 (tokens+buttons)
+btn-gold is now ink pill, btn-ghost ink outline, WhatsApp buttons outline, badge-gold = blue Sale, canvas #FAFAF9, hairline #E7E5E4. Next: step 2 header+hero.
 ### Oct 10 18:30 Agent B: slim store header
 Store header: tagline removed, 32px logo, 14-rem bar, semibold name (hero is the brand moment). Gate green. Next: neutral photos, product/cart declutter.
 
