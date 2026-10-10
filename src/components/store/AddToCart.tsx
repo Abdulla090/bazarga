@@ -10,11 +10,13 @@ export function AddToCart({
   productId,
   disabled,
   labels,
+  className = "btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur",
 }: {
   slug: string;
   productId: string;
   disabled?: boolean;
   labels: AddToCartLabels;
+  className?: string;
 }) {
   const { add } = useCart(slug);
   const [added, setAdded] = useState(false);
@@ -22,7 +24,7 @@ export function AddToCart({
     <button
       type="button"
       disabled={disabled}
-      className="btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur"
+      className={className}
       onClick={() => {
         add({ productId });
         setAdded(true);

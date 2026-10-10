@@ -5,6 +5,7 @@ import { loadStore } from "./data";
 import { CartLink } from "@/components/store/CartLink";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Awning } from "@/components/Logo";
+import { Icon, Search } from "@/components/ui/icons";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { resolveTheme, themeStyle } from "@/lib/theme";
@@ -44,6 +45,10 @@ export default async function StoreLayout({ children, params }: { children: Reac
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-st-fg text-xs font-medium text-st-bg">{store.name.slice(0, 1)}</span>
             )}
             <span className="truncate text-[15px] font-medium">{store.name}</span>
+          </Link>
+          {/* Search lives with the catalog; the header icon jumps there from anywhere (Fitts: always one tap away). */}
+          <Link href={`/s/${store.slug}#products`} aria-label={t("search")} className="inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-150 hover:bg-st-fg/5" data-testid="header-search">
+            <Icon as={Search} className="h-[22px] w-[22px]" />
           </Link>
           <CartLink slug={store.slug} label={t("cart")} />
         </div>

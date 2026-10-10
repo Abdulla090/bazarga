@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
-import { getCatalog, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
+import { getCatalog, getProductDetail, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { ProductCard } from "@/components/store/ProductCard";
 import { pickText } from "@/lib/i18n";
@@ -9,11 +9,12 @@ import { formatIQD } from "@/lib/money";
 import { filterCatalog, DEFAULT_PAGE_SIZE } from "@/lib/catalog-filter";
 import { waLink } from "@/lib/whatsapp";
 import { WaTap } from "@/components/store/WaTap";
-import { buildSrcSet, SIZES } from "@/lib/responsive-image";
+import { buildSrcSet } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
 import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
+import { CollectionBento, Spotlight } from "@/components/store/HomeSections";
 import { OfferBanner } from "@/components/store/OfferBanner";
 import { bestSellerStrip, pickBannerOffer, saleProducts } from "@/lib/merch";
 import { merchLabels, offerLabels } from "@/components/store/merch-labels";
@@ -35,7 +36,13 @@ function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offe
 const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-medium transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.98]";
 const chipOn = "border-st-fg bg-st-fg text-st-bg";
 const chipOff = "border-st-border bg-transparent text-st-fg hover:border-st-fg";
+const pad2 = (n: number) => String(n).padStart(2, "0");
 
+/**
+ * Store home, Layout v3 "Composed Commerce" (docs/LAYOUT-V3.md §4): asymmetric hero → utility strip → collections
+ * bento → best sellers → spotlight band (full bleed) → on sale → all products. While searching, filtering or paging
+ * only the product block renders, straight under the header. Sections number themselves (01, 02…) in render order.
+ */
 export default async function StorefrontPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<SP> }) {
   const { slug } = await params;
   const sp = await searchParams;
@@ -64,7 +71,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   };
   const offer = pickBannerOffer(codes);
   const onSale = saleProducts(products);
-  // Merchandising strips only on the plain store home (not while searching, filtering or paging).
+  // Editorial sections only on the plain store home (not while searching, filtering or paging).
   const browsing = !q && !c && !offers && page === 1;
   const best = browsing ? bestSellerStrip(products, bestSellers) : [];
   const saleStrip = browsing ? onSale.slice(0, 8) : [];
@@ -73,145 +80,204 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const wa = store.whatsapp ? normalizePhone(store.whatsapp) : null;
   const remaining = Math.min(total - items.length, DEFAULT_PAGE_SIZE);
 
+  // Spotlight: the seller's featured product, else something the best-seller set doesn't already show, else the top seller.
+  const bestIds = new Set(best.map((p) => p.id));
+  const withPhoto = products.filter((p) => p.image && !p.soldOut);
+  const spot = browsing
+    ? (withPhoto.find((p) => p.badge === "featured") ?? withPhoto.find((p) => !bestIds.has(p.id)) ?? withPhoto[0] ?? null)
+    : null;
+  const spotDetail = spot ? await getProductDetail(store.id, spot.id) : null;
+  const spotDescription = spotDetail ? pickText(spotDetail.description, locale).split(/\n+/)[0]?.trim() : undefined;
+  const spotEyebrow = spot?.badge === "featured" ? badges.featured : spot?.badge === "new" ? badges.new : spot?.bestSeller ? badges.bestSeller : undefined;
+
+  const showCollections = browsing && usedCats.length >= 2;
+  let n = 0;
+  const idx = { collections: showCollections ? pad2(++n) : "", best: best.length ? pad2(++n) : "", spot: spot ? pad2(++n) : "", sale: saleStrip.length ? pad2(++n) : "", all: pad2(++n) };
+
   return (
-    <div className="grid gap-6">
+    <div className="grid">
       <ViewPixel slug={store.slug} />
-      {/* Hero: the store name in big light display type, one line of tagline, one ink pill; the cover photo below. */}
-      <section className="mb-6 grid gap-8 sm:mb-12 sm:gap-12" data-testid="store-hero">
-        <div className="grid max-w-4xl justify-items-start gap-4 sm:gap-6">
-          <h1 className="display break-words text-[44px] sm:text-[64px] lg:text-[88px]">{store.name}</h1>
-          {tagline && <p className="line-clamp-2 max-w-xl text-[17px] leading-snug text-muted sm:text-xl">{tagline}</p>}
-          <a href="#products" className="btn-gold mt-1 min-h-12 px-7">{t("shopNow")}</a>
-        </div>
-        {store.coverImageUrl && (
-          <div className="overflow-hidden rounded-2xl bg-[#F4F4F5]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={store.coverImageUrl}
-              srcSet={buildSrcSet(store.coverImageRenditions)}
-              sizes={store.coverImageRenditions?.length ? SIZES.cover : undefined}
-              alt=""
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="aspect-[4/3] w-full object-cover sm:aspect-[21/9]"
-              style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
+      {browsing && (
+        <>
+          {/* Asymmetric hero (§4.1): photo on the inline end bleeding to the viewport edge; the store name starts on
+              the grid's first column and runs over the photo on canvas-coloured plates, so it reads on any photo. */}
+          <section className="grid-12 -mt-6 items-end sm:-mt-10 md:mt-0" data-testid="store-hero">
+            {store.coverImageUrl && (
+              <div className="bleed-x col-span-4 overflow-hidden bg-[#F4F4F5] md:col-span-7 md:col-start-6 md:row-start-1 md:ms-0 md:bleed-end md:rounded-s-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={store.coverImageUrl}
+                  srcSet={buildSrcSet(store.coverImageRenditions)}
+                  sizes={store.coverImageRenditions?.length ? "(min-width: 768px) 62vw, 100vw" : undefined}
+                  alt=""
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="aspect-[4/5] w-full object-cover sm:aspect-[4/3] md:aspect-auto md:h-[min(80vh,46rem)]"
+                  style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
+                />
+              </div>
+            )}
+            <div
+              className={`relative z-[1] col-span-4 grid justify-items-start gap-6 ${
+                store.coverImageUrl ? "-mt-8 md:col-span-8 md:col-start-1 md:row-start-1 md:mt-0 md:self-stretch md:content-between md:py-10" : "md:col-span-10 md:py-16"
+              }`}
+            >
+              {tagline && <p className="hidden max-w-[22rem] text-xl leading-snug text-muted md:block">{tagline}</p>}
+              <div className="grid justify-items-start gap-6 md:gap-8">
+                <h1 className="t-hero break-words">
+                  <span className="hero-plate">{store.name}</span>
+                </h1>
+                {tagline && <p className="line-clamp-2 max-w-xl text-[17px] leading-snug text-muted md:hidden">{tagline}</p>}
+                <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{t("shopNow")}</a>
+              </div>
+            </div>
+          </section>
+
+          {(offer || minFee !== null) && (
+            <div className="section flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-y border-st-border py-2 text-sm md:!mt-16">
+              {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
+              {minFee !== null && (
+                <p className="flex min-h-11 items-center gap-2 text-muted">
+                  <Icon as={Truck} className="shrink-0" />
+                  <span>
+                    {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
+                    {store.freeDeliveryThreshold ? ` · ${t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}` : null}
+                  </span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {showCollections && (
+            <CollectionBento
+              categories={usedCats}
+              products={products}
+              slug={store.slug}
+              locale={locale}
+              title={t("collections")}
+              index={idx.collections}
+              countLabel={(count) => t("itemsCount", { count })}
             />
+          )}
+
+          <ProductStrip
+            id="best-h"
+            title={t("bestSellers")}
+            index={idx.best}
+            products={best}
+            slug={store.slug}
+            locale={locale}
+            labels={badges}
+            from={from}
+            view={t("view")}
+            testId="best-sellers"
+          />
+
+          {spot && (
+            <Spotlight
+              p={spot}
+              slug={store.slug}
+              locale={locale}
+              index={idx.spot}
+              eyebrow={spotEyebrow}
+              description={spotDescription}
+              labels={{ view: t("view"), add: t("addToCart"), added: t("added"), soldOut: t("outOfStock"), from }}
+            />
+          )}
+
+          <ProductStrip
+            id="offers-h"
+            title={t("offersTitle")}
+            index={idx.sale}
+            products={saleStrip}
+            slug={store.slug}
+            locale={locale}
+            labels={badges}
+            from={from}
+            view={t("view")}
+            seeAll={onSale.length > 1 ? { href: homeHref(slug, { offers: true }), label: t("seeAll") } : undefined}
+            testId="offers-strip"
+          />
+        </>
+      )}
+
+      {/* All products: heading, then chips (start) and search (end) on one row from md up. */}
+      <section id="products" aria-labelledby="grid-h" className={`grid scroll-mt-24 gap-6 sm:gap-8 ${browsing ? "section" : ""}`}>
+        <SectionHead id="grid-h" title={offers ? t("offers") : t("allProducts")} index={browsing ? idx.all : undefined} testId="grid-title" />
+        <div className="grid-12 gap-y-4">
+          {(usedCats.length > 0 || onSale.length > 0) && (
+            <nav className="rail col-span-4 -mx-[var(--page-margin)] flex gap-2 overflow-x-auto px-[var(--page-margin)] md:col-span-8 md:mx-0 md:flex-wrap md:px-0" aria-label={t("products")}>
+              <Link href={`${homeHref(slug, { q })}#products`} aria-current={!c && !offers ? "page" : undefined} className={`${chip} ${!c && !offers ? chipOn : chipOff}`}>{t("all")}</Link>
+              {onSale.length > 0 && (
+                <Link
+                  href={`${homeHref(slug, { q, offers: true })}#products`}
+                  aria-current={offers ? "page" : undefined}
+                  className={`${chip} ${offers ? chipOn : chipOff}`}
+                  data-testid="offers-chip"
+                >
+                  {t("offers")}
+                </Link>
+              )}
+              {usedCats.map((cat) => (
+                <Link key={cat.id} href={`${homeHref(slug, { q, c: cat.id })}#products`} aria-current={c === cat.id ? "page" : undefined} className={`${chip} ${c === cat.id ? chipOn : chipOff}`}>
+                  {pickText(cat.name, locale)}
+                </Link>
+              ))}
+            </nav>
+          )}
+          {/* Plain GET form: works without JS, keeps the category. */}
+          <form action={`/s/${slug}#products`} method="get" role="search" className="col-span-4 flex items-center md:col-span-4 md:col-start-9">
+            {c && <input type="hidden" name="c" value={c} />}
+            {offers && <input type="hidden" name="offers" value="1" />}
+            <label className="relative flex-1">
+              <span className="sr-only">{t("search")}</span>
+              <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                type="search"
+                name="q"
+                defaultValue={q}
+                placeholder={t("searchPlaceholder")}
+                enterKeyHint="search"
+                maxLength={80}
+                className="h-12 w-full rounded-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
+              />
+            </label>
+            <button type="submit" className="sr-only">{t("search")}</button>
+          </form>
+        </div>
+
+        {q && (
+          <p className="flex items-center justify-between gap-2 text-sm text-muted" aria-live="polite">
+            <span>{t("resultsFor", { q, count: total })}</span>
+            <Link href={`${homeHref(slug, { c, offers })}#products`} className="inline-flex min-h-11 items-center gap-1 font-medium text-st-fg underline underline-offset-4">
+              <Icon as={X} /> {t("clearSearch")}
+            </Link>
+          </p>
+        )}
+
+        {items.length === 0 ? (
+          <p className="border-y border-st-border py-12 text-center text-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-y-12">
+            {items.map((p, i) => (
+              <div key={p.id} id={`p${i}`} className="scroll-mt-24">
+                <ProductCard p={p} slug={store.slug} locale={locale} index={browsing ? i + 2 : i} labels={cardLabels} />
+              </div>
+            ))}
           </div>
         )}
-      </section>
 
-      {(offer || minFee !== null) && (
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-y border-st-border py-2 text-sm">
-          {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
-          {minFee !== null && (
-            <p className="flex min-h-11 items-center gap-2 text-muted">
-              <Icon as={Truck} className="shrink-0" />
-              <span>
-                {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
-                {store.freeDeliveryThreshold ? ` · ${t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}` : null}
-              </span>
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* Plain GET form: works without JS, keeps the category. */}
-      <form id="products" action={`/s/${slug}`} method="get" role="search" className="flex scroll-mt-24 items-center gap-2">
-        {c && <input type="hidden" name="c" value={c} />}
-        {offers && <input type="hidden" name="offers" value="1" />}
-        <label className="relative flex-1">
-          <span className="sr-only">{t("search")}</span>
-          <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder={t("searchPlaceholder")}
-            enterKeyHint="search"
-            maxLength={80}
-            className="h-12 w-full rounded-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
-          />
-        </label>
-        <button type="submit" className="sr-only">{t("search")}</button>
-      </form>
-
-      {(usedCats.length > 0 || onSale.length > 0) && (
-        <nav className="rail -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" aria-label={t("products")}>
-          <Link href={homeHref(slug, { q })} aria-current={!c && !offers ? "page" : undefined} className={`${chip} ${!c && !offers ? chipOn : chipOff}`}>{t("all")}</Link>
-          {onSale.length > 0 && (
-            <Link
-              href={homeHref(slug, { q, offers: true })}
-              aria-current={offers ? "page" : undefined}
-              className={`${chip} ${offers ? chipOn : chipOff}`}
-              data-testid="offers-chip"
-            >
-              {t("offers")}
-            </Link>
-          )}
-          {usedCats.map((cat) => (
-            <Link key={cat.id} href={homeHref(slug, { q, c: cat.id })} aria-current={c === cat.id ? "page" : undefined} className={`${chip} ${c === cat.id ? chipOn : chipOff}`}>
-              {pickText(cat.name, locale)}
-            </Link>
-          ))}
-        </nav>
-      )}
-
-      {q && (
-        <p className="flex items-center justify-between gap-2 text-sm text-muted" aria-live="polite">
-          <span>{t("resultsFor", { q, count: total })}</span>
-          <Link href={homeHref(slug, { c, offers })} className="inline-flex min-h-11 items-center gap-1 font-medium text-st-fg underline underline-offset-4">
-            <Icon as={X} /> {t("clearSearch")}
+        {hasMore && (
+          <Link
+            href={`${homeHref(slug, { q, c, offers, page: page + 1 })}#p${items.length}`}
+            scroll={false}
+            className="btn-ghost mx-auto mt-2 min-h-12 px-7"
+          >
+            {t("showMore", { count: remaining })}
           </Link>
-        </p>
-      )}
-
-      <ProductStrip
-        id="best-h"
-        title={t("bestSellers")}
-        products={best}
-        slug={store.slug}
-        locale={locale}
-        labels={badges}
-        from={from}
-        testId="best-sellers"
-      />
-      <ProductStrip
-        id="offers-h"
-        title={t("offersTitle")}
-        products={saleStrip}
-        slug={store.slug}
-        locale={locale}
-        labels={badges}
-        from={from}
-        seeAll={onSale.length > 1 ? { href: homeHref(slug, { offers: true }), label: t("seeAll") } : undefined}
-        testId="offers-strip"
-      />
-      {(best.length > 0 || saleStrip.length > 0 || offers) && items.length > 0 && (
-        <div className="section"><SectionHead title={offers ? t("offers") : t("allProducts")} testId="grid-title" /></div>
-      )}
-
-      {items.length === 0 ? (
-        <p className="border-y border-st-border py-12 text-center text-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-y-12">
-          {items.map((p, i) => (
-            <div key={p.id} id={`p${i}`} className="scroll-mt-24">
-              <ProductCard p={p} slug={store.slug} locale={locale} index={i} labels={cardLabels} />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {hasMore && (
-        <Link
-          href={`${homeHref(slug, { q, c, offers, page: page + 1 })}#p${items.length}`}
-          scroll={false}
-          className="btn-ghost mx-auto mt-2 min-h-12 px-7"
-        >
-          {t("showMore", { count: remaining })}
-        </Link>
-      )}
+        )}
+      </section>
 
       {wa && (
         <WaTap

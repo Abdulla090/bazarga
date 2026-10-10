@@ -261,7 +261,10 @@
     "copyCode": "Kopî bike",
     "codeCopied": "Hat kopîkirin",
     "contact": "Têkilî",
-    "language": "Ziman"
+    "language": "Ziman",
+    "collections": "Li gorî kategoriyê",
+    "itemsCount": "Berhem: {count}",
+    "view": "Bibîne"
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

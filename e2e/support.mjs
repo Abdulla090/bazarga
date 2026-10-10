@@ -64,7 +64,12 @@ async function signUpFresh() {
 
 export async function setup() {
   const html = await (await fetch(`${BASE}/s/${SLUG}`)).text();
-  const buyable = [...new Set([...html.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
+  // Buy something that is already a best seller, so this order never changes the home's best-seller set
+  // (the spotlight band deliberately shows a product that isn't one).
+  const bestHtml = html.slice(html.indexOf('data-testid="best-sellers"'));
+  const best = bestHtml.slice(0, bestHtml.indexOf("</section>"));
+  const all = [...new Set([...html.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
+  const buyable = [...all.filter((id) => best.includes(id)), ...all.filter((id) => !best.includes(id))];
   const listed = [...new Set([...html.matchAll(new RegExp(`/s/${SLUG}/p/([0-9a-f-]{36})`, "g"))].map((m) => m[1]))];
   if (!buyable.length || !listed.length) throw new Error(`no products on /s/${SLUG} — is the demo seeded?`);
   const placed = await callAction(
