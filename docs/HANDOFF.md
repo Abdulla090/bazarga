@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 11 00:20 Agent B: layout v3 step 6 (cart & checkout)
+7/5 cart split with pinned checkout panel, progressive note, phone bottom bar with total + Place order. Gate green (typecheck, lint, vitest, build, budget, mobile 5/5, smoke). Layout v3 rollout complete; next: polish weakest screen from screenshot review.
 ### Oct 11 01:20 Agent B: layout v3 step 5 (states)
 Route skeletons, storefront error state, empty states, focus ring. Gate green (vitest 453, mobile 5/5, smoke; product 160.5 KiB). Next: step 6 cart composition.
 
