@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 21:35 Agent B: redesign step 2 (header + hero)
+64px translucent header (no tagline, no duplicate logo), light display hero with one ink 'Shop now' pill (new key store.shopNow, 4 locales), outline WhatsApp pill, quiet footer. Gate: typecheck, lint, vitest 453, build, budget, mobile 5/5, smoke all green. Next: step 3 cards/grids/rails.
+
 ### Oct 10 20:10 Agent B: redesign step 1 (tokens+buttons)
 btn-gold is now ink pill, btn-ghost ink outline, WhatsApp buttons outline, badge-gold = blue Sale, canvas #FAFAF9, hairline #E7E5E4. Next: step 2 header+hero.
 ### Oct 10 18:30 Agent B: slim store header

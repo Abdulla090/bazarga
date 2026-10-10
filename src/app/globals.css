@@ -245,3 +245,41 @@ body {
 /* order thank-you: success icon pop (CSS only, reduced-motion neutralised globally) */
 @keyframes success-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
 .order-success-ring{animation:success-pop var(--duration-slow,250ms) var(--ease-out-expo,ease-out) both}
+
+/* ---- Redesign v2 (docs/REDESIGN.md) ---- */
+/* Display type: big and light. Latin tracks tight; Arabic-script locales keep 0 tracking and a taller line. */
+@utility display {
+  font-weight: 350;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+html:lang(ckb) .display,
+html:lang(ar) .display {
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+/* Muted text = ink at 60 %, faint = 40 % (opacity-derived, so it follows every theme preset). */
+@utility text-muted { color: color-mix(in srgb, var(--st-fg) 60%, transparent); }
+@utility text-faint { color: color-mix(in srgb, var(--st-fg) 40%, transparent); }
+
+/* Store header: 64 px, sits on the canvas at the top; once the page scrolls it turns translucent with a hairline.
+   Scroll-driven where supported; elsewhere it is translucent with the hairline from the start. */
+.store-header {
+  background: color-mix(in srgb, var(--st-bg) 80%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(16px);
+  backdrop-filter: saturate(1.4) blur(16px);
+  border-bottom: 1px solid var(--st-border);
+}
+@supports (animation-timeline: scroll()) {
+  @keyframes store-header-in {
+    from { background-color: var(--st-bg); border-bottom-color: transparent; }
+    to { background-color: color-mix(in srgb, var(--st-bg) 80%, transparent); border-bottom-color: var(--st-border); }
+  }
+  .store-header {
+    animation: store-header-in linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 48px;
+  }
+}

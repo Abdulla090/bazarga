@@ -30,47 +30,45 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const theme = resolveTheme(store.themePreset, store.accentColor);
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={themeStyle(theme)}>
-      <header className="sticky top-0 z-20 border-b border-line bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur">
-        <div className="container-page flex min-h-14 items-center gap-3 py-1.5">
-          <Link href={`/s/${store.slug}`} className="me-auto flex min-w-0 items-center gap-3">
+      <header className="store-header sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
+        <div className="container-page flex h-16 items-center gap-3">
+          <Link href={`/s/${store.slug}`} className="me-auto flex min-h-11 min-w-0 items-center gap-2.5">
             {store.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={store.logoUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
+              <img src={store.logoUrl} alt="" className="h-7 w-7 shrink-0 rounded-full object-cover" />
             ) : (
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-st-hero text-sm font-bold text-st-on-hero">{store.name.slice(0, 1)}</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-st-fg text-xs font-medium text-st-bg">{store.name.slice(0, 1)}</span>
             )}
-            <span className="min-w-0">
-              <span className="block truncate text-base font-semibold">{store.name}</span>
-            </span>
+            <span className="truncate text-[15px] font-medium">{store.name}</span>
           </Link>
           <CartLink slug={store.slug} label={t("cart")} />
         </div>
       </header>
-      <main className="container-page flex-1 py-6">{children}</main>
-      <footer className="border-t border-line bg-white py-6">
+      <main className="container-page flex-1 pt-6 pb-14 sm:pt-10 sm:pb-24">{children}</main>
+      <footer className="border-t border-st-border py-10 text-sm">
         {(about || returns) && (
-          <div className="container-page mb-6 grid gap-4 text-sm sm:grid-cols-2">
+          <div className="container-page mb-8 grid gap-8 sm:grid-cols-2">
             {about && (
-              <section>
-                <h2 className="mb-1 font-bold">{t("about")}</h2>
-                <p className="whitespace-pre-line text-ink-70">{about}</p>
+              <section className="max-w-prose">
+                <h2 className="mb-2 text-[13px] font-medium text-muted">{t("about")}</h2>
+                <p className="whitespace-pre-line leading-relaxed">{about}</p>
               </section>
             )}
             {returns && (
-              <section id="returns" className="scroll-mt-24">
-                <h2 className="mb-1 font-bold">{t("returnPolicy")}</h2>
-                <p className="whitespace-pre-line text-ink-70">{returns}</p>
+              <section id="returns" className="max-w-prose scroll-mt-24">
+                <h2 className="mb-2 text-[13px] font-medium text-muted">{t("returnPolicy")}</h2>
+                <p className="whitespace-pre-line leading-relaxed">{returns}</p>
               </section>
             )}
           </div>
         )}
-        <div className="container-page flex flex-wrap items-center justify-between gap-3 text-sm">
-          <LocaleSwitcher current={locale} locales={["ku", "ar", "en"]} />
-          <div className="flex flex-wrap items-center gap-3 text-ink-70">
+        <div className="container-page flex flex-wrap items-center justify-between gap-3">
+          <LocaleSwitcher current={locale} locales={["ku", "ar", "en", "kmr"]} />
+          <div className="flex flex-wrap items-center gap-4 text-muted">
             {store.instagram && (
-              <a href={`https://instagram.com/${store.instagram}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline" dir="ltr">@{store.instagram}</a>
+              <a href={`https://instagram.com/${store.instagram}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center hover:text-st-fg" dir="ltr">@{store.instagram}</a>
             )}
-            <Link href="/" className="inline-flex min-h-11 items-center gap-1">
+            <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 hover:text-st-fg">
               <Awning className="h-3 w-7" /> {t("poweredBy")}
             </Link>
           </div>

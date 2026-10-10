@@ -70,39 +70,35 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const saleStrip = browsing ? onSale.slice(0, 8) : [];
   const minFee = zones.length ? Math.min(...zones.map((z) => z.fee)) : null;
   const tagline = pickText(store.tagline, locale);
-  const about = pickText(store.about, locale);
   const wa = store.whatsapp ? normalizePhone(store.whatsapp) : null;
   const remaining = Math.min(total - items.length, DEFAULT_PAGE_SIZE);
 
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-6">
       <ViewPixel slug={store.slug} />
-      {/* Hero: cover photo (LCP, eager) with a scrim, or the theme's hero colour as a gradient. */}
-      <section className="relative -mt-2 overflow-hidden rounded-[var(--radius-card)] shadow-e2 bg-gradient-to-br from-st-hero to-st-hero/80 text-st-on-hero">
-        {store.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={store.coverImageUrl}
-            srcSet={buildSrcSet(store.coverImageRenditions)}
-            sizes={store.coverImageRenditions?.length ? SIZES.cover : undefined}
-            alt=""
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
-          />
-        )}
-        {store.coverImageUrl && <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" aria-hidden />}
-        <div className={`relative flex min-h-40 flex-col justify-end gap-2 p-4 sm:min-h-56 sm:p-6 ${store.coverImageUrl ? "text-white" : ""}`}>
-          <div className="flex items-center gap-3">
-            <div className="min-w-0">
-              <h1 className="truncate text-2xl font-extrabold leading-tight">{store.name}</h1>
-              {tagline && <p className="line-clamp-2 text-sm opacity-90">{tagline}</p>}
-            </div>
-          </div>
-          {about && <p className="line-clamp-3 max-w-prose text-sm opacity-90">{about}</p>}
+      {/* Hero: the store name in big light display type, one line of tagline, one ink pill; the cover photo below. */}
+      <section className="mb-6 grid gap-8 sm:mb-12 sm:gap-12" data-testid="store-hero">
+        <div className="grid max-w-4xl justify-items-start gap-4 sm:gap-6">
+          <h1 className="display break-words text-[44px] sm:text-[64px] lg:text-[88px]">{store.name}</h1>
+          {tagline && <p className="line-clamp-2 max-w-xl text-[17px] leading-snug text-muted sm:text-xl">{tagline}</p>}
+          <a href="#products" className="btn-gold mt-1 min-h-12 px-7">{t("shopNow")}</a>
         </div>
+        {store.coverImageUrl && (
+          <div className="overflow-hidden rounded-2xl bg-[#F4F4F5]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={store.coverImageUrl}
+              srcSet={buildSrcSet(store.coverImageRenditions)}
+              sizes={store.coverImageRenditions?.length ? SIZES.cover : undefined}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="aspect-[4/3] w-full object-cover sm:aspect-[21/9]"
+              style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
+            />
+          </div>
+        )}
       </section>
 
       {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
@@ -118,7 +114,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       )}
 
       {/* Plain GET form: works without JS, keeps the category. */}
-      <form action={`/s/${slug}`} method="get" role="search" className="flex items-center gap-2">
+      <form id="products" action={`/s/${slug}`} method="get" role="search" className="flex scroll-mt-24 items-center gap-2">
         {c && <input type="hidden" name="c" value={c} />}
         {offers && <input type="hidden" name="offers" value="1" />}
         <label className="relative flex-1">
@@ -223,9 +219,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t("chatWhatsApp")}
-          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] start-[calc(1rem+env(safe-area-inset-left))] z-30 flex h-14 items-center gap-2 rounded-full bg-[#25D366] px-4 font-bold text-white shadow-lg rtl:start-[calc(1rem+env(safe-area-inset-right))]"
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] start-[calc(1rem+env(safe-area-inset-left))] z-30 flex h-12 min-w-12 items-center justify-center gap-2 rounded-full border border-st-fg bg-st-surface px-3.5 text-[15px] font-medium text-st-fg shadow-e3 transition-colors duration-150 hover:bg-st-bg sm:px-5 rtl:start-[calc(1rem+env(safe-area-inset-right))]"
         >
-          <Icon as={MessageCircle} className="h-6 w-6" />
+          <Icon as={MessageCircle} className="h-5 w-5" />
           <span className="hidden sm:inline">{t("chatWhatsApp")}</span>
         </WaTap>
       )}
