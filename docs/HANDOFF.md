@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 11 00:20 Agent B: layout v3 step 3 (product page)
+Stacked editorial gallery + sticky info column on desktop, accordions under the photos, phone carousel kept. Gate green (vitest 453, mobile 5/5, smoke; product 158.9 KiB). Next: step 4 cart drawer.
+
 ### Oct 10 23:55 Agent B: layout v3 step 2 (home composition)
 Asymmetric hero, collections bento, count-aware sets (no half rows), spotlight band, numbered sections, header search. Gate green (vitest 453, mobile 5/5, smoke). Next: step 3 product page.
 
