@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { cookies, headers } from "next/headers";
 import { pickDeliveryZone, shopperCityCookie } from "@/lib/shopper-city";
@@ -142,19 +143,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </Link>
       <div className="grid gap-6 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-12 lg:gap-16">
         <div className="relative min-w-0 md:sticky md:top-24 md:h-fit">
-          <ProductGallery
-            images={p.images}
-            alt={name}
-            label={{
-              photo: t("photo"),
-              of: t("of"),
-              open: t.raw("openPhoto") as string,
-              close: t("closeViewer"),
-              next: t("nextPhoto"),
-              prev: t("prevPhoto"),
-              zoom: t("zoom"),
-            }}
-          />
+          <ViewTransition name={`product-${p.id}`} share="product-morph">
+            <ProductGallery
+              images={p.images}
+              alt={name}
+              label={{
+                photo: t("photo"),
+                of: t("of"),
+                open: t.raw("openPhoto") as string,
+                close: t("closeViewer"),
+                next: t("nextPhoto"),
+                prev: t("prevPhoto"),
+                zoom: t("zoom"),
+              }}
+            />
+          </ViewTransition>
           {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
           <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="gallery" />
         </div>
@@ -225,7 +228,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </li>
           </ul>
 
-          <div className="-mt-4 grid">
+          <div className="reveal -mt-4 grid">
             {specs.length > 0 && (
               <details className={section} open data-testid="section-details">
                 <summary className={summary}>

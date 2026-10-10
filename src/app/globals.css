@@ -290,3 +290,37 @@ html:lang(ar) .display {
 @media (max-width: 767px) {
   html[data-buybar] .storefront { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
 }
+
+/* ---- Motion (Redesign v2 step 6). Everything here is off under prefers-reduced-motion. ---- */
+/* Section reveal: fade + 8 px rise as an element enters the viewport, driven by scroll (animation-timeline: view()).
+   Browsers without scroll-driven animations simply show the content (no-op fallback, no JS). */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+/* Grid → product page: the card photo morphs into the gallery (React <ViewTransition share="product-morph">). */
+::view-transition-group(.product-morph) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+::view-transition-old(.product-morph),
+::view-transition-new(.product-morph) {
+  height: 100%;
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
