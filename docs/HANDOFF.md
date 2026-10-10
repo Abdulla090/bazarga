@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 23:30 Agent B: layout v3 step 1 (foundation)
+Grid/spacing/type tokens, wider page, section rhythm, new footer + sign-off. Gate green (vitest, build, budget: home 154.1 / product 158.8 KiB, mobile, smoke). Next: step 2 home composition.
+
 ### Oct 10 22:50 Agent B: Layout v3 spec
 docs/LAYOUT-V3.md "Composed Commerce": 12-col grid + 8px scale, modular type, editorial home (asymmetric hero, bento, count-aware sets, spotlight), sticky-info product page, cart drawer, states, RTL rules. 6-step rollout follows.
 

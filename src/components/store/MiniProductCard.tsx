@@ -22,13 +22,19 @@ export function MiniProductCard({ p, slug, locale, labels, from }: { p: CatalogP
   );
 }
 
-/** Section heading used across the storefront: 2–4 words, light display type, optional "See all" text link. */
-export function SectionHead({ id, title, seeAll, testId }: { id?: string; title: string; seeAll?: { href: string; label: string }; testId?: string }) {
+/**
+ * Section heading (Layout v3): optional index label ("01") over a 2–4 word light headline, optional "See all" link
+ * aligned to the headline's baseline at the inline end.
+ */
+export function SectionHead({ id, title, index, seeAll, testId }: { id?: string; title: string; index?: string; seeAll?: { href: string; label: string }; testId?: string }) {
   return (
-    <div className="reveal flex items-end justify-between gap-3">
-      <h2 id={id} className="display min-w-0 truncate text-[22px] sm:text-[28px]" data-testid={testId}>
-        {title}
-      </h2>
+    <div className="reveal flex items-end justify-between gap-4">
+      <div className="grid min-w-0 gap-2">
+        {index && <span className="t-label section-index" aria-hidden>{index}</span>}
+        <h2 id={id} className="t-headline min-w-0 truncate pb-[0.08em]" data-testid={testId}>
+          {title}
+        </h2>
+      </div>
       {seeAll && (
         <Link href={seeAll.href} className="inline-flex min-h-11 shrink-0 items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">
           {seeAll.label}
@@ -65,11 +71,11 @@ export function ProductStrip({
 }) {
   if (!products.length) return null;
   return (
-    <section aria-labelledby={id} className="mt-8 grid min-w-0 gap-4 sm:mt-14 sm:gap-6" data-testid={testId}>
+    <section aria-labelledby={id} className="section grid min-w-0 gap-4 sm:gap-6" data-testid={testId}>
       <SectionHead id={id} title={title} seeAll={seeAll} />
-      <ul className="rail -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:scroll-px-6 sm:gap-5 sm:px-6">
+      <ul className="rail -mx-[var(--page-margin)] flex snap-x snap-mandatory scroll-px-[var(--page-margin)] gap-[var(--grid-gap)] overflow-x-auto px-[var(--page-margin)] pb-1">
         {products.map((r) => (
-          <li key={r.id} className="reveal w-[42%] shrink-0 snap-start sm:w-[calc((100%-2*1.25rem)/3)] lg:w-[calc((100%-3*1.25rem)/4)]">
+          <li key={r.id} className="reveal w-[42%] shrink-0 snap-start sm:w-[calc((100%-2*var(--grid-gap))/3)] lg:w-[calc((100%-3*var(--grid-gap))/4)]">
             <MiniProductCard p={r} slug={slug} locale={locale} labels={labels} from={from} />
           </li>
         ))}

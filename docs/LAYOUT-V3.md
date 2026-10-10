@@ -84,7 +84,7 @@ Hairline top. Four columns on desktop (About · Returns · Contact · Language),
 - Tracking/letter-spacing is never negative for Arabic-script text.
 
 ## 10. Rollout (one step per branch `agentb/v3-<step>`, each with 390 ku + 1280 en screenshots reviewed and the full gate)
-1. **Foundation** — grid/spacing/type tokens (`--page-max`, `--s-*`, `t-hero/t-display/t-headline/t-title/t-label`, `.section`, `.bleed`, root `overflow-x: clip`), wider container (1280, 16/24/40 margins), section index labels, refined four-column footer + sign-off wordmark.
+1. **Foundation** — grid/spacing/type tokens (`--page-max`, `--s-*`, `t-hero/t-display/t-headline/t-title/t-label`, `.section`, `.bleed`, root `overflow-x: clip`), wider container (1280, 16/24/40 margins), section index labels, refined four-column footer + sign-off wordmark. **DONE (Oct 10)**: store-page container 1280 with 16/24/40 margins, --s-* 8px scale, --section-gap 64/96/128, t-hero/t-display/t-headline/t-title/t-label type utilities (Arabic script zero tracking), grid-12 + bleed utilities, overflow-x clip on the storefront, SectionHead with index labels, four-column footer (About/Returns/Contact + language row) and a faint store-name sign-off. Gate green.
 2. **Home composition** — asymmetric hero with overlapping name plate and end-bleed photo, collections bento, count-aware Best sellers / On sale sets (no half rows), spotlight band, All products block with search + chips on one row.
 3. **Product page** — desktop stacked gallery + sticky info column, phone carousel kept, related as a count-aware set.
 4. **Add-to-cart feedback** — slide-over drawer (`<dialog>`), cart count bump, button state, shared event so card pills and the product page both use it.
