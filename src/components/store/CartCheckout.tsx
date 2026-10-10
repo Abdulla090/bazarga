@@ -128,12 +128,16 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const fe = (k: string) => fieldErrors[k] && <p className="field-error">{te(fieldErrors[k]!)}</p>;
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-16">
+    // Layout v3 §7: lines on columns 1–7, the checkout panel sticky on 8–12; phones stack them.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-12 lg:gap-x-[var(--grid-gap)]">
       {/* Seller analytics funnel: counted only when the cart has something in it (rendered after hydration). */}
       <ViewPixel slug={slug} checkout />
       {/* minmax(0,…) tracks: a long product name truncates instead of widening the page at 360 px. */}
-      <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)]">
-        <h1 className="display mb-6 text-[28px] sm:mb-8 sm:text-[40px]">{L.cart}</h1>
+      <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] lg:col-span-7">
+        <h1 className="t-display mb-6 flex items-start gap-2 sm:mb-8">
+          {L.cart}
+          <span className="num t-label pt-1 text-muted lg:pt-2" data-testid="cart-items">{lines.reduce((a, l) => a + l.quantity, 0)}</span>
+        </h1>
         <ul className="grid grid-cols-[minmax(0,1fr)] divide-y divide-st-border border-y border-st-border" data-testid="cart-lines">
         {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
           <li key={l.key} className={`flex items-center gap-4 py-4 ${l.available ? "" : "opacity-60"}`}>
@@ -147,6 +151,9 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
               <p className="truncate text-[15px]">{l.name}</p>
               {l.variantTitle && <p className="truncate text-[13px] text-muted">{l.variantTitle}</p>}
               {l.available ? <p className="num text-sm font-medium">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-medium">{L.unavailableLine}</p>}
+              <button type="button" onClick={() => setQty(l, 0)} className="-ms-1 inline-flex min-h-11 w-fit items-center px-1 text-[13px] text-muted underline-offset-4 hover:text-st-fg hover:underline sm:min-h-8">
+                {L.remove}
+              </button>
             </div>
             <div className="flex shrink-0 items-center rounded-full border border-st-border" aria-label={L.qty}>
               <button type="button" className="h-11 w-11 rounded-full text-lg transition-colors duration-150 hover:bg-st-fg/5 disabled:opacity-30 sm:h-10 sm:w-10" onClick={() => setQty(l, l.quantity - 1)} aria-label="−">−</button>
@@ -159,7 +166,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
       </section>
 
-      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24" data-testid="checkout-form">
+      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
         <h2 className="display text-[22px] sm:text-[28px]">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">
@@ -236,7 +243,11 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           </div>
           <textarea name="address" className="input min-h-16" placeholder={L.addressDetails} aria-label={L.address} maxLength={300} />
           {fe("address")}
-          <textarea name="notes" className="input min-h-16" placeholder={L.notes} aria-label={L.notes} maxLength={500} />
+          {/* Progressive disclosure: most orders need no note (the field still submits while collapsed). */}
+          <details className="group">
+            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent group-open:hidden [&::-webkit-details-marker]:hidden">{L.addNote}</summary>
+            <textarea name="notes" className="input min-h-16" placeholder={L.notes} aria-label={L.notes} maxLength={500} />
+          </details>
         </fieldset>
         <fieldset>
           <legend className="mb-1.5 block text-[13px] font-medium">{L.payment}</legend>
@@ -309,9 +320,16 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <dd className="num mt-2 border-t border-st-border pt-3 text-end text-base font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</dd>
         </dl>
         {error && <p role="alert" className="rounded-xl border border-danger/30 px-4 py-3 text-sm font-medium text-danger">{te(error)}</p>}
-        <button className="btn-gold min-h-12 w-full" disabled={placing || !available.length || !city}>
-          {placing ? L.placing : L.placeOrder}
-        </button>
+        {/* Thumb zone (Fitts): on phones the total + Place order ride along the bottom of the screen while the form is in view. */}
+        <div className="co-submit sticky bottom-0 z-10 -mx-5 grid gap-2 border-t border-st-border bg-st-surface/95 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+          <p className="flex items-baseline justify-between text-sm lg:hidden" aria-hidden>
+            <span className="text-muted">{L.total}</span>
+            <span className="num text-base font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</span>
+          </p>
+          <button className="btn-gold min-h-12 w-full" disabled={placing || !available.length || !city} data-testid="place-order">
+            {placing ? L.placing : L.placeOrder}
+          </button>
+        </div>
         {waFallback && (
           <a href={waFallback} target="_blank" rel="noopener noreferrer" className="btn btn-ghost -mt-2 min-h-12 border-st-border" data-testid="checkout-whatsapp-fallback">
             {L.orderViaWhatsapp}

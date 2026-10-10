@@ -70,7 +70,7 @@ Order (adaptive; a section with nothing to show is skipped, and the order still 
 
 ## 7. Cart
 - **Drawer first, page second.** Adding never navigates. The drawer (native `<dialog>`, top layer, focus trap and Escape for free) shows the added line with photo, name, options, quantity × price, the cart count, and two exits: "View cart" (outline) and "Checkout" (ink, → `/cart#checkout`). Buy now still goes straight to the cart page.
-- **Cart page** keeps the full review (NN/g: a minicart is feedback, not a cart replacement): lines on the start (8 cols), summary + checkout form sticky on the end (4 cols); phone: lines, then the form, with the Place order button in the thumb zone.
+- **Cart page** keeps the full review (NN/g: a minicart is feedback, not a cart replacement): lines on the start (columns 1–7), summary + checkout form sticky on the end (columns 8–12); phone: lines, then the form, with the Place order button in the thumb zone.
 
 ## 8. Footer
 Hairline top. Four columns on desktop (About · Returns · Contact · Language), two on phone; small 13 px type, muted headings; language switcher as text pills; "Made with Bazarga" bottom end. Above it the sign-off wordmark.

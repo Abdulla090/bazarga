@@ -525,7 +525,8 @@
     "view": "عرض",
     "addedToCart": "أُضيف إلى السلة",
     "viewCart": "عرض السلة",
-    "inCart": "في سلتك: {count}"
+    "inCart": "في سلتك: {count}",
+    "addNote": "أضف ملاحظة للبائع"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",

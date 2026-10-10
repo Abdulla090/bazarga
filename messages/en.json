@@ -525,7 +525,8 @@
     "view": "View",
     "addedToCart": "Added to cart",
     "viewCart": "View cart",
-    "inCart": "In your cart: {count}"
+    "inCart": "In your cart: {count}",
+    "addNote": "Add a note for the seller"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
