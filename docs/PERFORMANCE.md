@@ -33,7 +33,7 @@ nonce, no `unsafe-inline` scripts all pass), so no fixes were needed there.
 
 ## Bundle budgets (`npm run budget`)
 
-Gzipped first-load JS per route, from the build diagnostics. Budgets: storefront 155 KiB, dashboard 200 KiB.
+Gzipped first-load JS per route, from the build diagnostics. Budgets: storefront 165 KiB (raised from 155 for Hugeicons path data), dashboard 200 KiB.
 
 | Route | gzip | raw |
 |---|---|---|

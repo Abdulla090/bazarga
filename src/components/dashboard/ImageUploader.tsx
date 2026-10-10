@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, X } from "@/components/ui/icons";
+import { Icon, Plus, X } from "@/components/ui/icons";
 import type { ProductImageInput } from "@/lib/validation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
@@ -60,7 +60,7 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
               className="absolute -end-2 -top-2 grid h-11 w-11 place-items-center rounded-full bg-ink text-paper sm:h-7 sm:w-7"
               onClick={() => setImages((list) => list.filter((_, j) => j !== i))}
             >
-              <X aria-hidden size={16} strokeWidth={2.5} />
+              <Icon as={X} size={16} strokeWidth={2} />
             </button>
           </li>
         ))}
@@ -69,7 +69,7 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
         <label className="btn-ghost btn-sm cursor-pointer">
           {busy ? "…" : (
             <>
-              <Plus aria-hidden size={16} /> {t("addImages")}
+              <Icon as={Plus} size={16} /> {t("addImages")}
             </>
           )}
           <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" disabled={busy} onChange={(e) => onFiles(e.target.files)} />
