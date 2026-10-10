@@ -46,6 +46,12 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
   function go(i: number, smooth = true) {
     const el = strip.current;
     if (!el) return;
+    // Desktop stack (md+): the strip is a grid and the page is the scroller → bring that photo into view.
+    if (getComputedStyle(el).display === "grid") {
+      (el.children[i] as HTMLElement | undefined)?.scrollIntoView({ behavior: smooth ? "smooth" : "instant", block: "center" });
+      setActive(i);
+      return;
+    }
     // Slides are full width; in RTL the scroll axis runs negative from the start edge.
     const rtl = getComputedStyle(el).direction === "rtl";
     el.scrollTo({ left: i * el.clientWidth * (rtl ? -1 : 1), behavior: smooth ? "smooth" : "instant" });
@@ -61,15 +67,17 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
     return () => window.removeEventListener(GALLERY_EVENT, onShow);
   }, [images]);
 
-  if (!images.length) return <span className="block aspect-square rounded-2xl bg-[#F4F4F5]" />;
+  if (!images.length) return <span className="block aspect-[4/5] rounded-2xl bg-[#F4F4F5]" />;
   const many = images.length > 1;
+  // Desktop stack rhythm: first photo full width, then pairs; an odd photo out at the end goes full width again.
+  const full = (i: number) => i === 0 || (i === images.length - 1 && (images.length - 1) % 2 === 1);
 
   return (
-    <div className="grid gap-2 md:grid-cols-[4.5rem_1fr] md:gap-3">
-      <div className="relative -mx-4 sm:mx-0 md:order-2">
+    <div className="grid gap-2">
+      <div className="relative bleed-x sm:mx-0">
         <div
           ref={strip}
-          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] md:grid md:snap-none md:grid-cols-2 md:gap-2 md:overflow-visible [&::-webkit-scrollbar]:hidden"
           role="region"
           aria-roledescription="carousel"
           aria-label={alt}
@@ -85,7 +93,7 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
             <button
               key={img.id}
               type="button"
-              className="block w-full shrink-0 cursor-zoom-in snap-center snap-always"
+              className={`block w-full shrink-0 cursor-zoom-in snap-center snap-always md:w-auto ${full(i) ? "md:col-span-2" : ""}`}
               aria-roledescription="slide"
               aria-label={`${label.open.replace("{n}", String(i + 1))} · ${label.photo} ${i + 1} ${label.of} ${images.length}`}
               onPointerDown={() => void loadLightbox()}
@@ -94,16 +102,16 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
               <ResponsiveImage
                 image={img}
                 alt={i === 0 ? alt : ""}
-                sizes={SIZES.productHero}
+                sizes={full(i) ? SIZES.productHero : SIZES.productHalf}
                 index={i}
-                className="aspect-square h-auto w-full bg-[#F4F4F5] object-cover sm:rounded-2xl"
+                className="aspect-[4/5] h-auto w-full bg-[#F4F4F5] object-cover sm:rounded-2xl"
               />
             </button>
           ))}
         </div>
         {many && (
           <span
-            className="num pointer-events-none absolute end-3 top-3 rounded-full bg-st-surface/90 px-2.5 py-1 text-xs font-medium text-st-fg backdrop-blur sm:end-3"
+            className="num pointer-events-none absolute end-3 top-3 rounded-full bg-st-surface/90 px-2.5 py-1 text-xs font-medium text-st-fg backdrop-blur md:hidden"
             dir="ltr"
             data-testid="gallery-counter"
             aria-hidden
