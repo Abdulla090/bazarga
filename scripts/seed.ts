@@ -1,8 +1,8 @@
 /*
  * Demo data: seller demo@mymarket.app / mymarket-demo  →  store "Hawler Bazaar" (/s/hawler-bazaar)
  * with four products (3–5 photos and a details table each, one on sale, a size-variant dress), the "bazaar" theme,
- * a cover photo with renditions, delivery areas in Erbil and Sulaymaniyah, the NEWROZ and WELCOME10 discount codes
- * (NEWROZ advertised on the storefront), free delivery over 75,000 IQD, and a few past orders so the storefront
+ * a cover photo with renditions, delivery areas in Erbil and Sulaymaniyah, the SAVE10 and WELCOME10 discount codes
+ * (SAVE10 advertised on the storefront), free delivery over 75,000 IQD, and a few past orders so the storefront
  * shows real best sellers: honey (3 orders) and the dress (2) earn the "Best seller" badge, the scarf (1) joins the
  * strip, a cancelled skincare order counts for nothing. Honey and the scarf are on sale; the skincare set is "New".
  * Idempotent: re-running does nothing if the store exists.
@@ -80,11 +80,11 @@ async function main() {
 
   const dress = await createProduct(db, store.id, {
     ...base,
-    name: { ku: "کراسی کوردی", ar: "فستان كردي", en: "Kurdish dress", kmr: "Kirasê kurdî" },
+    name: { ku: "جلی ئێوارە", ar: "فستان سهرة", en: "Evening dress", kmr: "Cilê şevê" },
     description: {
-      ku: "کراسی کوردیی دەستدروست بە ڕەنگی گەش، گونجاو بۆ نەورۆز و ئاهەنگەکان.\n\nقوماشی مەخمەری سەوز بە چنینی زێڕین لە سنگ، قۆڵ و داوێن.\nهەر پارچەیەک لە بازاڕی هەولێر تەواو دەکرێت.\n\nقەبارەکان S، M و L ن؛ قەبارەی L درێژترە. ئەگەر دڵنیا نیت لە قەبارەکەت، لە واتسئاپ پێوانەکانت بنێرە و یارمەتیت دەدەین.",
-      ar: "فستان كردي مصنوع يدوياً بألوان زاهية، مناسب لنوروز والمناسبات.\n\nمخمل أخضر مع تطريز ذهبي على الصدر والأكمام والذيل.\nكل قطعة تُنهى يدوياً في سوق أربيل.\n\nالمقاسات S وM وL؛ مقاس L أطول. إن لم تكن متأكداً من مقاسك أرسل قياساتك على واتساب وسنساعدك.",
-      en: "Hand-finished Kurdish dress in bright colours — made for Newroz and celebrations.\n\nGreen velvet with gold embroidery on the chest, sleeves and hem.\nEvery piece is finished by hand in the Erbil bazaar.\n\nSizes S, M and L; the L is cut longer. Not sure about your size? Send your measurements on WhatsApp and we'll help.",
+      ku: "جلی ئێوارەی دەستدروست بە ڕەنگی گەش، گونجاو بۆ ئاهەنگەکان.\n\nقوماشی مەخمەری سەوز بە چنینی زێڕین لە سنگ، قۆڵ و داوێن.\nهەر پارچەیەک لە هەولێر تەواو دەکرێت.\n\nقەبارەکان S، M و L ن؛ قەبارەی L درێژترە. ئەگەر دڵنیا نیت لە قەبارەکەت، لە واتسئاپ پێوانەکانت بنێرە و یارمەتیت دەدەین.",
+      ar: "فستان سهرة مصنوع يدوياً بألوان زاهية، مناسب للمناسبات.\n\nمخمل أخضر مع تطريز ذهبي على الصدر والأكمام والذيل.\nكل قطعة تُنهى يدوياً في أربيل.\n\nالمقاسات S وM وL؛ مقاس L أطول. إن لم تكن متأكداً من مقاسك أرسل قياساتك على واتساب وسنساعدك.",
+      en: "Hand-finished dress in bright colours, made for celebrations.\n\nGreen velvet with gold embroidery on the chest, sleeves and hem.\nEvery piece is finished by hand in Erbil.\n\nSizes S, M and L; the L is cut longer. Not sure about your size? Send your measurements on WhatsApp and we'll help.",
     },
     price: 85000,
     stock: 12,
@@ -142,11 +142,11 @@ async function main() {
   });
   const scarf = await createProduct(db, store.id, {
     ...base,
-    name: { ku: "لەچکی چنراوی کوردی", ar: "وشاح كردي منسوج", en: "Hand-woven Kurdish scarf", kmr: "Şala kurdî ya destçêkirî" },
+    name: { ku: "لەچکی چنراو", ar: "وشاح منسوج", en: "Hand-woven scarf", kmr: "Şala destçêkirî" },
     description: {
-      ku: "لەچکی سووری چنراو بە دەست لە بازاڕی هەولێر.\nگەرم و سووک، بۆ زستان و بەهار.",
-      ar: "وشاح أحمر منسوج يدوياً في سوق أربيل.\nدافئ وخفيف، للشتاء والربيع.",
-      en: "Red scarf hand-woven in the Erbil bazaar.\nWarm and light, for winter and spring.",
+      ku: "لەچکی سووری چنراو بە دەست لە هەولێر.\nگەرم و سووک، بۆ زستان و بەهار.",
+      ar: "وشاح أحمر منسوج يدوياً في أربيل.\nدافئ وخفيف، للشتاء والربيع.",
+      en: "Red scarf, hand-woven in Erbil.\nWarm and light, for winter and spring.",
     },
     price: 35000,
     compareAtPrice: 42000,
@@ -156,7 +156,7 @@ async function main() {
     specs: [
       spec(material, { ku: "خوری و لۆکە", ar: "صوف وقطن", en: "Wool and cotton", kmr: "Hirî û pembû" }),
       spec(size, { ku: "١٨٠ × ٧٠ سم", ar: "180 × 70 سم", en: "180 × 70 cm", kmr: "180 × 70 cm" }),
-      spec(origin, { ku: "بازاڕی هەولێر", ar: "سوق أربيل", en: "Erbil bazaar", kmr: "Bazara Hewlêrê" }),
+      spec(origin, { ku: "هەولێر", ar: "أربيل", en: "Erbil", kmr: "Hewlêr" }),
     ],
     imageUrls: [],
     images: photos("product-scarf", "product-scarf-seller", "product-scarf-shelf"),
@@ -169,9 +169,9 @@ async function main() {
       themePreset: "bazaar",
       accentColor: null,
       about: {
-        ku: "دوکانێکی بچووکی هەولێر: جلی کوردیی دەستدروست، هەنگوینی چیا و بەرهەمی پێستی سروشتی.",
-        ar: "متجر صغير في أربيل: ملابس كردية مصنوعة يدوياً، عسل جبلي ومنتجات طبيعية للبشرة.",
-        en: "A small Erbil shop: hand-finished Kurdish clothing, mountain honey and natural skincare.",
+        ku: "دوکانێکی بچووکی هەولێر: جلی دەستدروست، هەنگوینی چیا و بەرهەمی پێستی سروشتی.",
+        ar: "متجر صغير في أربيل: ملابس مصنوعة يدوياً، عسل جبلي ومنتجات طبيعية للبشرة.",
+        en: "A small Erbil shop: hand-finished clothing, mountain honey and natural skincare.",
       },
       returnPolicy: {
         ku: "دەتوانیت لە ماوەی ٣ ڕۆژدا کاڵاکە بگەڕێنیتەوە ئەگەر بەکارنەهاتبێت.",
@@ -185,7 +185,7 @@ async function main() {
     })
     .where(eq(stores.id, store.id));
   await db.insert(discountCodes).values([
-    { storeId: store.id, code: "NEWROZ", type: "percentage", value: 10, minSubtotal: 30_000, showOnStorefront: true },
+    { storeId: store.id, code: "SAVE10", type: "percentage", value: 10, minSubtotal: 30_000, showOnStorefront: true },
     { storeId: store.id, code: "WELCOME10", type: "percentage", value: 10, minSubtotal: 30_000, maxUses: 100, isActive: true },
   ]);
 
@@ -241,8 +241,8 @@ async function main() {
   const dressM = variants[1]!;
   const L = {
     honey: (q: number): Line => ({ productId: honey.id, name: "هەنگوینی چیا · ١ کیلۆ", unitPrice: 25_000, quantity: q }),
-    dress: (): Line => ({ productId: dress.id, variantId: dressM.id, name: "کراسی کوردی", variantTitle: "M", unitPrice: 85_000, quantity: 1 }),
-    scarf: (): Line => ({ productId: scarf.id, name: "لەچکی چنراوی کوردی", unitPrice: 35_000, quantity: 1 }),
+    dress: (): Line => ({ productId: dress.id, variantId: dressM.id, name: "جلی ئێوارە", variantTitle: "M", unitPrice: 85_000, quantity: 1 }),
+    scarf: (): Line => ({ productId: scarf.id, name: "لەچکی چنراو", unitPrice: 35_000, quantity: 1 }),
     skin: (): Line => ({ productId: skincare.id, name: "سێتی پێستی سروشتی", unitPrice: 40_000, quantity: 1 }),
   };
   const past: { name: string; phone: string; daysAgo: number; status: "delivered" | "cancelled"; lines: Line[] }[] = [
