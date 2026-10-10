@@ -44,13 +44,11 @@ describe("icon set", () => {
     for (const C of [ArrowForward, ArrowBack, ChevronForward]) {
       expect(renderToStaticMarkup(createElement(C))).toContain("rtl:-scale-x-100");
     }
-    expect(renderToStaticMarkup(createElement(ArrowForward))).toContain("lucide-arrow-right");
-    expect(renderToStaticMarkup(createElement(ArrowBack))).toContain("lucide-arrow-left");
   });
 
-  it("lucide is imported only through the icon module (keeps the set tree-shaken and consistent)", () => {
+  it("hugeicons is imported only through the icon module (keeps the set tree-shaken and consistent)", () => {
     const direct = files(SRC).filter(
-      (f) => !f.endsWith(path.join("ui", "icons.tsx")) && /from "lucide-react"/.test(readFileSync(f, "utf8")),
+      (f) => !f.endsWith(path.join("ui", "icons.tsx")) && /from "@hugeicons\/core-free-icons"/.test(readFileSync(f, "utf8")),
     );
     expect(direct.map((f) => path.relative(SRC, f))).toEqual([]);
   });
