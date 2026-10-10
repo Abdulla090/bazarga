@@ -61,7 +61,7 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
     return () => window.removeEventListener(GALLERY_EVENT, onShow);
   }, [images]);
 
-  if (!images.length) return <span className="block aspect-square rounded-[var(--radius-card)] bg-st-surface" />;
+  if (!images.length) return <span className="block aspect-square rounded-2xl bg-[#F4F4F5]" />;
   const many = images.length > 1;
 
   return (
@@ -96,14 +96,14 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
                 alt={i === 0 ? alt : ""}
                 sizes={SIZES.productHero}
                 index={i}
-                className="aspect-square h-auto w-full object-cover sm:rounded-[var(--radius-card)] sm:border sm:border-st-border"
+                className="aspect-square h-auto w-full bg-[#F4F4F5] object-cover sm:rounded-2xl"
               />
             </button>
           ))}
         </div>
         {many && (
           <span
-            className="num pointer-events-none absolute end-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-xs font-bold text-white sm:end-3"
+            className="num pointer-events-none absolute end-3 top-3 rounded-full bg-st-surface/90 px-2.5 py-1 text-xs font-medium text-st-fg backdrop-blur sm:end-3"
             dir="ltr"
             data-testid="gallery-counter"
             aria-hidden

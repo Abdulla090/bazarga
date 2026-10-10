@@ -89,7 +89,7 @@ for (const id of listed) {
         at('data-testid="trust-row"') > at('data-testid="stock-status"'),
       "product page: gallery → name → price → description → stock/options → trust row",
     );
-    ok(html.includes('data-testid="you-save"') && html.includes('data-testid="badge-best"') && html.includes('data-testid="offer-code"'), "sale product shows 'you save', the best-seller badge and the advertised code");
+    ok(html.includes('data-testid="badge-best"') && html.includes('data-testid="pct-off"') && !html.includes('data-testid="you-save"') && !html.includes('data-testid="offer-code"'), "sale product shows the % off and best-seller badge, without the 'you save' line or a duplicate coupon");
   }
 }
 ok(!!sale, "one demo product is on sale (compare-at price, % off badge)");

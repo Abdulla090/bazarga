@@ -39,18 +39,18 @@ test("product page: info first, gallery, viewer, offers, details and JSON-LD (ku
   }
   expect(found, "the demo honey jar").not.toBeNull();
 
-  // Order on a phone: gallery → name → price → description → stock → quantity → buy buttons → trust row → details.
+  // Order on a phone: gallery → name → price → description → stock → quantity → buy buttons → trust row → accordions.
   const order = await Promise.all(
-    ["gallery", "product-name", "price", "product-summary", "stock-status", "qty", "trust-row", "product-offers", "section-details"].map((id) =>
+    ["gallery", "product-name", "price", "product-summary", "stock-status", "qty", "trust-row", "section-details"].map((id) =>
       top(page.getByTestId(id).first()),
     ),
   );
   expect([...order].sort((a, b) => a - b)).toEqual(order);
   await expect(page.getByTestId("pct-off")).toContainText("17");
-  await expect(page.getByTestId("you-save")).toBeVisible();
+  // Redesign v2: no "you save" line, no duplicate coupon / free-delivery banner on the product page.
+  await expect(page.getByTestId("you-save")).toHaveCount(0);
+  await expect(page.getByTestId("product-offers")).toHaveCount(0);
   await expect(page.getByTestId("badge-best").first()).toContainText("پڕفرۆشترین"); // on the gallery photo
-  await expect(page.getByTestId("offer-code")).toHaveText("SAVE10");
-  await expect(page.getByTestId("free-delivery-note")).toBeVisible();
 
   await expect(page.getByTestId("gallery-counter")).toHaveText("1/4");
   await expect(page.getByTestId("gallery-thumbs").locator("button")).toHaveCount(4);
@@ -69,7 +69,7 @@ test("product page: info first, gallery, viewer, offers, details and JSON-LD (ku
   await page.getByRole("button", { name: "زیادکردن" }).first().click();
   await expect(page.getByTestId("qty")).toHaveText("2");
   await expect(page.getByTestId("specs-table").locator("tr")).toHaveCount(3);
-  await expect(page.getByTestId("trust-row").locator("li")).toHaveCount(4);
+  await expect(page.getByTestId("trust-row").locator("li")).toHaveCount(3); // COD · delivery · returns
   await expect(page.getByTestId("related").locator("li")).toHaveCount(3);
 
   const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());

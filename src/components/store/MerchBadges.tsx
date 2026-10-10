@@ -27,8 +27,8 @@ export function MerchBadges({
   soldOut?: boolean;
   soldOutLabel?: string;
   size?: "sm" | "md";
-  /** "left": physical top-left — the product gallery keeps its photo counter (dir=ltr) at the top-right. */
-  corner?: "start" | "left";
+  /** "gallery": physical top-left of the product photo (past the LTR desktop thumbnail column); the counter (dir=ltr) sits top-right. */
+  corner?: "start" | "gallery";
 }) {
   const pct = percentOff(price, compareAtPrice);
   const kind = soldOut && soldOutLabel ? "out" : pct !== null ? "sale" : bestSeller ? "best" : badge;
@@ -37,7 +37,7 @@ export function MerchBadges({
   const pill = `inline-flex min-h-6 max-w-full items-center rounded-full px-2.5 font-medium leading-none ${text}`;
   const quiet = `${pill} bg-st-surface text-st-fg shadow-e1`;
   return (
-    <span className={`pointer-events-none absolute z-[1] flex ${corner === "left" ? "left-3 top-3" : "bottom-3 start-3"} max-w-[calc(100%-1.5rem)]`}>
+    <span className={`pointer-events-none absolute z-[1] flex ${corner === "gallery" ? "left-3 top-3 md:ltr:left-[calc(4.5rem+1.5rem)]" : "bottom-3 start-3"} max-w-[calc(100%-1.5rem)]`}>
       {kind === "out" && (
         <span className={`${pill} bg-st-fg text-st-bg`} data-testid="badge-soldout">
           <span className="truncate">{soldOutLabel}</span>

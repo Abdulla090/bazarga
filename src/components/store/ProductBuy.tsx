@@ -9,7 +9,7 @@ import { waLink } from "@/lib/whatsapp";
 import { WaTap } from "./WaTap";
 import { initialSelection, isValueAvailable, matchVariant, priceRange, type Selection } from "@/lib/variants";
 import { percentOff, stockStatus } from "@/lib/product-page";
-import { Check, Icon, MessageCircle, Share2, ShoppingBag } from "@/components/ui/icons";
+import { Check, Icon, MessageCircle, Share2 } from "@/components/ui/icons";
 
 export type BuyOption = { id: string; name: string; values: { id: string; label: string; swatch: string | null }[] };
 export type BuyVariant = {
@@ -47,8 +47,6 @@ export type BuyLabels = {
   increase: string;
   /** "{pct}% off" */
   percentOff: string;
-  /** "You save {amount}" */
-  youSave: string;
 };
 
 const MAX_QTY = 99;
@@ -132,11 +130,34 @@ export function ProductBuy({
 
   useEffect(() => {
     const el = inlineRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setInlineVisible(!!e?.isIntersecting), { threshold: 0 });
-    io.observe(el);
-    return () => io.disconnect();
+    if (!el) return;
+    // The bar shows only once the inline buttons have scrolled out ABOVE the viewport (never while they are still
+    // below it). A rAF-throttled scroll check, because an IntersectionObserver misses jumps straight past them.
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      setInlineVisible(el.getBoundingClientRect().bottom > 0);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
+
+  // While the phone buy bar is up, the storefront gets bottom padding (globals.css) so it never covers content.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (inlineVisible) root.removeAttribute("data-buybar");
+    else root.setAttribute("data-buybar", "");
+    return () => root.removeAttribute("data-buybar");
+  }, [inlineVisible]);
 
   function pick(optionId: string, valueId: string) {
     const next = { ...sel, [optionId]: valueId };
@@ -200,13 +221,13 @@ export function ProductBuy({
         : labels.addToCart;
 
   const buttons = (compact: boolean) => (
-    <div className={`grid grid-cols-2 gap-2 ${compact ? "flex-1" : ""}`}>
-      <button type="button" onClick={addToCart} disabled={soldOut} className={`btn-ghost ${compact ? "btn-sm min-h-11 px-2" : ""}`}>
+    <div className={compact ? "grid flex-1 grid-cols-2 gap-2" : "grid gap-2"}>
+      <button type="button" onClick={addToCart} disabled={soldOut} className={`btn-ghost ${compact ? "btn-sm min-h-11 px-2" : "min-h-12 w-full"}`} data-testid={compact ? undefined : "buy-add"}>
         {added && !compact && <Icon as={Check} />}
         <span className="truncate">{ctaLabel}</span>
       </button>
-      <button type="button" onClick={buyNow} disabled={soldOut} className={`btn-gold ${compact ? "btn-sm min-h-11 px-2" : ""}`}>
-        {!compact && <Icon as={ShoppingBag} />} <span className="truncate">{labels.buyNow}</span>
+      <button type="button" onClick={buyNow} disabled={soldOut} className={`btn-gold ${compact ? "btn-sm min-h-11 px-2" : "min-h-12 w-full"}`}>
+        <span className="truncate">{labels.buyNow}</span>
       </button>
     </div>
   );
@@ -214,22 +235,17 @@ export function ProductBuy({
   return (
     <>
       <div className="grid gap-4">
-        <div className="grid gap-2">
+        <div className="grid gap-3">
           {title}
-          <p className="num flex flex-wrap items-center gap-x-3 gap-y-1 text-2xl" aria-live="polite" data-testid="price">
-            <span className="font-extrabold">{priceText}</span>
-            {compareAt && compareAt > price && <s className="text-lg text-ink-50">{formatIQD(compareAt, locale)}</s>}
+          <p className="num flex flex-wrap items-center gap-x-3 gap-y-1 text-xl" aria-live="polite" data-testid="price">
+            <span className="font-medium">{priceText}</span>
+            {compareAt && compareAt > price && <s className="text-base text-faint">{formatIQD(compareAt, locale)}</s>}
             {pct !== null && (
-              <span className="chip bg-danger text-sm font-bold text-[#fff]" data-testid="pct-off">
+              <span className="inline-flex min-h-6 items-center rounded-full bg-st-accent px-2.5 text-xs font-medium text-st-on-accent" data-testid="pct-off">
                 {fill(labels.percentOff, { pct })}
               </span>
             )}
           </p>
-          {pct !== null && compareAt && (
-            <p className="text-sm font-bold text-danger" data-testid="you-save">
-              {fill(labels.youSave, { amount: formatIQD(compareAt - price, locale) })}
-            </p>
-          )}
         </div>
 
         {info}
@@ -238,9 +254,9 @@ export function ProductBuy({
           <div ref={pickerRef} className="grid scroll-mt-24 gap-4">
             {options.map((o) => (
               <fieldset key={o.id}>
-                <legend className="mb-2 text-sm font-bold">
+                <legend className="mb-2.5 text-[13px] font-medium">
                   {o.name}
-                  {sel[o.id] && <span className="ms-2 font-semibold text-ink-70">{valueLabel(sel[o.id]!)}</span>}
+                  {sel[o.id] && <span className="ms-2 font-normal text-muted">{valueLabel(sel[o.id]!)}</span>}
                 </legend>
                 <div className="flex flex-wrap gap-2">
                   {o.values.map((v) => {
@@ -255,7 +271,7 @@ export function ProductBuy({
                         title={v.label}
                         disabled={!ok}
                         onClick={() => pick(o.id, v.id)}
-                        className={`relative h-11 w-11 rounded-full border-2 p-0.5 ${on ? "border-ink" : "border-line"} disabled:cursor-not-allowed disabled:opacity-40`}
+                        className={`relative h-11 w-11 rounded-full border p-0.5 transition-colors duration-150 ${on ? "border-st-fg ring-1 ring-st-fg" : "border-st-border hover:border-st-fg"} disabled:cursor-not-allowed disabled:opacity-40`}
                       >
                         <span className="block h-full w-full rounded-full" style={{ background: v.swatch }} />
                         {!ok && <span aria-hidden className="absolute inset-x-1 top-1/2 h-0.5 -rotate-45 bg-ink" />}
@@ -268,9 +284,9 @@ export function ProductBuy({
                         aria-label={ok ? undefined : `${v.label} · ${labels.unavailable}`}
                         disabled={!ok}
                         onClick={() => pick(o.id, v.id)}
-                        className={`num min-h-11 min-w-12 rounded-xl border-2 px-3 font-bold transition ${
-                          on ? "border-ink bg-ink text-paper" : "border-line bg-white"
-                        } disabled:cursor-not-allowed disabled:text-ink-50 disabled:line-through disabled:opacity-60`}
+                        className={`num min-h-11 min-w-14 rounded-full border px-4 text-sm font-medium transition-colors duration-150 ${
+                          on ? "border-st-fg bg-st-fg text-st-bg" : "border-st-border bg-transparent hover:border-st-fg"
+                        } disabled:cursor-not-allowed disabled:text-faint disabled:line-through disabled:hover:border-st-border`}
                       >
                         {v.label}
                       </button>
@@ -280,26 +296,23 @@ export function ProductBuy({
               </fieldset>
             ))}
             {nudge && missing && (
-              <p role="alert" className="text-sm font-semibold text-danger">
+              <p role="alert" className="text-sm font-medium">
                 {fill(labels.choose, { option: missing.name })}
               </p>
             )}
           </div>
         )}
 
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" data-testid="stock-status">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted" data-testid="stock-status">
           {status.kind === "out" ? (
-            <span className="font-bold text-danger">{labels.soldOutStatus}</span>
+            <span className="font-medium text-st-fg">{labels.soldOutStatus}</span>
           ) : status.kind === "low" ? (
-            <span className="font-bold text-danger">{fill(labels.onlyLeft, { count: status.count })}</span>
+            <span className="font-medium text-st-fg">{fill(labels.onlyLeft, { count: status.count })}</span>
           ) : !hasVariants || variant ? (
-            <span className="inline-flex items-center gap-1.5 font-semibold">
-              <span aria-hidden className="h-2 w-2 rounded-full bg-green" />
-              {labels.inStock}
-            </span>
+            <span>{labels.inStock}</span>
           ) : null}
           {shownSku && (
-            <span className="text-ink-70" data-testid="sku">
+            <span data-testid="sku">
               {labels.skuLabel}: <bdi className="num">{shownSku}</bdi>
             </span>
           )}
@@ -307,23 +320,23 @@ export function ProductBuy({
 
         {!soldOut && (
           <div className="flex items-center gap-3">
-            <span className="text-sm font-bold" id="qty-label">{labels.quantity}</span>
-            <div className="inline-flex items-center rounded-xl border-2 border-line bg-white" role="group" aria-labelledby="qty-label">
+            <span className="text-[13px] font-medium" id="qty-label">{labels.quantity}</span>
+            <div className="inline-flex items-center rounded-full border border-st-border bg-st-surface" role="group" aria-labelledby="qty-label">
               <button
                 type="button"
-                className="h-11 w-11 text-xl font-bold disabled:opacity-30"
+                className="h-11 w-11 rounded-full text-lg transition-colors duration-150 hover:bg-st-fg/5 disabled:opacity-30"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 disabled={qty <= 1}
                 aria-label={labels.decrease}
               >
                 −
               </button>
-              <output className="num min-w-8 text-center font-extrabold" aria-live="polite" data-testid="qty">
+              <output className="num min-w-8 text-center font-medium" aria-live="polite" data-testid="qty">
                 {qty}
               </output>
               <button
                 type="button"
-                className="h-11 w-11 text-xl font-bold disabled:opacity-30"
+                className="h-11 w-11 rounded-full text-lg transition-colors duration-150 hover:bg-st-fg/5 disabled:opacity-30"
                 onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
                 disabled={qty >= maxQty}
                 aria-label={labels.increase}
@@ -336,22 +349,23 @@ export function ProductBuy({
 
         <div ref={inlineRef}>{buttons(false)}</div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           {waHref && (
-            <WaTap slug={slug} href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm flex-1">
+            <WaTap slug={slug} href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost min-h-11 flex-1 border-st-border">
               <Icon as={MessageCircle} /> {labels.askWhatsApp}
             </WaTap>
           )}
-          <button type="button" onClick={share} className="btn-ghost btn-sm flex-1">
-            <Icon as={copied ? Check : Share2} /> <span aria-live="polite">{copied ? labels.linkCopied : labels.share}</span>
+          <button type="button" onClick={share} className={`btn-ghost min-h-11 border-st-border ${waHref ? "w-11 shrink-0 px-0" : "flex-1"}`} aria-label={copied ? labels.linkCopied : labels.share} title={labels.share}>
+            <Icon as={copied ? Check : Share2} />
+            {!waHref && <span aria-live="polite">{copied ? labels.linkCopied : labels.share}</span>}
           </button>
         </div>
       </div>
 
       {/* Phones: sticky buy bar once the inline buttons are off screen. */}
       <div
-        className={`fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pt-2 shadow-[0_-4px_16px_rgb(0_0_0/0.06)] backdrop-blur transition-transform duration-200 md:hidden ${
-          inlineVisible ? "translate-y-full" : "translate-y-0"
+        className={`fixed inset-x-0 bottom-0 z-30 border-t border-st-border bg-st-bg/90 px-4 pt-2 backdrop-blur-xl transition-[transform,visibility] duration-200 ease-out md:hidden ${
+          inlineVisible ? "invisible translate-y-full" : "visible translate-y-0"
         }`}
         style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
         aria-hidden={inlineVisible || undefined}
@@ -360,8 +374,8 @@ export function ProductBuy({
       >
         <div className="flex items-center gap-3">
           <div className="min-w-0 max-w-[34%]">
-            <p className="hidden truncate text-xs text-ink-70 min-[400px]:block">{variantTitle || name}</p>
-            <p className="num truncate text-sm font-extrabold min-[400px]:text-base">{priceText}</p>
+            <p className="hidden truncate text-xs text-muted min-[400px]:block">{variantTitle || name}</p>
+            <p className="num truncate text-sm font-medium min-[400px]:text-base">{priceText}</p>
           </div>
           {buttons(true)}
         </div>
