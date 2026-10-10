@@ -158,7 +158,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
       </section>
 
       <form action={submit} className="card grid h-fit gap-4 shadow-e2 lg:sticky lg:top-24">
-        <h2 className="text-xl font-extrabold">{L.checkout}</h2>
+        <h2 className="border-b border-line pb-3 text-xl font-extrabold">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">
           <label htmlFor="co-website">Website</label>
@@ -240,7 +240,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <legend className="label">{L.payment}</legend>
           <div className="grid gap-2">
             {payments.map((m) => (
-              <label key={m} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 font-semibold ${method === m ? "border-ink bg-ink/5" : "border-line"}`}>
+              <label key={m} className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 font-semibold transition-[border-color,background-color,box-shadow] duration-150 active:scale-[0.99] focus-within:ring-2 focus-within:ring-gold ${method === m ? "border-ink bg-ink/5 shadow-e1" : "border-line hover:border-ink/40"}`}>
                 <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="h-5 w-5 shrink-0 accent-ink" />
                 {m === "cod" ? L.cod : PAYMENT_LABEL[m]}
               </label>
