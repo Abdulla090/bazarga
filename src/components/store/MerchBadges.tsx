@@ -1,12 +1,12 @@
 import { percentOff } from "@/lib/merch";
 import type { ProductBadge } from "@/lib/merch";
-import { Flame, Icon } from "@/components/ui/icons";
 
 export type MerchBadgeLabels = { bestSeller: string; new: string; featured: string };
 
 /**
- * Photo-corner badges for a product (server-rendered, no client JS): "−17%" when on sale, then "Best seller"
- * (from real orders) or the seller's manual "New" / "Featured". One only (sale wins), so cards stay clean.
+ * The one photo badge for a product (server-rendered, no client JS). Priority: sold out (ink) → "−17%" sale (the
+ * theme accent, blue by default — the only coloured badge) → "Best seller" (from real orders) → the seller's manual
+ * "New" / "Featured" (white pill). Cards put it bottom-start; the product gallery keeps it top-left.
  */
 export function MerchBadges({
   price,
@@ -14,6 +14,8 @@ export function MerchBadges({
   bestSeller,
   badge,
   labels,
+  soldOut = false,
+  soldOutLabel,
   size = "sm",
   corner = "start",
 }: {
@@ -22,34 +24,42 @@ export function MerchBadges({
   bestSeller: boolean;
   badge: ProductBadge | null;
   labels: MerchBadgeLabels;
+  soldOut?: boolean;
+  soldOutLabel?: string;
   size?: "sm" | "md";
   /** "left": physical top-left — the product gallery keeps its photo counter (dir=ltr) at the top-right. */
   corner?: "start" | "left";
 }) {
   const pct = percentOff(price, compareAtPrice);
-  const second = pct !== null ? null : bestSeller ? "best" : badge;
-  if (pct === null && !second) return null;
-  const text = size === "md" ? "text-xs sm:text-sm" : "text-[11px] leading-4";
+  const kind = soldOut && soldOutLabel ? "out" : pct !== null ? "sale" : bestSeller ? "best" : badge;
+  if (!kind) return null;
+  const text = size === "md" ? "text-xs sm:text-[13px]" : "text-xs";
+  const pill = `inline-flex min-h-6 max-w-full items-center rounded-full px-2.5 font-medium leading-none ${text}`;
+  const quiet = `${pill} bg-st-surface text-st-fg shadow-e1`;
   return (
-    <span className={`pointer-events-none absolute flex ${corner === "left" ? "left-3 top-3 items-start" : "start-2 top-2"} max-w-[calc(100%-1rem)] flex-col items-start gap-1`}>
-      {pct !== null && (
-        <span className={`chip num bg-danger font-bold text-[#fff] ${text}`} data-testid="badge-sale">
+    <span className={`pointer-events-none absolute z-[1] flex ${corner === "left" ? "left-3 top-3" : "bottom-3 start-3"} max-w-[calc(100%-1.5rem)]`}>
+      {kind === "out" && (
+        <span className={`${pill} bg-st-fg text-st-bg`} data-testid="badge-soldout">
+          <span className="truncate">{soldOutLabel}</span>
+        </span>
+      )}
+      {kind === "sale" && (
+        <span className={`${pill} num bg-st-accent text-st-on-accent`} data-testid="badge-sale">
           <bdi>−{pct}%</bdi>
         </span>
       )}
-      {second === "best" && (
-        <span className={`chip max-w-full gap-1 bg-ink font-bold text-paper ${text}`} data-testid="badge-best">
-          <Icon as={Flame} className="shrink-0" />
+      {kind === "best" && (
+        <span className={quiet} data-testid="badge-best">
           <span className="truncate">{labels.bestSeller}</span>
         </span>
       )}
-      {second === "new" && (
-        <span className={`chip max-w-full bg-green font-bold text-white ${text}`} data-testid="badge-new">
+      {kind === "new" && (
+        <span className={quiet} data-testid="badge-new">
           <span className="truncate">{labels.new}</span>
         </span>
       )}
-      {second === "featured" && (
-        <span className={`chip max-w-full bg-gold font-bold text-on-gold ${text}`} data-testid="badge-featured">
+      {kind === "featured" && (
+        <span className={quiet} data-testid="badge-featured">
           <span className="truncate">{labels.featured}</span>
         </span>
       )}

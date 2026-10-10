@@ -36,7 +36,7 @@ Raw studies: docs/design-study/elevenlabs.md, docs/design-study/shopify.md. This
 ## Rollout order (one per loop run, each with 390 ku + 1280 en screenshots reviewed)
 1. Tokens + Button (two variants) + chips + badge colours. **DONE (Oct 10 20:xx)**: btn-gold=ink pill, btn-ghost=ink outline pill, WhatsApp outline, Sale badge blue, canvas #FAFAF9.
 2. Header + hero. **DONE (Oct 10)**: 64px header (logo mark + 15px name + cart icon with count dot), translucent+hairline on scroll via animation-timeline (static fallback), hero = store name in light display type 44/64/88 + one-line tagline + one ink pill (#products) + cover photo below at 16 radius; WhatsApp floating button is an outline pill; footer hairline, kmr added to switcher.
-3. Product card + grids/rails.
+3. Product card + grids/rails. **DONE (Oct 10)**: ProductCard = 4:5 photo on #F4F4F5, 16 radius, no border/shadow, title 14/400 + price 14/500 (old price faint), ONE badge bottom-start (sold out ink, sale accent-blue, else quiet white pill); desktop hover reveals a small outline pill (add / choose options), phones tap through. Grid auto-fill minmax(240px,1fr) desktop, 2 cols phone. Best sellers / offers / related are scroll-snap rails (4 visible on desktop, never a half-empty grid). Chips outline/ink, pill search, coupon + delivery as one hairline row with a copy pill (store.copyCode/codeCopied).
 4. Product page declutter + sticky bar fix.
 5. Neutral demo photos/seed.
 6. Motion: reveals + View Transitions.

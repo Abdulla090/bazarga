@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 21:55 Agent B: redesign step 3 (cards + grids/rails)
+Dawn-style cards (4:5, title+price, one bottom-start badge, desktop hover pill), auto-fill grid, scroll-snap rails, outline chips, pill search, one-line coupon row with copy pill. Gate: typecheck, lint, vitest 453, build, budget, mobile 5/5, smoke green. Next: step 4 product page.
+
 ### Oct 10 21:35 Agent B: redesign step 2 (header + hero)
 64px translucent header (no tagline, no duplicate logo), light display hero with one ink 'Shop now' pill (new key store.shopNow, 4 locales), outline WhatsApp pill, quiet footer. Gate: typecheck, lint, vitest 453, build, budget, mobile 5/5, smoke all green. Next: step 3 cards/grids/rails.
 
