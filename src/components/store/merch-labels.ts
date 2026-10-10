@@ -17,5 +17,7 @@ export function offerLabels(t: T): OfferBannerLabels {
     min: t.raw("offerMin") as string,
     howTo: t("offerHowTo"),
     label: t("offerLabel"),
+    copy: t("copyCode"),
+    copied: t("codeCopied"),
   };
 }

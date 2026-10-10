@@ -18,6 +18,7 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
   Cancel01Icon,
+  Copy01Icon,
   CheckmarkCircle02Icon,
   Clock01Icon,
   CreditCardIcon,
@@ -56,6 +57,7 @@ import {
 
 export const ChartColumnIncreasing = Analytics01Icon;
 export const Check = Tick02Icon;
+export const Copy = Copy01Icon;
 export const CircleCheck = CheckmarkCircle02Icon;
 export const CreditCard = CreditCardIcon;
 export const ExternalLink = LinkSquare02Icon;

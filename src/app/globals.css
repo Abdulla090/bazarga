@@ -283,3 +283,6 @@ html:lang(ar) .display {
     animation-range: 0 48px;
   }
 }
+/* Horizontal product rails: scroll-snap, no visible scrollbar. */
+.rail { scrollbar-width: none; overscroll-behavior-x: contain; }
+.rail::-webkit-scrollbar { display: none; }

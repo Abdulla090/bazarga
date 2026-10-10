@@ -11,9 +11,9 @@ import { waLink } from "@/lib/whatsapp";
 import { WaTap } from "@/components/store/WaTap";
 import { buildSrcSet, SIZES } from "@/lib/responsive-image";
 import { normalizePhone } from "@/lib/phone";
-import { Flame, Icon, MessageCircle, Search, TicketPercent, Truck, X } from "@/components/ui/icons";
+import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
-import { ProductStrip } from "@/components/store/MiniProductCard";
+import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { OfferBanner } from "@/components/store/OfferBanner";
 import { bestSellerStrip, pickBannerOffer, saleProducts } from "@/lib/merch";
 import { merchLabels, offerLabels } from "@/components/store/merch-labels";
@@ -32,9 +32,9 @@ function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offe
   return `/s/${slug}${s ? `?${s}` : ""}`;
 }
 
-const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold transition-[colors,transform] duration-[var(--duration-fast)] active:scale-[0.97]";
-const chipOn = "bg-st-accent text-st-on-accent";
-const chipOff = "border border-st-border bg-st-surface text-st-fg";
+const chip = "inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-medium transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.98]";
+const chipOn = "border-st-fg bg-st-fg text-st-bg";
+const chipOff = "border-st-border bg-transparent text-st-fg hover:border-st-fg";
 
 export default async function StorefrontPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<SP> }) {
   const { slug } = await params;
@@ -101,16 +101,19 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         )}
       </section>
 
-      {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
-
-      {minFee !== null && (
-        <p className="flex items-center gap-2 rounded-xl border border-st-border bg-st-surface px-3 py-2 text-sm font-semibold text-st-fg">
-          <Icon as={Truck} className="shrink-0 text-st-accent" />
-          <span>
-            {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
-            {store.freeDeliveryThreshold ? ` · ${t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}` : null}
-          </span>
-        </p>
+      {(offer || minFee !== null) && (
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-y border-st-border py-2 text-sm">
+          {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
+          {minFee !== null && (
+            <p className="flex min-h-11 items-center gap-2 text-muted">
+              <Icon as={Truck} className="shrink-0" />
+              <span>
+                {minFee === 0 ? t("freeDelivery") : t("deliveryFrom", { fee: formatIQD(minFee, locale) })}
+                {store.freeDeliveryThreshold ? ` · ${t("freeDeliveryOver", { amount: formatIQD(store.freeDeliveryThreshold, locale) })}` : null}
+              </span>
+            </p>
+          )}
+        </div>
       )}
 
       {/* Plain GET form: works without JS, keeps the category. */}
@@ -119,7 +122,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         {offers && <input type="hidden" name="offers" value="1" />}
         <label className="relative flex-1">
           <span className="sr-only">{t("search")}</span>
-          <Icon as={Search} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-st-muted" />
+          <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="search"
             name="q"
@@ -127,23 +130,23 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             placeholder={t("searchPlaceholder")}
             enterKeyHint="search"
             maxLength={80}
-            className="h-11 w-full rounded-xl border border-st-border bg-st-surface ps-10 pe-3 text-base shadow-e1 transition-shadow duration-[var(--duration-fast)] focus:shadow-e2 text-st-fg placeholder:text-st-muted focus:outline-2 focus:outline-st-accent"
+            className="h-12 w-full rounded-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
           />
         </label>
-        <button type="submit" className="h-11 shrink-0 rounded-xl bg-st-accent px-4 font-bold text-st-on-accent shadow-e1 transition-transform duration-[var(--duration-fast)] active:scale-[0.97]">{t("search")}</button>
+        <button type="submit" className="sr-only">{t("search")}</button>
       </form>
 
       {(usedCats.length > 0 || onSale.length > 0) && (
-        <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1" aria-label={t("products")}>
+        <nav className="rail -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" aria-label={t("products")}>
           <Link href={homeHref(slug, { q })} aria-current={!c && !offers ? "page" : undefined} className={`${chip} ${!c && !offers ? chipOn : chipOff}`}>{t("all")}</Link>
           {onSale.length > 0 && (
             <Link
               href={homeHref(slug, { q, offers: true })}
               aria-current={offers ? "page" : undefined}
-              className={`${chip} gap-1 ${offers ? chipOn : "border border-danger/40 bg-danger/5 text-danger"}`}
+              className={`${chip} ${offers ? chipOn : chipOff}`}
               data-testid="offers-chip"
             >
-              <Icon as={TicketPercent} /> {t("offers")}
+              {t("offers")}
             </Link>
           )}
           {usedCats.map((cat) => (
@@ -155,9 +158,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       )}
 
       {q && (
-        <p className="flex items-center justify-between gap-2 text-sm text-st-muted" aria-live="polite">
+        <p className="flex items-center justify-between gap-2 text-sm text-muted" aria-live="polite">
           <span>{t("resultsFor", { q, count: total })}</span>
-          <Link href={homeHref(slug, { c, offers })} className="inline-flex items-center gap-1 font-semibold text-st-fg underline">
+          <Link href={homeHref(slug, { c, offers })} className="inline-flex min-h-11 items-center gap-1 font-medium text-st-fg underline underline-offset-4">
             <Icon as={X} /> {t("clearSearch")}
           </Link>
         </p>
@@ -166,7 +169,6 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       <ProductStrip
         id="best-h"
         title={t("bestSellers")}
-        icon={<Icon as={Flame} className="text-danger" />}
         products={best}
         slug={store.slug}
         locale={locale}
@@ -177,7 +179,6 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       <ProductStrip
         id="offers-h"
         title={t("offersTitle")}
-        icon={<Icon as={TicketPercent} className="text-danger" />}
         products={saleStrip}
         slug={store.slug}
         locale={locale}
@@ -187,13 +188,13 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         testId="offers-strip"
       />
       {(best.length > 0 || saleStrip.length > 0 || offers) && items.length > 0 && (
-        <h2 className="text-lg font-extrabold" data-testid="grid-title">{offers ? t("offers") : t("allProducts")}</h2>
+        <div className="mt-8 sm:mt-14"><SectionHead title={offers ? t("offers") : t("allProducts")} testId="grid-title" /></div>
       )}
 
       {items.length === 0 ? (
-        <p className="rounded-[var(--radius-card)] border border-st-border bg-st-surface p-6 text-center text-st-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
+        <p className="border-y border-st-border py-12 text-center text-muted">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-x-5 sm:gap-y-12">
           {items.map((p, i) => (
             <div key={p.id} id={`p${i}`} className="scroll-mt-24">
               <ProductCard p={p} slug={store.slug} locale={locale} index={i} labels={cardLabels} />
@@ -206,7 +207,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         <Link
           href={`${homeHref(slug, { q, c, offers, page: page + 1 })}#p${items.length}`}
           scroll={false}
-          className="mx-auto rounded-xl border border-st-border bg-st-surface px-5 py-3 font-bold text-st-fg"
+          className="btn-ghost mx-auto mt-2 min-h-12 px-7"
         >
           {t("showMore", { count: remaining })}
         </Link>

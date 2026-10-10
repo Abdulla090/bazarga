@@ -4,7 +4,7 @@ import { useCart } from "./cart";
 
 export type AddToCartLabels = { add: string; added: string; soldOut: string };
 
-/** Grid "Add to cart" for simple products (products with variants link to their page instead). */
+/** Card "Add to cart" for simple products (desktop hover pill; products with variants link to their page instead). */
 export function AddToCart({
   slug,
   productId,
@@ -22,7 +22,7 @@ export function AddToCart({
     <button
       type="button"
       disabled={disabled}
-      className="btn-gold btn-sm w-full"
+      className="btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur"
       onClick={() => {
         add({ productId });
         setAdded(true);

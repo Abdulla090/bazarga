@@ -515,7 +515,9 @@
     "readMore": "Read more",
     "readLess": "Show less",
     "freeDeliveryOverShort": "Free delivery over {amount}",
-    "shopNow": "Shop now"
+    "shopNow": "Shop now",
+    "copyCode": "Copy",
+    "codeCopied": "Copied"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

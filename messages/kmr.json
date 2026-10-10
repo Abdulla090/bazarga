@@ -257,7 +257,9 @@
     "prevPhoto": "Wêneya berê",
     "noReturnPolicy": "Ev firoşgeh hîn siyaseta vegerandinê neweşandiye. Berî siparîşê li WhatsAppê ji firoşkar bipirse.",
     "trackOrder": "Siparîşa xwe bişopîne",
-    "shopNow": "Niha bikire"
+    "shopNow": "Niha bikire",
+    "copyCode": "Kopî bike",
+    "codeCopied": "Hat kopîkirin"
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

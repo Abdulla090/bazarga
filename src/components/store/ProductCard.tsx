@@ -12,9 +12,25 @@ export type ProductCardLabels = AddToCartLabels & { chooseOptions: string; from:
 
 const fill = (tpl: string, vars: Record<string, string | number>) => tpl.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
+/** Price line shared by grid cards and rail cards: current price (500), struck old price faint. */
+export function CardPrice({ p, locale, from }: { p: CatalogProduct; locale: Locale; from: string }) {
+  return (
+    <p className="num flex flex-wrap items-baseline gap-x-2 text-sm">
+      <span className="font-medium">{p.priceMax > p.price ? fill(from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
+      {isOnSale(p) && <s className="text-[13px] text-faint">{formatIQD(p.compareAtPrice!, locale)}</s>}
+    </p>
+  );
+}
+
+/** 4:5 photo on the placeholder tone, 16 px radius, no border or shadow; slow 1.03 zoom on hover. */
+export const cardImage =
+  "aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]";
+export const cardFrame = "relative block overflow-hidden rounded-2xl bg-[#F4F4F5]";
+
 /**
- * One product in the storefront grid. `index` = position: the first row (2 cards on phones) loads eagerly with
- * high priority, the rest lazily. Labels come pre-translated (the card renders inside a server component).
+ * One product in the storefront grid (Dawn-style: photo + title + price, one badge). `index` = position: the first
+ * row (2 cards on phones) loads eagerly with high priority, the rest lazily. On hover-capable desktops a small outline
+ * pill appears over the photo to add to cart (or choose options); phones tap through to the product page.
  */
 export function ProductCard({
   p,
@@ -31,35 +47,32 @@ export function ProductCard({
 }) {
   const name = pickText(p.name, locale);
   const href = `/s/${slug}/p/${p.id}`;
-  const onSale = isOnSale(p);
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-st-border bg-st-surface shadow-e1 transition-[box-shadow,transform] duration-[var(--duration-base)] ease-[var(--ease-out-expo)] motion-safe:hover:-translate-y-0.5 hover:shadow-e2">
-      <Link href={href} className="relative block overflow-hidden">
-        {p.image ? (
-          <ResponsiveImage image={p.image} alt={name} sizes={SIZES.productGrid} index={index} aboveTheFold={2} className="aspect-square w-full object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out-expo)] motion-safe:group-hover:scale-[1.03]" />
-        ) : (
-          <span className="block aspect-square w-full bg-paper" />
-        )}
-        <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} labels={labels.badges} />
-      </Link>
-      <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <Link href={href} className="line-clamp-2 min-h-11 font-bold leading-snug">
-          {name}
+    <article className="group relative grid min-w-0 content-start gap-3">
+      <div className={cardFrame}>
+        <Link href={href} className="block" tabIndex={-1} aria-hidden>
+          {p.image ? (
+            <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
+          ) : (
+            <span className="block aspect-[4/5] w-full" />
+          )}
         </Link>
-        <p className="num">
-          <span className="font-extrabold">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
-          {onSale && <s className="ms-2 text-sm text-ink-50">{formatIQD(p.compareAtPrice!, locale)}</s>}
-        </p>
-        {p.lowStock !== null && <p className="text-xs font-semibold text-danger">{fill(labels.onlyLeft, { count: p.lowStock })}</p>}
-        <div className="mt-auto pt-1">
+        <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
+        <div className="absolute bottom-3 end-3 z-10 hidden opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:hover)]:md:block">
           {p.hasVariants && !p.soldOut ? (
-            <Link href={href} className="btn-gold btn-sm w-full">
+            <Link href={href} className="btn-ghost btn-sm min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur">
               {labels.chooseOptions}
             </Link>
-          ) : (
-            <AddToCart slug={slug} productId={p.id} disabled={p.soldOut} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} />
-          )}
+          ) : !p.soldOut ? (
+            <AddToCart slug={slug} productId={p.id} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} />
+          ) : null}
         </div>
+      </div>
+      <div className="grid gap-1 px-0.5">
+        <Link href={href} className="line-clamp-2 text-sm leading-snug after:absolute after:inset-0 after:content-[''] hover:underline hover:underline-offset-4">
+          {name}
+        </Link>
+        <CardPrice p={p} locale={locale} from={labels.from} />
       </div>
     </article>
   );

@@ -515,7 +515,9 @@
     "readMore": "زیاتر بخوێنەوە",
     "readLess": "کەمتر",
     "freeDeliveryOverShort": "گەیاندنی بەخۆڕایی سەرووی {amount}",
-    "shopNow": "ئێستا بیکڕە"
+    "shopNow": "ئێستا بیکڕە",
+    "copyCode": "کۆپی",
+    "codeCopied": "کۆپی کرا"
   },
   "errors": {
     "generic": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.",
