@@ -18,3 +18,4 @@ Source of truth: `src/app/globals.css` (`@theme`). Brand: Sun Gold, Deep Ink, Mo
 - [~] Product page: trust tiles + detail sections get e1 elevation, hover/press motion
 - [~] Checkout: payment option cards (selected elevation, focus ring, press), header rule
 - [~] Order status/thank-you: success icon pop + elevation
+- [~] Store home: hero e2 elevation, search field e1/e2 focus, chip + button press motion
