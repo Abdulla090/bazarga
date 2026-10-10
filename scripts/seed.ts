@@ -1,10 +1,12 @@
 /*
- * Demo data: seller demo@mymarket.app / mymarket-demo  →  store "Hawler Bazaar" (/s/hawler-bazaar)
- * with four products (3–5 photos and a details table each, one on sale, a size-variant dress), the "bazaar" theme,
+ * Demo data: seller demo@mymarket.app / mymarket-demo  →  store "Studio Hawler" (/s/hawler-bazaar; slug kept for tests)
+ * with four neutral products on plain backgrounds (linen overshirt with sizes, stoneware mug set, skincare set, canvas
+ * tote; 3–5 photos and a details table each), the "bazaar" theme,
  * a cover photo with renditions, delivery areas in Erbil and Sulaymaniyah, the SAVE10 and WELCOME10 discount codes
  * (SAVE10 advertised on the storefront), free delivery over 75,000 IQD, and a few past orders so the storefront
- * shows real best sellers: honey (3 orders) and the dress (2) earn the "Best seller" badge, the scarf (1) joins the
- * strip, a cancelled skincare order counts for nothing. Honey and the scarf are on sale; the skincare set is "New".
+ * shows real best sellers: the mug set (3 orders) and the overshirt (2) earn the "Best seller" badge, the tote (1) joins
+ * the strip, a cancelled skincare order counts for nothing. Mugs and tote are on sale; the skincare set is "New".
+ * (Variable names honey/dress/scarf are the historical product slots.)
  * Idempotent: re-running does nothing if the store exists.
  */
 import { randomBytes } from "node:crypto";
@@ -49,117 +51,120 @@ async function main() {
   const db = createDb(url);
 
   if (await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") })) {
-    console.log("[seed] Hawler Bazaar already exists — nothing to do");
+    console.log("[seed] Studio Hawler already exists — nothing to do");
     process.exit(0);
   }
 
   const existing = await db.query.users.findFirst({ where: eq(users.email, DEMO_EMAIL) });
-  const user = existing ?? (await signUp(db, { name: "Hawler Bazaar", email: DEMO_EMAIL, password: DEMO_PASSWORD, locale: "ku" }));
+  const user = existing ?? (await signUp(db, { name: "Studio Hawler", email: DEMO_EMAIL, password: DEMO_PASSWORD, locale: "ku" }));
 
   const store = await createStore(db, user.id, {
-    name: "Hawler Bazaar",
+    name: "Studio Hawler",
     slug: "hawler-bazaar",
     defaultLocale: "ku",
     phone: "9647501234567",
     whatsapp: "9647501234567",
-    instagram: "hawler.bazaar",
+    instagram: "studio.hawler",
     city: "erbil",
-    tagline: { ku: "جل، هەنگوین و جوانکاری", ar: "ملابس، عسل ومستحضرات", en: "Clothing, honey and skincare" },
+    tagline: { ku: "کەلوپەلی ڕۆژانە، بە باشی دروستکراو", ar: "أغراض يومية، مصنوعة بإتقان", en: "Everyday goods, made well", kmr: "Tiştên rojane, baş çêkirî" },
   });
 
-  const clothing = await createCategory(db, store.id, { name: { ku: "جلوبەرگ", ar: "ملابس", en: "Clothing" }, sort: 0 });
-  const food = await createCategory(db, store.id, { name: { ku: "خواردن", ar: "طعام", en: "Food" }, sort: 1 });
-  const beauty = await createCategory(db, store.id, { name: { ku: "جوانکاری", ar: "مستحضرات", en: "Beauty" }, sort: 2 });
+  const clothing = await createCategory(db, store.id, { name: { ku: "جلوبەرگ", ar: "ملابس", en: "Clothing", kmr: "Cil" }, sort: 0 });
+  const home = await createCategory(db, store.id, { name: { ku: "ماڵ", ar: "المنزل", en: "Home", kmr: "Mal" }, sort: 1 });
+  const beauty = await createCategory(db, store.id, { name: { ku: "جوانکاری", ar: "مستحضرات", en: "Beauty", kmr: "Bedewî" }, sort: 2 });
 
   const base = { compareAtPrice: null, isActive: true } as const;
   const origin = { ku: "شوێنی دروستکردن", ar: "بلد المنشأ", en: "Origin", kmr: "Çêbûn" };
   const material = { ku: "کەرەستە", ar: "الخامة", en: "Material", kmr: "Materyal" };
   const size = { ku: "قەبارە", ar: "المقاس", en: "Size", kmr: "Mezinahî" };
-  const weight = { ku: "کێش", ar: "الوزن", en: "Weight", kmr: "Giranî" };
   const care = { ku: "چاودێری", ar: "العناية", en: "Care", kmr: "Lênêrîn" };
 
   const dress = await createProduct(db, store.id, {
     ...base,
-    name: { ku: "جلی ئێوارە", ar: "فستان سهرة", en: "Evening dress", kmr: "Cilê şevê" },
+    name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt", kmr: "Kirasê ketan" },
     description: {
-      ku: "جلی ئێوارەی دەستدروست بە ڕەنگی گەش، گونجاو بۆ ئاهەنگەکان.\n\nقوماشی مەخمەری سەوز بە چنینی زێڕین لە سنگ، قۆڵ و داوێن.\nهەر پارچەیەک لە هەولێر تەواو دەکرێت.\n\nقەبارەکان S، M و L ن؛ قەبارەی L درێژترە. ئەگەر دڵنیا نیت لە قەبارەکەت، لە واتسئاپ پێوانەکانت بنێرە و یارمەتیت دەدەین.",
-      ar: "فستان سهرة مصنوع يدوياً بألوان زاهية، مناسب للمناسبات.\n\nمخمل أخضر مع تطريز ذهبي على الصدر والأكمام والذيل.\nكل قطعة تُنهى يدوياً في أربيل.\n\nالمقاسات S وM وL؛ مقاس L أطول. إن لم تكن متأكداً من مقاسك أرسل قياساتك على واتساب وسنساعدك.",
-      en: "Hand-finished dress in bright colours, made for celebrations.\n\nGreen velvet with gold embroidery on the chest, sleeves and hem.\nEvery piece is finished by hand in Erbil.\n\nSizes S, M and L; the L is cut longer. Not sure about your size? Send your measurements on WhatsApp and we'll help.",
+      ku: "کراسێکی فراوان لە کەتانی شۆراو، بۆ لەسەر یەک لەبەرکردن.\n\nڕەنگی لمی نەرم، دوگمەی سروشتی، دوو گیرفانی سنگ.\nبە هەر شوشتنێک نەرمتر دەبێت.\n\nقەبارەکان S، M و L ن؛ بڕینەکەی فراوانە، قەبارەی ئاسایی خۆت هەڵبژێرە. دڵنیا نیت؟ لە واتسئاپ پێوانەکانت بنێرە و یارمەتیت دەدەین.",
+      ar: "قميص واسع من الكتان المغسول، مناسب للطبقات.\n\nلون رملي ناعم، أزرار طبيعية وجيبان على الصدر.\nيزداد نعومة مع كل غسلة.\n\nالمقاسات S وM وL؛ القصّة واسعة فاختر مقاسك المعتاد. لست متأكداً؟ أرسل قياساتك على واتساب وسنساعدك.",
+      en: "A relaxed overshirt in washed linen, made for layering.\n\nSoft sand colour, natural buttons, two chest pockets.\nGets softer with every wash.\n\nSizes S, M and L; the fit is relaxed, so take your usual size. Not sure? Send your measurements on WhatsApp and we'll help.",
+      kmr: "Kirasekî fireh ji ketana şûştî, ji bo ser hev li xwe kirinê.\n\nRengê qûmê yê nerm, bişkojên xwezayî, du bêrîkên sîngê.\nBi her şûştinê nermtir dibe.\n\nMezinahî S, M û L; birrîn fireh e, mezinahiya xwe ya asayî hilbijêre. Ne bawer î? Pîvanên xwe li WhatsAppê bişîne, em ê alîkariya te bikin.",
     },
     price: 85000,
     stock: 12,
     categoryId: clothing.id,
     specs: [
-      spec(material, { ku: "مەخمەر، چنینی زێڕین", ar: "مخمل، تطريز ذهبي", en: "Velvet, gold embroidery", kmr: "Qedîfe, neqşê zêrîn" }),
+      spec(material, { ku: "کەتانی ١٠٠٪", ar: "كتان 100٪", en: "100% linen", kmr: "Ketan 100%" }),
       spec(size, { ku: "S / M / L", ar: "S / M / L", en: "S / M / L" }),
-      spec(care, { ku: "تەنها شوشتنی وشک", ar: "تنظيف جاف فقط", en: "Dry clean only", kmr: "Tenê paqijkirina hişk" }),
+      spec(care, { ku: "شوشتن بە ئاوی سارد", ar: "غسيل بالماء البارد", en: "Machine wash cold", kmr: "Bi ava sar bişo" }),
       spec(origin, { ku: "هەولێر، کوردستان", ar: "أربيل، كردستان", en: "Erbil, Kurdistan", kmr: "Hewlêr, Kurdistan" }),
     ],
     imageUrls: [],
-    images: photos("product-dress", "product-dress-collar", "product-dress-hem", "product-dress-sleeve", "product-dress-full"),
+    images: photos("product-shirt", "product-shirt-collar", "product-shirt-hem", "product-shirt-sleeve", "product-shirt-full"),
   });
   const honey = await createProduct(db, store.id, {
     ...base,
-    name: { ku: "هەنگوینی چیا · ١ کیلۆ", ar: "عسل جبلي · 1 كغ", en: "Mountain honey · 1 kg", kmr: "Hingivê çiya · 1 kg" },
+    name: { ku: "سێتی کوپی گڵ · ٢ دانە", ar: "طقم أكواب فخارية · قطعتان", en: "Stoneware mug set · 2 pcs", kmr: "Seta kûpên axî · 2 parçe" },
     description: {
-      ku: "هەنگوینی سروشتیی چیاکانی کوردستان، ڕاستەوخۆ لە مێشەوانەوە.\n\nبێ شەکر و بێ گەرمکردن، لە شووشەی سەرقەپاغ دارین.",
-      ar: "عسل طبيعي من جبال كردستان، مباشرة من النحّال.\n\nبدون سكر مضاف وبدون تسخين، في برطمان زجاجي بغطاء فلين.",
-      en: "Natural honey from the Kurdistan mountains, straight from the beekeeper.\n\nNo added sugar, never heated — packed in a glass jar with a cork lid.",
+      ku: "دوو کوپی گڵی خاڵدار لەگەڵ ژێرپیاڵەیەکی هاوشێوە، بە لووستەی سپیی نەرم.\n\n٣٥٠ مل دەگرێت. بۆ قاپشۆر و مایکرۆوەیڤ گونجاوە.",
+      ar: "كوبان من الفخار المنقّط مع صحن مطابق، بطلاء أبيض ناعم.\n\nسعة 350 مل. آمن لغسالة الصحون والميكروويف.",
+      en: "Two speckled stoneware mugs with a matching saucer, glazed in soft white.\n\nHolds 350 ml. Dishwasher and microwave safe.",
+      kmr: "Du kûpên axî yên xalxalî bi binpiyaleyek hevreng, bi cilayê spî yê nerm.\n\n350 ml digire. Ji bo firaxşo û mîkropêlê ewle ye.",
     },
     price: 25000,
     compareAtPrice: 30000,
     stock: 40,
-    sku: "HB-HONEY-1KG",
-    categoryId: food.id,
+    sku: "SH-MUG-SET",
+    categoryId: home.id,
     specs: [
-      spec(weight, { ku: "١ کیلۆ", ar: "1 كغ", en: "1 kg", kmr: "1 kg" }),
-      spec(origin, { ku: "چیاکانی سۆران", ar: "جبال سوران", en: "Soran mountains", kmr: "Çiyayên Soranê" }),
-      spec({ ku: "جۆر", ar: "النوع", en: "Type", kmr: "Cure" }, { ku: "هەنگوینی گوڵە کێوی", ar: "عسل زهور برية", en: "Wildflower honey", kmr: "Hingivê kulîlkên çolê" }),
+      spec({ ku: "بڕی گرتن", ar: "السعة", en: "Capacity", kmr: "Kapasîte" }, { ku: "٣٥٠ مل", ar: "350 مل", en: "350 ml", kmr: "350 ml" }),
+      spec(material, { ku: "گڵی سووتاو", ar: "فخار حجري", en: "Stoneware", kmr: "Axa pijandî" }),
+      spec({ ku: "پارچەکان", ar: "القطع", en: "Pieces", kmr: "Parçe" }, { ku: "٢ کوپ + ژێرپیاڵە", ar: "كوبان + صحن", en: "2 mugs + saucer", kmr: "2 kûp + binpiyale" }),
     ],
     imageUrls: [],
-    images: photos("product-honey", "product-honey-jar", "product-honey-dipper", "product-honey-pot"),
+    images: photos("product-mugs", "product-mugs-left", "product-mugs-right", "product-mugs-saucer"),
   });
   const skincare = await createProduct(db, store.id, {
     ...base,
     badge: "new",
     name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set", kmr: "Seta çermê xwezayî" },
     description: {
-      ku: "سابوون، کرێم و ڕۆنی سروشتی — بێ مادەی کیمیایی.\n\nبۆ هەموو جۆرە پێستێک.\nبە دیاری پێچراوە.",
-      ar: "صابون وكريم وزيت طبيعي — بدون مواد كيميائية قاسية.\n\nلجميع أنواع البشرة.\nمغلّفة كهدية.",
-      en: "Soap, cream and oil made from natural ingredients — no harsh chemicals.\n\nFor every skin type.\nGift-wrapped.",
+      ku: "سیرەم، لۆشن و کرێم بۆ ڕۆتینێکی ئارام و بێ بۆن.\n\nبۆ هەموو جۆرە پێستێک.\nبە دیاری پێچراوە.",
+      ar: "سيروم ولوشن وكريم لروتين هادئ وخالٍ من العطور.\n\nلجميع أنواع البشرة.\nمغلّفة كهدية.",
+      en: "Serum, lotion and cream for a calm, fragrance-free routine.\n\nFor every skin type.\nGift-wrapped.",
+      kmr: "Serum, losyon û krem ji bo rûtînek aram û bê bîhn.\n\nJi bo her cureyê çerm.\nWek diyarî pêçayî.",
     },
     price: 40000,
     stock: null,
-    sku: "HB-SKIN-SET",
+    sku: "SH-SKIN-SET",
     categoryId: beauty.id,
     specs: [
-      spec({ ku: "ناوەڕۆک", ar: "المحتويات", en: "Contents", kmr: "Naverok" }, { ku: "ڕۆن ٣٠ مل، کرێم ٥٠ مل، سابوون", ar: "زيت 30 مل، كريم 50 مل، صابون", en: "Oil 30 ml, cream 50 ml, soap", kmr: "Rûn 30 ml, krem 50 ml, sabûn" }),
+      spec({ ku: "ناوەڕۆک", ar: "المحتويات", en: "Contents", kmr: "Naverok" }, { ku: "سیرەم ٣٠ مل، لۆشن ١٠٠ مل، کرێم ٥٠ مل", ar: "سيروم 30 مل، لوشن 100 مل، كريم 50 مل", en: "Serum 30 ml, lotion 100 ml, cream 50 ml", kmr: "Serum 30 ml, losyon 100 ml, krem 50 ml" }),
       spec({ ku: "جۆری پێست", ar: "نوع البشرة", en: "Skin type", kmr: "Cureyê çerm" }, { ku: "هەموو جۆرێک", ar: "جميع الأنواع", en: "All skin types", kmr: "Hemû cure" }),
       spec(origin, { ku: "سلێمانی، کوردستان", ar: "السليمانية، كردستان", en: "Sulaymaniyah, Kurdistan", kmr: "Silêmanî, Kurdistan" }),
     ],
     imageUrls: [],
-    images: photos("product-cosmetics", "product-cosmetics-serum", "product-cosmetics-cream", "product-cosmetics-flowers"),
+    images: photos("product-skincare", "product-skincare-serum", "product-skincare-pump", "product-skincare-jar"),
   });
   const scarf = await createProduct(db, store.id, {
     ...base,
-    name: { ku: "لەچکی چنراو", ar: "وشاح منسوج", en: "Hand-woven scarf", kmr: "Şala destçêkirî" },
+    name: { ku: "جانتای کانڤاس", ar: "حقيبة قماش كانفاس", en: "Canvas tote", kmr: "Çenteya kanvas" },
     description: {
-      ku: "لەچکی سووری چنراو بە دەست لە هەولێر.\nگەرم و سووک، بۆ زستان و بەهار.",
-      ar: "وشاح أحمر منسوج يدوياً في أربيل.\nدافئ وخفيف، للشتاء والربيع.",
-      en: "Red scarf, hand-woven in Erbil.\nWarm and light, for winter and spring.",
+      ku: "جانتای کانڤاسی لۆکەی ئەستوور بە دەسکی درێژ.\nفراوان، بەهێز و ئاسان بۆ شوشتن.",
+      ar: "حقيبة من قماش القطن السميك بمقابض طويلة.\nواسعة ومتينة وسهلة الغسل.",
+      en: "Heavy cotton canvas tote with long handles.\nRoomy, sturdy and easy to wash.",
+      kmr: "Çenteya kanvasa pembûyê stûr bi destikên dirêj.\nFireh, xurt û hêsan ji bo şûştinê.",
     },
     price: 35000,
     compareAtPrice: 42000,
     stock: 8,
-    sku: "HB-SCARF-RED",
-    categoryId: clothing.id,
+    sku: "SH-TOTE-NAT",
+    categoryId: home.id,
     specs: [
-      spec(material, { ku: "خوری و لۆکە", ar: "صوف وقطن", en: "Wool and cotton", kmr: "Hirî û pembû" }),
-      spec(size, { ku: "١٨٠ × ٧٠ سم", ar: "180 × 70 سم", en: "180 × 70 cm", kmr: "180 × 70 cm" }),
+      spec(material, { ku: "کانڤاسی لۆکە", ar: "قماش قطني", en: "Cotton canvas", kmr: "Kanvasa pembû" }),
+      spec(size, { ku: "٣٨ × ٤٢ سم", ar: "38 × 42 سم", en: "38 × 42 cm", kmr: "38 × 42 cm" }),
       spec(origin, { ku: "هەولێر", ar: "أربيل", en: "Erbil", kmr: "Hewlêr" }),
     ],
     imageUrls: [],
-    images: photos("product-scarf", "product-scarf-seller", "product-scarf-shelf"),
+    images: photos("product-tote", "product-tote-handles", "product-tote-detail"),
   });
 
   // ---- theme + policies + promotions
@@ -169,9 +174,10 @@ async function main() {
       themePreset: "bazaar",
       accentColor: null,
       about: {
-        ku: "دوکانێکی بچووکی هەولێر: جلی دەستدروست، هەنگوینی چیا و بەرهەمی پێستی سروشتی.",
-        ar: "متجر صغير في أربيل: ملابس مصنوعة يدوياً، عسل جبلي ومنتجات طبيعية للبشرة.",
-        en: "A small Erbil shop: hand-finished clothing, mountain honey and natural skincare.",
+        ku: "ستۆدیۆیەکی بچووکی هەولێر: کەتان، قاپی گڵ، چاودێری پێست و جانتای ڕۆژانە.",
+        ar: "استوديو صغير في أربيل: كتان، فخار، عناية بالبشرة وحقائب يومية.",
+        en: "A small Erbil studio: linen, stoneware, skincare and everyday bags.",
+        kmr: "Stûdyoyek biçûk li Hewlêrê: ketan, firaxên axî, lênêrîna çerm û çenteyên rojane.",
       },
       returnPolicy: {
         ku: "دەتوانیت لە ماوەی ٣ ڕۆژدا کاڵاکە بگەڕێنیتەوە ئەگەر بەکارنەهاتبێت.",
@@ -240,9 +246,9 @@ async function main() {
   type Line = { productId: string; variantId?: string; name: string; variantTitle?: string; unitPrice: number; quantity: number };
   const dressM = variants[1]!;
   const L = {
-    honey: (q: number): Line => ({ productId: honey.id, name: "هەنگوینی چیا · ١ کیلۆ", unitPrice: 25_000, quantity: q }),
-    dress: (): Line => ({ productId: dress.id, variantId: dressM.id, name: "جلی ئێوارە", variantTitle: "M", unitPrice: 85_000, quantity: 1 }),
-    scarf: (): Line => ({ productId: scarf.id, name: "لەچکی چنراو", unitPrice: 35_000, quantity: 1 }),
+    honey: (q: number): Line => ({ productId: honey.id, name: "سێتی کوپی گڵ · ٢ دانە", unitPrice: 25_000, quantity: q }),
+    dress: (): Line => ({ productId: dress.id, variantId: dressM.id, name: "کراسی کەتان", variantTitle: "M", unitPrice: 85_000, quantity: 1 }),
+    scarf: (): Line => ({ productId: scarf.id, name: "جانتای کانڤاس", unitPrice: 35_000, quantity: 1 }),
     skin: (): Line => ({ productId: skincare.id, name: "سێتی پێستی سروشتی", unitPrice: 40_000, quantity: 1 }),
   };
   const past: { name: string; phone: string; daysAgo: number; status: "delivered" | "cancelled"; lines: Line[] }[] = [
@@ -323,7 +329,7 @@ async function main() {
     );
   }
 
-  console.log(`[seed] created Hawler Bazaar → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
+  console.log(`[seed] created Studio Hawler → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
   process.exit(0);
 }
 

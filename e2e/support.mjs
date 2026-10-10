@@ -91,11 +91,11 @@ export async function setup() {
   const ordersHtml = await (await fetch(`${BASE}/dashboard/orders`, { headers: { Cookie: `${session.name}=${session.value}` } })).text();
   const orderId = /\/dashboard\/orders\/([0-9a-f-]{36})/.exec(ordersHtml)?.[1];
 
-  // The demo honey jar: on sale, a best seller, advertised offer banner on its page.
+  // The demo mug set: on sale, a best seller, advertised offer banner on its page.
   let saleId = null;
   for (const id of listed) {
     const page = await (await fetch(`${BASE}/s/${SLUG}/p/${id}`)).text();
-    if (page.includes("HB-HONEY-1KG")) saleId = id;
+    if (page.includes("SH-MUG-SET")) saleId = id;
   }
 
   const cart = JSON.stringify([{ productId: buyable[0], variantId: null, quantity: 2 }]);

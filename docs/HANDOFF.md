@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 10 22:25 Agent B: redesign step 5 (neutral seed)
+'Studio Hawler' demo store with 4 generated studio product photos + still-life hero (webp srcsets regenerated). e2e/support + product spec updated for new names. Gate green (vitest 453, mobile 5/5, smoke). Next: step 6 motion.
+
 ### Oct 10 22:20 Agent B: redesign step 4 (product page declutter)
 One hairline trust row (3 items) + accordions; no you-save / duplicate coupon / delivery banner / WhatsApp tile; buy bar only after the buttons scroll out, with page padding. e2e product spec + smoke updated (trust row = 3, no you-save/product-offers). Gate green (vitest 453, mobile 5/5, smoke). Next: step 5 neutral seed.
 

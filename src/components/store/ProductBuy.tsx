@@ -36,7 +36,7 @@ export type BuyLabels = {
   askWhatsApp: string;
   share: string;
   linkCopied: string;
-  /** First line of the WhatsApp message, e.g. "Hi Hawler Bazaar, I'd like to ask about:" */
+  /** First line of the WhatsApp message, e.g. "Hi Studio Hawler, I'd like to ask about:" */
   waIntro: string;
   unavailable: string;
   inStock: string;

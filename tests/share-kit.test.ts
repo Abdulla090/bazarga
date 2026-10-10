@@ -132,7 +132,7 @@ describe("story image", () => {
     expect(meta).toMatchObject({ format: "png", width: STORY_SIZE.width, height: STORY_SIZE.height });
   });
   it("uses the logo, a custom accent and survives markup-looking / very long names", async () => {
-    const logo = new Uint8Array(readFileSync("public/images/product-honey.jpg"));
+    const logo = new Uint8Array(readFileSync("public/images/product-mugs.jpg"));
     const png = await renderStoryPng({
       ...base,
       name: `<span>Tom & Jerry's</span> ${"Very long store name ".repeat(8)}`,

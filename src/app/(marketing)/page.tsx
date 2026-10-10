@@ -11,9 +11,9 @@ import { Check, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/c
 const DEMO_SLUG = "hawler-bazaar";
 
 const DEMO = [
-  { img: "/images/product-dress.jpg", price: 85000, name: { ku: "کراسی کوردی", ar: "فستان كردي", en: "Kurdish dress" } },
-  { img: "/images/product-honey.jpg", price: 25000, name: { ku: "هەنگوینی چیا · ١ کیلۆ", ar: "عسل جبلي · 1 كغ", en: "Mountain honey · 1 kg" } },
-  { img: "/images/product-cosmetics.jpg", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
+  { img: "/images/product-shirt.jpg", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } },
+  { img: "/images/product-mugs.jpg", price: 25000, name: { ku: "سێتی کوپی گڵ · ٢ دانە", ar: "طقم أكواب فخارية · قطعتان", en: "Stoneware mug set · 2 pcs" } },
+  { img: "/images/product-skincare.jpg", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
 ];
 
 export default async function LandingPage() {
