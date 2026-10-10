@@ -25,7 +25,7 @@ export function MiniProductCard({ p, slug, locale, labels, from }: { p: CatalogP
 /** Section heading used across the storefront: 2–4 words, light display type, optional "See all" text link. */
 export function SectionHead({ id, title, seeAll, testId }: { id?: string; title: string; seeAll?: { href: string; label: string }; testId?: string }) {
   return (
-    <div className="flex items-end justify-between gap-3">
+    <div className="reveal flex items-end justify-between gap-3">
       <h2 id={id} className="display min-w-0 truncate text-[22px] sm:text-[28px]" data-testid={testId}>
         {title}
       </h2>
@@ -69,7 +69,7 @@ export function ProductStrip({
       <SectionHead id={id} title={title} seeAll={seeAll} />
       <ul className="rail -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:scroll-px-6 sm:gap-5 sm:px-6">
         {products.map((r) => (
-          <li key={r.id} className="w-[42%] shrink-0 snap-start sm:w-[calc((100%-2*1.25rem)/3)] lg:w-[calc((100%-3*1.25rem)/4)]">
+          <li key={r.id} className="reveal w-[42%] shrink-0 snap-start sm:w-[calc((100%-2*1.25rem)/3)] lg:w-[calc((100%-3*1.25rem)/4)]">
             <MiniProductCard p={r} slug={slug} locale={locale} labels={labels} from={from} />
           </li>
         ))}

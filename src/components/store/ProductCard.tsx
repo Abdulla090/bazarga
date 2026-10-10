@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { AddToCart, type AddToCartLabels } from "./AddToCart";
 import { formatIQD } from "@/lib/money";
 import { pickText, type Locale } from "@/lib/i18n";
@@ -48,14 +49,18 @@ export function ProductCard({
   const name = pickText(p.name, locale);
   const href = `/s/${slug}/p/${p.id}`;
   return (
-    <article className="group relative grid min-w-0 content-start gap-3">
+    <article className="reveal group relative grid min-w-0 content-start gap-3">
       <div className={cardFrame}>
         <Link href={href} className="block" tabIndex={-1} aria-hidden>
-          {p.image ? (
-            <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
-          ) : (
-            <span className="block aspect-[4/5] w-full" />
-          )}
+          {/* Shared element: the photo morphs into the product page gallery (React View Transitions, grid only —
+              rails show the same product again and a name must be unique on the page). */}
+          <ViewTransition name={`product-${p.id}`} share="product-morph">
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
+            ) : (
+              <span className="block aspect-[4/5] w-full" />
+            )}
+          </ViewTransition>
         </Link>
         <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
         <div className="absolute bottom-3 end-3 z-10 hidden opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:hover)]:md:block">
