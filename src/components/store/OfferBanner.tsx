@@ -34,16 +34,16 @@ export function OfferBanner({ offer, locale, labels }: { offer: BannerOffer; loc
   return (
     <aside
       aria-label={labels.label}
-      className="flex min-w-0 items-start gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-danger/40 bg-danger/5 p-3 text-st-fg"
+      className="flex min-w-0 items-start gap-3 rounded-[var(--radius-card)] border border-st-border bg-st-surface p-3 text-st-fg shadow-sm"
       data-testid="offer-banner"
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger text-[#fff]">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-st-accent text-st-on-accent">
         <Icon as={TicketPercent} className="h-5 w-5" />
       </span>
       <span className="grid min-w-0 gap-0.5">
         <span className="font-extrabold leading-snug">
           {before}
-          <bdi dir="ltr" className="num mx-0.5 inline-block select-all break-all rounded-md bg-st-surface px-1.5 py-0.5 font-mono font-extrabold tracking-wider ring-1 ring-st-border" data-testid="offer-code">
+          <bdi dir="ltr" className="num mx-0.5 inline-block select-all break-all rounded-md bg-st-bg px-1.5 py-0.5 font-mono font-extrabold tracking-wider ring-1 ring-st-border" data-testid="offer-code">
             {offer.code}
           </bdi>
           {after}
