@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 11 20:14 Agent B: layout fix pass (storefront)
+Abdulla: "so much space with just images in center". Product: compact gallery (one 4:5 photo + vertical thumb rail, ~1 viewport, sticky) beside one column with buy box, trust row, Details + Delivery & returns; phone carousel unchanged. Home: hero text block centred (no tagline-top/name-bottom gap), section gaps 128→96 desktop / 64→56 phone, tighter spotlight band, 1–2 item sets (On sale) = promo tile + normal cards (4+4+4) instead of split cards, card titles/prices 15–16px. Cart: order summary moved under the lines, cart column sticky, larger line photos. Storefront 404 now inside the store chrome (new store.pageNotFound, store.upToOff keys in 4 locales); form labels/receipts/trust text 13→14–15px; empty/error states less padding. Gate green (typecheck, lint, vitest 453, build, budget, mobile 5/5, smoke). Screens: /workspace/work/fix-gate/{before,after}.
+
 ### Oct 11 19:40 Agent B: redesign step 8 · dashboard shell + nav
 64px translucent header (awning mark + store name, outline View store pill), 240px side rail in three hairline groups (selected = white row + blue tick), blue new-orders pill (no red), translucent phone tab bar, More = headline + hairline list + locale switcher. Gate green (typecheck, lint, vitest 42 files, build, budget, mobile 5/5, smoke). Next: step 8 overview. Hark: hark/dashboard-design never appeared on origin, so Agent B is doing step 8 part by part (checklist in REDESIGN.md).
 

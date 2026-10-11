@@ -92,7 +92,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
             </li>
           ))}
         </ul>
-        <dl className="mt-3 grid grid-cols-2 gap-y-2 border-t border-st-border pt-4 text-sm">
+        <dl className="mt-3 grid grid-cols-2 gap-y-2 border-t border-st-border pt-4 text-[15px]">
           <dt className="text-muted">{t("subtotal")}</dt><dd className="num text-end">{formatIQD(order.subtotal, locale)}</dd>
           {order.discountAmount > 0 && (
             <>
@@ -101,10 +101,10 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
           )}
           <dt className="text-muted">{t("delivery")} · {order.cityName}</dt><dd className="num text-end">{formatIQD(order.deliveryFee, locale)}</dd>
           <dt className="text-muted">{t("payment")}</dt><dd className="text-end">{paymentLabel}</dd>
-          <dt className="mt-2 border-t border-st-border pt-3 text-base font-medium">{t("total")}</dt><dd className="num mt-2 border-t border-st-border pt-3 text-end text-base font-medium">{formatIQD(order.total, locale)}</dd>
+          <dt className="mt-2 border-t border-st-border pt-3 text-lg font-medium">{t("total")}</dt><dd className="num mt-2 border-t border-st-border pt-3 text-end text-lg font-medium">{formatIQD(order.total, locale)}</dd>
         </dl>
       </section>
-      <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{t("backToStore")}</Link>
+      <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{t("backToStore")}</Link>
     </div>
   );
 }

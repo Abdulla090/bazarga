@@ -55,7 +55,7 @@ export function CollectionBento({
   return (
     <section aria-labelledby="collections-h" className="section grid gap-4 sm:gap-6" data-testid="collections">
       <SectionHead id="collections-h" title={title} index={index} />
-      <ul className="grid grid-cols-2 gap-[var(--grid-gap)] md:h-[min(78vh,44rem)] md:grid-cols-12 md:grid-rows-2">
+      <ul className="grid grid-cols-2 gap-[var(--grid-gap)] md:h-[min(70vh,40rem)] md:grid-cols-12 md:grid-rows-2">
         {tiles.map(({ c, cover, count }, i) => (
           <li key={c.id} className={`reveal relative min-h-0 ${phone(i)} md:aspect-auto ${place(i)}`}>
             <Link href={`/s/${slug}?c=${c.id}#products`} className="group relative block h-full overflow-hidden rounded-2xl bg-[#F4F4F5]">
@@ -106,22 +106,22 @@ export function Spotlight({
   const name = pickText(p.name, locale);
   const href = `/s/${slug}/p/${p.id}`;
   return (
-    <section className="section bleed bg-st-surface py-16 md:py-24" aria-labelledby="spotlight-h" data-testid="spotlight">
+    <section className="section bleed bg-st-surface py-10 md:py-14" aria-labelledby="spotlight-h" data-testid="spotlight">
       <div className="grid-12 items-center gap-y-8">
-        <Link href={href} className="group col-span-4 block overflow-hidden rounded-2xl bg-[#F4F4F5] md:col-span-6" tabIndex={-1} aria-hidden>
+        <Link href={href} className="group col-span-4 block overflow-hidden rounded-2xl bg-[#F4F4F5] md:col-span-7" tabIndex={-1} aria-hidden>
           {p.image ? (
             <ResponsiveImage
               image={p.image}
               alt=""
               sizes="(min-width: 768px) 50vw, 100vw"
               index={9}
-              className="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03] md:aspect-square"
+              className="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03] sm:aspect-[4/3] md:aspect-[5/4]"
             />
           ) : (
-            <span className="block aspect-square w-full" />
+            <span className="block aspect-[5/4] w-full" />
           )}
         </Link>
-        <div className="reveal col-span-4 grid justify-items-start gap-5 md:col-span-5 md:col-start-8 md:gap-6">
+        <div className="reveal col-span-4 grid justify-items-start gap-5 md:col-span-5 md:col-start-8 md:gap-6 lg:col-span-4 lg:col-start-9">
           <span className="t-label section-index">
             {index}
             {eyebrow && <span className="text-st-fg"> — {eyebrow}</span>}
@@ -133,7 +133,7 @@ export function Spotlight({
             <span className="font-medium">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
             {isOnSale(p) && <s className="text-base text-faint">{formatIQD(p.compareAtPrice!, locale)}</s>}
           </p>
-          {description && <p className="line-clamp-3 max-w-md text-[15px] leading-relaxed text-muted">{description}</p>}
+          {description && <p className="line-clamp-3 max-w-md text-base leading-relaxed text-muted md:text-[17px]">{description}</p>}
           <div className="flex w-full flex-wrap gap-3 sm:w-auto">
             <Link href={href} className="btn-gold min-h-12 flex-1 px-8 sm:flex-none">{labels.view}</Link>
             {!p.hasVariants && !p.soldOut && (

@@ -16,7 +16,7 @@ import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, Spotlight } from "@/components/store/HomeSections";
 import { OfferBanner } from "@/components/store/OfferBanner";
-import { bestSellerStrip, pickBannerOffer, saleProducts } from "@/lib/merch";
+import { bestSellerStrip, percentOff, pickBannerOffer, saleProducts } from "@/lib/merch";
 import { merchLabels, offerLabels } from "@/components/store/merch-labels";
 
 type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[] };
@@ -71,6 +71,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   };
   const offer = pickBannerOffer(codes);
   const onSale = saleProducts(products);
+  const maxPct = Math.max(0, ...onSale.map((p) => percentOff(p.price, p.compareAtPrice) ?? 0));
   // Editorial sections only on the plain store home (not while searching, filtering or paging).
   const browsing = !q && !c && !offers && page === 1;
   const best = browsing ? bestSellerStrip(products, bestSellers) : [];
@@ -113,29 +114,28 @@ export default async function StorefrontPage({ params, searchParams }: { params:
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
-                  className="aspect-[4/5] w-full object-cover sm:aspect-[4/3] md:aspect-auto md:h-[min(80vh,46rem)]"
+                  className="aspect-[4/5] w-full object-cover sm:aspect-[4/3] md:aspect-auto md:h-[min(72vh,40rem)]"
                   style={store.coverImagePlaceholder ? { backgroundImage: `url("${store.coverImagePlaceholder}")`, backgroundSize: "cover" } : undefined}
                 />
               </div>
             )}
+            {/* Name, tagline and CTA as one block, vertically centred against the photo (no tagline floating at the
+                top with the name pinned to the bottom and air in between). */}
             <div
-              className={`relative z-[1] col-span-4 grid justify-items-start gap-6 ${
-                store.coverImageUrl ? "-mt-8 md:col-span-8 md:col-start-1 md:row-start-1 md:mt-0 md:self-stretch md:content-between md:py-10" : "md:col-span-10 md:py-16"
+              className={`relative z-[1] col-span-4 grid justify-items-start gap-5 md:gap-7 ${
+                store.coverImageUrl ? "-mt-8 md:col-span-8 md:col-start-1 md:row-start-1 md:mt-0 md:self-center md:py-10" : "md:col-span-10 md:py-16"
               }`}
             >
-              {tagline && <p className="hidden max-w-[22rem] text-xl leading-snug text-muted md:block">{tagline}</p>}
-              <div className="grid justify-items-start gap-6 md:gap-8">
-                <h1 className="t-hero break-words">
-                  <span className="hero-plate">{store.name}</span>
-                </h1>
-                {tagline && <p className="line-clamp-2 max-w-xl text-[17px] leading-snug text-muted md:hidden">{tagline}</p>}
-                <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{t("shopNow")}</a>
-              </div>
+              <h1 className="t-hero break-words">
+                <span className="hero-plate">{store.name}</span>
+              </h1>
+              {tagline && <p className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl">{tagline}</p>}
+              <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{t("shopNow")}</a>
             </div>
           </section>
 
           {(offer || minFee !== null) && (
-            <div className="section flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-y border-st-border py-2 text-sm md:!mt-16">
+            <div className="section flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-y border-st-border py-2 text-[15px] md:!mt-12">
               {offer && <OfferBanner offer={offer} locale={locale} labels={offerLabels(t)} />}
               {minFee !== null && (
                 <p className="flex min-h-11 items-center gap-2 text-muted">
@@ -197,6 +197,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             from={from}
             view={t("view")}
             seeAll={onSale.length > 1 ? { href: homeHref(slug, { offers: true }), label: t("seeAll") } : undefined}
+            note={maxPct ? t("upToOff", { pct: String(maxPct) }) : undefined}
             testId="offers-strip"
           />
         </>

@@ -16,9 +16,9 @@ const fill = (tpl: string, vars: Record<string, string | number>) => tpl.replace
 /** Price line shared by grid cards and rail cards: current price (500), struck old price faint. */
 export function CardPrice({ p, locale, from }: { p: CatalogProduct; locale: Locale; from: string }) {
   return (
-    <p className="num flex flex-wrap items-baseline gap-x-2 text-sm">
+    <p className="num flex flex-wrap items-baseline gap-x-2 text-[15px] md:text-base">
       <span className="font-medium">{p.priceMax > p.price ? fill(from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
-      {isOnSale(p) && <s className="text-[13px] text-faint">{formatIQD(p.compareAtPrice!, locale)}</s>}
+      {isOnSale(p) && <s className="text-[13px] text-faint md:text-sm">{formatIQD(p.compareAtPrice!, locale)}</s>}
     </p>
   );
 }
@@ -27,6 +27,8 @@ export function CardPrice({ p, locale, from }: { p: CatalogProduct; locale: Loca
 export const cardImage =
   "aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]";
 export const cardFrame = "relative block overflow-hidden rounded-2xl bg-[#F4F4F5]";
+/** Card title: 15 px on phones, 16 px from md (was 14 px, too small on desktop). */
+export const cardName = "text-[15px] md:text-base";
 
 /**
  * One product in the storefront grid (Dawn-style: photo + title + price, one badge). `index` = position: the first
@@ -79,7 +81,7 @@ export function ProductCard({
         </div>
       </div>
       <div className="grid gap-1 px-0.5">
-        <Link href={href} className="line-clamp-2 text-sm leading-snug after:absolute after:inset-0 after:content-[''] hover:underline hover:underline-offset-4">
+        <Link href={href} className={`line-clamp-2 leading-snug ${cardName} after:absolute after:inset-0 after:content-[''] hover:underline hover:underline-offset-4`}>
           {name}
         </Link>
         <CardPrice p={p} locale={locale} from={labels.from} />

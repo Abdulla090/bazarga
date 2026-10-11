@@ -70,7 +70,7 @@ const summary =
   "flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-medium [&::-webkit-details-marker]:hidden";
 const chevron = <Icon as={ChevronDown} className="text-muted transition-transform duration-150 group-open:rotate-180" />;
 /** One item of the hairline trust row: small icon over a short label. */
-const trustItem = "flex min-h-11 flex-col items-center justify-start gap-1.5 px-1.5 py-3 text-center text-xs leading-snug text-balance text-muted";
+const trustItem = "flex min-h-11 flex-col items-center justify-start gap-1.5 px-1.5 py-3 text-center text-[13px] leading-snug text-balance text-muted";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string; productId: string }> }) {
   const { slug, productId } = await params;
@@ -141,10 +141,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <Link href={`/s/${store.slug}`} className="-mb-4 -mt-3 inline-flex min-h-11 w-fit items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-st-fg md:-mb-1">
         <ArrowBack /> {tc("back")}
       </Link>
-      {/* Layout v3 §5: photos stacked in columns 1–7 (the page is the gallery), info sticky in 9–12 with column 8 as air.
-          A tall info column scrolls inside itself (max-height) so nothing is ever unreachable. */}
-      <div className="grid-12 items-start gap-y-6">
-        <div className="relative col-span-4 min-w-0 md:col-span-7 md:row-start-1">
+      {/* Balanced two-column product page: a compact gallery (one 4:5 photo + thumbnail rail, about one viewport tall)
+          pinned on the start side, and everything else — buy box, trust row, details, delivery & returns — in one
+          column on the end side, so neither column runs on alone into empty space. Phones: one column in the same order. */}
+      <div className="grid-12 items-start gap-y-6 md:gap-y-0">
+        <div className="relative col-span-4 min-w-0 md:sticky md:top-24 md:col-span-6 lg:col-span-7 xl:col-span-6">
           <ViewTransition name={`product-${p.id}`} share="product-morph">
             <ProductGallery
               images={p.images}
@@ -161,9 +162,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             />
           </ViewTransition>
           {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
-          <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner="gallery" />
+          <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner={p.images.length > 1 ? "gallery-rail" : "gallery"} />
         </div>
-        <div className="info-col col-span-4 grid min-w-0 gap-8 md:sticky md:top-24 md:col-span-5 md:col-start-8 md:row-span-2 md:row-start-1 md:max-h-[calc(100dvh-7rem)] md:overflow-y-auto md:pb-6 lg:col-span-4 lg:col-start-9">
+        <div className="col-span-4 grid min-w-0 gap-8 md:col-span-6 md:col-start-7 md:ps-4 lg:col-span-5 lg:col-start-8 lg:ps-0 xl:col-start-8">
           <ProductBuy
             slug={store.slug}
             productId={p.id}
@@ -231,17 +232,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </li>
           </ul>
 
-        </div>
-      {/* Details + delivery: under the info on phones, under the photos (columns 1–7) from md, so the sticky info
-          column stays short enough to fit the viewport. */}
-      <div className="reveal col-span-4 -mt-4 grid md:col-span-7 md:col-start-1 md:row-start-2 md:mt-6">
+          {/* Details + delivery & returns: right under the trust row in the same column. */}
+          <div className="-mt-8 grid">
           {specs.length > 0 && (
             <details className={section} open data-testid="section-details">
               <summary className={summary}>
                 {t("detailsTitle")} {chevron}
               </summary>
               <div className="pb-5">
-                <table className="w-full border-collapse text-sm" data-testid="specs-table">
+                <table className="w-full border-collapse text-[15px]" data-testid="specs-table">
                   <tbody>
                     {specs.map((r, i) => (
                       <tr key={i} className="border-t border-st-border first:border-t-0">
@@ -272,15 +271,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 locale={locale}
               />
               <div>
-                <h3 className="mb-1 text-[13px] font-medium">{t("returnPolicy")}</h3>
+                <h3 className="mb-1 text-sm font-medium">{t("returnPolicy")}</h3>
                 {returnPolicy ? (
-                  <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{returnPolicy}</p>
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-muted">{returnPolicy}</p>
                 ) : (
-                  <p className="text-sm text-muted">{t("noReturnPolicy")}</p>
+                  <p className="text-[15px] text-muted">{t("noReturnPolicy")}</p>
                 )}
               </div>
             </div>
           </details>
+          </div>
         </div>
       </div>
 

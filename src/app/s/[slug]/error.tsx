@@ -17,7 +17,7 @@ export default function StoreError({ reset }: { error: Error & { digest?: string
   const t = TEXT[lang] ?? TEXT.ckb!;
   const home = usePathname().split("/").slice(0, 3).join("/");
   return (
-    <div className="mx-auto grid max-w-xl justify-items-center gap-8 py-20 text-center sm:py-32" data-testid="store-error">
+    <div className="mx-auto grid max-w-xl justify-items-center gap-8 py-16 text-center sm:py-24" data-testid="store-error">
       <p className="t-display">{t.msg}</p>
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <button type="button" className="btn-gold min-h-12 px-8" onClick={reset}>{t.retry}</button>

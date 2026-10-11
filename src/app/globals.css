@@ -333,10 +333,10 @@ html:lang(ar) .display {
   --grid-gap: 0.75rem;
   --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-6: 1.5rem; --s-8: 2rem;
   --s-12: 3rem; --s-16: 4rem; --s-24: 6rem; --s-32: 8rem;
-  --section-gap: var(--s-16);
+  --section-gap: 3.5rem;
 }
-@media (min-width: 640px) { :root { --page-margin: 1.5rem; --grid-gap: 1rem; --section-gap: var(--s-24); } }
-@media (min-width: 1024px) { :root { --page-margin: 2.5rem; --grid-gap: 1.5rem; --section-gap: var(--s-32); } }
+@media (min-width: 640px) { :root { --page-margin: 1.5rem; --grid-gap: 1rem; --section-gap: 5rem; } }
+@media (min-width: 1024px) { :root { --page-margin: 2.5rem; --grid-gap: 1.5rem; --section-gap: var(--s-24); } }
 
 /* overflow-x: clip (not hidden) so full-bleed bands never widen the page and position: sticky keeps working. */
 .storefront { overflow-x: clip; }
@@ -354,7 +354,7 @@ html:lang(ar) .display {
   column-gap: var(--grid-gap);
   @media (min-width: 768px) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 }
-/* Vertical rhythm between top-level sections: 64 phone / 96 tablet / 128 desktop. */
+/* Vertical rhythm between top-level sections: 56 phone / 80 tablet / 96 desktop. */
 @utility section { margin-top: var(--section-gap); }
 /* Full-bleed band from inside the page container (the storefront clips horizontal overflow). */
 @utility bleed {
@@ -428,13 +428,6 @@ html:lang(ar) :is(.t-hero, .t-display, .t-headline) {
 html:lang(ckb) .t-label,
 html:lang(ar) .t-label { font-variant-numeric: normal; }
 
-/* Product info column (desktop): sticky, scrolls inside itself when taller than the viewport; no visible scrollbar,
-   a little inline padding so focus rings are never clipped by the overflow box. */
-@media (min-width: 768px) {
-  .info-col { scrollbar-width: none; padding-inline: 4px; margin-inline: -4px; padding-top: 4px; }
-  .info-col::-webkit-scrollbar { display: none; }
-}
-
 /* ---- Cart drawer + count bump (Layout v3 step 4). Motion is neutralised by the global reduced-motion rule. ---- */
 .cart-drawer {
   position: fixed;
@@ -482,3 +475,6 @@ html:has(dialog.cart-drawer[open]) { overflow: hidden; }
 /* Phone checkout: the Place-order bar rides the bottom of the screen, except while a field is being edited (the
    on-screen keyboard is up and the bar would cover the field) — then it drops back into the form's flow. */
 form:has(:is(input, textarea, select):focus) .co-submit { position: static; }
+
+/* Storefront helper text reads at 13 px (the shared 12 px hint is sized for the dense dashboard). */
+.storefront .hint { font-size: 0.8125rem; }

@@ -263,7 +263,7 @@ export function ProductBuy({
           <div ref={pickerRef} className="grid scroll-mt-24 gap-4">
             {options.map((o) => (
               <fieldset key={o.id}>
-                <legend className="mb-2.5 text-[13px] font-medium">
+                <legend className="mb-2.5 text-sm font-medium">
                   {o.name}
                   {sel[o.id] && <span className="ms-2 font-normal text-muted">{valueLabel(sel[o.id]!)}</span>}
                 </legend>
@@ -312,7 +312,7 @@ export function ProductBuy({
           </div>
         )}
 
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted" data-testid="stock-status">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted" data-testid="stock-status">
           {status.kind === "out" ? (
             <span className="font-medium text-st-fg">{labels.soldOutStatus}</span>
           ) : status.kind === "low" ? (
@@ -329,7 +329,7 @@ export function ProductBuy({
 
         {!soldOut && (
           <div className="flex items-center gap-3">
-            <span className="text-[13px] font-medium" id="qty-label">{labels.quantity}</span>
+            <span className="text-sm font-medium" id="qty-label">{labels.quantity}</span>
             <div className="inline-flex items-center rounded-full border border-st-border bg-st-surface" role="group" aria-labelledby="qty-label">
               <button
                 type="button"
