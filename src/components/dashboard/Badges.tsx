@@ -1,22 +1,23 @@
 import { getTranslations } from "next-intl/server";
 import type { OrderStatus } from "@/lib/order-status";
 
+const OUT = "border border-line text-ink-70 bg-transparent";
 const STATUS_STYLE: Record<OrderStatus, string> = {
-  pending: "bg-gold/25 text-ink",
-  confirmed: "bg-ink/10 text-ink",
-  shipped: "bg-blue-100 text-blue-900",
-  delivered: "bg-green/15 text-green",
-  postponed: "bg-violet-100 text-violet-900",
-  refused: "bg-danger/10 text-danger",
-  returned: "bg-ink/10 text-ink-70",
-  cancelled: "bg-danger/10 text-danger",
+  pending: "border border-ink text-ink bg-transparent",
+  confirmed: "border border-[#2563EB] text-[#2563EB] bg-transparent",
+  shipped: "border border-[#2563EB] bg-[#2563EB] text-white",
+  delivered: "border border-ink bg-ink text-white",
+  postponed: OUT,
+  refused: OUT + " line-through",
+  returned: OUT,
+  cancelled: OUT + " line-through",
 };
 const PAY_STYLE: Record<string, string> = {
-  unpaid: "bg-ink/5 text-ink-70",
-  pending: "bg-gold/20 text-ink",
-  paid: "bg-green/15 text-green",
-  failed: "bg-danger/10 text-danger",
-  refunded: "bg-ink/10 text-ink",
+  unpaid: OUT,
+  pending: "border border-ink text-ink bg-transparent",
+  paid: "border border-ink bg-ink text-white",
+  failed: OUT + " line-through",
+  refunded: OUT,
 };
 
 export async function StatusBadge({ status }: { status: OrderStatus }) {

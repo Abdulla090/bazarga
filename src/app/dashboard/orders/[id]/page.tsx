@@ -48,15 +48,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" });
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <Link href="/dashboard/orders" className="inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-ink-70"><ArrowBack /> {tc("back")}</Link>
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-extrabold">{t("order", { number: order.number })}</h1>
+        <h1 className="t-headline">{t("order", { number: order.number })}</h1>
         <StatusBadge status={order.status} />
         <PaymentBadge status={order.paymentStatus} />
       </div>
       {(flags.length > 0 || blocked) && (
-        <section className="card grid gap-2 border-gold" aria-labelledby="risk-title" data-testid="order-risk">
+        <section className="grid gap-2 border-y border-ink py-5" aria-labelledby="risk-title" data-testid="order-risk">
           <h2 id="risk-title" className="font-bold">{tr("title")}</h2>
           {flags.length > 0 && (
             <>
@@ -77,7 +77,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         trackingNumber={order.trackingNumber}
       />
       {online && (
-        <section className="card grid gap-2" aria-labelledby="pay-title" data-testid="order-payment">
+        <section className="grid gap-3 border-t border-line pt-6" aria-labelledby="pay-title" data-testid="order-payment">
           <div className="flex flex-wrap items-center gap-2">
             <h2 id="pay-title" className="font-bold">{tps("title")} · {PAYMENT_LABEL[order.paymentMethod]}</h2>
             <PaymentBadge status={order.paymentStatus} />
@@ -86,7 +86,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <p className="text-sm font-semibold text-ink-70" data-testid="order-expired">{tps("expired", { minutes: env().PAYMENT_ORDER_TTL_MINUTES })}</p>
           )}
           {order.status === "cancelled" && order.paymentStatus === "paid" && (
-            <p className="rounded-xl bg-danger/10 px-3 py-2 text-sm font-semibold text-danger" data-testid="paid-after-expiry">{tps("paidAfterExpiry")}</p>
+            <p className="border-s-2 border-ink ps-3 text-sm font-semibold" data-testid="paid-after-expiry">{tps("paidAfterExpiry")}</p>
           )}
           {attempts.length === 0 ? (
             <p className="text-sm text-ink-70">{tps("noAttempts")}</p>
@@ -111,7 +111,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </section>
       )}
       {order.status !== "cancelled" && order.customerPhone.replace(/\D/g, "") && (
-        <section className="card grid gap-2" aria-label={t("quickReplies")}>
+        <section className="grid gap-3 border-t border-line pt-6" aria-label={t("quickReplies")}>
           <h2 className="text-sm font-semibold">{t("quickReplies")}</h2>
           <div className="flex flex-wrap gap-2">
             {QUICK_REPLY_KINDS.map((k: QuickReplyKind) => {
@@ -122,7 +122,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
         </section>
       )}
-      <section className="card grid gap-2" aria-label={t("copyTrackingLink")}>
+      <section className="grid gap-3 border-t border-line pt-6" aria-label={t("copyTrackingLink")}>
         <div className="flex flex-wrap gap-2">
           <CopyButton text={trackUrl} label={t("copyTrackingLink")} className="btn-ink" testId="copy-tracking-link" />
           <Link href={`/dashboard/orders/${order.id}/slip`} className="btn-ghost" data-testid="packing-slip-link">
@@ -133,13 +133,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <p className="num break-all text-sm text-ink-50" dir="ltr">{trackUrl}</p>
       </section>
       {(order.courierName || order.trackingNumber) && (
-        <dl className="card grid grid-cols-[auto_1fr] gap-x-4 gap-y-1" data-testid="order-courier">
+        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 border-t border-line pt-6" data-testid="order-courier">
           {order.courierName && (<><dt className="font-semibold">{t("courier")}</dt><dd>{order.courierName}</dd></>)}
           {order.trackingNumber && (<><dt className="font-semibold">{t("tracking")}</dt><dd className="num" dir="ltr">{order.trackingNumber}</dd></>)}
         </dl>
       )}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <section className="card grid gap-2">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-x-12">
+        <section className="grid gap-3 border-t border-line pt-6">
           <h2 className="font-bold">{t("customer")}</h2>
           <p className="text-lg font-semibold">{order.customerName}</p>
           <p className="num" dir="ltr">{phoneDisplay(order.customerPhone)}</p>
@@ -152,7 +152,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
           <BlockToggle phone={order.customerPhone} phoneLabel={phoneDisplay(order.customerPhone)} orderId={order.id} blocked={blocked} />
         </section>
-        <section className="card">
+        <section className="border-t border-line pt-6">
           <h2 className="mb-2 font-bold">{t("items")}</h2>
           <ul className="divide-y divide-line">
             {order.items.map((i) => (
@@ -175,7 +175,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </dl>
         </section>
       </div>
-      <section className="card">
+      <section className="border-t border-line pt-6">
         <h2 className="mb-2 font-bold">{t("history")}</h2>
         <ol className="grid gap-1 text-sm">
           {order.events.map((e) => (

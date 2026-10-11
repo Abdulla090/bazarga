@@ -54,7 +54,7 @@ export function StatusActions({
   };
 
   return (
-    <section className="card grid gap-3" aria-label={t("status")} data-testid="status-actions">
+    <section className="grid gap-4 border-t border-line pt-6" aria-label={t("status")} data-testid="status-actions">
       {primary === "shipped" ? (
         <form
           className="grid gap-3"
@@ -76,12 +76,12 @@ export function StatusActions({
               <input name="trackingNumber" className="input num" dir="ltr" maxLength={80} defaultValue={trackingNumber ?? ""} autoComplete="off" />
             </label>
           </fieldset>
-          <button type="submit" disabled={pending} className="btn-gold min-h-12 w-full text-lg sm:w-auto" data-status="shipped">
+          <button type="submit" disabled={pending} className="btn-ink min-h-12 w-full text-lg sm:w-auto" data-status="shipped">
             {t("action_shipped")}
           </button>
         </form>
       ) : primary ? (
-        <button type="button" disabled={pending} className="btn-gold min-h-12 w-full text-lg sm:w-auto" data-status={primary} onClick={() => run(primary)}>
+        <button type="button" disabled={pending} className="btn-ink min-h-12 w-full text-lg sm:w-auto" data-status={primary} onClick={() => run(primary)}>
           {t(`action_${primary}`)}
         </button>
       ) : null}
@@ -94,7 +94,7 @@ export function StatusActions({
             </button>
           ))}
           {destructive.map((s) => (
-            <button key={s} type="button" disabled={pending} className="btn-danger" data-status={s} onClick={() => ask(s)}>
+            <button key={s} type="button" disabled={pending} className="btn-ghost" data-status={s} onClick={() => ask(s)}>
               {t(`action_${s}`)}
             </button>
           ))}
