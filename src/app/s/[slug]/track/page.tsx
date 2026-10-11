@@ -93,7 +93,7 @@ export default async function TrackOrderPage({ params, searchParams }: { params:
         <button type="submit" className="btn-gold min-h-12 w-full">{t("submit")}</button>
       </form>
 
-      <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{ts("backToStore")}</Link>
+      <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{ts("backToStore")}</Link>
     </div>
   );
 }
@@ -126,12 +126,12 @@ function TrackedOrderView({
       <section className="grid gap-1 pt-2 sm:pt-6" data-testid="track-result" aria-labelledby="trk-title">
         <h1 id="trk-title" className="display num text-[28px] sm:text-[40px]"><bdi>{ts("orderNumber", { number: order.number })}</bdi></h1>
         <p className="text-sm text-muted">{t("placedOn", { date: fmt.format(order.createdAt) })}</p>
-        <p className="mt-5 text-[13px] font-medium text-muted">{t("statusNow")}</p>
+        <p className="mt-5 text-sm font-medium text-muted">{t("statusNow")}</p>
         <p className={`text-xl font-medium ${toneText(current)}`} data-testid="track-status">{t(`step_${current.status}`)}</p>
       </section>
 
       <section className="rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6" aria-labelledby="trk-timeline">
-        <h2 id="trk-timeline" className="mb-4 text-[13px] font-medium text-muted">{t("timeline")}</h2>
+        <h2 id="trk-timeline" className="mb-4 text-sm font-medium text-muted">{t("timeline")}</h2>
         <ol className="grid" data-testid="track-timeline">
           {steps.map((s, i) => (
             <li key={`${s.status}-${i}`} className="relative flex gap-3 pb-4 last:pb-0" aria-current={s.state === "current" ? "step" : undefined}>
@@ -170,7 +170,7 @@ function TrackedOrderView({
       )}
 
       <section className="rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6" aria-labelledby="trk-items">
-        <h2 id="trk-items" className="mb-1 text-[13px] font-medium text-muted">{t("items")}</h2>
+        <h2 id="trk-items" className="mb-1 text-sm font-medium text-muted">{t("items")}</h2>
         <ul className="divide-y divide-st-border">
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-3 py-3 text-[15px]">

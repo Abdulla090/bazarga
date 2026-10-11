@@ -72,7 +72,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
 
   if (!lines.length) {
     return (
-      <div className="mx-auto grid max-w-xl justify-items-center gap-8 py-20 text-center sm:py-32" data-testid="empty-cart">
+      <div className="mx-auto grid max-w-xl justify-items-center gap-8 py-16 text-center sm:py-24" data-testid="empty-cart">
         <p className="t-display">{L.emptyCart}</p>
         <Link href={`/s/${slug}`} className="btn-gold min-h-12 px-7">{L.continue}</Link>
       </div>
@@ -151,7 +151,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
               <p className="truncate text-[15px] sm:text-base">{l.name}</p>
               {l.variantTitle && <p className="truncate text-[13px] text-muted">{l.variantTitle}</p>}
               {l.available ? <p className="num text-[15px] font-medium">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-medium">{L.unavailableLine}</p>}
-              <button type="button" onClick={() => setQty(l, 0)} className="-ms-1 inline-flex min-h-11 w-fit items-center px-1 text-[13px] text-muted underline-offset-4 hover:text-st-fg hover:underline sm:min-h-8">
+              <button type="button" onClick={() => setQty(l, 0)} className="-ms-1 inline-flex min-h-11 w-fit items-center px-1 text-sm text-muted underline-offset-4 hover:text-st-fg hover:underline sm:min-h-8">
                 {L.remove}
               </button>
             </div>
@@ -203,7 +203,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <input id="co-website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
         </div>
         <div>
-          <label className="mb-1.5 block text-[13px] font-medium" htmlFor="co-city">{L.deliverTo}</label>
+          <label className="mb-1.5 block text-sm font-medium" htmlFor="co-city">{L.deliverTo}</label>
           <select
             id="co-city"
             className="select"
@@ -224,7 +224,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         </div>
         {zone && zone.areas.length > 0 && (
           <div>
-            <label className="mb-1.5 block text-[13px] font-medium" htmlFor="co-area">{L.area}</label>
+            <label className="mb-1.5 block text-sm font-medium" htmlFor="co-area">{L.area}</label>
             <select id="co-area" name="areaId" className="select" value={area} onChange={(e) => setArea(e.target.value)} required>
               <option value="" disabled>{L.chooseArea}</option>
               {zone.areas.map((a) => (
@@ -240,12 +240,12 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         )}
         {(area === OTHER || (zone && zone.areas.length === 0)) && (
           <div>
-            {zone && zone.areas.length === 0 && <label className="mb-1.5 block text-[13px] font-medium" htmlFor="co-area-other">{L.area}</label>}
+            {zone && zone.areas.length === 0 && <label className="mb-1.5 block text-sm font-medium" htmlFor="co-area-other">{L.area}</label>}
             <input id="co-area-other" name="areaOther" className="input" placeholder={L.areaPlaceholder} aria-label={L.area} maxLength={80} />
           </div>
         )}
         <fieldset className="grid gap-3">
-          <legend className="mb-1.5 block text-[13px] font-medium">{L.yourDetails}</legend>
+          <legend className="mb-1.5 block text-sm font-medium">{L.yourDetails}</legend>
           <input ref={nameRef} name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
           {fe("customerName")}
           <div>
@@ -279,7 +279,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           </details>
         </fieldset>
         <fieldset>
-          <legend className="mb-1.5 block text-[13px] font-medium">{L.payment}</legend>
+          <legend className="mb-1.5 block text-sm font-medium">{L.payment}</legend>
           <div className="grid gap-2">
             {payments.map((m) => (
               <label key={m} className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-4 text-[15px] transition-[border-color,box-shadow] duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#2563EB] ${method === m ? "border-st-fg ring-1 ring-st-fg" : "border-st-border hover:border-st-fg/40"}`}>
@@ -299,7 +299,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             </p>
           ) : (
             <div>
-              <label className="mb-1.5 block text-[13px] font-medium" htmlFor="co-code">{L.discountCode}</label>
+              <label className="mb-1.5 block text-sm font-medium" htmlFor="co-code">{L.discountCode}</label>
               <div className="flex gap-2">
                 <input
                   id="co-code"

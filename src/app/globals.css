@@ -475,3 +475,6 @@ html:has(dialog.cart-drawer[open]) { overflow: hidden; }
 /* Phone checkout: the Place-order bar rides the bottom of the screen, except while a field is being edited (the
    on-screen keyboard is up and the bar would cover the field) — then it drops back into the form's flow. */
 form:has(:is(input, textarea, select):focus) .co-submit { position: static; }
+
+/* Storefront helper text reads at 13 px (the shared 12 px hint is sized for the dense dashboard). */
+.storefront .hint { font-size: 0.8125rem; }

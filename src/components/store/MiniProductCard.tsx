@@ -71,7 +71,7 @@ export function SectionHead({ id, title, index, seeAll, testId }: { id?: string;
  * Titled product set that is never a half-empty row (Layout v3 §4 "count-aware set"). Desktop (md+):
  * 6+ → a scroll-snap rail (four visible, the rest past the edge) · 5 → bento (feature tile over two rows + 2×2)
  * · 4 → four columns · 3 → three columns · 1–2 → "intro" row: the heading takes the columns the cards leave
- * (6 + 3 + 3, or 8 + 4), so two sale items fill the row as ordinary cards instead of half-empty split cards.
+ * (4 + 4 + 4, or 8 + 4), so two sale items fill the row as ordinary cards instead of half-empty split cards.
  * Phones: a rail of ~2.3 cards for 3+, a plain two-column row for 1–2. One markup, CSS-only switch.
  */
 export function ProductStrip({
@@ -112,7 +112,7 @@ export function ProductStrip({
     mode === "rail"
       ? rail
       : mode === "intro"
-        ? `col-span-4 grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 md:row-start-1 md:grid-cols-subgrid ${n === 1 ? "md:col-span-4 md:col-start-9" : "md:col-span-6 md:col-start-7"}`
+        ? `col-span-4 grid grid-cols-2 gap-x-[var(--grid-gap)] gap-y-8 md:row-start-1 md:grid-cols-subgrid ${n === 1 ? "md:col-span-4 md:col-start-9" : "md:col-span-8 md:col-start-5"}`
         : `${rail} ${toGrid}`;
   const railItem = "w-[42%] shrink-0 snap-start sm:w-[calc((100%-2*var(--grid-gap))/3)]";
   const li = (i: number) =>
@@ -122,7 +122,7 @@ export function ProductStrip({
         ? `${railItem} md:w-auto ${n === 4 ? "md:col-span-3" : "md:col-span-4"}`
         : mode === "bento"
           ? `${railItem} md:w-auto ${i === 0 ? "md:col-span-6 md:row-span-2" : "md:col-span-3"}`
-          : `min-w-0 ${n === 1 ? "md:col-span-4" : "md:col-span-3"}`;
+          : "min-w-0 md:col-span-4";
   const variant = (i: number) => (mode === "bento" && i === 0 ? "feature" : "default");
   const list = (
     <ul className={ul} data-layout={mode}>
@@ -138,7 +138,7 @@ export function ProductStrip({
       <section aria-labelledby={id} className="section grid-12 min-w-0 gap-y-4 sm:gap-y-6" data-testid={testId}>
         {/* Desktop: the heading becomes a promo tile on the surface tone that fills the columns the cards leave. */}
         <div
-          className={`col-span-4 grid content-start gap-3 md:row-start-1 md:content-end md:gap-5 md:self-stretch md:rounded-2xl md:bg-st-surface md:p-10 ${n === 1 ? "md:col-span-8" : "md:col-span-6"}`}
+          className={`col-span-4 grid content-start gap-3 md:row-start-1 md:content-end md:gap-5 md:self-stretch md:rounded-2xl md:bg-st-surface md:p-10 ${n === 1 ? "md:col-span-8" : "md:col-span-4"}`}
           data-testid={`${testId}-intro`}
         >
           <SectionHead id={id} title={title} index={index} />

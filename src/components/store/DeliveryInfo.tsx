@@ -52,7 +52,7 @@ export async function DeliveryInfo({
   };
   return (
     <section aria-labelledby="delivery-h" className="text-sm">
-      <h2 id="delivery-h" className="mb-1 text-[13px] font-medium">{t("deliveryTitle")}</h2>
+      <h2 id="delivery-h" className="mb-1 text-sm font-medium">{t("deliveryTitle")}</h2>
       <ul className="divide-y divide-st-border">{row(home)}</ul>
       <ul className="mt-2 grid gap-1.5 text-sm text-muted">
         <li className="flex items-center gap-2">
