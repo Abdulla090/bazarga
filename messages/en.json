@@ -135,7 +135,7 @@
     "viewStore": "View my store",
     "more": "More",
     "share": "Share kit",
-    "hello": "Hi {name} 👋",
+    "hello": "Hi {name}",
     "ordersToday": "Orders today",
     "revenueWeek": "Revenue, last 7 days",
     "openOrders": "Open orders",

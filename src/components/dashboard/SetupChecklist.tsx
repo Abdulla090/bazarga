@@ -11,9 +11,9 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
   const t = await getTranslations("setup");
   const pct = Math.round((checklist.doneCount / checklist.total) * 100);
   return (
-    <section className="card" aria-labelledby="setup-title" data-testid="setup-checklist">
+    <section className="border-y border-line py-6" aria-labelledby="setup-title" data-testid="setup-checklist">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="setup-title" className="text-lg font-bold">{t("title")}</h2>
+        <h2 id="setup-title" className="t-title">{t("title")}</h2>
         <p className="text-sm font-semibold text-ink-70">
           {t("progress", { done: checklist.doneCount, total: checklist.total })}
         </p>
@@ -27,9 +27,9 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
         aria-valuenow={checklist.doneCount}
         aria-labelledby="setup-title"
       >
-        <div className="h-full rounded-full bg-green" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-gold" style={{ width: `${pct}%` }} />
       </div>
-      <ol className="mt-4 grid gap-2">
+      <ol className="mt-4 grid divide-y divide-line lg:grid-cols-2 lg:gap-x-10 lg:divide-y-0">
         {checklist.steps.map((s) => {
           const isNext = s.key === checklist.next;
           return (
@@ -37,10 +37,10 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
               key={s.key}
               data-step={s.key}
               data-done={s.done || undefined}
-              className={`flex items-start gap-3 rounded-xl border p-3 ${isNext ? "border-ink" : "border-line"}`}
+              className={`flex items-start gap-3 py-4 lg:border-t lg:border-line ${isNext ? "" : ""}`}
             >
               <span
-                className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 ${s.done ? "border-green bg-green text-white" : "border-line"}`}
+                className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border ${s.done ? "border-gold bg-gold text-white" : isNext ? "border-gold" : "border-line"}`}
               >
                 {s.done && <Icon as={Check} label={t("done")} />}
               </span>
