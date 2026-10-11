@@ -21,9 +21,9 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" });
 
   return (
-    <div className="grid gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="t-headline me-auto">{t("title")}</h1>
         <div className="flex flex-wrap gap-2">
         <Link href="/dashboard/orders/courier" className="btn-ghost btn-sm" data-testid="orders-courier">{t("courier")}</Link>
         {orders.length > 0 && (
@@ -33,26 +33,26 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         )}
         </div>
       </div>
-      <nav className="-mx-1 flex gap-1 overflow-x-auto pb-1" aria-label={t("status")}>
+      <nav className="-mt-4 flex gap-2 overflow-x-auto pb-1" aria-label={t("status")}>
         {[undefined, ...ORDER_STATUSES].map((s) => (
           <Link
             key={s ?? "all"}
             href={s ? `/dashboard/orders?status=${s}` : "/dashboard/orders"}
             aria-current={status === s ? "page" : undefined}
-            className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold ${status === s ? "bg-ink text-paper" : "bg-white text-ink-70 border border-line"}`}
+            className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-3 py-1.5 text-sm font-semibold ${status === s ? "bg-ink text-paper" : "border border-line text-ink-70 hover:border-ink"}`}
           >
             {s ? t(`status_${s}`) : t("all")}
           </Link>
         ))}
       </nav>
       {orders.length === 0 ? (
-        <p className="card text-ink-70">{t("empty")}</p>
+        <p className="border-y border-line py-10 text-ink-70">{t("empty")}</p>
       ) : (
-        <ul className="grid gap-2">
+        <ul className="divide-y divide-line border-y border-line">
           {orders.map((o) => (
             <li key={o.id}>
-              <Link href={`/dashboard/orders/${o.id}`} className="card flex flex-wrap items-center gap-x-4 gap-y-2 hover:border-ink-50">
-                <span className="num text-lg font-extrabold">#{o.number}</span>
+              <Link href={`/dashboard/orders/${o.id}`} className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4 hover:bg-ink/[0.02]">
+                <span className="num w-16 text-lg font-medium">#{o.number}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{o.customerName}</span>
                   <span className="block truncate text-sm text-ink-70">{o.cityName} · <span className="num">{fmt.format(o.createdAt)}</span></span>
@@ -60,7 +60,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                 <span className="num font-bold">{formatIQD(o.total, locale)}</span>
                 <span className="flex gap-1">
                   {knownRiskFlags(o.riskFlags).length > 0 && (
-                    <span className="chip bg-gold/20 text-ink" title={tr("title")} data-testid="risk-badge"><Icon as={TriangleAlert} /> {tr("badge")}</span>
+                    <span className="chip border border-ink text-ink" title={tr("title")} data-testid="risk-badge"><Icon as={TriangleAlert} /> {tr("badge")}</span>
                   )}
                   <StatusBadge status={o.status} />
                   <PaymentBadge status={o.paymentStatus} />

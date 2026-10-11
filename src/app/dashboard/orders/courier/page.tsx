@@ -24,7 +24,7 @@ export default async function CourierSheetPage({ searchParams }: { searchParams:
         <Link href="/dashboard/orders" className="btn-ghost btn-sm">{t("back")}</Link>
       </div>
       <p className="text-sm text-ink-70">{t("hint")}</p>
-      <form method="get" className="card grid gap-2">
+      <form method="get" className="border-t border-line pt-4 grid gap-2">
         <label htmlFor="courier" className="text-sm font-semibold">{t("courierPhone")}</label>
         <div className="flex gap-2">
           <input id="courier" name="courier" type="tel" inputMode="tel" dir="ltr" defaultValue={courier ?? ""} placeholder="0750 123 4567" autoComplete="off" className="input num min-w-0 flex-1" />
@@ -32,7 +32,7 @@ export default async function CourierSheetPage({ searchParams }: { searchParams:
         </div>
       </form>
       {orders.length === 0 ? (
-        <p className="card text-ink-70" data-testid="courier-empty">{t("empty")}</p>
+        <p className="border-t border-line pt-4 text-ink-70" data-testid="courier-empty">{t("empty")}</p>
       ) : (
         <>
           <a href={waLink(digits, courierSheetText(orders, locale))} target="_blank" rel="noopener noreferrer" className="btn-primary" data-testid="courier-send-all">
@@ -40,7 +40,7 @@ export default async function CourierSheetPage({ searchParams }: { searchParams:
           </a>
           <ul className="grid gap-2">
             {orders.map((o) => (
-              <li key={o.id} className="card flex flex-wrap items-center gap-x-4 gap-y-2">
+              <li key={o.id} className="border-t border-line pt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span className="num text-lg font-extrabold">#{o.number}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{o.customerName}</span>
