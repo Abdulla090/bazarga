@@ -9,9 +9,9 @@ export default async function AiPage() {
   const enabled = !!visionProvider();
   return (
     <div className="grid max-w-3xl gap-4">
-      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <h1 className="t-headline">{t("title")}</h1>
       <p className="text-ink-70">{t("sub")}</p>
-      {enabled ? <AiBuilder /> : <p className="card bg-gold/10 font-semibold">{t("disabled")}</p>}
+      {enabled ? <AiBuilder /> : <p className="card font-semibold">{t("disabled")}</p>}
     </div>
   );
 }

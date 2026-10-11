@@ -38,7 +38,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   return (
     <div className="grid grid-cols-1 gap-4" data-testid="analytics">
       <div>
-        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+        <h1 className="t-headline">{t("title")}</h1>
         <p className="text-ink-70">{t("subtitle")}</p>
       </div>
       <nav className="flex flex-wrap gap-1" aria-label={t("byDay")}>
@@ -79,7 +79,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                 </span>
               </div>
               <div className="h-2 overflow-hidden rounded-full bg-line" aria-hidden="true">
-                <div className="h-full rounded-full bg-green" style={{ width: `${s.pct === null ? 0 : Math.max(s.count > 0 ? 3 : 0, Math.min(100, s.pct))}%` }} />
+                <div className="h-full rounded-full bg-gold" style={{ width: `${s.pct === null ? 0 : Math.max(s.count > 0 ? 3 : 0, Math.min(100, s.pct))}%` }} />
               </div>
             </li>
           ))}
@@ -177,7 +177,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                     <span className="num shrink-0 text-sm text-ink-70">{t("orderCount", { count: c.orders })} · {formatIQD(c.revenue, locale)}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
-                    <div className="h-full rounded-full bg-green" style={{ width: `${cityShare(c.revenue)}%` }} />
+                    <div className="h-full rounded-full bg-gold" style={{ width: `${cityShare(c.revenue)}%` }} />
                   </div>
                 </li>
               ))}
@@ -224,7 +224,7 @@ function Bars({
       <div className="flex h-28 items-end gap-px border-b border-line" aria-hidden="true">
         {days.map((d, i) => (
           <div key={d.day} className="flex h-full min-w-0 flex-1 items-end" title={`${label(d.day)}: ${nf.format(values[i]!)}`}>
-            <div className="w-full rounded-t-sm bg-green" style={{ height: `${Math.max(heights[i]!, values[i]! > 0 ? 3 : 0)}%` }} />
+            <div className="w-full rounded-t-sm bg-gold" style={{ height: `${Math.max(heights[i]!, values[i]! > 0 ? 3 : 0)}%` }} />
           </div>
         ))}
       </div>

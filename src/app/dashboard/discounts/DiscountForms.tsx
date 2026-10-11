@@ -83,11 +83,11 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
         </div>
       </div>
       <label className="flex min-h-11 items-center gap-2 font-semibold">
-        <input type="checkbox" name="isActive" defaultChecked={initial?.isActive ?? true} className="h-5 w-5 accent-green" />
+        <input type="checkbox" name="isActive" defaultChecked={initial?.isActive ?? true} className="h-5 w-5 accent-ink" />
         {t("active")}
       </label>
       <label className="flex min-h-11 items-start gap-2 sm:col-span-2">
-        <input type="checkbox" name="showOnStorefront" defaultChecked={initial?.showOnStorefront ?? false} className="mt-0.5 h-5 w-5 shrink-0 accent-green" aria-describedby={`${p}-banner-hint`} />
+        <input type="checkbox" name="showOnStorefront" defaultChecked={initial?.showOnStorefront ?? false} className="mt-0.5 h-5 w-5 shrink-0 accent-ink" aria-describedby={`${p}-banner-hint`} />
         <span className="min-w-0">
           <span className="font-semibold">{t("showOnStorefront")}</span>
           <span id={`${p}-banner-hint`} className="hint block">{t("showOnStorefrontHint")}</span>
@@ -119,7 +119,7 @@ export function DiscountToggle({ id, isActive }: { id: string; isActive: boolean
           await toggleDiscountAction(id, !on);
         })
       }
-      className={`chip min-h-11 shrink-0 px-4 ${on ? "bg-green text-white" : "bg-ink/10 text-ink-70"}`}
+      className={`chip min-h-11 shrink-0 px-4 ${on ? "bg-ink text-white" : "bg-ink/10 text-ink-70"}`}
     >
       {on ? t("active") : t("inactive")}
     </button>

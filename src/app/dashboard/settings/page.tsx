@@ -18,7 +18,7 @@ export default async function SettingsPage() {
   const push = pushConfig();
   return (
     <div className="grid max-w-2xl gap-4">
-      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <h1 className="t-headline">{t("title")}</h1>
       {/* Hidden entirely when VAPID keys are not configured. */}
       {push && <LazyPushToggle vapidPublicKey={push.publicKey} />}
       <StoreForm

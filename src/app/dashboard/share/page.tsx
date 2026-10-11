@@ -25,11 +25,11 @@ export default async function ShareKitPage() {
   return (
     <div className="grid max-w-2xl gap-4">
       <div>
-        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+        <h1 className="t-headline">{t("title")}</h1>
         <p className="text-ink-70">{t("subtitle")}</p>
       </div>
 
-      <section className="card grid gap-3" aria-labelledby="sk-link">
+      <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="sk-link">
         <h2 id="sk-link" className="text-lg font-bold">{t("linkTitle")}</h2>
         <p className="text-sm text-ink-70">{t("linkHint")}</p>
         <RecordShareClicks className="flex flex-wrap items-center gap-2">
@@ -46,7 +46,7 @@ export default async function ShareKitPage() {
         </RecordShareClicks>
       </section>
 
-      <section className="card grid gap-3" aria-labelledby="sk-qr">
+      <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="sk-qr">
         <h2 id="sk-qr" className="text-lg font-bold">{t("qrTitle")}</h2>
         <p className="text-sm text-ink-70">{t("qrHint")}</p>
         <svg
@@ -65,7 +65,7 @@ export default async function ShareKitPage() {
         </RecordShareClicks>
       </section>
 
-      <section className="card grid gap-3" aria-labelledby="sk-story">
+      <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="sk-story">
         <h2 id="sk-story" className="text-lg font-bold">{t("storyTitle")}</h2>
         <p className="text-sm text-ink-70">{t("storyHint")}</p>
         {/* eslint-disable-next-line @next/next/no-img-element -- private, session-scoped PNG; next/image would cache it publicly */}

@@ -47,6 +47,6 @@ Raw studies: docs/design-study/elevenlabs.md, docs/design-study/shopify.md. This
    - [x] overview (agentb/dash-overview): t-headline greeting without emoji, hairline stat strip (3 columns divided, no cards), blue progress + checks, two-column setup list on desktop, share row inline on desktop, ruled recent-orders table.
    - [x] products list + editor (agentb/dash-products): t-headline titles, hairline two-column list on desktop, ink/outline pill toggle (no green), editor sections as hairline blocks not cards.
    - [x] orders list + detail (agentb/dash-orders): hairline ruled list, monochrome status/payment badges (ink/blue outline or fill, no green/red/gold), detail sections as hairline blocks, ink pill actions.
-   - [ ] settings (store, storefront, theme, delivery, payments, discounts, categories, customers, share)
+   - [x] settings (agentb/dash-settings): t-headline titles, hairline sections for share/customers, ink toggles, blue links/bars, no green/gold chips.
    - [ ] auth (login, signup)
    - [ ] onboarding
