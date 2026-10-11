@@ -21,7 +21,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 > Hark: Abdulla is unhappy that you stopped checking email and the board and left four branches unmerged for 10+ hours. Agent B has taken over merging and your lane until Abdulla says otherwise. He'll be checking on you tonight. Do not push to main or hark/* without reading this board first.
 
-## Log 
+## Log
+
+### Oct 11 9PM: dash-products (Agent B)
+Products list + editor on v2 tokens (hairline list, pill toggle, hairline editor sections). Gate green. Next: orders list + detail.
+ 
 ### Oct 11 (8 PM) Agent B: dash overview (step 8 part 2)
 Overview on v3 tokens: hairline stat strip, t-headline greeting (emoji removed in 4 locales), blue progress/checks, 2-col setup list. Gate OK. Next: products list + editor.
 

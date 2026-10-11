@@ -43,7 +43,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
     <form action={action} className="grid gap-4">
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       {initial.id && <input type="hidden" name="id" value={initial.id} />}
-      <fieldset className="card grid gap-3">
+      <fieldset className="grid gap-3 border-t border-line pt-6">
         <legend className="sr-only">{t("translations")}</legend>
         <p className="font-bold">{t("translations")}</p>
         <p className="hint -mt-2">{t("translationsHint")}</p>
@@ -77,7 +77,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
         {nameError && <p className="field-error">{te("name_required")}</p>}
       </fieldset>
 
-      <div className="card grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 border-t border-line pt-6 sm:grid-cols-2">
         <Field label={t("price")} name="price" type="number" inputMode="numeric" min={0} step={250} required ltr defaultValue={initial.price} error={fe.price} />
         <Field label={t("compareAt")} name="compareAtPrice" type="number" inputMode="numeric" min={0} step={250} ltr defaultValue={initial.compareAtPrice ?? ""} hint={t("compareAtHint")} error={fe.compareAtPrice ? "VALIDATION" : undefined} />
         <Field label={t("stock")} name="stock" type="number" inputMode="numeric" min={0} ltr defaultValue={initial.stock ?? ""} hint={t("stockHint")} error={fe.stock} />
@@ -101,16 +101,16 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
           <p id="f-badge-hint" className="hint">{t("badgeHint")}</p>
         </div>
         <label className="flex min-h-11 items-center gap-2 font-semibold sm:col-span-2">
-          <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-green" />
+          <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-ink" />
           {t("active")}
         </label>
       </div>
 
-      <div className="card">
+      <div className="border-t border-line pt-6">
         <SpecsEditor initial={initial.specs} lang={lang} error={specsError} />
       </div>
 
-      <div className="card">
+      <div className="border-t border-line pt-6">
         <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-line" aria-hidden />}>
           <ImageUploader initial={initial.images} maxMb={maxMb} />
         </Suspense>

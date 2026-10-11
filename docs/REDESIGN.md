@@ -45,7 +45,7 @@ Raw studies: docs/design-study/elevenlabs.md, docs/design-study/shopify.md. This
    Split into small agentb/dash-<part> branches, one per run (Agent B covering, Oct 11):
    - [x] shell + nav (agentb/dash-shell): 64px translucent header (awning mark + store name 15/500, outline 'View store' pill, icon-only on phone), 240px side rail with three hairline-split groups and no labels, selected row = white + hairline + blue start tick, blue count pill for new orders (no red), logout at rail foot; phone tab bar translucent with hairline, selected icon blue; More = t-headline + hairline list with chevrons.
    - [x] overview (agentb/dash-overview): t-headline greeting without emoji, hairline stat strip (3 columns divided, no cards), blue progress + checks, two-column setup list on desktop, share row inline on desktop, ruled recent-orders table.
-   - [ ] products list + editor
+   - [x] products list + editor (agentb/dash-products): t-headline titles, hairline two-column list on desktop, ink/outline pill toggle (no green), editor sections as hairline blocks not cards.
    - [ ] orders list + detail
    - [ ] settings (store, storefront, theme, delivery, payments, discounts, categories, customers, share)
    - [ ] auth (login, signup)
