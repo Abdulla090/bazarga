@@ -19,7 +19,7 @@ export function ActiveToggle({ id, active }: { id: string; active: boolean }) {
           await toggleProductAction(id, !optimistic);
         })
       }
-      className={`chip min-h-11 shrink-0 px-3 sm:min-h-8 ${optimistic ? "bg-green/15 text-green" : "bg-ink/10 text-ink-70"}`}
+      className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-medium transition-colors duration-150 ${optimistic ? "border-ink bg-ink text-paper" : "border-line bg-white text-ink-70"}`}
     >
       {optimistic ? t("active") : t("hidden")}
     </button>

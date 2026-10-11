@@ -13,8 +13,8 @@ export default async function NewProductPage() {
   const locale = await currentLocale();
   const cats = await listCategories(db(), store.id);
   return (
-    <div className="grid gap-4">
-      <h1 className="text-2xl font-extrabold">{t("new")}</h1>
+    <div className="grid gap-8">
+      <h1 className="t-headline">{t("new")}</h1>
       <ProductForm
         defaultLang={store.defaultLocale}
         maxMb={env().MAX_UPLOAD_MB}
