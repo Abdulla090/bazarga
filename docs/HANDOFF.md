@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- Oct 12 (Agent B): Theme Studio step 1 — docs/THEME-STUDIO.md, zod theme schema, 8 presets, AA contrast guard, CSS var mapping + tests (lib only, no UI yet). Next: migration + storefront apply.
+
 ### 2026-10-11 22:xx Agent B: dash-orders
 Orders list+detail+courier restyled (hairlines, monochrome badges). Gate green. Next: settings, auth, onboarding.
 
