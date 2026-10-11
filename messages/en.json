@@ -502,6 +502,7 @@
     "badgeFeatured": "Featured",
     "offers": "Offers",
     "offersTitle": "On sale now",
+    "upToOff": "Up to {pct}% off",
     "seeAll": "See all",
     "allProducts": "All products",
     "noOffers": "No offers right now — check back soon.",

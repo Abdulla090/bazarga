@@ -128,12 +128,12 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const fe = (k: string) => fieldErrors[k] && <p className="field-error">{te(fieldErrors[k]!)}</p>;
 
   return (
-    // Layout v3 §7: lines on columns 1–7, the checkout panel sticky on 8–12; phones stack them.
+    // Layout v3 §7: lines + order summary on columns 1–7, the checkout panel on 8–12 (both sticky); phones stack them.
     <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-12 lg:gap-x-[var(--grid-gap)]">
       {/* Seller analytics funnel: counted only when the cart has something in it (rendered after hydration). */}
       <ViewPixel slug={slug} checkout />
       {/* minmax(0,…) tracks: a long product name truncates instead of widening the page at 360 px. */}
-      <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] lg:col-span-7">
+      <section className="grid h-fit min-w-0 grid-cols-[minmax(0,1fr)] lg:sticky lg:top-24 lg:col-span-7">
         <h1 className="t-display mb-6 flex items-start gap-2 sm:mb-8">
           {L.cart}
           <span className="num t-label pt-1 text-muted lg:pt-2" data-testid="cart-items">{lines.reduce((a, l) => a + l.quantity, 0)}</span>
@@ -148,9 +148,9 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
               <span className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] sm:h-24 sm:w-[4.8rem]" />
             )}
             <div className="grid min-w-0 flex-1 gap-0.5">
-              <p className="truncate text-[15px]">{l.name}</p>
+              <p className="truncate text-[15px] sm:text-base">{l.name}</p>
               {l.variantTitle && <p className="truncate text-[13px] text-muted">{l.variantTitle}</p>}
-              {l.available ? <p className="num text-sm font-medium">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-medium">{L.unavailableLine}</p>}
+              {l.available ? <p className="num text-[15px] font-medium">{formatIQD(l.unitPrice, locale)}</p> : <p className="text-sm font-medium">{L.unavailableLine}</p>}
               <button type="button" onClick={() => setQty(l, 0)} className="-ms-1 inline-flex min-h-11 w-fit items-center px-1 text-[13px] text-muted underline-offset-4 hover:text-st-fg hover:underline sm:min-h-8">
                 {L.remove}
               </button>
@@ -163,7 +163,36 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           </li>
         ))}
         </ul>
-        <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-sm font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
+        {/* Order summary sits with the lines (not at the foot of the long form), so the cart column carries its own
+            weight next to the checkout panel and the totals stay in view while the form is filled in. */}
+        <div className="mt-6 grid gap-4 sm:mt-8">
+        {quote && quote.freeDeliveryRemaining !== null && (
+          <div className="text-sm text-muted">
+            <p>{fmt(L.freeDeliveryProgress, { amount: formatIQD(quote.freeDeliveryRemaining, locale) })}</p>
+            <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)} className="mt-2 h-1 overflow-hidden rounded-full bg-st-fg/10">
+              <div className="h-full rounded-full bg-st-fg transition-[width] duration-500 ease-out" style={{ width: `${freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)}%` }} />
+            </div>
+          </div>
+        )}
+        {quote && quote.freeDelivery && quote.subtotal > 0 && (
+          <p className="text-sm font-medium">{L.freeDeliveryUnlocked}</p>
+        )}
+        <dl className="grid grid-cols-2 gap-y-2 text-[15px]" data-testid="cart-summary">
+          <dt className="text-muted">{L.subtotal}</dt>
+          <dd className="num text-end">{quote ? formatIQD(quote.subtotal, locale) : "…"}</dd>
+          {quote && quote.discountAmount > 0 && (
+            <>
+              <dt className="text-muted">{L.discount}</dt>
+              <dd className="num text-end">−{formatIQD(quote.discountAmount, locale)}</dd>
+            </>
+          )}
+          <dt className="text-muted">{L.delivery}</dt>
+          <dd className="num text-end">{quote ? (quote.freeDelivery ? L.free : formatIQD(quote.deliveryFee, locale)) : "…"}</dd>
+          <dt className="mt-2 border-t border-st-border pt-3 text-lg font-medium">{L.total}</dt>
+          <dd className="num mt-2 border-t border-st-border pt-3 text-end text-lg font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</dd>
+        </dl>
+        </div>
+        <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
       </section>
 
       <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
@@ -294,35 +323,10 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             </div>
           )}
         </div>
-        {quote && quote.freeDeliveryRemaining !== null && (
-          <div className="text-[13px] text-muted">
-            <p>{fmt(L.freeDeliveryProgress, { amount: formatIQD(quote.freeDeliveryRemaining, locale) })}</p>
-            <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)} className="mt-2 h-1 overflow-hidden rounded-full bg-st-fg/10">
-              <div className="h-full rounded-full bg-st-fg transition-[width] duration-500 ease-out" style={{ width: `${freeDeliveryPercent(quote.subtotal, quote.freeDeliveryRemaining)}%` }} />
-            </div>
-          </div>
-        )}
-        {quote && quote.freeDelivery && quote.subtotal > 0 && (
-          <p className="text-[13px] font-medium">{L.freeDeliveryUnlocked}</p>
-        )}
-        <dl className="grid grid-cols-2 gap-y-2 border-t border-st-border pt-4 text-sm">
-          <dt className="text-muted">{L.subtotal}</dt>
-          <dd className="num text-end">{quote ? formatIQD(quote.subtotal, locale) : "…"}</dd>
-          {quote && quote.discountAmount > 0 && (
-            <>
-              <dt className="text-muted">{L.discount}</dt>
-              <dd className="num text-end">−{formatIQD(quote.discountAmount, locale)}</dd>
-            </>
-          )}
-          <dt className="text-muted">{L.delivery}</dt>
-          <dd className="num text-end">{quote ? (quote.freeDelivery ? L.free : formatIQD(quote.deliveryFee, locale)) : "…"}</dd>
-          <dt className="mt-2 border-t border-st-border pt-3 text-base font-medium">{L.total}</dt>
-          <dd className="num mt-2 border-t border-st-border pt-3 text-end text-base font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</dd>
-        </dl>
         {error && <p role="alert" className="rounded-xl border border-danger/30 px-4 py-3 text-sm font-medium text-danger">{te(error)}</p>}
         {/* Thumb zone (Fitts): on phones the total + Place order ride along the bottom of the screen while the form is in view. */}
         <div className="co-submit sticky bottom-0 z-10 -mx-5 grid gap-2 border-t border-st-border bg-st-surface/95 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
-          <p className="flex items-baseline justify-between text-sm lg:hidden" aria-hidden>
+          <p className="flex items-baseline justify-between text-sm" aria-hidden>
             <span className="text-muted">{L.total}</span>
             <span className="num text-base font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</span>
           </p>
