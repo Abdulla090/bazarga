@@ -11,7 +11,7 @@ export default async function PaymentsPage() {
   const methods = await listPaymentMethods(db(), store.id);
   return (
     <div className="grid gap-3">
-      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <h1 className="t-headline">{t("title")}</h1>
       <p className="text-ink-70">{t("sub")}</p>
       {methods.map((m) => (
         <PaymentToggle

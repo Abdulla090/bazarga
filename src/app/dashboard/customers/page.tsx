@@ -18,16 +18,16 @@ export default async function CustomersPage() {
   const fmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { dateStyle: "medium", timeZone: "Asia/Baghdad" });
   return (
     <div className="grid gap-4">
-      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <h1 className="t-headline">{t("title")}</h1>
       {list.length === 0 ? (
-        <p className="card text-ink-70">{t("empty")}</p>
+        <p className="border-t border-line pt-5 text-ink-70">{t("empty")}</p>
       ) : (
         <ul className="grid gap-2">
           {list.map((c) => (
-            <li key={c.id} className="card flex flex-wrap items-center gap-x-4 gap-y-1 p-3">
+            <li key={c.id} className="border-t border-line pt-5 flex flex-wrap items-center gap-x-4 gap-y-1 p-3">
               <span className="min-w-0 flex-1">
                 <span className="block font-bold">{c.name}</span>
-                <a href={waLink(c.phone, "")} className="num text-sm text-green underline" dir="ltr" target="_blank" rel="noopener noreferrer">{phoneDisplay(c.phone)}</a>
+                <a href={waLink(c.phone, "")} className="num text-sm text-gold underline" dir="ltr" target="_blank" rel="noopener noreferrer">{phoneDisplay(c.phone)}</a>
               </span>
               <span className="text-sm">{t("orders")}: <span className="num font-bold">{c.ordersCount}</span></span>
               <span className="text-sm">{t("spent")}: <span className="num font-bold">{formatIQD(c.totalSpent, locale)}</span></span>
@@ -36,7 +36,7 @@ export default async function CustomersPage() {
           ))}
         </ul>
       )}
-      <section className="card grid gap-3" aria-labelledby="blocked-title" data-testid="blocked-phones">
+      <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="blocked-title" data-testid="blocked-phones">
         <h2 id="blocked-title" className="text-lg font-bold">{tr("listTitle")}</h2>
         <p className="text-sm text-ink-70">{tr("listHint")}</p>
         <AddBlockedPhoneForm />

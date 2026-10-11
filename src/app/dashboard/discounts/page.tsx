@@ -18,7 +18,7 @@ export default async function DiscountsPage() {
   return (
     <div className="grid gap-4">
       <div>
-        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+        <h1 className="t-headline">{t("title")}</h1>
         <p className="text-ink-70">{t("sub")}</p>
       </div>
       <details className="card" open={codes.length === 0}>
@@ -39,11 +39,11 @@ export default async function DiscountsPage() {
               <li key={c.id} className={`card grid gap-2 ${c.isActive ? "" : "opacity-75"}`} data-testid="discount-row">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="num min-w-0 break-all text-lg font-extrabold" dir="ltr">{c.code}</span>
-                  <span className="chip bg-gold/20 px-3 text-ink">
+                  <span className="chip border border-ink px-3 text-ink">
                     {c.type === "free_delivery" ? <Icon as={Truck} label={tdel("free")} /> : <bdi className="num">{c.type === "percentage" ? `${c.value}%` : formatIQD(c.value, locale)}</bdi>}
                   </span>
                   {c.showOnStorefront && (
-                    <span className="chip bg-green/15 px-3 text-ink" data-testid="discount-on-storefront">{t("onStorefront")}</span>
+                    <span className="chip border border-gold px-3 text-gold" data-testid="discount-on-storefront">{t("onStorefront")}</span>
                   )}
                   <span className="ms-auto"><DiscountToggle id={c.id} isActive={c.isActive} /></span>
                 </div>

@@ -13,7 +13,7 @@ export default async function DeliveryPage() {
   const [zones, areas] = await Promise.all([listZones(db(), store.id), listAreas(db(), store.id)]);
   return (
     <div className="grid gap-3">
-      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <h1 className="t-headline">{t("title")}</h1>
       <p className="text-ink-70">{t("sub")}</p>
       {zones.map((z) => {
         const zoneAreas = areas.filter((a) => a.zoneId === z.id);
