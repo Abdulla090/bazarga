@@ -43,7 +43,7 @@ Raw studies: docs/design-study/elevenlabs.md, docs/design-study/shopify.md. This
 7. Cart, checkout, order status on the same system. **DONE (Oct 10)**: Cart, checkout, order confirmation, tracking and payment panel moved onto the v2 system: hairline lists, display headings, monochrome status timeline, no green/gold fills, neutral landmark hint.
 8. Seller dashboard on the same tokens (Hark lane; Agent B if Hark silent 6h).
    Split into small agentb/dash-<part> branches, one per run (Agent B covering, Oct 11):
-   - [x] shell + nav (agentb/dash-shell): 64px translucent header (ink-disc mark + store name 15/500, outline 'View store' pill, icon-only on phone), 240px side rail with three hairline-split groups and no labels, selected row = white + hairline + blue start tick, blue count pill for new orders (no red), logout at rail foot; phone tab bar translucent with hairline, selected icon blue; More = t-headline + hairline list with chevrons.
+   - [x] shell + nav (agentb/dash-shell): 64px translucent header (awning mark + store name 15/500, outline 'View store' pill, icon-only on phone), 240px side rail with three hairline-split groups and no labels, selected row = white + hairline + blue start tick, blue count pill for new orders (no red), logout at rail foot; phone tab bar translucent with hairline, selected icon blue; More = t-headline + hairline list with chevrons.
    - [ ] overview (dashboard home)
    - [ ] products list + editor
    - [ ] orders list + detail

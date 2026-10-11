@@ -14,7 +14,7 @@ import { ExternalLink, Icon } from "@/components/ui/icons";
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
 /*
- * Seller shell (REDESIGN step 8 · shell+nav): 64 px translucent header with a hairline, a 240 px side rail on
+ * Seller shell (REDESIGN step 8 · shell+nav): 64 px translucent header with a hairline (locale switcher lives in More on phones), a 240 px side rail on
  * md+ (three hairline-split groups, selected = white row + blue start tick), a translucent 4-tab bar on phones.
  */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -29,10 +29,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <header className="sticky top-0 z-20 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-md print:hidden">
         <div className="flex h-16 items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] md:px-6">
           <Link href="/dashboard" className="me-auto flex min-h-11 min-w-0 items-center gap-3" aria-label={`Bazarga · ${store.name}`}>
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ink"><Awning className="h-2.5 w-6" /></span>
+            <Awning className="h-3.5 w-9 shrink-0" />
             <span className="truncate text-[15px] font-medium text-ink">{store.name}</span>
           </Link>
-          <LocaleSwitcher current={locale} compact />
+          <div className="hidden md:block"><LocaleSwitcher current={locale} compact /></div>
           <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm" aria-label={t("viewStore")}>
             <span className="hidden sm:inline">{t("viewStore")}</span>
             <Icon as={ExternalLink} className="rtl:-scale-x-100" />
