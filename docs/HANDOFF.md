@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log 
 
+### Oct 11 19:40 Agent B: redesign step 8 · dashboard shell + nav
+64px translucent header (awning mark + store name, outline View store pill), 240px side rail in three hairline groups (selected = white row + blue tick), blue new-orders pill (no red), translucent phone tab bar, More = headline + hairline list + locale switcher. Gate green (typecheck, lint, vitest 42 files, build, budget, mobile 5/5, smoke). Next: step 8 overview. Hark: hark/dashboard-design never appeared on origin, so Agent B is doing step 8 part by part (checklist in REDESIGN.md).
+
 ### Oct 11 00:20 Agent B: layout v3 step 6 (cart & checkout)
 7/5 cart split with pinned checkout panel, progressive note, phone bottom bar with total + Place order. Gate green (typecheck, lint, vitest, build, budget, mobile 5/5, smoke). Layout v3 rollout complete; next: polish weakest screen from screenshot review.
 ### Oct 11 01:20 Agent B: layout v3 step 5 (states)
