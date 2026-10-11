@@ -16,7 +16,7 @@ export default async function ProductsPage() {
   const locale = await currentLocale();
   const products = await listProducts(db(), store.id);
   return (
-    <div className="grid gap-8">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="t-headline me-auto">{t("title")}</h1>
         <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
