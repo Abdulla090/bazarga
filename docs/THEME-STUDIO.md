@@ -1,0 +1,15 @@
+# Theme Studio (Shopify-style store designer)
+
+Goal: sellers design their store (colors, fonts, buttons, cards, background, header, sections) with presets + live preview. Seller presets may use any colors; Bazarga's own UI keeps blue/black rules.
+
+Model: versioned zod theme JSON (`src/lib/theme-studio/schema.ts`), draft + published per store; storefront reads published only; emitted as CSS custom properties (`--t-*`) on the store root, server-rendered, nonce-CSP safe. Old stores fall back to DEFAULT_THEME.
+
+## Steps
+- [x] 1. Schema, 8 presets, contrast/derivation (AA guard), CSS var mapping + unit tests (lib only).
+- [ ] 2. Migration 0010: stores.theme_draft / theme_published jsonb; tenant-scoped read/write helpers; storefront applies published vars on root.
+- [ ] 3. Editor route /dashboard/theme: split view, iframe live preview via postMessage, preset gallery, publish, unpublished dot.
+- [ ] 4. Colors + typography (next/font Arabic-safe pairs) controls, 4 locales.
+- [ ] 5. Buttons, cards, background controls; storefront consumes them.
+- [ ] 6. Header/footer, homepage sections reorder + variants, product page options.
+- [ ] 7. Undo/redo, reset, autosave, Surprise me, phone bottom sheet.
+- [ ] 8. e2e: preset change + publish changes storefront CSS vars; polish.
