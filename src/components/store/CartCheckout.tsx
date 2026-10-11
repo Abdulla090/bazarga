@@ -140,12 +140,12 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         </h1>
         <ul className="grid grid-cols-[minmax(0,1fr)] divide-y divide-st-border border-y border-st-border" data-testid="cart-lines">
         {(quote?.lines ?? lines.map((l) => ({ ...l, key: `${l.productId}:${l.variantId ?? ""}`, name: "…", variantTitle: null, image: null, unitPrice: 0, lineTotal: 0, available: true, stock: null }))).map((l) => (
-          <li key={l.key} className={`flex items-center gap-4 py-4 ${l.available ? "" : "opacity-60"}`}>
+          <li key={l.key} className={`flex items-center gap-4 py-4 lg:gap-6 lg:py-5 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={l.image} alt="" className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] object-cover sm:h-24 sm:w-[4.8rem]" />
+              <img src={l.image} alt="" className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] object-cover sm:h-24 sm:w-[4.8rem] lg:h-32 lg:w-[6.4rem]" />
             ) : (
-              <span className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] sm:h-24 sm:w-[4.8rem]" />
+              <span className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] sm:h-24 sm:w-[4.8rem] lg:h-32 lg:w-[6.4rem]" />
             )}
             <div className="grid min-w-0 flex-1 gap-0.5">
               <p className="truncate text-[15px] sm:text-base">{l.name}</p>
@@ -195,7 +195,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
       </section>
 
-      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
+      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl lg:gap-4 border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
         <h2 className="display text-[22px] sm:text-[28px]">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">
