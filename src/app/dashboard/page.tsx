@@ -40,13 +40,13 @@ export default async function DashboardHome() {
           </div>
         ))}
       </dl>
-      <section className="grid gap-4 border-b border-line pb-10 lg:grid-cols-12 lg:items-center">
+      <section className="grid min-w-0 gap-4 border-b border-line pb-10 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-5">
           <h2 className="t-title">{t("shareTitle")}</h2>
           <p className="mt-1 text-sm text-ink-70">{t("shareSub")}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 lg:col-span-7 lg:justify-end">
-          <code className="num min-h-11 max-w-full truncate rounded-full border border-line bg-white px-4 py-3 text-sm" dir="ltr">{link}</code>
+        <div className="flex min-w-0 flex-wrap items-center gap-3 lg:col-span-7 lg:justify-end">
+          <code className="num block min-h-11 w-full max-w-full truncate sm:w-auto rounded-full border border-line bg-white px-4 py-3 text-sm" dir="ltr">{link}</code>
           <ShareLinkButtons url={link} title={store.name} variant="ink" />
         </div>
       </section>
