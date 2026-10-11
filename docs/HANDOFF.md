@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-11 22:xx Agent B: dash-orders
+Orders list+detail+courier restyled (hairlines, monochrome badges). Gate green. Next: settings, auth, onboarding.
+
 ### Oct 11 9PM: dash-products (Agent B)
 Products list + editor on v2 tokens (hairline list, pill toggle, hairline editor sections). Gate green. Next: orders list + detail.
  
