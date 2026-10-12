@@ -116,7 +116,16 @@
     "submit": "Têkeve lîsteya bendê",
     "thanksTitle": "Spas, {name}!",
     "thanksBody": "Em ê li WhatsAppê ji te re binivîsin.",
-    "formError": "Ji kerema xwe nav, hejmara WhatsAppê, tiştê ku difiroşî û bajarê xwe binivîse."
+    "formError": "Ji kerema xwe nav, hejmara WhatsAppê, tiştê ku difiroşî û bajarê xwe binivîse.",
+    "heroTitle1": "Dikana xwe îro veke.",
+    "heroTitle2": "Bi belaş dest pê bike.",
+    "heroLead": "Wêne û bihayan bi zimanê xwe bişîne. Em wan dikin firoşgeheke bilez û xweşik ku tu di çend deqeyan de parve bikî.",
+    "heroNote": "Kart ne pêwîst e · Di çend deqeyan de amade ye",
+    "hookLabel": "Pro, meha yekem",
+    "hookThen": "paşê $10/meh · planan bibîne",
+    "mockStore": "Bazara Hewlêrê",
+    "mockOrder": "Niha bixwaze",
+    "mockAria": "Pêşdîtina firoşgeheke Bazarga"
   },
   "store": {
     "cart": "Selik",
@@ -969,6 +978,9 @@
         "q": "Dayîna online heye?",
         "a": "Pro FIB û ZainCash zêde dike. Dikanên belaş li dema gihîştinê pere distînin."
       }
-    }
+    },
+    "firstMonthOnly": "meha yekem",
+    "after": "paşê $10/meh",
+    "wasNow": "Berê $10, niha $1 ji bo meha yekem"
   }
 }

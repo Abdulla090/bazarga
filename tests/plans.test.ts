@@ -26,3 +26,13 @@ describe("plans config", () => {
     }
   });
 });
+
+describe("pro promo", () => {
+  it("first month is $1, cheaper than a regular month, and only Pro has a promo", async () => {
+    const { PRO_FIRST_MONTH, PLANS, getPlan } = await import("../src/lib/plans");
+    expect(PRO_FIRST_MONTH).toBe(1);
+    expect(getPlan("pro").firstMonth).toBe(PRO_FIRST_MONTH);
+    expect(getPlan("pro").firstMonth!).toBeLessThan(getPlan("pro").monthly);
+    expect(PLANS.filter((p) => p.firstMonth !== undefined).map((p) => p.id)).toEqual(["pro"]);
+  });
+});

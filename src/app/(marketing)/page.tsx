@@ -8,12 +8,13 @@ import { WaitlistForm } from "./WaitlistForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
-import { Check, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/components/ui/icons";
+import { Check, Droplet, Icon, Scissors, Shirt, ShoppingBag, Smartphone, Sparkles } from "@/components/ui/icons";
 
 const DEMO_SLUG = "hawler-bazaar";
 
+const SHIRT = { img: "/images/product-shirt.jpg", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } };
 const DEMO = [
-  { img: "/images/product-shirt.jpg", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } },
+  SHIRT,
   { img: "/images/product-mugs.jpg", price: 25000, name: { ku: "سێتی کوپی گڵ · ٢ دانە", ar: "طقم أكواب فخارية · قطعتان", en: "Stoneware mug set · 2 pcs" } },
   { img: "/images/product-skincare.jpg", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
 ];
@@ -48,31 +49,80 @@ export default async function LandingPage() {
       <a href="#main" className="sr-only focus:not-sr-only">{tc("skipToContent")}</a>
       <SiteHeader />
       <main id="main">
-        {/* Hero */}
-        <section className="container-page grid items-center gap-8 py-10 md:grid-cols-2 md:py-16">
-          <div>
-            <p className="inline-flex min-h-9 items-center rounded-full border border-[#2563EB]/30 bg-[#2563EB]/5 px-4 text-sm font-semibold text-[#2563EB]">{tp("badge")}</p>
-            <h1 className="mt-3 text-4xl font-extrabold leading-tight sm:text-5xl">{tc("tagline")}</h1>
-            <p className="mt-4 max-w-prose text-lg text-ink-70">{t("heroSub")}</p>
-            <p className="mt-2 text-sm font-medium text-ink">{tp("sub")}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/signup" className="btn-gold">{tp("cta")}</Link>
-              <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost">{t("heroCta2")}</Link>
+        {/* Hero: centred, start-free first, $1 Pro hook second, storefront mockup to close the fold. */}
+        <section className="hero-stage">
+          <div className="container-page flex flex-col items-center pt-10 pb-16 text-center sm:pt-16 md:pb-24">
+            <p className="hero-rise inline-flex min-h-9 items-center gap-2 rounded-full border border-[#2563EB]/25 bg-white/80 px-4 text-sm font-semibold text-[#2563EB] shadow-[var(--shadow-e1)]">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
+              {tp("badge")}
+            </p>
+            <h1 className="hero-rise hero-d1 mt-6 max-w-5xl text-[2.6rem] font-light leading-[1.08] tracking-tight text-balance sm:text-6xl lg:text-[5.25rem]">
+              <span className="block">{t("heroTitle1")}</span>
+              <span className="block text-ink-50">{t("heroTitle2")}</span>
+            </h1>
+            <p className="hero-rise hero-d2 mt-6 max-w-2xl text-lg text-ink-70 text-pretty sm:text-xl">{t("heroLead")}</p>
+            <div className="hero-rise hero-d3 mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center">
+              <Link href="/signup" className="btn-gold min-h-12 px-7 text-base">{tp("cta")}</Link>
+              <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost min-h-12 px-7 text-base">{t("heroCta2")}</Link>
             </div>
-          </div>
-          <div className="relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/hero.jpg"
-              alt={t("heroAlt")}
-              width={1200}
-              height={900}
-              className="aspect-[4/3] w-full rounded-[2rem] object-cover shadow-xl"
-              fetchPriority="high"
-            />
-            <span className="absolute bottom-4 start-4 rounded-full bg-white/95 px-4 py-2 text-sm font-bold shadow">
-              <Icon as={Check} className="text-green" /> {t("badge")}
-            </span>
+            <p className="hero-rise hero-d3 mt-3 text-sm text-ink-50">{t("heroNote")}</p>
+
+            <Link href="/pricing" className="hook-ticket hero-rise hero-d4 mt-8 inline-flex min-h-11 max-w-full items-center gap-5 rounded-2xl px-6 py-4 text-start transition-transform duration-200 hover:-translate-y-0.5">
+              <span className="sr-only">{tp("wasNow")}</span>
+              <span aria-hidden="true" dir="ltr" className="glow-price text-6xl font-semibold sm:text-7xl">$1</span>
+              <span aria-hidden="true" className="h-12 w-px shrink-0 bg-line" />
+              <span className="flex flex-col">
+                <span className="font-semibold text-ink">{t("hookLabel")}</span>
+                <span className="text-sm text-ink-70">{t("hookThen")}</span>
+              </span>
+            </Link>
+
+            {/* Storefront mockup */}
+            <div className="hero-rise hero-d5 relative mt-12 w-full max-w-5xl" role="img" aria-label={t("mockAria")}>
+              <div className="mock-frame overflow-hidden rounded-[1.75rem] bg-white text-start" aria-hidden="true">
+                <div className="flex items-center gap-2 border-b border-line bg-paper px-4 py-3">
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span dir="ltr" className="num mx-auto truncate rounded-full bg-white px-4 py-1 text-xs text-ink-50 ring-1 ring-line">bazarga.vercel.app/s/{DEMO_SLUG}</span>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold">{t("mockStore")}</span>
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-paper"><Icon as={ShoppingBag} /></span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-4">
+                    {DEMO.map((p) => (
+                      <div key={p.img} className="overflow-hidden rounded-xl border border-line">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={p.img} alt="" width={400} height={400} className="aspect-square w-full object-cover" fetchPriority="low" />
+                        <div className="p-2 sm:p-3">
+                          <p className="hidden truncate text-sm font-semibold sm:block">{pickText(p.name, locale)}</p>
+                          <p className="num truncate text-xs text-ink-70 sm:text-sm">{formatIQD(p.price, locale)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* Tilted phone (desktop only) */}
+              <div className="pointer-events-none absolute -bottom-10 end-4 hidden w-52 lg:block" aria-hidden="true">
+                <div className="mock-phone rounded-[2.25rem] bg-ink p-2">
+                  <div className="overflow-hidden rounded-[1.8rem] bg-white text-start">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={SHIRT.img} alt="" width={400} height={400} className="aspect-[4/5] w-full object-cover" />
+                    <div className="p-3">
+                      <p className="truncate text-sm font-semibold">{pickText(SHIRT.name, locale)}</p>
+                      <p className="num text-xs text-ink-70">{formatIQD(SHIRT.price, locale)}</p>
+                      <span className="mt-2 flex h-9 items-center justify-center rounded-full bg-ink text-xs font-semibold text-paper">{t("mockOrder")}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span className="absolute -bottom-4 start-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-[var(--shadow-e3)] ring-1 ring-line sm:start-8">
+                <Icon as={Check} className="text-green" /> {t("badge")}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -147,14 +197,14 @@ export default async function LandingPage() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="container-page py-14">
+        <section id="pricing" className="container-page scroll-mt-32 py-14">
           <h2 className="text-3xl font-light sm:text-4xl">{tp("title")}</h2>
           <p className="mt-2 mb-8 max-w-xl text-ink-70">{tp("lead")}</p>
           <PricingPlans />
         </section>
 
         {/* Waitlist */}
-        <section id="join" className="bg-white py-14">
+        <section id="join" className="scroll-mt-32 bg-white py-14">
           <div className="container-page max-w-2xl">
             <p className="eyebrow">{t("joinEyebrow")}</p>
             <h2 className="mt-2 mb-6 text-3xl font-extrabold">{t("joinTitle")}</h2>
