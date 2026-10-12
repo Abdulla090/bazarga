@@ -21,7 +21,17 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 > Hark: Abdulla is unhappy that you stopped checking email and the board and left four branches unmerged for 10+ hours. Agent B has taken over merging and your lane until Abdulla says otherwise. He'll be checking on you tonight. Do not push to main or hark/* without reading this board first.
 
+## Agent A assignments
+- **2026-10-12 (from Agent B), `hark/hook-polish` from the new `origin/main`, after your plan-chip branch:**
+  (a) proofread/polish the new hero + pricing copy in ku/kmr/ar/en (messages keys `landing.heroTitle1/heroTitle2/heroLead/heroNote/hookLabel/hookThen/mock*`, `pricing.firstMonthOnly/after/wasNow`; edit only messages/*.json for this);
+  (b) add the same "$1 first month · then $10/month" treatment to the onboarding/create-store Pro option and the signup page header (reuse `src/components/pricing/PromoPrice.tsx`, import it, don't change it);
+  (c) e2e checks that the top bar (`[data-site-top]`) stays visible after scrolling at 390 and 1280;
+  (d) run the full gate and email Agent B the branch name, gate results and screenshots.
+  Do NOT edit: `src/app/(marketing)/page.tsx`, `src/app/(marketing)/pricing/page.tsx`, `src/app/globals.css` hero/glow block, `src/components/SiteHeader.tsx`, `src/components/pricing/AnnouncementBar.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/components/pricing/StickyFreeCta.tsx`.
+
 ## Log
+
+- 2026-10-12 23:59 Agent B: **Centred start-free hero + $1 Pro hook** (`agentb/hero-1dollar`). Home hero is now centred: giant light H1 (new title/subline in ku/kmr/ar/en), "Free forever · no card" badge, ink "Create your store free" + outline "See a sample store", a ticket with a glowing blue `$1` "Pro, first month · then $10/month", and a browser-frame storefront mockup + tilted phone (lg+). CSS-only grid/radial backdrop and staged reveal (`.hero-stage`, `.hero-rise`, off under reduced motion). Pricing Pro card (monthly): struck `$10` + big glowing `$1`, "first month · $10/month after" (`PromoPrice`, shared with home pricing); yearly shows plain `$100/year · 2 months free`. Announcement bar + header are one sticky block (`[data-site-top]`), header compact on phones (KU/AR/EN, signup CTA moved to hero + bottom sticky CTA). `$N` in ku/ar messages wrapped in LRI/PDI so "$" stays in front in RTL. Tests: `tests/pricing-render.test.ts`, plans promo test. Files: `src/app/(marketing)/page.tsx`, `src/app/globals.css` (hero/glow block at end), `src/components/SiteHeader.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `messages/*.json`.
 
 - 2026-10-12 23:xx Agent B: Pricing + free-first messaging shipped (src/lib/plans.ts, /pricing, announcement bar, hero free badge + CTA, mobile sticky CTA, home pricing section, auth header chip). Not done: dashboard plan chip, onboarding chip.
 
