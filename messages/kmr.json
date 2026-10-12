@@ -801,6 +801,11 @@
     "text": "Nivîs",
     "custom": "Rengê din",
     "lowContrast": "Nivîs li ser vê paşxaneyê zor tê xwendin. Em bixwe ronî an tarî dikin.",
+    "buttons": "Bişkok",
+    "shape": "Form",
+    "btnStyle": "Stîl",
+    "shapes": {"square": "Çargoşe", "rounded": "Gilover", "pill": "Hebî"},
+    "styles": {"solid": "Tijî", "outline": "Xêzkirî", "soft": "Nerm"},
     "sizeLabel": "Mezinahiya nivîsê",
     "size": {
       "s": "Biçûk",

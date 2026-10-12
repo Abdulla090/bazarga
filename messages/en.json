@@ -800,6 +800,11 @@
     "text": "Text",
     "custom": "Custom color",
     "lowContrast": "Text is hard to read on this background. We lighten or darken it automatically.",
+    "buttons": "Buttons",
+    "shape": "Shape",
+    "btnStyle": "Style",
+    "shapes": {"square": "Square", "rounded": "Rounded", "pill": "Pill"},
+    "styles": {"solid": "Solid", "outline": "Outline", "soft": "Soft"},
     "sizeLabel": "Text size",
     "size": {
       "s": "Small",
