@@ -82,7 +82,16 @@
     "thanksTitle": "Thanks, {name}!",
     "thanksBody": "We'll message you on WhatsApp.",
     "formError": "Please fill in your name, WhatsApp number, what you sell and your city.",
-    "madeIn": "Made in Erbil, Kurdistan"
+    "madeIn": "Made in Erbil, Kurdistan",
+    "heroTitle1": "Open your store today.",
+    "heroTitle2": "Start free.",
+    "heroLead": "Send photos and prices in your language. We turn them into a fast, beautiful store you can share in minutes.",
+    "heroNote": "No card needed · Live in minutes",
+    "hookLabel": "Pro, first month",
+    "hookThen": "then $10/month · see plans",
+    "mockStore": "Hawler Bazaar",
+    "mockOrder": "Order now",
+    "mockAria": "Preview of a Bazarga store"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -968,6 +977,9 @@
         "q": "Is online payment included?",
         "a": "Pro adds FIB and ZainCash. Free stores take cash on delivery."
       }
-    }
+    },
+    "firstMonthOnly": "first month",
+    "after": "$10/month after",
+    "wasNow": "Was $10, now $1 for your first month"
   }
 }
