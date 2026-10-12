@@ -113,6 +113,8 @@ body {
 @utility container-page {
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
 }
+.storefront .btn { border-radius: var(--t-radius-btn, 9999px); min-height: max(2.75rem, var(--t-btn-h, 2.75rem)); }
+.storefront .btn-gold { background-color: var(--t-btn-bg, var(--color-ink)); color: var(--t-btn-fg, var(--color-paper)); border: 1px solid var(--t-btn-border, transparent); }
 @utility btn {
   @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium
     transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out

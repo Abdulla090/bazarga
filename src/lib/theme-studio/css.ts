@@ -3,6 +3,7 @@ import type { StoreTheme } from "./schema";
 
 const RADIUS = { none: "0px", sm: "6px", md: "12px", lg: "20px" } as const;
 const BTN = { square: "2px", rounded: "10px", pill: "999px" } as const;
+const BTN_H = { s: "2.5rem", m: "2.75rem", l: "3.25rem" } as const;
 const SCALE = { s: "0.94", m: "1", l: "1.08" } as const;
 
 /** Derive every storefront CSS custom property from a validated theme. Pure; also reports auto-fixes. */
@@ -26,6 +27,10 @@ export function themeToCssVars(t: StoreTheme): { vars: Record<string, string>; f
     "--t-link": accentText.color,
     "--t-radius-card": RADIUS[t.cards.radius],
     "--t-radius-btn": BTN[t.buttons.shape],
+    "--t-btn-h": BTN_H[t.buttons.size],
+    "--t-btn-bg": t.buttons.style === "solid" ? "var(--st-fg)" : t.buttons.style === "soft" ? mix(t.colors.bg, text.color, 0.08) : "transparent",
+    "--t-btn-fg": t.buttons.style === "solid" ? "var(--st-bg)" : "var(--st-fg)",
+    "--t-btn-border": t.buttons.style === "outline" ? "var(--st-fg)" : "transparent",
     "--t-font-scale": SCALE[t.type.scale],
   };
   return { vars, fixes };

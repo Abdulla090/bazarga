@@ -8,7 +8,7 @@ import type { StoreTheme } from "@/lib/theme-studio/schema";
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
-  saving: string; saved: string; preview: string; colors: string; type: string; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
+  saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
 };
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -18,7 +18,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const [theme, setTheme] = useState<StoreTheme>(initial);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
-  const [tab, setTab] = useState<"presets" | "colors" | "type">("presets");
+  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons">("presets");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
   const frame = useRef<HTMLIFrameElement>(null);
@@ -71,7 +71,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
           </button>
         </div>
         <div className="flex gap-1 px-4 pb-3" role="tablist">
-          {(["presets", "colors", "type"] as const).map((k) => (
+          {(["presets", "colors", "type", "buttons"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
               {labels[k]}
             </button>
@@ -106,6 +106,22 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                 </button>
               ))}
             </div>
+          </div>
+        )}
+        {tab === "buttons" && (
+          <div className="grid gap-5 px-4 pb-6" data-testid="theme-buttons">
+            {([["shape", labels.shape, labels.shapes, ["square", "rounded", "pill"]], ["style", labels.btnStyle, labels.styles, ["solid", "outline", "soft"]], ["size", labels.sizeLabel, labels.sizes, ["s", "m", "l"]]] as const).map(([key, title, names, opts]) => (
+              <fieldset key={key} className="grid gap-2">
+                <legend className="t-label text-ink/60">{title}</legend>
+                <div className="flex gap-2">
+                  {opts.map((o) => (
+                    <button key={o} type="button" aria-pressed={theme.buttons[key] === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", buttons: { ...t.buttons, [key]: o } }))} data-testid={`btn-${key}-${o}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.buttons[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                      {names[o]}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
           </div>
         )}
         {tab === "presets" && <ul className="grid grid-cols-2 gap-3 overflow-y-auto px-4 pb-6">
