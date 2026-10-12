@@ -878,5 +878,96 @@
     "headerLayout": "Header layout",
     "announce": "Announcement bar",
     "announcePh": "Free delivery over 50,000 IQD"
+  },
+  "pricing": {
+    "nav": "Pricing",
+    "bar": "Pro: first month $1 · or start free",
+    "barCta": "See plans",
+    "badge": "Free forever · no card needed",
+    "cta": "Create your store free",
+    "sub": "Free forever. Upgrade to Pro for $1 when you're ready.",
+    "sticky": "Start free — no card needed",
+    "title": "Start free. Grow when you're ready.",
+    "lead": "Every store starts on the free plan. Upgrade to Pro for $1 your first month when you want more.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "forever": "Free forever",
+    "then": "then $10/month",
+    "firstMonth": "First month $1",
+    "twoFree": "2 months free",
+    "popular": "Most popular",
+    "free": "Free",
+    "pro": "Pro",
+    "business": "Business",
+    "freeDesc": "Everything you need to open your shop.",
+    "proDesc": "Sell more, look better, get paid online.",
+    "businessDesc": "For growing brands with a team.",
+    "ctaFree": "Start free",
+    "ctaPro": "Start free, upgrade anytime",
+    "ctaBusiness": "Start free",
+    "compare": "Compare plans",
+    "faqTitle": "Questions",
+    "finalTitle": "Open your store in minutes. Free.",
+    "finalCta": "Start free",
+    "chip": "Free plan · Pro for $1",
+    "onb": "Free now · Pro $1 first month",
+    "features": {
+      "products15": "Up to 15 products",
+      "themesBasic": "Starter themes",
+      "cod": "Cash on delivery",
+      "badge": "Bazarga badge",
+      "productsUnlimited": "Unlimited products",
+      "themesAll": "All themes + Theme Studio",
+      "analytics": "Analytics",
+      "fibZain": "FIB + ZainCash payments",
+      "noBadge": "No Bazarga badge",
+      "everythingPro": "Everything in Pro",
+      "domain": "Custom domain",
+      "staff": "Staff accounts",
+      "priority": "Priority support"
+    },
+    "rows": {
+      "products": "Products",
+      "themes": "Themes",
+      "analytics": "Analytics",
+      "payments": "Payments",
+      "badge": "Bazarga badge",
+      "domain": "Custom domain",
+      "staff": "Staff accounts",
+      "support": "Support"
+    },
+    "cells": {
+      "c15": "15",
+      "unlimited": "Unlimited",
+      "basic": "Starter",
+      "all": "All",
+      "codOnly": "Cash on delivery",
+      "codFibZain": "COD, FIB, ZainCash",
+      "shown": "Shown",
+      "removed": "Removed",
+      "community": "Help center",
+      "email": "Email",
+      "priority": "Priority"
+    },
+    "faq": {
+      "q1": {
+        "q": "Is it really free?",
+        "a": "Yes. The free plan has no time limit and needs no card."
+      },
+      "q2": {
+        "q": "What does Pro cost?",
+        "a": "$10 a month, and your first month is $1. Yearly is $100, which is 2 months free."
+      },
+      "q3": {
+        "q": "Can I switch plans later?",
+        "a": "Anytime. Your store and products stay exactly as they are."
+      },
+      "q4": {
+        "q": "Is online payment included?",
+        "a": "Pro adds FIB and ZainCash. Free stores take cash on delivery."
+      }
+    }
   }
 }

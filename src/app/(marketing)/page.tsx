@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/SiteHeader";
-import { Logo } from "@/components/Logo";
+import { PricingPlans } from "@/components/pricing/PricingPlans";
+import { StickyFreeCta } from "@/components/pricing/StickyFreeCta";
+import { SiteFooter } from "@/components/SiteFooter";
 import { WaitlistForm } from "./WaitlistForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { formatIQD } from "@/lib/money";
@@ -19,7 +21,7 @@ const DEMO = [
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
-  const tn = await getTranslations("nav");
+  const tp = await getTranslations("pricing");
   const raw = await getLocale();
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const steps = [
@@ -49,11 +51,12 @@ export default async function LandingPage() {
         {/* Hero */}
         <section className="container-page grid items-center gap-8 py-10 md:grid-cols-2 md:py-16">
           <div>
-            <p className="eyebrow">{t("heroEyebrow")}</p>
+            <p className="inline-flex min-h-9 items-center rounded-full border border-[#2563EB]/30 bg-[#2563EB]/5 px-4 text-sm font-semibold text-[#2563EB]">{tp("badge")}</p>
             <h1 className="mt-3 text-4xl font-extrabold leading-tight sm:text-5xl">{tc("tagline")}</h1>
             <p className="mt-4 max-w-prose text-lg text-ink-70">{t("heroSub")}</p>
+            <p className="mt-2 text-sm font-medium text-ink">{tp("sub")}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/signup" className="btn-gold">{tn("cta")}</Link>
+              <Link href="/signup" className="btn-gold">{tp("cta")}</Link>
               <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost">{t("heroCta2")}</Link>
             </div>
           </div>
@@ -143,6 +146,13 @@ export default async function LandingPage() {
           </ul>
         </section>
 
+        {/* Pricing */}
+        <section id="pricing" className="container-page py-14">
+          <h2 className="text-3xl font-light sm:text-4xl">{tp("title")}</h2>
+          <p className="mt-2 mb-8 max-w-xl text-ink-70">{tp("lead")}</p>
+          <PricingPlans />
+        </section>
+
         {/* Waitlist */}
         <section id="join" className="bg-white py-14">
           <div className="container-page max-w-2xl">
@@ -152,12 +162,8 @@ export default async function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-line py-8">
-        <div className="container-page flex flex-wrap items-center justify-between gap-4 text-sm text-ink-70">
-          <Logo />
-          <p>{t("madeIn")} · © {new Date().getFullYear()} Bazarga</p>
-        </div>
-      </footer>
+      <SiteFooter />
+      <StickyFreeCta />
     </>
   );
 }

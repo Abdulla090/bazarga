@@ -186,3 +186,6 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
   (`e2e/`, `npm run test:mobile`); wiring it into CI is what's left.
 - Full Kurmanji (kmr) translation by a native speaker; add Turkmen and Assyrian (Syriac) communities later.
 - Billing: free tier + paid plan (FIB/ZainCash recurring or manual), plan limits.
+
+## Billing (future)
+Pricing UI shipped (src/lib/plans.ts, /pricing). No real billing or plan enforcement yet: add a payment provider, a subscriptions table, 15-product limit enforcement on Free, and the $1 first-month Pro trial logic.
