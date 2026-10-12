@@ -879,5 +879,96 @@
     "headerLayout": "Çêkirina serrûpelê",
     "announce": "Nîşana daxuyaniyê",
     "announcePh": "Gihandin belaş e"
+  },
+  "pricing": {
+    "nav": "Biha",
+    "bar": "Pro: meha yekem $1 · an belaş dest pê bike",
+    "barCta": "Planan bibîne",
+    "badge": "Her tim belaş · bê kart",
+    "cta": "Dikana xwe belaş çêke",
+    "sub": "Her tim belaş. Gava amade bûyî bi $1 biçe Pro.",
+    "sticky": "Belaş dest pê bike — bê kart",
+    "title": "Belaş dest pê bike. Gava amade bûyî mezin bibe.",
+    "lead": "Her dikan bi planê belaş dest pê dike. Gava zêdetir xwest, meha yekem a Pro $1 e.",
+    "monthly": "Mehane",
+    "yearly": "Salane",
+    "perMonth": "/meh",
+    "perYear": "/sal",
+    "forever": "Her tim belaş",
+    "then": "paşê $10/meh",
+    "firstMonth": "Meha yekem $1",
+    "twoFree": "2 meh belaş",
+    "popular": "Herî populer",
+    "free": "Belaş",
+    "pro": "Pro",
+    "business": "Business",
+    "freeDesc": "Her tiştê ji bo vekirina dikanê.",
+    "proDesc": "Zêdetir bifroşe, spehîtir xuya bike, online pere bistîne.",
+    "businessDesc": "Ji bo marqeyên mezin ên bi tîm.",
+    "ctaFree": "Belaş dest pê bike",
+    "ctaPro": "Belaş dest pê bike, paşê bilind bike",
+    "ctaBusiness": "Belaş dest pê bike",
+    "compare": "Planan bidin ber hev",
+    "faqTitle": "Pirs",
+    "finalTitle": "Di çend deqeyan de dikana xwe veke. Belaş.",
+    "finalCta": "Belaş dest pê bike",
+    "chip": "Plana belaş · Pro bi $1",
+    "onb": "Niha belaş · Pro meha yekem $1",
+    "features": {
+      "products15": "Heta 15 hilber",
+      "themesBasic": "Rûkarên destpêkê",
+      "cod": "Dayîn li dema gihîştinê",
+      "badge": "Nîşana Bazarga",
+      "productsUnlimited": "Hilberên bê sînor",
+      "themesAll": "Hemû rûkar + Theme Studio",
+      "analytics": "Analîtîk",
+      "fibZain": "Dayîna FIB û ZainCash",
+      "noBadge": "Bê nîşana Bazarga",
+      "everythingPro": "Hemû tiştên Pro",
+      "domain": "Domaina taybet",
+      "staff": "Hesabên karmendan",
+      "priority": "Piştgiriya pêşî"
+    },
+    "rows": {
+      "products": "Hilber",
+      "themes": "Rûkar",
+      "analytics": "Analîtîk",
+      "payments": "Dayîn",
+      "badge": "Nîşana Bazarga",
+      "domain": "Domaina taybet",
+      "staff": "Hesabên karmendan",
+      "support": "Piştgirî"
+    },
+    "cells": {
+      "c15": "15",
+      "unlimited": "Bê sînor",
+      "basic": "Destpêk",
+      "all": "Hemû",
+      "codOnly": "Dema gihîştinê",
+      "codFibZain": "Gihîştin, FIB, ZainCash",
+      "shown": "Xuya",
+      "removed": "Hatiye rakirin",
+      "community": "Navenda alîkariyê",
+      "email": "E-name",
+      "priority": "Pêşî"
+    },
+    "faq": {
+      "q1": {
+        "q": "Bi rastî belaş e?",
+        "a": "Erê. Plana belaş sînordar nîne û kart naxwaze."
+      },
+      "q2": {
+        "q": "Pro çiqas e?",
+        "a": "$10 meh, û meha yekem $1. Salane $100 e, yanî 2 meh belaş."
+      },
+      "q3": {
+        "q": "Ez dikarim paşê plan biguherim?",
+        "a": "Her dem. Dikan û hilberên te wekî xwe dimînin."
+      },
+      "q4": {
+        "q": "Dayîna online heye?",
+        "a": "Pro FIB û ZainCash zêde dike. Dikanên belaş li dema gihîştinê pere distînin."
+      }
+    }
   }
 }

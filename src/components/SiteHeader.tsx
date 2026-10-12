@@ -3,17 +3,22 @@ import { getTranslations } from "next-intl/server";
 import { Logo } from "./Logo";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { currentUser } from "@/server/auth/session";
+import { AnnouncementBar } from "./pricing/AnnouncementBar";
 import { currentLocale } from "@/server/locale";
 
 export async function SiteHeader() {
   const t = await getTranslations("nav");
   const user = await currentUser().catch(() => null);
+  const pt = await getTranslations("pricing");
   return (
+    <>
+    <AnnouncementBar />
     <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
       <div className="container-page flex min-h-16 flex-wrap items-center gap-3 py-2">
         <Link href="/" className="me-auto">
           <Logo />
         </Link>
+        <Link href="/pricing" className="hidden min-h-11 items-center px-2 text-sm font-medium text-ink-70 hover:text-ink sm:inline-flex">{pt("nav")}</Link>
         <LocaleSwitcher current={await currentLocale()} locales={["ku", "ar", "en"]} />
         {user ? (
           <Link href="/dashboard" className="btn-gold btn-sm">
@@ -31,5 +36,6 @@ export async function SiteHeader() {
         )}
       </div>
     </header>
+    </>
   );
 }
