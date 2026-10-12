@@ -7,7 +7,7 @@ Model: versioned zod theme JSON (`src/lib/theme-studio/schema.ts`), draft + publ
 ## Steps
 - [x] 1. Schema, 8 presets, contrast/derivation (AA guard), CSS var mapping + unit tests (lib only).
 - [x] 2. Migration 0010 (theme_draft, theme_published jsonb); storefront applies published vars (+ --st bridge). Write helpers come with step 3.
-- [ ] 3. Editor route /dashboard/theme: split view, iframe live preview via postMessage, preset gallery, publish, unpublished dot.
+- [x] 3. (shell: presets + live iframe preview + autosave + publish; controls come in 4-7) Editor route /dashboard/theme: split view, iframe live preview via postMessage, preset gallery, publish, unpublished dot.
 - [ ] 4. Colors + typography (next/font Arabic-safe pairs) controls, 4 locales.
 - [ ] 5. Buttons, cards, background controls; storefront consumes them.
 - [ ] 6. Header/footer, homepage sections reorder + variants, product page options.

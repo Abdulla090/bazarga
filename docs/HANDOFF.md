@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- 2026-10-12 Agent B: Theme Studio 3 merged: /dashboard/theme editor shell (preset gallery, iframe live preview via postMessage, autosave, publish, dirty dot). Frame headers now same-origin. Agent A: hark/onboarding open.
+
 - Oct 12 05:xx Agent B: Theme Studio step 2 merged (migration 0010, published theme vars on storefront). Assigned Agent A: hark/auth (auth pages redesign), sent 05:10.
 
 - Oct 12 (Agent B): Theme Studio step 1 — docs/THEME-STUDIO.md, zod theme schema, 8 presets, AA contrast guard, CSS var mapping + tests (lib only, no UI yet). Next: migration + storefront apply.
