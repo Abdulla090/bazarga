@@ -1,8 +1,9 @@
 import { and, desc, eq, gte, inArray, lt, lte, notInArray, sql } from "drizzle-orm";
 import type { Db } from "../db";
-import { orderItems, orders, products, storePageViews } from "../db/schema";
+import { orderItems, orders, productImages, products, storePageViews } from "../db/schema";
 import { LOST_ORDER_STATUSES } from "@/lib/order-status";
 import { pickText, type Locale } from "@/lib/i18n";
+import { heatMatrix, statusGroup, type StatusGroup } from "@/lib/chart-math";
 import {
   buildFunnel,
   CHECKOUT_PAGE,
@@ -217,4 +218,82 @@ export async function getPreviousTotals(
     else if (UUID_RE.test(r.page)) productViews += n;
   }
   return { visitors, storeViews, productViews, orders: Number(ord[0]?.orders ?? 0), revenue: Number(ord[0]?.revenue ?? 0) };
+}
+
+export type AnalyticsExtras = {
+  /** Live orders by weekday (Saturday first) × Iraqi hour over `heatDays` days. */
+  heat: number[][];
+  heatDays: number;
+  /** Orders (any status) per day of the range, split into four status groups. */
+  statusDays: { day: string; counts: Record<StatusGroup, number> }[];
+  /** Last 90 days of visitors and live orders for the calendar strip. */
+  year: { days: string[]; visitors: number[]; orders: number[] };
+  /** Cover photo URL per product id. */
+  thumbs: Record<string, string>;
+};
+
+/** Extra series for the analytics visuals. Every query is scoped to the caller's store. */
+export async function getAnalyticsExtras(
+  database: Db,
+  storeId: string,
+  opts: { days: number; now?: Date; productIds?: string[] },
+): Promise<AnalyticsExtras> {
+  const range = dayRange(opts.days, opts.now);
+  const year = dayRange(90, opts.now);
+  const heatDays = Math.max(opts.days, 30);
+  const heatSince = iraqDayStart(dayRange(heatDays, opts.now)[0]!);
+  const yearSince = iraqDayStart(year[0]!);
+  const rangeSince = iraqDayStart(range[0]!);
+  const local = sql`(${orders.createdAt} AT TIME ZONE 'UTC') + interval '3 hours'`;
+  const notLost = notInArray(orders.status, [...LOST_ORDER_STATUSES]);
+  const ids = (opts.productIds ?? []).filter((id) => UUID_RE.test(id));
+
+  const [heatRows, statusRows, yearOrders, yearVisitors, imgRows] = await Promise.all([
+    database
+      .select({ dow: sql<number>`extract(dow from ${local})`, hour: sql<number>`extract(hour from ${local})`, n: sql<number>`count(*)` })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, heatSince), notLost))
+      .groupBy(sql`extract(dow from ${local})`, sql`extract(hour from ${local})`),
+    database
+      .select({ day: iraqDaySql, status: orders.status, n: sql<number>`count(*)` })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, rangeSince)))
+      .groupBy(iraqDaySql, orders.status),
+    database
+      .select({ day: iraqDaySql, n: sql<number>`count(*)` })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, yearSince), notLost))
+      .groupBy(iraqDaySql),
+    database
+      .select({ day: storePageViews.day, n: storePageViews.views })
+      .from(storePageViews)
+      .where(and(eq(storePageViews.storeId, storeId), eq(storePageViews.page, VISITORS_PAGE), gte(storePageViews.day, year[0]!))),
+    ids.length
+      ? database
+          .select({ productId: productImages.productId, url: productImages.url, renditions: productImages.renditions })
+          .from(productImages)
+          .where(and(eq(productImages.storeId, storeId), inArray(productImages.productId, ids), eq(productImages.sort, 0)))
+      : Promise.resolve([] as { productId: string; url: string; renditions: { url: string; width: number }[] }[]),
+  ]);
+
+  const perDay = new Map<string, Record<StatusGroup, number>>();
+  for (const d of range) perDay.set(d, { new: 0, confirmed: 0, delivered: 0, lost: 0 });
+  for (const r of statusRows) {
+    const row = perDay.get(r.day);
+    if (row) row[statusGroup(r.status)] += Number(r.n);
+  }
+  const oMap = new Map(yearOrders.map((r) => [r.day, Number(r.n)]));
+  const vMap = new Map(yearVisitors.map((r) => [r.day, Number(r.n)]));
+  const thumbs: Record<string, string> = {};
+  for (const r of imgRows) {
+    const small = [...(r.renditions ?? [])].sort((a, b) => a.width - b.width).find((x) => x.width >= 96) ?? r.renditions?.[0];
+    thumbs[r.productId] = small?.url ?? r.url;
+  }
+  return {
+    heat: heatMatrix(heatRows.map((r) => ({ dow: Number(r.dow), hour: Number(r.hour), n: Number(r.n) }))),
+    heatDays,
+    statusDays: range.map((day) => ({ day, counts: perDay.get(day)! })),
+    year: { days: year, visitors: year.map((d) => vMap.get(d) ?? 0), orders: year.map((d) => oMap.get(d) ?? 0) },
+    thumbs,
+  };
 }

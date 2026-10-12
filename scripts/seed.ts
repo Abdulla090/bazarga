@@ -32,6 +32,7 @@ import { createCategory, createProduct } from "../src/server/services/catalog";
 import type { ProductImageInput } from "../src/lib/validation";
 import type { LocalizedText } from "../src/lib/i18n";
 import seedImages from "./seed-images.json";
+import { seedAnalytics, seedAnalyticsEnabled } from "./seed-analytics";
 
 /** Pre-built pipeline renditions of the demo photos and their derived detail shots (scripts/build-seed-images.ts). */
 const IMG = seedImages as Record<string, ProductImageInput>;
@@ -50,8 +51,10 @@ async function main() {
   const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "pglite://./.pglite";
   const db = createDb(url);
 
-  if (await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") })) {
-    console.log("[seed] Studio Hawler already exists — nothing to do");
+  const existingStore = await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") });
+  if (existingStore) {
+    if (seedAnalyticsEnabled()) console.log("[seed] demo analytics topped up", await seedAnalytics(db, existingStore.id));
+    console.log("[seed] Studio Hawler already exists — nothing else to do");
     process.exit(0);
   }
 
@@ -328,6 +331,8 @@ async function main() {
       })),
     );
   }
+
+  if (seedAnalyticsEnabled()) console.log("[seed] demo analytics", await seedAnalytics(db, store.id));
 
   console.log(`[seed] created Studio Hawler → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
   process.exit(0);

@@ -527,7 +527,20 @@
     "funnelWhatsappHint": "Serdankerên ku li bişkoja WhatsAppê xistin. Hinek ferman di sohbetê de diqedînin, ji ber vê li vir wekî ferman nayê dîtin.",
     "funnelHint": "Serdankerên yekta ji bo her rojê, di nav navberê de li hev hatine kirin. Daketina mezin di navbera du gavan de nîşan dide kirrîyar ji ku diçin.",
     "emptyHelp": "Girêdana firoşgehê parve bike da serdanker bên.",
-    "emptyCta": "Firoşgehê parve bike"
+    "emptyCta": "Firoşgehê parve bike",
+    "gaugePrev": "Berê: {value}%",
+    "gaugeNoPrev": "Heyama berê tune ye ji bo berhevdanê",
+    "heatTitle": "Ferman kengî tên",
+    "heatHint": "Li gorî rojên hefteyê û saetê, {days} rojên dawî",
+    "statusTitle": "Ferman li gorî rewşê",
+    "statusNew": "Nû",
+    "statusConfirmed": "Pejirandî",
+    "statusDelivered": "Gihandî",
+    "statusLost": "Betalkirî",
+    "calTitle": "Serdanker, 90 rojên dawî",
+    "calHint": "Çargoşeyek ji bo her rojê. Reng tarîtir, serdanker zêdetir.",
+    "calLess": "Kêmtir",
+    "calMore": "Zêdetir"
   },
   "payStatus": {
     "title": "Dayîna online",

@@ -760,7 +760,20 @@
     "funnelWhatsappHint": "Visitors who tapped Chat on WhatsApp. Some finish their order in the chat, so it won't show up here as an order.",
     "funnelHint": "Unique visitors per day, added up over the range. A big drop between two steps shows where shoppers leave.",
     "emptyHelp": "Share your store link to get your first visitors.",
-    "emptyCta": "Share store"
+    "emptyCta": "Share store",
+    "gaugePrev": "Before: {value}%",
+    "gaugeNoPrev": "No earlier period to compare",
+    "heatTitle": "When orders arrive",
+    "heatHint": "By weekday and hour, last {days} days",
+    "statusTitle": "Orders by status",
+    "statusNew": "New",
+    "statusConfirmed": "Confirmed",
+    "statusDelivered": "Delivered",
+    "statusLost": "Cancelled",
+    "calTitle": "Visitors, last 90 days",
+    "calHint": "One square per day. Darker means more visitors.",
+    "calLess": "Less",
+    "calMore": "More"
   },
   "payStatus": {
     "title": "Online payment",
