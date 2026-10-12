@@ -9,7 +9,8 @@ const bool = z
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   /** postgres://… in production. `pglite://./.pglite` (file) or `pglite://memory` for zero-setup local dev. */
-  DATABASE_URL: z.string().default("pglite://./.pglite"),
+  DATABASE_URL: z.string().default(process.env.POSTGRES_URL || "pglite://./.pglite"),
+  // ^ Vercel + Supabase integration injects POSTGRES_URL (pooled) instead of DATABASE_URL.
   APP_URL: z.string().url().default("http://localhost:3000"),
   /** Root domain used for {slug}.ROOT_DOMAIN storefront subdomains, e.g. mymarket.app */
   ROOT_DOMAIN: z.string().default("mymarket.app"),

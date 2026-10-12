@@ -14,7 +14,7 @@ import { redactDbUrl } from "../src/server/db/pg-config";
 async function main() {
   const deploy = process.argv.includes("--deploy");
   const url = deploy
-    ? process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL
+    ? process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URL || process.env.POSTGRES_URL
     : process.env.DATABASE_URL || "pglite://./.pglite";
   if (!url) throw new Error("db:migrate:deploy needs DATABASE_URL (or DATABASE_URL_UNPOOLED)");
   if (deploy && !/^postgres(ql)?:\/\//.test(url)) {

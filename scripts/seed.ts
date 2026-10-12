@@ -47,7 +47,7 @@ const DEMO_EMAIL = process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app";
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo";
 
 async function main() {
-  const url = process.env.DATABASE_URL ?? "pglite://./.pglite";
+  const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "pglite://./.pglite";
   const db = createDb(url);
 
   if (await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") })) {
