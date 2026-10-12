@@ -63,7 +63,7 @@ export async function createStoreAction(_prev: ActionState, fd: FormData): Promi
   } catch (e) {
     return toActionState(e);
   }
-  redirect("/dashboard");
+  redirect("/onboarding?step=theme");
 }
 
 export async function updateStoreAction(_prev: ActionState, fd: FormData): Promise<ActionState> {

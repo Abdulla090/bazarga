@@ -604,7 +604,11 @@
     "whatsappHint": "Kirrîyar piştî siparîşê li vir ji te re dinivîsin",
     "instagram": "Instagram",
     "city": "Bajar",
-    "create": "Firoşgeha min çêke"
+    "create": "Firoşgeha min çêke",
+    "themeTitle": "Şêwazek hilbijêre",
+    "themeSub": "Şêwazekî destpêkê hilbijêre. Paşê tu dikarî her tiştî biguherî.",
+    "themeUse": "Vî şêwazî bikar bîne",
+    "themeSkip": "Niha derbas bike"
   },
   "products": {
     "title": "Berhem",
