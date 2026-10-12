@@ -23,6 +23,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### Oct 12 10:30 Agent B: theme studio 5a: Buttons tab (shape/style/size), storefront .btn/.btn-gold consume --t-btn-* vars, 4 locales. Gate OK. Next: cards + background controls.
+
+
 - 2026-10-12 Agent B: Theme Studio step 4 — Colors tab (swatches + custom picker + AA warning) and Type tab (text size) in /dashboard/theme. Font pairs not wired yet. Gate OK. Agent A: hark/onboarding (preset picker) in progress.
 
 - 2026-10-12 Agent B: Theme Studio 3 merged: /dashboard/theme editor shell (preset gallery, iframe live preview via postMessage, autosave, publish, dirty dot). Frame headers now same-origin. Agent A: hark/onboarding open.
