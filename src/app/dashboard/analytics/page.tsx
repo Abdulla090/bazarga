@@ -3,8 +3,10 @@ import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { currentLocale } from "@/server/locale";
-import { getStoreAnalytics } from "@/server/services/analytics";
+import { getPreviousTotals, getStoreAnalytics } from "@/server/services/analytics";
 import { formatIQD } from "@/lib/money";
+import { AreaChart, Donut, Sparkline, donutColor } from "@/components/charts/charts";
+import { pctChange } from "@/lib/chart-math";
 import { ANALYTICS_RANGES, barHeights, parseRange, type DayPoint } from "@/lib/analytics";
 
 export const metadata = { title: "Analytics" };
@@ -18,7 +20,8 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const t = await getTranslations("analytics");
   const locale = await currentLocale();
   const range = parseRange((await searchParams).range);
-  const a = await getStoreAnalytics(db(), store.id, { days: range, locale });
+  const [a, prev] = await Promise.all([getStoreAnalytics(db(), store.id, { days: range, locale }), getPreviousTotals(db(), store.id, { days: range })]);
+  const rtl = locale !== "en" && locale !== "kmr";
   const nf = new Intl.NumberFormat(locale === "en" ? "en-US" : "ar-IQ-u-nu-latn");
   const dayFmt = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-IQ-u-nu-latn", { day: "numeric", month: "short", timeZone: "UTC" });
   const label = (d: string) => dayFmt.format(new Date(`${d}T00:00:00Z`));
@@ -26,13 +29,13 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const cityShare = (v: number) => Math.max(v > 0 ? 3 : 0, Math.round((v / topRevenue) * 100));
   const empty = a.totals.visitors === 0 && a.totals.orders === 0;
 
-  const kpis: { key: string; value: string; hint?: string }[] = [
-    { key: "visitors", value: nf.format(a.totals.visitors) },
-    { key: "orders", value: nf.format(a.totals.orders) },
+  const kpis: { key: string; value: string; hint?: string; series?: number[]; delta?: number | null }[] = [
+    { key: "visitors", value: nf.format(a.totals.visitors), series: a.days.map((d) => d.visitors), delta: pctChange(a.totals.visitors, prev.visitors) },
+    { key: "orders", value: nf.format(a.totals.orders), series: a.days.map((d) => d.orders), delta: pctChange(a.totals.orders, prev.orders) },
     { key: "conversion", value: a.totals.conversion === null ? "—" : `${nf.format(a.totals.conversion)}%`, hint: t("conversionHint") },
-    { key: "revenue", value: formatIQD(a.totals.revenue, locale) },
-    { key: "storeViews", value: nf.format(a.totals.storeViews) },
-    { key: "productViews", value: nf.format(a.totals.productViews) },
+    { key: "revenue", value: formatIQD(a.totals.revenue, locale), series: a.days.map((d) => d.revenue), delta: pctChange(a.totals.revenue, prev.revenue) },
+    { key: "storeViews", value: nf.format(a.totals.storeViews), series: a.days.map((d) => d.storeViews), delta: pctChange(a.totals.storeViews, prev.storeViews) },
+    { key: "productViews", value: nf.format(a.totals.productViews), series: a.days.map((d) => d.productViews), delta: pctChange(a.totals.productViews, prev.productViews) },
   ];
 
   return (
@@ -60,11 +63,27 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             <dt className="text-sm font-semibold text-ink-70">{t(k.key)}</dt>
             <dd className="num text-xl font-extrabold" dir="ltr">{k.value}</dd>
             {k.hint && <dd className="text-xs text-ink-50">{k.hint}</dd>}
+            {k.delta != null && (
+              <dd className={`num text-xs font-semibold ${k.delta >= 0 ? "text-[#2563EB]" : "text-ink-50"}`} dir="ltr" title={t("vsPrev")}>
+                {k.delta >= 0 ? "▲" : "▼"} {nf.format(Math.abs(k.delta))}%
+              </dd>
+            )}
+            {k.series && <Sparkline values={k.series} rtl={rtl} label={t(k.key)} />}
           </div>
         ))}
       </dl>
 
       {empty && <p className="card text-ink-70" data-testid="analytics-empty">{t("empty")}</p>}
+
+      <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-trend" data-testid="trend">
+        <h2 id="an-trend" className="text-lg font-bold">{t("trendTitle")}</h2>
+        <AreaChart
+          rtl={rtl}
+          label={`${t("trendTitle")}: ${formatIQD(a.totals.revenue, locale)}`}
+          xLabels={[label(a.days[0]!.day), label(a.days[a.days.length - 1]!.day)]}
+          series={[{ values: a.days.map((d) => d.revenue), kind: "primary" }, { values: a.days.map((d) => d.visitors), kind: "secondary" }]}
+        />
+      </section>
 
       <section className="card grid grid-cols-1 gap-3" aria-labelledby="an-funnel" data-testid="funnel">
         <h2 id="an-funnel" className="text-lg font-bold">{t("funnelTitle")}</h2>
@@ -79,7 +98,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                 </span>
               </div>
               <div className="h-2 overflow-hidden rounded-full bg-line" aria-hidden="true">
-                <div className="h-full rounded-full bg-gold" style={{ width: `${s.pct === null ? 0 : Math.max(s.count > 0 ? 3 : 0, Math.min(100, s.pct))}%` }} />
+                <div className="h-full rounded-full bg-[#2563EB]" style={{ width: `${s.pct === null ? 0 : Math.max(s.count > 0 ? 3 : 0, Math.min(100, s.pct))}%` }} />
               </div>
             </li>
           ))}
@@ -166,6 +185,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-city" data-testid="by-city">
           <h2 id="an-city" className="text-lg font-bold">{t("byCity")}</h2>
+          {a.byCity.length > 0 && <div className="flex justify-center"><Donut values={a.byCity.map((c) => c.revenue)} label={t("cityShareTitle")} /></div>}
           {a.byCity.length === 0 ? (
             <p className="text-sm text-ink-50">—</p>
           ) : (
@@ -177,7 +197,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                     <span className="num shrink-0 text-sm text-ink-70">{t("orderCount", { count: c.orders })} · {formatIQD(c.revenue, locale)}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
-                    <div className="h-full rounded-full bg-gold" style={{ width: `${cityShare(c.revenue)}%` }} />
+                    <div className="h-full rounded-full" style={{ width: `${cityShare(c.revenue)}%`, background: donutColor(a.byCity.indexOf(c)) }} />
                   </div>
                 </li>
               ))}
@@ -224,7 +244,7 @@ function Bars({
       <div className="flex h-28 items-end gap-px border-b border-line" aria-hidden="true">
         {days.map((d, i) => (
           <div key={d.day} className="flex h-full min-w-0 flex-1 items-end" title={`${label(d.day)}: ${nf.format(values[i]!)}`}>
-            <div className="w-full rounded-t-sm bg-gold" style={{ height: `${Math.max(heights[i]!, values[i]! > 0 ? 3 : 0)}%` }} />
+            <div className="w-full rounded-t-sm bg-[#2563EB]" style={{ height: `${Math.max(heights[i]!, values[i]! > 0 ? 3 : 0)}%` }} />
           </div>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, notInArray, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lt, lte, notInArray, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import { orderItems, orders, products, storePageViews } from "../db/schema";
 import { LOST_ORDER_STATUSES } from "@/lib/order-status";
@@ -185,4 +185,36 @@ export async function getStoreAnalytics(
     byCity: cityRows.map((r) => ({ cityKey: r.cityKey, city: r.city, orders: Number(r.orders), revenue: Number(r.revenue) })),
     customers,
   };
+}
+
+/** Totals for the window of equal length right before the current one (for "vs previous period"). */
+export async function getPreviousTotals(
+  database: Db,
+  storeId: string,
+  opts: { days: number; now?: Date },
+): Promise<{ visitors: number; orders: number; revenue: number; storeViews: number; productViews: number }> {
+  const cur = dayRange(opts.days, opts.now);
+  const prevEnd = new Date(Date.parse(`${cur[0]}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+  const prev = dayRange(opts.days, new Date(Date.parse(`${prevEnd}T12:00:00Z`)));
+  const first = prev[0]!;
+  const last = prev[prev.length - 1]!;
+  const [views, ord] = await Promise.all([
+    database
+      .select({ page: storePageViews.page, views: sql<number>`sum(${storePageViews.views})` })
+      .from(storePageViews)
+      .where(and(eq(storePageViews.storeId, storeId), gte(storePageViews.day, first), lte(storePageViews.day, last)))
+      .groupBy(storePageViews.page),
+    database
+      .select({ orders: sql<number>`count(*)`, revenue: sql<number>`coalesce(sum(${orders.total}), 0)` })
+      .from(orders)
+      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, iraqDayStart(first)), lt(orders.createdAt, iraqDayStart(cur[0]!)), notInArray(orders.status, [...LOST_ORDER_STATUSES]))),
+  ]);
+  let visitors = 0, storeViews = 0, productViews = 0;
+  for (const r of views) {
+    const n = Number(r.views);
+    if (r.page === VISITORS_PAGE) visitors += n;
+    else if (r.page === HOME_PAGE) storeViews += n;
+    else if (UUID_RE.test(r.page)) productViews += n;
+  }
+  return { visitors, storeViews, productViews, orders: Number(ord[0]?.orders ?? 0), revenue: Number(ord[0]?.revenue ?? 0) };
 }
