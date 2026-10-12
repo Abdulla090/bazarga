@@ -4,6 +4,7 @@ import type { StoreTheme } from "./schema";
 const RADIUS = { none: "0px", sm: "6px", md: "12px", lg: "20px" } as const;
 const BTN = { square: "2px", rounded: "10px", pill: "999px" } as const;
 const BTN_H = { s: "2.5rem", m: "2.75rem", l: "3.25rem" } as const;
+const RATIO = { square: "1 / 1", portrait: "4 / 5", landscape: "4 / 3" } as const;
 const SCALE = { s: "0.94", m: "1", l: "1.08" } as const;
 
 /** Derive every storefront CSS custom property from a validated theme. Pure; also reports auto-fixes. */
@@ -31,6 +32,16 @@ export function themeToCssVars(t: StoreTheme): { vars: Record<string, string>; f
     "--t-btn-bg": t.buttons.style === "solid" ? "var(--st-fg)" : t.buttons.style === "soft" ? mix(t.colors.bg, text.color, 0.08) : "transparent",
     "--t-btn-fg": t.buttons.style === "solid" ? "var(--st-bg)" : "var(--st-fg)",
     "--t-btn-border": t.buttons.style === "outline" ? "var(--st-fg)" : "transparent",
+    "--t-ratio": RATIO[t.cards.ratio],
+    "--t-card-border": t.cards.style === "hairline" ? "1px solid var(--st-border)" : "0 solid transparent",
+    "--t-card-shadow": t.cards.style === "shadow" ? "0 10px 30px -12px rgb(0 0 0 / 0.28)" : "none",
+    "--t-bg-image":
+      t.background.kind === "gradient"
+        ? `linear-gradient(180deg, ${t.colors.bg} 0%, ${mix(t.colors.bg, t.colors.accent, 0.09)} 100%)`
+        : t.background.kind === "pattern"
+          ? `radial-gradient(${mix(t.colors.bg, text.color, 0.12)} 1px, transparent 1.2px)`
+          : "none",
+    "--t-bg-size": t.background.kind === "pattern" ? "18px 18px" : "auto",
     "--t-font-scale": SCALE[t.type.scale],
   };
   return { vars, fixes };

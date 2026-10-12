@@ -803,13 +803,41 @@
     "buttons": "Buttons",
     "shape": "Shape",
     "btnStyle": "Style",
-    "shapes": {"square": "Square", "rounded": "Rounded", "pill": "Pill"},
-    "styles": {"solid": "Solid", "outline": "Outline", "soft": "Soft"},
+    "shapes": {
+      "square": "Square",
+      "rounded": "Rounded",
+      "pill": "Pill"
+    },
+    "styles": {
+      "solid": "Solid",
+      "outline": "Outline",
+      "soft": "Soft"
+    },
     "sizeLabel": "Text size",
     "size": {
       "s": "Small",
       "m": "Medium",
       "l": "Large"
+    },
+    "cards": "Cards",
+    "cardsRadius": "Corners",
+    "cardsStyle": "Card style",
+    "cardsRatio": "Photo shape",
+    "bgKind": "Background",
+    "opt": {
+      "none": "Sharp",
+      "sm": "Soft",
+      "md": "Round",
+      "lg": "Extra round",
+      "flat": "Flat",
+      "hairline": "Outline",
+      "shadow": "Shadow",
+      "square": "Square",
+      "portrait": "Tall",
+      "landscape": "Wide",
+      "solid": "Plain",
+      "gradient": "Gradient",
+      "pattern": "Dots"
     }
   }
 }

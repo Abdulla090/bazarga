@@ -25,8 +25,8 @@ export function CardPrice({ p, locale, from }: { p: CatalogProduct; locale: Loca
 
 /** 4:5 photo on the placeholder tone, 16 px radius, no border or shadow; slow 1.03 zoom on hover. */
 export const cardImage =
-  "aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]";
-export const cardFrame = "relative block overflow-hidden rounded-2xl bg-[#F4F4F5]";
+  "sf-img aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]";
+export const cardFrame = "sf-frame relative block overflow-hidden rounded-2xl bg-[#F4F4F5]";
 /** Card title: 15 px on phones, 16 px from md (was 14 px, too small on desktop). */
 export const cardName = "text-[15px] md:text-base";
 

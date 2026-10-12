@@ -803,13 +803,41 @@
     "buttons": "دوگمەکان",
     "shape": "شێوە",
     "btnStyle": "ستایل",
-    "shapes": {"square": "چوارگۆشە", "rounded": "خڕ", "pill": "حەبی"},
-    "styles": {"solid": "پڕ", "outline": "هێڵدار", "soft": "نەرم"},
+    "shapes": {
+      "square": "چوارگۆشە",
+      "rounded": "خڕ",
+      "pill": "حەبی"
+    },
+    "styles": {
+      "solid": "پڕ",
+      "outline": "هێڵدار",
+      "soft": "نەرم"
+    },
     "sizeLabel": "قەبارەی نووسین",
     "size": {
       "s": "بچووک",
       "m": "مامناوەند",
       "l": "گەورە"
+    },
+    "cards": "کارتەکان",
+    "cardsRadius": "گۆشەکان",
+    "cardsStyle": "شێوازی کارت",
+    "cardsRatio": "شێوەی وێنە",
+    "bgKind": "پاشبنەما",
+    "opt": {
+      "none": "تیژ",
+      "sm": "نەرم",
+      "md": "خڕ",
+      "lg": "زۆر خڕ",
+      "flat": "تەخت",
+      "hairline": "هێڵکاری",
+      "shadow": "سێبەر",
+      "square": "چوارگۆشە",
+      "portrait": "درێژ",
+      "landscape": "پان",
+      "solid": "ساده",
+      "gradient": "تێکەڵ",
+      "pattern": "نوقتە"
     }
   }
 }

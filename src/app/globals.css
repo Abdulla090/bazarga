@@ -113,6 +113,9 @@ body {
 @utility container-page {
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
 }
+.storefront { background-image: var(--t-bg-image, none); background-size: var(--t-bg-size, auto); }
+.storefront .sf-frame { border-radius: var(--t-radius-card, 16px); border: var(--t-card-border, 0); box-shadow: var(--t-card-shadow, none); }
+.storefront .sf-img { aspect-ratio: var(--t-ratio, 4 / 5); }
 .storefront .btn { border-radius: var(--t-radius-btn, 9999px); min-height: max(2.75rem, var(--t-btn-h, 2.75rem)); }
 .storefront .btn-gold { background-color: var(--t-btn-bg, var(--color-ink)); color: var(--t-btn-fg, var(--color-paper)); border: 1px solid var(--t-btn-border, transparent); }
 @utility btn {

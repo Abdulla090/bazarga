@@ -8,7 +8,7 @@ import type { StoreTheme } from "@/lib/theme-studio/schema";
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
-  saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
+  saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
 };
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -18,7 +18,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const [theme, setTheme] = useState<StoreTheme>(initial);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
-  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons">("presets");
+  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards">("presets");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
   const frame = useRef<HTMLIFrameElement>(null);
@@ -71,7 +71,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
           </button>
         </div>
         <div className="flex gap-1 px-4 pb-3" role="tablist">
-          {(["presets", "colors", "type", "buttons"] as const).map((k) => (
+          {(["presets", "colors", "type", "buttons", "cards"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
               {labels[k]}
             </button>
@@ -106,6 +106,32 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                 </button>
               ))}
             </div>
+          </div>
+        )}
+        {tab === "cards" && (
+          <div className="grid gap-5 px-4 pb-6" data-testid="theme-cards">
+            {([["radius", labels.cardsRadius, ["none", "sm", "md", "lg"]], ["style", labels.cardsStyle, ["flat", "hairline", "shadow"]], ["ratio", labels.cardsRatio, ["square", "portrait", "landscape"]]] as const).map(([key, title, opts]) => (
+              <fieldset key={key} className="grid gap-2">
+                <legend className="t-label text-ink/60">{title}</legend>
+                <div className="flex flex-wrap gap-2">
+                  {opts.map((o) => (
+                    <button key={o} type="button" aria-pressed={theme.cards[key] === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", cards: { ...t.cards, [key]: o } }))} data-testid={`card-${key}-${o}`} className={`min-h-11 min-w-20 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.cards[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                      {labels.opt[o]}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
+            <fieldset className="grid gap-2">
+              <legend className="t-label text-ink/60">{labels.bgKind}</legend>
+              <div className="flex gap-2">
+                {(["solid", "gradient", "pattern"] as const).map((o) => (
+                  <button key={o} type="button" aria-pressed={theme.background.kind === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", background: { ...t.background, kind: o } }))} data-testid={`bg-${o}`} className={`min-h-11 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.background.kind === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                    {labels.opt[o]}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
           </div>
         )}
         {tab === "buttons" && (

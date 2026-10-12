@@ -804,13 +804,41 @@
     "buttons": "Bişkok",
     "shape": "Form",
     "btnStyle": "Stîl",
-    "shapes": {"square": "Çargoşe", "rounded": "Gilover", "pill": "Hebî"},
-    "styles": {"solid": "Tijî", "outline": "Xêzkirî", "soft": "Nerm"},
+    "shapes": {
+      "square": "Çargoşe",
+      "rounded": "Gilover",
+      "pill": "Hebî"
+    },
+    "styles": {
+      "solid": "Tijî",
+      "outline": "Xêzkirî",
+      "soft": "Nerm"
+    },
     "sizeLabel": "Mezinahiya nivîsê",
     "size": {
       "s": "Biçûk",
       "m": "Navîn",
       "l": "Mezin"
+    },
+    "cards": "Kart",
+    "cardsRadius": "Quncik",
+    "cardsStyle": "Şêwaza kartê",
+    "cardsRatio": "Şeklê wêneyê",
+    "bgKind": "Paşxane",
+    "opt": {
+      "none": "Tûj",
+      "sm": "Nerm",
+      "md": "Gilover",
+      "lg": "Pir gilover",
+      "flat": "Ziravî",
+      "hairline": "Xêz",
+      "shadow": "Sî",
+      "square": "Çargoşe",
+      "portrait": "Dirêj",
+      "landscape": "Fireh",
+      "solid": "Sade",
+      "gradient": "Gradient",
+      "pattern": "Xal"
     }
   }
 }

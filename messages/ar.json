@@ -803,13 +803,41 @@
     "buttons": "الأزرار",
     "shape": "الشكل",
     "btnStyle": "النمط",
-    "shapes": {"square": "مربع", "rounded": "مستدير", "pill": "كبسولة"},
-    "styles": {"solid": "ممتلئ", "outline": "محدد", "soft": "ناعم"},
+    "shapes": {
+      "square": "مربع",
+      "rounded": "مستدير",
+      "pill": "كبسولة"
+    },
+    "styles": {
+      "solid": "ممتلئ",
+      "outline": "محدد",
+      "soft": "ناعم"
+    },
     "sizeLabel": "حجم النص",
     "size": {
       "s": "صغير",
       "m": "متوسط",
       "l": "كبير"
+    },
+    "cards": "البطاقات",
+    "cardsRadius": "الزوايا",
+    "cardsStyle": "نمط البطاقة",
+    "cardsRatio": "شكل الصورة",
+    "bgKind": "الخلفية",
+    "opt": {
+      "none": "حادة",
+      "sm": "ناعمة",
+      "md": "مدورة",
+      "lg": "دائرية جدًا",
+      "flat": "مسطحة",
+      "hairline": "إطار",
+      "shadow": "ظل",
+      "square": "مربع",
+      "portrait": "طولي",
+      "landscape": "عريض",
+      "solid": "سادة",
+      "gradient": "تدرج",
+      "pattern": "نقاط"
     }
   }
 }
