@@ -10,9 +10,9 @@ export function SignupForm() {
   const locale = useLocale();
   const [state, action, pending] = useActionState(signUpAction, {});
   return (
-    <form action={action} className="card grid gap-4">
+    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
       <div>
-        <h1 className="text-2xl font-extrabold">{t("signupTitle")}</h1>
+        <h1 className="t-headline">{t("signupTitle")}</h1>
         <p className="text-ink-70">{t("signupSub")}</p>
       </div>
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
@@ -20,7 +20,7 @@ export function SignupForm() {
       <Field label={t("name")} name="name" autoComplete="name" required error={state.fieldErrors?.name} />
       <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
       <Field label={t("password")} name="password" type="password" autoComplete="new-password" minLength={8} required ltr hint={t("passwordHint")} error={state.fieldErrors?.password} />
-      <button className="btn-gold" disabled={pending}>{t("signup")}</button>
+      <button className="btn-gold w-full" disabled={pending}>{t("signup")}</button>
       <p className="text-sm">{t("haveAccount")} <Link href="/login" className="inline-flex min-h-11 items-center font-bold underline">{t("login")}</Link></p>
     </form>
   );

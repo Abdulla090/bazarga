@@ -9,8 +9,8 @@ export function ResetForm({ token }: { token: string }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(resetPasswordAction, {});
   return (
-    <form action={action} className="card grid gap-4">
-      <h1 className="text-2xl font-extrabold">{t("resetTitle")}</h1>
+    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+      <h1 className="t-headline">{t("resetTitle")}</h1>
       {state.ok ? (
         <>
           <p role="status" className="rounded-xl bg-green/10 px-3 py-2 font-semibold text-green">{t("resetDone")}</p>

@@ -9,9 +9,9 @@ export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(forgotPasswordAction, {});
   return (
-    <form action={action} className="card grid gap-4">
+    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
       <div>
-        <h1 className="text-2xl font-extrabold">{t("forgotTitle")}</h1>
+        <h1 className="t-headline">{t("forgotTitle")}</h1>
         <p className="text-ink-70">{t("forgotSub")}</p>
       </div>
       {state.ok ? (
