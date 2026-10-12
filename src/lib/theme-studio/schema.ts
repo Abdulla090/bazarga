@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DESIGN_IDS } from "./designs";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
@@ -7,6 +8,8 @@ export const THEME_VERSION = 1 as const;
 export const themeSchema = z.object({
   v: z.literal(THEME_VERSION),
   preset: z.string().max(32),
+  /** Layout family (header, hero, section order, grid, card, footer); absent in stores saved before designs → classic. */
+  design: z.enum(DESIGN_IDS).default("classic"),
   colors: z.object({ accent: hex, bg: hex, surface: hex, text: hex }),
   type: z.object({
     pair: z.enum(["sans-clean", "serif-editorial", "rounded-soft", "mono-bold"]),

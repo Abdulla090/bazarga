@@ -8,6 +8,8 @@ import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
 import { isOnSale } from "@/lib/merch";
 import { MerchBadges, type MerchBadgeLabels } from "./MerchBadges";
+import { Icon, Plus } from "@/components/ui/icons";
+import type { CardVariant } from "@/lib/theme-studio/designs";
 
 export type ProductCardLabels = AddToCartLabels & { chooseOptions: string; from: string; onlyLeft: string; badges: MerchBadgeLabels };
 
@@ -41,15 +43,85 @@ export function ProductCard({
   locale,
   index = 99,
   labels,
+  variant = "classic",
+  number,
 }: {
   p: CatalogProduct;
   slug: string;
   locale: Locale;
   index?: number;
   labels: ProductCardLabels;
+  /** Design family card: classic (photo + title + price), editorial (numbered, display-type title, price on a hairline), compact (square photo, always-on add button, dense text). */
+  variant?: CardVariant;
+  /** Editorial plate number ("01"). */
+  number?: string;
 }) {
   const name = pickText(p.name, locale);
   const href = `/s/${slug}/p/${p.id}`;
+  if (variant === "editorial") {
+    return (
+      <article className="reveal group relative grid min-w-0 content-start gap-4" data-card="editorial">
+        <div className={cardFrame}>
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
+            ) : (
+              <span className="block aspect-[4/5] w-full" />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
+          <div className="absolute bottom-3 end-3 z-10 hidden opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:hover)]:md:block">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} className="btn-ghost btn-sm min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur">{labels.chooseOptions}</Link>
+            ) : !p.soldOut ? (
+              <AddToCart slug={slug} productId={p.id} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }} />
+            ) : null}
+          </div>
+        </div>
+        <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 border-t border-st-fg/80 pt-3">
+          {number && <span className="t-label section-index col-span-2" aria-hidden>{number}</span>}
+          <Link href={href} className="sf-display line-clamp-2 text-xl leading-tight after:absolute after:inset-0 after:content-[''] md:text-2xl">{name}</Link>
+          <CardPrice p={p} locale={locale} from={labels.from} />
+        </div>
+      </article>
+    );
+  }
+  if (variant === "compact") {
+    return (
+      <article className="reveal group relative grid min-w-0 content-start gap-2" data-card="compact">
+        <div className={`${cardFrame} aspect-square`}>
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes="(min-width: 1280px) 17vw, (min-width: 768px) 24vw, 50vw" index={index} aboveTheFold={4} className={cardImage} />
+            ) : (
+              <span className="block aspect-square w-full" />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
+          <div className="absolute bottom-1.5 end-1.5 z-10">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} aria-label={labels.chooseOptions} className="flex h-11 w-11 items-center justify-center rounded-full bg-st-surface text-st-fg shadow-e1 transition-colors duration-150 hover:bg-st-bg">
+                <Icon as={Plus} className="h-5 w-5" />
+              </Link>
+            ) : !p.soldOut ? (
+              <AddToCart
+                slug={slug}
+                productId={p.id}
+                labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+                icon={<Icon as={Plus} className="h-5 w-5" />}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-st-surface text-st-fg shadow-e1 transition-[background-color,transform] duration-150 hover:bg-st-bg active:scale-95"
+              />
+            ) : null}
+          </div>
+        </div>
+        <div className="grid gap-0.5 px-0.5">
+          <Link href={href} className="line-clamp-2 text-[13px] leading-snug after:absolute after:inset-0 after:content-[''] hover:underline hover:underline-offset-4 md:text-sm">{name}</Link>
+          <CardPrice p={p} locale={locale} from={labels.from} />
+        </div>
+      </article>
+    );
+  }
   return (
     <article className="reveal group relative grid min-w-0 content-start gap-3">
       <div className={cardFrame}>

@@ -3,10 +3,13 @@ import { pickText, type Locale } from "@/lib/i18n";
 import type { CatalogProduct } from "@/server/services/storefront";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { MerchBadges, type MerchBadgeLabels } from "./MerchBadges";
+import type { CardVariant } from "@/lib/theme-studio/designs";
 import { CardPrice, cardFrame, cardImage, cardName } from "./ProductCard";
 
 /** Server-only rail card (best sellers, offers, "more from this store"): same look as the grid card, no client JS.
  *  `variant`: "feature" fills a taller bento cell. */
+const sizes_ = (compact: boolean) => (compact ? "(min-width: 1024px) 17vw, 42vw" : "(min-width: 1024px) 400px, 42vw");
+
 export function MiniProductCard({
   p,
   slug,
@@ -14,6 +17,7 @@ export function MiniProductCard({
   labels,
   from,
   variant = "default",
+  look = "classic",
 }: {
   p: CatalogProduct;
   slug: string;
@@ -21,8 +25,32 @@ export function MiniProductCard({
   labels: MerchBadgeLabels;
   from: string;
   variant?: "default" | "feature";
+  /** Design family card look (editorial: display-type title over a rule; compact: square photo, dense text). */
+  look?: CardVariant;
 }) {
   const name = pickText(p.name, locale);
+  if (look !== "classic" && variant === "default") {
+    const compact = look === "compact";
+    return (
+      <Link href={`/s/${slug}/p/${p.id}`} className="group grid h-full content-start gap-2" data-card={look}>
+        <span className={`${cardFrame} ${compact ? "aspect-square" : ""}`}>
+          {p.image ? <ResponsiveImage image={p.image} alt="" sizes={sizes_(compact)} index={9} className={cardImage} /> : <span className="block aspect-[4/5] w-full" />}
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} labels={labels} />
+        </span>
+        {compact ? (
+          <span className="grid gap-0.5 px-0.5">
+            <span className="line-clamp-2 text-[13px] leading-snug group-hover:underline group-hover:underline-offset-4 md:text-sm">{name}</span>
+            <CardPrice p={p} locale={locale} from={from} />
+          </span>
+        ) : (
+          <span className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 border-t border-st-fg/80 pt-3">
+            <span className="sf-display line-clamp-2 text-lg leading-tight group-hover:underline group-hover:underline-offset-4 md:text-xl">{name}</span>
+            <CardPrice p={p} locale={locale} from={from} />
+          </span>
+        )}
+      </Link>
+    );
+  }
   const sizes = variant === "feature" ? "(min-width: 768px) 50vw, 42vw" : "(min-width: 1024px) 400px, 42vw";
   const frame = `${cardFrame} ${variant === "feature" ? "md:min-h-0 md:flex-1" : ""}`;
   const img = variant === "feature" ? `${cardImage} md:absolute md:inset-0 md:h-full md:aspect-auto` : cardImage;
@@ -86,6 +114,7 @@ export function ProductStrip({
   seeAll,
   note,
   testId,
+  look = "classic",
 }: {
   id: string;
   title: string;
@@ -101,6 +130,8 @@ export function ProductStrip({
   /** One short line under the heading in the 1–2 item "intro" tile (e.g. "Up to 17% off"). */
   note?: string;
   testId: string;
+  /** Design family card look for the cards in this strip. */
+  look?: CardVariant;
 }) {
   if (!products.length) return null;
   const n = products.length;
@@ -128,7 +159,7 @@ export function ProductStrip({
     <ul className={ul} data-layout={mode}>
       {products.map((r, i) => (
         <li key={r.id} className={`reveal ${li(i)}`}>
-          <MiniProductCard p={r} slug={slug} locale={locale} labels={labels} from={from} variant={variant(i)} />
+          <MiniProductCard p={r} slug={slug} locale={locale} labels={labels} from={from} variant={variant(i)} look={look} />
         </li>
       ))}
     </ul>

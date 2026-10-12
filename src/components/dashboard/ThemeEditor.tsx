@@ -16,6 +16,7 @@ function randomTheme(bases: StoreTheme[]): StoreTheme {
   const base = pick(bases);
   return { ...base, preset: "custom", buttons: { ...base.buttons, shape: pick(["square", "rounded", "pill"] as const), style: pick(["solid", "outline", "soft"] as const) }, cards: { ...base.cards, radius: pick(["none", "sm", "md", "lg"] as const), style: pick(["flat", "hairline", "shadow"] as const), ratio: pick(["square", "portrait", "landscape"] as const) }, background: { kind: pick(["solid", "gradient", "pattern"] as const) } };
 }
+const setPreviewCookie = (slug: string, d: string) => { document.cookie = `bz_pv_${slug}=${d}; path=/s/${slug}; max-age=3600; samesite=lax`; };
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Theme Studio editor shell: preset gallery (left), live iframe preview (right) fed by postMessage, autosaved draft, publish. */
@@ -34,6 +35,20 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const frame = useRef<HTMLIFrameElement>(null);
   const ready = useRef(false);
   const first = useRef(true);
+  // The preview iframe renders the *draft* design server-side: the editor leaves the choice in a cookie the storefront
+  // honours for iframe loads only. The iframe gets its src after the cookie is set, and reloads when the design changes.
+  const designRef = useRef(theme.design);
+  useEffect(() => {
+    setPreviewCookie(slug, designRef.current);
+    if (frame.current && !frame.current.getAttribute("src")) frame.current.src = `/s/${slug}`;
+  }, [slug]);
+  useEffect(() => {
+    if (designRef.current === theme.design) return;
+    designRef.current = theme.design;
+    setPreviewCookie(slug, theme.design);
+    ready.current = false;
+    frame.current?.contentWindow?.location.reload();
+  }, [theme.design, slug]);
 
   const push = (t: StoreTheme) => {
     const v = themeToCssVars(t).vars;
@@ -222,7 +237,6 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
           <iframe
             ref={frame}
             title={labels.preview}
-            src={`/s/${slug}`}
             onLoad={() => { ready.current = true; push(theme); }}
             className={`h-full min-h-[28rem] border border-line bg-white transition-[width] duration-300 motion-reduce:transition-none ${device === "phone" ? "w-[390px] max-w-full rounded-[28px]" : "w-full rounded-lg"}`}
             data-testid="theme-preview"
