@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { stores } from "../db/schema";
 import { requireStore } from "../auth/session";
+import { invalidateStore } from "../cache/tags";
 import { themeSchema } from "@/lib/theme-studio/schema";
 import { toActionState, type ActionState } from "./util";
 
@@ -25,6 +26,7 @@ export async function publishThemeAction(raw: unknown): Promise<ActionState> {
     const { store } = await requireStore();
     const theme = themeSchema.parse(raw);
     await db().update(stores).set({ themeDraft: theme, themePublished: theme }).where(eq(stores.id, store.id));
+    invalidateStore(store.id, [store.slug]);
     revalidatePath(`/s/${store.slug}`, "layout");
     return { ok: true };
   } catch (e) {

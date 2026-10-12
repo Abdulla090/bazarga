@@ -12,6 +12,7 @@ export function AddToCart({
   labels,
   item,
   className = "btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur",
+  icon,
 }: {
   slug: string;
   productId: string;
@@ -20,6 +21,8 @@ export function AddToCart({
   /** Shown in the "Added to cart" drawer. */
   item?: Omit<AddedItem, "qty">;
   className?: string;
+  /** Icon-only button (compact cards): the label moves to aria-label. */
+  icon?: React.ReactNode;
 }) {
   const { add } = useCart(slug);
   const [added, setAdded] = useState(false);
@@ -28,6 +31,7 @@ export function AddToCart({
       type="button"
       disabled={disabled}
       className={className}
+      aria-label={icon ? (disabled ? labels.soldOut : added ? labels.added : labels.add) : undefined}
       onClick={() => {
         add({ productId });
         if (item) announceAdded({ ...item, qty: 1 });
@@ -35,7 +39,7 @@ export function AddToCart({
         setTimeout(() => setAdded(false), 1200);
       }}
     >
-      <span aria-live="polite">{disabled ? labels.soldOut : added ? labels.added : labels.add}</span>
+      {icon ? <span aria-hidden>{icon}</span> : <span aria-live="polite">{disabled ? labels.soldOut : added ? labels.added : labels.add}</span>}
     </button>
   );
 }

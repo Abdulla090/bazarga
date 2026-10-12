@@ -1,7 +1,7 @@
 import type { StoreTheme } from "./schema";
 
-type P = Omit<StoreTheme, "v" | "preset">;
-const base = (preset: string, p: P): StoreTheme => ({ v: 1, preset, ...p });
+type P = Omit<StoreTheme, "v" | "preset" | "design"> & { design?: StoreTheme["design"] };
+const base = (preset: string, p: P): StoreTheme => ({ v: 1, preset, design: "classic", ...p });
 
 export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
   ivory: base("ivory", {
@@ -47,11 +47,20 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     background: { kind: "solid" }, header: { layout: "minimal" },
   }),
   editorial: base("editorial", {
-    colors: { accent: "#7A1F2B", bg: "#FBF7F2", surface: "#FFFFFF", text: "#1A1412" },
-    type: { pair: "serif-editorial", scale: "m" },
+    design: "editorial",
+    colors: { accent: "#7A1F2B", bg: "#F7F2EA", surface: "#FFFFFF", text: "#16110E" },
+    type: { pair: "serif-editorial", scale: "l" },
     buttons: { shape: "square", style: "solid", size: "m" },
-    cards: { radius: "sm", style: "hairline", ratio: "portrait" },
+    cards: { radius: "none", style: "flat", ratio: "portrait" },
     background: { kind: "solid" }, header: { layout: "centered" },
+  }),
+  market: base("market", {
+    design: "market",
+    colors: { accent: "#B42318", bg: "#F3F4F6", surface: "#FFFFFF", text: "#111827" },
+    type: { pair: "sans-clean", scale: "s" },
+    buttons: { shape: "rounded", style: "solid", size: "s" },
+    cards: { radius: "sm", style: "hairline", ratio: "square" },
+    background: { kind: "solid" }, header: { layout: "split" },
   }),
   fresh: base("fresh", {
     colors: { accent: "#0F766E", bg: "#F4FBF8", surface: "#FFFFFF", text: "#0B2220" },

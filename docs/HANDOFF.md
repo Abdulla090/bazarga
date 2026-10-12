@@ -146,3 +146,9 @@ Order page gets 3 one-tap WhatsApp replies (confirmed, on the way, need landmark
   - Follow-up once both are on main (small, Agent B can take it): checklist "share" step → link to /dashboard/share, and share-kit copy/download buttons → `markLinkSharedAction`.
 - 2026-10-08 03:05 Hark: shipped hark/order-tracking (shopper tracking page /s/[slug]/track, store-scoped lookup by order number + phone, rate limits, WhatsApp tracking link). Merged to main, 295 tests, smoke 58, budgets green. Still Agent B's turn (2 items). Hark next: COD status flow + packing slip.
 - 2026-10-08 02:50 Hark: repo pushed to GitHub (main b950c86). Handoff board created. Agent B's turn.
+
+## 2026-10-12 20:00 — Agent B
+- **Theme Studio complete-design slice:** merged locally as `24fe211` (gate running). Added versioned design-family architecture plus distinct Editorial and Market storefront compositions: headers, heroes, category treatment, card/grid rhythm, footer, Arabic-script-capable display fonts, and live iframe preview design switching. All four locale preset labels are synced. Added design math/schema tests.
+- **Cache correctness:** theme publish and onboarding preset apply now invalidate the storefront cache immediately.
+- **Screenshots:** `/workspace/work/shots-themes/editorial-home-en-1280.png` and `editorial-home-ku-390.png` reviewed: no horizontal overflow; RTL typography and editorial hierarchy hold. Full theme shots are generated after gate.
+- **Agent A:** assigned dashboard empty-state + copy polish on `hark/empty-states`; excluded all theme/storefront files.

@@ -151,3 +151,56 @@ export function Spotlight({
     </section>
   );
 }
+
+/**
+ * Editorial collections index: one hairline row per category — plate number, the name in display type at poster
+ * size, product count and a small photo at the inline end. Replaces the photo bento in the Editorial design.
+ */
+export function CollectionIndex({
+  categories,
+  products,
+  slug,
+  locale,
+  title,
+  index,
+  countLabel,
+}: {
+  categories: CatalogCategory[];
+  products: CatalogProduct[];
+  slug: string;
+  locale: Locale;
+  title: string;
+  index: string;
+  countLabel: (count: number) => string;
+}) {
+  const rows = categories
+    .map((c) => {
+      const items = products.filter((p) => p.categoryId === c.id);
+      return { c, cover: items.find((p) => p.image)?.image ?? null, count: items.length };
+    })
+    .filter((r) => r.count > 0)
+    .slice(0, 8);
+  if (rows.length < 2) return null;
+  return (
+    <section aria-labelledby="collections-h" className="section grid gap-6 sm:gap-8" data-testid="collections" data-variant="index">
+      <SectionHead id="collections-h" title={title} index={index} />
+      <ol className="border-t border-st-fg">
+        {rows.map(({ c, cover, count }, i) => (
+          <li key={c.id} className="reveal border-b border-st-border">
+            <Link href={`/s/${slug}?c=${c.id}#products`} className="group flex min-h-20 items-center gap-4 py-4 sm:gap-8 sm:py-6">
+              <span className="t-label section-index w-7 shrink-0" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+              <span className="sf-display min-w-0 flex-1 truncate text-3xl leading-tight transition-transform duration-300 ease-out group-hover:translate-x-2 rtl:group-hover:-translate-x-2 sm:text-5xl md:text-6xl">{pickText(c.name, locale)}</span>
+              <span className="t-label hidden shrink-0 items-center gap-1.5 text-muted sm:flex">{countLabel(count)}</span>
+              {cover && (
+                <span className="relative hidden h-20 w-16 shrink-0 overflow-hidden bg-[#F4F4F5] sm:block md:h-24 md:w-20">
+                  <ResponsiveImage image={cover} alt="" sizes="80px" index={9} className="absolute inset-0 h-full w-full object-cover" />
+                </span>
+              )}
+              <ArrowForward className="h-5 w-5 shrink-0 transition-transform duration-150 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
