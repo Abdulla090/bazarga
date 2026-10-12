@@ -189,7 +189,7 @@
     "title": "Products",
     "new": "New product",
     "edit": "Edit product",
-    "empty": "No products yet.",
+    "empty": "No products yet",
     "name": "Name",
     "description": "Description",
     "price": "Price (IQD)",
@@ -222,7 +222,9 @@
     "badgeNone": "No badge",
     "badgeNew": "New",
     "badgeFeatured": "Featured",
-    "badgeHint": "Shown on the product photo in your store. \"Best seller\" is added automatically from your orders."
+    "badgeHint": "Shown on the product photo in your store. \"Best seller\" is added automatically from your orders.",
+    "emptyHelp": "Add your first product to start selling.",
+    "emptyCta": "Add product"
   },
   "categories": {
     "title": "Categories",
@@ -264,7 +266,7 @@
   "orders": {
     "export": "Download CSV",
     "title": "Orders",
-    "empty": "No orders here.",
+    "empty": "No orders yet",
     "order": "Order #{number}",
     "customer": "Customer",
     "total": "Total",
@@ -332,16 +334,20 @@
     "slipQty": "Qty",
     "slipTrack": "Track this order",
     "slipScan": "Scan to track",
-    "slipHint": "Pick A6 or A5 paper in the print dialog."
+    "slipHint": "Pick A6 or A5 paper in the print dialog.",
+    "emptyHelp": "Share your store link to get your first order.",
+    "emptyCta": "Share store"
   },
   "customers": {
     "title": "Customers",
-    "empty": "Customers appear here after their first order.",
+    "empty": "No customers yet",
     "name": "Name",
     "phone": "Phone",
     "orders": "Orders",
     "spent": "Spent",
-    "last": "Last order"
+    "last": "Last order",
+    "emptyHelp": "Customers appear after their first order.",
+    "emptyCta": "Share store"
   },
   "settings": {
     "title": "Store settings",
@@ -735,7 +741,7 @@
     "topSold": "Best sellers",
     "views": "{count} views",
     "units": "{count} sold",
-    "empty": "No data yet. Share your store link to get your first visitors.",
+    "empty": "No visits yet",
     "privacy": "Counted on our own servers, without cookies or third-party trackers. Bots and link previews are not counted; each visitor counts once per page per day.",
     "ordersNote": "Cancelled, refused and returned orders are left out.",
     "byCity": "Sales by city",
@@ -752,7 +758,22 @@
     "funnel_orders": "Placed an order",
     "funnel_whatsapp": "Tapped a WhatsApp button",
     "funnelWhatsappHint": "Visitors who tapped Chat on WhatsApp. Some finish their order in the chat, so it won't show up here as an order.",
-    "funnelHint": "Unique visitors per day, added up over the range. A big drop between two steps shows where shoppers leave."
+    "funnelHint": "Unique visitors per day, added up over the range. A big drop between two steps shows where shoppers leave.",
+    "emptyHelp": "Share your store link to get your first visitors.",
+    "emptyCta": "Share store",
+    "gaugePrev": "Before: {value}%",
+    "gaugeNoPrev": "No earlier period to compare",
+    "heatTitle": "When orders arrive",
+    "heatHint": "By weekday and hour, last {days} days",
+    "statusTitle": "Orders by status",
+    "statusNew": "New",
+    "statusConfirmed": "Confirmed",
+    "statusDelivered": "Delivered",
+    "statusLost": "Cancelled",
+    "calTitle": "Visitors, last 90 days",
+    "calHint": "One square per day. Darker means more visitors.",
+    "calLess": "Less",
+    "calMore": "More"
   },
   "payStatus": {
     "title": "Online payment",

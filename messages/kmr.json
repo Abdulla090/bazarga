@@ -383,7 +383,7 @@
     "slipScan": "Ji bo şopandinê skan bike",
     "slipHint": "Di pencereya çapê de kaxeza A6 an A5 hilbijêre.",
     "title": "Ferman",
-    "empty": "Li vir ferman tune.",
+    "empty": "Hîn ferman tune",
     "order": "Fermana #{number}",
     "customer": "Kirrîyar",
     "total": "Giştî",
@@ -405,7 +405,9 @@
     "pay_pending": "Dayîn li bendê ye",
     "pay_paid": "Hat dayîn",
     "pay_failed": "Dayîn neçû serî",
-    "pay_refunded": "Hat vegerandin"
+    "pay_refunded": "Hat vegerandin",
+    "emptyHelp": "Girêdana firoşgehê parve bike da ferman bên.",
+    "emptyCta": "Firoşgehê parve bike"
   },
   "risk": {
     "title": "Berî şandinê kontrol bike",
@@ -506,7 +508,7 @@
     "topSold": "Yên herî zêde firotî",
     "views": "{count} dîtin",
     "units": "{count} firotî",
-    "empty": "Hîn dane tune. Girêdana firoşgeha xwe parve bike da ku serdankerên te yên yekem bên.",
+    "empty": "Hîn serdan tune",
     "privacy": "Li ser serverên me tên jimartin, bê cookie û bê şopînerên aliyê sêyem. Bot û pêşdîtinên girêdanan nayên jimartin; her serdanker rojê carekê ji bo her rûpelê tê jimartin.",
     "ordersNote": "Fermanên betalkirî, redkirî û vegerandî nayên jimartin.",
     "byCity": "Firotin li gorî bajarî",
@@ -523,7 +525,22 @@
     "funnel_orders": "Ferman dan",
     "funnel_whatsapp": "Li bişkoja WhatsAppê xistin",
     "funnelWhatsappHint": "Serdankerên ku li bişkoja WhatsAppê xistin. Hinek ferman di sohbetê de diqedînin, ji ber vê li vir wekî ferman nayê dîtin.",
-    "funnelHint": "Serdankerên yekta ji bo her rojê, di nav navberê de li hev hatine kirin. Daketina mezin di navbera du gavan de nîşan dide kirrîyar ji ku diçin."
+    "funnelHint": "Serdankerên yekta ji bo her rojê, di nav navberê de li hev hatine kirin. Daketina mezin di navbera du gavan de nîşan dide kirrîyar ji ku diçin.",
+    "emptyHelp": "Girêdana firoşgehê parve bike da serdanker bên.",
+    "emptyCta": "Firoşgehê parve bike",
+    "gaugePrev": "Berê: {value}%",
+    "gaugeNoPrev": "Heyama berê tune ye ji bo berhevdanê",
+    "heatTitle": "Ferman kengî tên",
+    "heatHint": "Li gorî rojên hefteyê û saetê, {days} rojên dawî",
+    "statusTitle": "Ferman li gorî rewşê",
+    "statusNew": "Nû",
+    "statusConfirmed": "Pejirandî",
+    "statusDelivered": "Gihandî",
+    "statusLost": "Betalkirî",
+    "calTitle": "Serdanker, 90 rojên dawî",
+    "calHint": "Çargoşeyek ji bo her rojê. Reng tarîtir, serdanker zêdetir.",
+    "calLess": "Kêmtir",
+    "calMore": "Zêdetir"
   },
   "payStatus": {
     "title": "Dayîna online",
@@ -617,7 +634,7 @@
     "title": "Berhem",
     "new": "Berhema nû",
     "edit": "Berhemê biguherîne",
-    "empty": "Hîn berhem tune.",
+    "empty": "Hîn berhem tune",
     "name": "Nav",
     "description": "Danasîn",
     "price": "Biha (IQD)",
@@ -650,7 +667,9 @@
     "badgeNone": "Bê nîşan",
     "badgeNew": "Nû",
     "badgeFeatured": "Bijarte",
-    "badgeHint": "Li ser wêneya berhemê di firoşgeha te de tê nîşandan. “Herî tê firotin” bixweber ji fermanên te tê zêdekirin."
+    "badgeHint": "Li ser wêneya berhemê di firoşgeha te de tê nîşandan. “Herî tê firotin” bixweber ji fermanên te tê zêdekirin.",
+    "emptyHelp": "Berhema xwe ya yekem zêde bike û dest bi firotinê bike.",
+    "emptyCta": "Berhem zêde bike"
   },
   "categories": {
     "title": "Beş",
@@ -691,12 +710,14 @@
   },
   "customers": {
     "title": "Kirrîyar",
-    "empty": "Kirrîyar piştî yekem fermana xwe li vir xuya dibin.",
+    "empty": "Hîn kirrîyar tune",
     "name": "Nav",
     "phone": "Têlefon",
     "orders": "Ferman",
     "spent": "Xerckirî",
-    "last": "Fermana dawî"
+    "last": "Fermana dawî",
+    "emptyHelp": "Kirrîyar piştî fermana yekem xuya dibin.",
+    "emptyCta": "Firoşgehê parve bike"
   },
   "settings": {
     "title": "Mîhengên firoşgehê",

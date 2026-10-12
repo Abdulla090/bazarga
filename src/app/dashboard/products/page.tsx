@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
@@ -23,7 +24,7 @@ export default async function ProductsPage() {
         <Link href="/dashboard/products/new" className="btn-gold btn-sm">+ {t("new")}</Link>
       </div>
       {products.length === 0 ? (
-        <p className="border-y border-line py-10 text-ink-70">{t("empty")}</p>
+        <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/products/new" cta={t("emptyCta")} testId="products-empty" />
       ) : (
         <ul className="divide-y divide-line border-y border-line lg:grid lg:grid-cols-2 lg:divide-y-0 lg:gap-x-12">
           {products.map((p) => (
