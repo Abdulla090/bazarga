@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
@@ -46,7 +47,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         ))}
       </nav>
       {orders.length === 0 ? (
-        <p className="border-y border-line py-10 text-ink-70">{t("empty")}</p>
+        <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/share" cta={t("emptyCta")} testId="orders-empty" />
       ) : (
         <ul className="divide-y divide-line border-y border-line">
           {orders.map((o) => (
