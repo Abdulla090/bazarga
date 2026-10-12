@@ -543,10 +543,9 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 @media (min-width: 640px) { .storefront[data-design="market"] main { padding-top: 1.5rem; } }
 
 /* ---- Start-free hero + $1 hook (agentb/hero-1dollar). Pure CSS: CSP-safe, no images, no inline styles. ---- */
-/* Glowing blue promo price: crisp core + two soft halos, plus a radial bloom behind (::before). */
-.glow-price {
-  position: relative;
-  isolation: isolate;
+/* Promo price: big, crisp blue with a faint top-to-bottom gradient fill. No halo, no text-shadow. The roll variant
+   splits the amount into inline-block pieces, so each piece carries the same fill (vertical, so it lines up). */
+.promo-num {
   display: inline-block;
   color: #2563eb;
   font-family: var(--font-latin);
@@ -554,16 +553,15 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
   unicode-bidi: isolate;
   letter-spacing: -0.04em;
   line-height: 1;
-  text-shadow: 0 1px 0 rgb(37 99 235 / 0.25), 0 0 18px rgb(37 99 235 / 0.28), 0 0 44px rgb(37 99 235 / 0.18);
 }
-.glow-price::before {
-  content: "";
-  position: absolute;
-  inset: -35% -55%;
-  z-index: -1;
-  border-radius: 9999px;
-  background: radial-gradient(closest-side, rgb(37 99 235 / 0.16), rgb(37 99 235 / 0.06) 60%, transparent);
-  pointer-events: none;
+.promo-num, .promo-num .sw {
+  background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (forced-colors: active) {
+  .promo-num, .promo-num .sw { background: none; -webkit-text-fill-color: currentColor; }
 }
 /* Struck-through regular price next to the promo. */
 .was-price {
@@ -601,11 +599,6 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
   background: radial-gradient(closest-side, rgb(37 99 235 / 0.14), rgb(37 99 235 / 0.05) 55%, transparent);
   pointer-events: none;
 }
-/* Ticket that carries the $1 hook under the hero CTAs. */
-.hook-ticket {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.75));
-  box-shadow: 0 0 0 1px rgb(37 99 235 / 0.14), 0 18px 40px -22px rgb(37 99 235 / 0.45), 0 2px 6px rgb(10 10 11 / 0.05);
-}
 /* Storefront mockup: browser frame + tilted phone. */
 .mock-frame { box-shadow: 0 0 0 1px rgb(10 10 11 / 0.06), 0 40px 80px -40px rgb(10 10 11 / 0.35), 0 12px 24px -12px rgb(37 99 235 / 0.18); }
 .mock-phone { transform: rotate(6deg); box-shadow: 0 30px 60px -24px rgb(10 10 11 / 0.45); }
@@ -622,12 +615,47 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 }
 
 /* ---- Hero visual (agentb/hero-visual): chat photos -> phone storefront -> order. CSS only, CSP-safe. ---- */
-/* Compact $1 Pro chip that sits in the CTA row. */
-.promo-chip {
-  background: linear-gradient(180deg, #fff, rgb(239 246 255 / 0.9));
-  box-shadow: 0 0 0 1px rgb(37 99 235 / 0.28), 0 10px 30px -12px rgb(37 99 235 / 0.55), 0 0 0 6px rgb(37 99 235 / 0.05);
+/* $1 Pro eyebrow pill (agentb/hero-1-badge), Linear/Stripe-style: crisp 1px gradient stroke (padding-box/border-box
+   backgrounds), faint inner top highlight, one tight low-opacity shadow. A single light sweep runs along the stroke once
+   on load (masked to the 1px ring), only when motion is welcome. */
+.promo-eyebrow {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, #fff, rgb(248 250 255)) padding-box,
+    linear-gradient(120deg, rgb(37 99 235 / 0.55), rgb(37 99 235 / 0.14) 35%, rgb(10 10 11 / 0.08) 60%, rgb(37 99 235 / 0.4)) border-box;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(10 10 11 / 0.05), 0 8px 24px -12px rgb(37 99 235 / 0.35);
+  transition: box-shadow 200ms ease, transform 200ms ease;
 }
-.promo-chip .glow-price::before { inset: -45% -70%; }
+.promo-eyebrow:hover { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(10 10 11 / 0.06), 0 10px 26px -12px rgb(37 99 235 / 0.42); }
+.promo-eyebrow:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+.promo-eyebrow::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent 40%, rgb(147 197 253 / 0.95) 50%, transparent 60%) no-repeat;
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes promo-sheen {
+  0% { background-position: 100% 0; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { background-position: 0% 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .promo-eyebrow::after { animation: promo-sheen 1.8s cubic-bezier(0.45, 0, 0.25, 1) 900ms 1 both; }
+  [dir="rtl"] .promo-eyebrow::after { animation-direction: reverse; }
+}
 .hv-phone {
   box-shadow:
     0 0 0 1px rgb(10 10 11 / 0.6) inset,
@@ -710,7 +738,3 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 @media (prefers-reduced-motion: reduce) { .plans-thumb { transition: none; } }
 /* line-through does not reach inline-block children, so the split "$10" strikes each character itself. */
 .was-price .sw { text-decoration: inherit; text-decoration-line: line-through; text-decoration-thickness: 2px; text-decoration-color: rgb(10 10 11 / 0.45); }
-/* The promo's radial bloom lives on .glow-price::before, outside the per-character pieces: fade it with its layer. */
-.swap-layer .glow-price::before { transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) 120ms; }
-.swap-layer[data-on="false"] .glow-price::before { opacity: 0; transition-duration: 200ms; transition-delay: 0ms; }
-@media (prefers-reduced-motion: reduce) { .swap-layer .glow-price::before { transition: none; } }

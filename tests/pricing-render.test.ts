@@ -25,11 +25,11 @@ const layer = (html: string, plan: string, which: "monthly" | "yearly") => {
 };
 
 describe("pricing render: $1 first-month treatment", () => {
-  it("Pro card shows a struck $10 and a glowing $1 with 'first month' and the after-price", () => {
+  it("Pro card shows a struck $10 and a crisp blue $1 with 'first month' and the after-price", () => {
     const html = render("en");
     const pro = html.slice(html.indexOf('data-plan="pro"'), html.indexOf('data-plan="business"'));
     expect(visible(pro.match(/<s [^>]*data-was[^>]*>.*?<\/s>/)![0])).toBe("$10");
-    expect(visible(pro.match(/data-now[^>]*class="glow-price[^"]*">(.*?)<\/span><\/span>/)?.[1] ?? "")).toBe("$1");
+    expect(visible(pro.match(/data-now[^>]*class="promo-num[^"]*">(.*?)<\/span><\/span>/)?.[1] ?? "")).toBe("$1");
     expect(pro).toContain("first month");
     expect(pro).toContain("$10/month after");
     expect(pro).toContain("Was $10, now $1 for your first month");
@@ -103,5 +103,29 @@ describe("pricing toggle: blur swap between monthly and yearly", () => {
     const free = html.slice(html.indexOf('data-plan="free"'), html.indexOf('data-plan="pro"'));
     expect(free).not.toContain("data-swap");
     expect(free).toContain(">$0<");
+  });
+});
+
+describe("home hero: $1 offer is the eyebrow, the glow is crisp", () => {
+  const page = readFileSync("src/app/(marketing)/page.tsx", "utf8");
+  const css = readFileSync("src/app/globals.css", "utf8");
+  it("the $1 Pro pill replaces the old badge above the H1 and links to /pricing; the CTA row keeps two CTAs", () => {
+    const eyebrow = page.indexOf("data-hero-promo");
+    expect(eyebrow).toBeGreaterThan(-1);
+    expect(eyebrow).toBeLessThan(page.indexOf("<h1"));
+    expect(page.slice(page.lastIndexOf("<Link", eyebrow), eyebrow)).toContain('href="/pricing"');
+    expect(page).not.toContain('tp("badge")');
+    expect(page).not.toContain("promo-chip");
+    expect(page.match(/\$1</g)?.length).toBe(1);
+  });
+  it("'No card needed · Free forever' survives once, as the micro-line under the CTAs, in every locale", () => {
+    expect(page.match(/t\("heroNote"\)/g)?.length).toBe(1);
+    expect(msgs("en").landing.heroNote).toBe("No card needed · Free forever");
+    for (const l of LOCALES) expect(msgs(l).landing.heroNote).toContain("·");
+  });
+  it("no blurred halo: no text-shadow or radial bloom on the promo price", () => {
+    expect(css).not.toContain("glow-price");
+    const block = css.slice(css.indexOf(".promo-num {"), css.indexOf("@media (forced-colors"));
+    expect(block).not.toMatch(/text-shadow|radial-gradient|::before/);
   });
 });
