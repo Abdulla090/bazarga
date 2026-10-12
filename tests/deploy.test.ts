@@ -11,7 +11,7 @@ describe("CSP", () => {
     expect(script).toContain("'strict-dynamic'");
     expect(script).not.toContain("unsafe-inline");
     expect(script).not.toContain("unsafe-eval");
-    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain("frame-ancestors 'self'");
     expect(csp).toContain("object-src 'none'");
     expect(csp).not.toContain("upgrade-insecure-requests");
   });

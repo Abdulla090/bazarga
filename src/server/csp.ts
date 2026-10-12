@@ -27,7 +27,7 @@ export function buildCsp(opts: { nonce: string; isDev: boolean; upgradeInsecureR
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "connect-src 'self'",
-    "frame-ancestors 'none'",
+    "frame-ancestors 'self'",
     "base-uri 'self'",
     // https: — online payment providers (FIB / ZainCash) redirect flows.
     "form-action 'self' https:",

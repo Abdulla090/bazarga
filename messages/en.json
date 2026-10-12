@@ -145,7 +145,8 @@
     "shareSub": "Put it in your Instagram bio and WhatsApp status.",
     "seeAll": "See all",
     "discounts": "Discounts",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "theme": "Theme"
   },
   "setup": {
     "title": "Set up your store",
@@ -769,5 +770,27 @@
     "send": "Send",
     "paid": "Paid",
     "link": "Courier sheet"
+  },
+  "themeStudio": {
+    "title": "Theme",
+    "presets": "Presets",
+    "publish": "Publish",
+    "published": "Published",
+    "unpublished": "Unpublished changes",
+    "desktop": "Desktop",
+    "phone": "Phone",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "preview": "Store preview",
+    "preset": {
+      "ivory": "Ivory",
+      "midnight": "Midnight",
+      "gallery": "Gallery",
+      "studio": "Studio",
+      "stone": "Stone",
+      "mono": "Mono",
+      "editorial": "Editorial",
+      "fresh": "Fresh"
+    }
   }
 }
