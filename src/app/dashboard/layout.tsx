@@ -21,6 +21,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { store } = await requireStore();
   const t = await getTranslations("dash");
   const tc = await getTranslations("common");
+  const tp = await getTranslations("pricing");
   const locale = await currentLocale();
   const newOrders = await countNewOrders(db(), store.id);
   return (
@@ -32,6 +33,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Awning className="h-3.5 w-9 shrink-0" />
             <span className="truncate text-[15px] font-medium text-ink">{store.name}</span>
           </Link>
+          <Link href="/pricing" className="hidden min-h-11 items-center rounded-full border border-line px-3 text-[13px] text-ink/70 hover:text-ink sm:inline-flex">{tp("chip")}</Link>
           <div className="hidden md:block"><LocaleSwitcher current={locale} compact /></div>
           <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm" aria-label={t("viewStore")}>
             <span className="hidden sm:inline">{t("viewStore")}</span>

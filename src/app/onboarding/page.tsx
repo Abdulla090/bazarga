@@ -23,6 +23,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
   if (existing && step !== "theme") redirect("/dashboard");
   const t = await getTranslations("onboarding");
   const ts = await getTranslations("themeStudio");
+  const tp = await getTranslations("pricing");
   const raw = await getLocale();
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   if (existing) {
@@ -61,6 +62,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
         <LocaleSwitcher current={await currentLocale()} locales={["ku", "ar", "en"]} />
       </header>
       <main className="container-page max-w-xl py-6">
+        <a href="/pricing" className="mb-3 inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[13px] text-ink/70">{tp("onb")}</a>
         <h1 className="text-3xl font-extrabold">{t("title")}</h1>
         <p className="mb-6 text-ink-70">{t("sub")}</p>
         <StoreForm
