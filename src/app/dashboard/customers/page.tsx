@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import { getTranslations } from "next-intl/server";
 import { phoneDisplay } from "@/lib/phone";
 import { requireStore } from "@/server/auth/session";
@@ -20,7 +21,7 @@ export default async function CustomersPage() {
     <div className="grid gap-4">
       <h1 className="t-headline">{t("title")}</h1>
       {list.length === 0 ? (
-        <p className="border-t border-line pt-5 text-ink-70">{t("empty")}</p>
+        <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/share" cta={t("emptyCta")} testId="customers-empty" />
       ) : (
         <ul className="grid gap-2">
           {list.map((c) => (

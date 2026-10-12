@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
@@ -73,7 +74,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         ))}
       </dl>
 
-      {empty && <p className="card text-ink-70" data-testid="analytics-empty">{t("empty")}</p>}
+      {empty && <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/share" cta={t("emptyCta")} testId="analytics-empty" />}
 
       <section className="card grid grid-cols-1 gap-2" aria-labelledby="an-trend" data-testid="trend">
         <h2 id="an-trend" className="text-lg font-bold">{t("trendTitle")}</h2>
