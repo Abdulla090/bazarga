@@ -8,9 +8,14 @@ import type { StoreTheme } from "@/lib/theme-studio/schema";
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
-  saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
+  undo: string; redo: string; surprise: string; saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
 };
 
+const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)]!;
+function randomTheme(bases: StoreTheme[]): StoreTheme {
+  const base = pick(bases);
+  return { ...base, preset: "custom", buttons: { ...base.buttons, shape: pick(["square", "rounded", "pill"] as const), style: pick(["solid", "outline", "soft"] as const) }, cards: { ...base.cards, radius: pick(["none", "sm", "md", "lg"] as const), style: pick(["flat", "hairline", "shadow"] as const), ratio: pick(["square", "portrait", "landscape"] as const) }, background: { kind: pick(["solid", "gradient", "pattern"] as const) } };
+}
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Theme Studio editor shell: preset gallery (left), live iframe preview (right) fed by postMessage, autosaved draft, publish. */
@@ -21,6 +26,11 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards">("presets");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
+  const [hist, setHist] = useState<{ past: StoreTheme[]; future: StoreTheme[] }>({ past: [], future: [] });
+  const commit = (n: StoreTheme | ((t: StoreTheme) => StoreTheme)) => { setHist((h) => ({ past: [...h.past.slice(-49), theme], future: [] })); setTheme(typeof n === "function" ? n(theme) : n); };
+  const undo = () => { const p = hist.past[hist.past.length - 1]; if (!p) return; setHist({ past: hist.past.slice(0, -1), future: [...hist.future, theme] }); setTheme(p); };
+  const redo = () => { const n = hist.future[hist.future.length - 1]; if (!n) return; setHist({ past: [...hist.past, theme], future: hist.future.slice(0, -1) }); setTheme(n); };
+  const surprise = () => commit(randomTheme(presets.map((p) => p.theme)));
   const frame = useRef<HTMLIFrameElement>(null);
   const ready = useRef(false);
   const first = useRef(true);
@@ -48,7 +58,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
     return () => clearTimeout(id);
   }, [theme]);
 
-  const setColor = (k: "accent" | "bg" | "surface" | "text", v: string) => setTheme((t) => ({ ...t, preset: "custom", colors: { ...t.colors, [k]: v.toUpperCase() } }));
+  const setColor = (k: "accent" | "bg" | "surface" | "text", v: string) => commit((t) => ({ ...t, preset: "custom", colors: { ...t.colors, [k]: v.toUpperCase() } }));
   const low = contrast(theme.colors.text, theme.colors.bg) < 4.5;
   const SWATCHES: Record<string, string[]> = {
     accent: ["#2563EB", "#0A0A0B", "#16A34A", "#DC2626", "#7C3AED", "#0891B2", "#DB2777", "#B45309"],
@@ -70,7 +80,12 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
             {dirty && <span className="absolute -end-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-paper" aria-label={labels.unpublished} data-testid="theme-dirty" />}
           </button>
         </div>
-        <div className="flex gap-1 px-4 pb-3" role="tablist">
+        <div className="flex gap-2 px-4 pb-3">
+          <button type="button" onClick={undo} disabled={!hist.past.length} data-testid="theme-undo" className="min-h-11 flex-1 rounded-full border border-line text-[13px] disabled:opacity-40">{labels.undo}</button>
+          <button type="button" onClick={redo} disabled={!hist.future.length} data-testid="theme-redo" className="min-h-11 flex-1 rounded-full border border-line text-[13px] disabled:opacity-40">{labels.redo}</button>
+          <button type="button" onClick={surprise} data-testid="theme-surprise" className="min-h-11 flex-[1.4] rounded-full border border-line text-[13px] hover:border-ink/30">{labels.surprise}</button>
+        </div>
+        <div className="flex flex-wrap gap-1 px-4 pb-3" role="tablist">
           {(["presets", "colors", "type", "buttons", "cards"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
               {labels[k]}
@@ -101,7 +116,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
             <p className="t-label text-ink/60">{labels.sizeLabel}</p>
             <div className="flex gap-2">
               {(["s", "m", "l"] as const).map((k) => (
-                <button key={k} type="button" aria-pressed={theme.type.scale === k} onClick={() => setTheme((t) => ({ ...t, preset: "custom", type: { ...t.type, scale: k } }))} data-testid={`scale-${k}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.type.scale === k ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                <button key={k} type="button" aria-pressed={theme.type.scale === k} onClick={() => commit((t) => ({ ...t, preset: "custom", type: { ...t.type, scale: k } }))} data-testid={`scale-${k}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.type.scale === k ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
                   {labels.sizes[k]}
                 </button>
               ))}
@@ -115,7 +130,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                 <legend className="t-label text-ink/60">{title}</legend>
                 <div className="flex flex-wrap gap-2">
                   {opts.map((o) => (
-                    <button key={o} type="button" aria-pressed={theme.cards[key] === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", cards: { ...t.cards, [key]: o } }))} data-testid={`card-${key}-${o}`} className={`min-h-11 min-w-20 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.cards[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                    <button key={o} type="button" aria-pressed={theme.cards[key] === o} onClick={() => commit((t) => ({ ...t, preset: "custom", cards: { ...t.cards, [key]: o } }))} data-testid={`card-${key}-${o}`} className={`min-h-11 min-w-20 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.cards[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
                       {labels.opt[o]}
                     </button>
                   ))}
@@ -126,7 +141,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
               <legend className="t-label text-ink/60">{labels.bgKind}</legend>
               <div className="flex gap-2">
                 {(["solid", "gradient", "pattern"] as const).map((o) => (
-                  <button key={o} type="button" aria-pressed={theme.background.kind === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", background: { ...t.background, kind: o } }))} data-testid={`bg-${o}`} className={`min-h-11 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.background.kind === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                  <button key={o} type="button" aria-pressed={theme.background.kind === o} onClick={() => commit((t) => ({ ...t, preset: "custom", background: { ...t.background, kind: o } }))} data-testid={`bg-${o}`} className={`min-h-11 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.background.kind === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
                     {labels.opt[o]}
                   </button>
                 ))}
@@ -141,7 +156,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                 <legend className="t-label text-ink/60">{title}</legend>
                 <div className="flex gap-2">
                   {opts.map((o) => (
-                    <button key={o} type="button" aria-pressed={theme.buttons[key] === o} onClick={() => setTheme((t) => ({ ...t, preset: "custom", buttons: { ...t.buttons, [key]: o } }))} data-testid={`btn-${key}-${o}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.buttons[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                    <button key={o} type="button" aria-pressed={theme.buttons[key] === o} onClick={() => commit((t) => ({ ...t, preset: "custom", buttons: { ...t.buttons, [key]: o } }))} data-testid={`btn-${key}-${o}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.buttons[key] === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
                       {names[o]}
                     </button>
                   ))}
@@ -158,7 +173,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
               <li key={p.id}>
                 <button
                   type="button"
-                  onClick={() => setTheme(p.theme)}
+                  onClick={() => commit(p.theme)}
                   aria-pressed={sel}
                   data-testid={`preset-${p.id}`}
                   className={`group grid min-h-11 w-full gap-2 rounded-xl border p-2 text-start transition-colors duration-150 ${sel ? "border-blue-600 ring-1 ring-blue-600" : "border-line hover:border-ink/30"}`}
