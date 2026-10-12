@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { CartLink } from "@/components/store/CartLink";
 import { CartDrawer } from "@/components/store/CartDrawer";
+import { PreviewBridge } from "@/components/store/PreviewBridge";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Awning } from "@/components/Logo";
 import { Icon, Search } from "@/components/ui/icons";
@@ -37,6 +38,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const colHead = "t-label mb-3 text-muted";
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
+      <PreviewBridge />
       <header className="store-header sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
         <div className="store-page flex h-16 items-center gap-3">
           <Link href={`/s/${store.slug}`} className="me-auto flex min-h-11 min-w-0 items-center gap-2.5">

@@ -145,7 +145,8 @@
     "shareSub": "ضعه في بايو إنستغرام وحالة واتساب.",
     "seeAll": "عرض الكل",
     "discounts": "الخصومات",
-    "analytics": "التحليلات"
+    "analytics": "التحليلات",
+    "theme": "المظهر"
   },
   "setup": {
     "title": "جهّز متجرك",
@@ -769,5 +770,27 @@
     "send": "إرسال",
     "paid": "مدفوع",
     "link": "قائمة المندوب"
+  },
+  "themeStudio": {
+    "title": "المظهر",
+    "presets": "قوالب جاهزة",
+    "publish": "نشر",
+    "published": "تم النشر",
+    "unpublished": "تغييرات غير منشورة",
+    "desktop": "سطح المكتب",
+    "phone": "هاتف",
+    "saving": "جارٍ الحفظ…",
+    "saved": "تم الحفظ",
+    "preview": "معاينة المتجر",
+    "preset": {
+      "ivory": "عاجي",
+      "midnight": "منتصف الليل",
+      "gallery": "معرض",
+      "studio": "ستوديو",
+      "stone": "حجري",
+      "mono": "أحادي",
+      "editorial": "تحريري",
+      "fresh": "منعش"
+    }
   }
 }

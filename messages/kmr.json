@@ -311,7 +311,8 @@
     "shareTitle": "Girêdana firoşgeha te",
     "shareSub": "Wê têxe bioya Instagramê û statûya WhatsAppê.",
     "seeAll": "Hemûyan bibîne",
-    "discounts": "Daxistin"
+    "discounts": "Daxistin",
+    "theme": "Tema"
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
@@ -770,5 +771,27 @@
     "send": "Bişîne",
     "paid": "Hatiye dayîn",
     "link": "Lîsteya kuryer"
+  },
+  "themeStudio": {
+    "title": "Tema",
+    "presets": "Şêwazên amade",
+    "publish": "Biweşîne",
+    "published": "Hate weşandin",
+    "unpublished": "Guhertinên nehatine weşandin",
+    "desktop": "Desktop",
+    "phone": "Mobîl",
+    "saving": "Tê tomarkirin…",
+    "saved": "Hate tomarkirin",
+    "preview": "Pêşdîtina dikanê",
+    "preset": {
+      "ivory": "Ivory",
+      "midnight": "Nîvê şevê",
+      "gallery": "Galerî",
+      "studio": "Studyo",
+      "stone": "Kevir",
+      "mono": "Mono",
+      "editorial": "Edîtorî",
+      "fresh": "Teze"
+    }
   }
 }
