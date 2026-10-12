@@ -4,7 +4,7 @@ import { COMPARE, PLANS } from "@/lib/plans";
 export async function CompareTable() {
   const t = await getTranslations("pricing");
   const cell = (v: boolean | string) =>
-    v === true ? <span aria-label="✓" className="text-[#2563EB]">✓</span> : v === false ? <span aria-label="—" className="text-ink-70">—</span> : t(`cells.${v}` as "cells.c15");
+    v === true ? <span role="img" aria-label="Included" className="text-[#2563EB]"><svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></span> : v === false ? <span role="img" aria-label="Not included" className="text-ink-70">–</span> : t(`cells.${v}` as "cells.c15");
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[34rem] border-collapse text-sm">
