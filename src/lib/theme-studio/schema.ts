@@ -23,7 +23,7 @@ export const themeSchema = z.object({
     ratio: z.enum(["square", "portrait", "landscape"]),
   }),
   background: z.object({ kind: z.enum(["solid", "gradient", "pattern"]) }),
-  header: z.object({ layout: z.enum(["centered", "split", "minimal"]) }),
+  header: z.object({ layout: z.enum(["centered", "split", "minimal"]), announce: z.string().max(80).optional() }),
 });
 
 export type StoreTheme = z.infer<typeof themeSchema>;
