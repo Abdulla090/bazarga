@@ -91,7 +91,17 @@
     "hookThen": "ثم ⁦$10⁩/شهر · شاهد الخطط",
     "mockStore": "بازار أربيل",
     "mockOrder": "اطلب الآن",
-    "mockAria": "معاينة لمتجر على Bazarga"
+    "mockAria": "معاينة لمتجر على Bazarga",
+    "hvAria": "كيف يعمل Bazarga: أرسل صورك وأسعارك على واتساب أو إنستغرام، واحصل على متجر إلكتروني حقيقي، واستقبل الطلبات بالدفع عند الاستلام أو عبر FIB.",
+    "hvStep1": "أرسل الصور",
+    "hvStep2": "متجرك جاهز",
+    "hvStep3": "استقبل الطلبات",
+    "hvChatCaption": "{count} صور · {price}",
+    "hvChatFrom": "من واتساب أو إنستغرام",
+    "hvOrderTitle": "طلب جديد",
+    "hvNow": "الآن",
+    "hvOrderMeta": "أربيل · {price}",
+    "hvPay": "الدفع عند الاستلام · FIB"
   },
   "auth": {
     "loginTitle": "أهلاً بعودتك",

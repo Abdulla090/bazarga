@@ -164,3 +164,5 @@ Order page gets 3 one-tap WhatsApp replies (confirmed, on the way, need landmark
 - **Cache correctness:** theme publish and onboarding preset apply now invalidate the storefront cache immediately.
 - **Screenshots:** `/workspace/work/shots-themes/editorial-home-en-1280.png` and `editorial-home-ku-390.png` reviewed: no horizontal overflow; RTL typography and editorial hierarchy hold. Full theme shots are generated after gate.
 - **Agent A:** assigned dashboard empty-state + copy polish on `hark/empty-states`; excluded all theme/storefront files.
+
+- 2026-10-13 01:05 Agent B: **Home hero visual + pricing polish** (`agentb/hero-visual`, 2279a65): refined centred free-first hero, $1 Pro promo ticket, RTL-safe pricing presentation, and supporting icon/test polish. Full gate GATE_OK.

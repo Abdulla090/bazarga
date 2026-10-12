@@ -125,7 +125,17 @@
     "hookThen": "paşê $10/meh · planan bibîne",
     "mockStore": "Bazara Hewlêrê",
     "mockOrder": "Niha bixwaze",
-    "mockAria": "Pêşdîtina firoşgeheke Bazarga"
+    "mockAria": "Pêşdîtina firoşgeheke Bazarga",
+    "hvAria": "Bazarga çawa dixebite: wêne û bihayên xwe li WhatsApp an Instagramê bişîne, dikaneke online ya rastîn bistîne, û siparîşan bi dayîna di gihandinê de an bi FIB bistîne.",
+    "hvStep1": "Wêneyan bişîne",
+    "hvStep2": "Dikana te amade ye",
+    "hvStep3": "Siparîşan bistîne",
+    "hvChatCaption": "{count} wêne · {price}",
+    "hvChatFrom": "Ji WhatsApp an Instagramê",
+    "hvOrderTitle": "Siparîşa nû",
+    "hvNow": "niha",
+    "hvOrderMeta": "Hewlêr · {price}",
+    "hvPay": "Dayîn di gihandinê de · FIB"
   },
   "store": {
     "cart": "Selik",

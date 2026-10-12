@@ -91,7 +91,17 @@
     "hookThen": "then $10/month · see plans",
     "mockStore": "Hawler Bazaar",
     "mockOrder": "Order now",
-    "mockAria": "Preview of a Bazarga store"
+    "mockAria": "Preview of a Bazarga store",
+    "hvAria": "How Bazarga works: send your photos and prices on WhatsApp or Instagram, get a real online store, and receive orders paid cash on delivery or by FIB.",
+    "hvStep1": "Send photos",
+    "hvStep2": "Get a store",
+    "hvStep3": "Receive orders",
+    "hvChatCaption": "{count} photos · {price}",
+    "hvChatFrom": "From WhatsApp or Instagram",
+    "hvOrderTitle": "New order",
+    "hvNow": "now",
+    "hvOrderMeta": "Erbil · {price}",
+    "hvPay": "Cash on delivery · FIB"
   },
   "auth": {
     "loginTitle": "Welcome back",
