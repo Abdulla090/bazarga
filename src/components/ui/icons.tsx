@@ -53,7 +53,11 @@ import {
   Tick02Icon,
   TruckIcon,
   Undo02Icon,
-  UserGroupIcon
+  UserGroupIcon,
+  WhatsappIcon,
+  Image01Icon,
+  Notification01Icon,
+  Store01Icon
 } from "@hugeicons/core-free-icons";
 
 export const ChartColumnIncreasing = Analytics01Icon;
@@ -96,6 +100,10 @@ export const Flame = FireIcon;
 export const Download = Download01Icon;
 export const QrCode = QrCodeIcon;
 export const ArrowRight = ArrowRight01Icon;
+export const Whatsapp = WhatsappIcon;
+export const ImageIcon = Image01Icon;
+export const Bell = Notification01Icon;
+export const Store = Store01Icon;
 export const ArrowLeft = ArrowLeft01Icon;
 export const ChevronRight = ArrowRight01Icon;
 export const ChevronLeft = ArrowLeft01Icon;
