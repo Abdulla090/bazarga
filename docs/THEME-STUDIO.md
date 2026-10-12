@@ -11,5 +11,5 @@ Model: versioned zod theme JSON (`src/lib/theme-studio/schema.ts`), draft + publ
 - [x] 4. Colors (swatches, custom picker, AA warning) + text size controls, 4 locales. (Font pairs still to wire via next/font.)
 - [x] 5a. Buttons shape/style/size controls + storefront consumption. [x] 5b cards + background kind controls (storefront consumes).
 - [ ] 6. Header/footer, homepage sections reorder + variants, product page options.
-- [ ] 7. Undo/redo, reset, autosave, Surprise me, phone bottom sheet.
+- [~] 7 (undo/redo + Surprise me done). Undo/redo, reset, autosave, Surprise me, phone bottom sheet.
 - [ ] 8. e2e: preset change + publish changes storefront CSS vars; polish.
