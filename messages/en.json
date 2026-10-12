@@ -791,6 +791,20 @@
       "mono": "Mono",
       "editorial": "Editorial",
       "fresh": "Fresh"
+    },
+    "colors": "Colors",
+    "type": "Type",
+    "accent": "Accent",
+    "bg": "Background",
+    "surface": "Surface",
+    "text": "Text",
+    "custom": "Custom color",
+    "lowContrast": "Text is hard to read on this background. We lighten or darken it automatically.",
+    "sizeLabel": "Text size",
+    "size": {
+      "s": "Small",
+      "m": "Medium",
+      "l": "Large"
     }
   }
 }

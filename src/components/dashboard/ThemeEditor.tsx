@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { saveThemeDraftAction, publishThemeAction } from "@/server/actions/theme";
 import { themeToCssVars } from "@/lib/theme-studio/css";
+import { contrast } from "@/lib/theme-studio/contrast";
 import type { StoreTheme } from "@/lib/theme-studio/schema";
 
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
-  saving: string; saved: string; preview: string; names: Record<string, string>;
+  saving: string; saved: string; preview: string; colors: string; type: string; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
 };
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -17,6 +18,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const [theme, setTheme] = useState<StoreTheme>(initial);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
+  const [tab, setTab] = useState<"presets" | "colors" | "type">("presets");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
   const frame = useRef<HTMLIFrameElement>(null);
@@ -46,6 +48,14 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
     return () => clearTimeout(id);
   }, [theme]);
 
+  const setColor = (k: "accent" | "bg" | "surface" | "text", v: string) => setTheme((t) => ({ ...t, preset: "custom", colors: { ...t.colors, [k]: v.toUpperCase() } }));
+  const low = contrast(theme.colors.text, theme.colors.bg) < 4.5;
+  const SWATCHES: Record<string, string[]> = {
+    accent: ["#2563EB", "#0A0A0B", "#16A34A", "#DC2626", "#7C3AED", "#0891B2", "#DB2777", "#B45309"],
+    bg: ["#FAFAF7", "#FFFFFF", "#F4F1EA", "#EEF2F7", "#0B0B0D", "#14171C"],
+    surface: ["#FFFFFF", "#F5F5F2", "#ECEFF4", "#1A1D23", "#22262E"],
+    text: ["#0A0A0B", "#1F2937", "#111827", "#F5F5F4", "#FFFFFF"],
+  };
   const dirty = !same(theme, pub);
   const doPublish = () => start(async () => { const r = await publishThemeAction(theme); if (r.ok) { setPub(theme); setStatus("saved"); } });
 
@@ -60,8 +70,45 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
             {dirty && <span className="absolute -end-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-paper" aria-label={labels.unpublished} data-testid="theme-dirty" />}
           </button>
         </div>
-        <p className="t-label px-4 pb-2 text-ink/60">{labels.presets}</p>
-        <ul className="grid grid-cols-2 gap-3 overflow-y-auto px-4 pb-6">
+        <div className="flex gap-1 px-4 pb-3" role="tablist">
+          {(["presets", "colors", "type"] as const).map((k) => (
+            <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
+              {labels[k]}
+            </button>
+          ))}
+        </div>
+        {tab === "colors" && (
+          <div className="grid gap-5 overflow-y-auto px-4 pb-6" data-testid="theme-colors">
+            {(["accent", "bg", "surface", "text"] as const).map((k) => (
+              <fieldset key={k} className="grid gap-2">
+                <legend className="t-label text-ink/60">{labels[k]}</legend>
+                <div className="flex flex-wrap items-center gap-2">
+                  {SWATCHES[k]!.map((c) => (
+                    <button key={c} type="button" onClick={() => setColor(k, c)} aria-label={c} aria-pressed={theme.colors[k].toUpperCase() === c} className={`h-11 w-11 rounded-full border transition-shadow duration-150 ${theme.colors[k].toUpperCase() === c ? "border-blue-600 ring-2 ring-blue-600 ring-offset-2" : "border-line"}`} style={{ background: c }} />
+                  ))}
+                  <label className="relative grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-line text-[11px] text-ink/60" title={labels.custom}>
+                    <input type="color" value={theme.colors[k]} onChange={(e) => setColor(k, e.target.value)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label={labels.custom} data-testid={`color-${k}`} />
+                    <span className="h-6 w-6 rounded-full" style={{ background: theme.colors[k] }} />
+                  </label>
+                </div>
+              </fieldset>
+            ))}
+            {low && <p className="text-[13px] text-red-700" role="status">{labels.lowContrast}</p>}
+          </div>
+        )}
+        {tab === "type" && (
+          <div className="grid gap-3 px-4 pb-6" data-testid="theme-type">
+            <p className="t-label text-ink/60">{labels.sizeLabel}</p>
+            <div className="flex gap-2">
+              {(["s", "m", "l"] as const).map((k) => (
+                <button key={k} type="button" aria-pressed={theme.type.scale === k} onClick={() => setTheme((t) => ({ ...t, preset: "custom", type: { ...t.type, scale: k } }))} data-testid={`scale-${k}`} className={`min-h-11 flex-1 rounded-full border text-[13px] transition-colors duration-150 ${theme.type.scale === k ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                  {labels.sizes[k]}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {tab === "presets" && <ul className="grid grid-cols-2 gap-3 overflow-y-auto px-4 pb-6">
           {presets.map((p) => {
             const sel = theme.preset === p.id;
             const r = p.vars["--t-radius-btn"];
@@ -86,7 +133,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
               </li>
             );
           })}
-        </ul>
+        </ul>}
       </aside>
       <section className="flex min-h-[28rem] min-w-0 flex-1 flex-col bg-ink/[0.03]" aria-label={labels.preview}>
         <div className="flex items-center justify-center gap-1 border-b border-line py-2" role="group">
