@@ -8,7 +8,7 @@ import type { StoreTheme } from "@/lib/theme-studio/schema";
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
-  undo: string; redo: string; surprise: string; saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
+  undo: string; redo: string; surprise: string; saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; header: string; headerLayout: string; announce: string; announcePh: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
 };
 
 const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)]!;
@@ -23,7 +23,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const [theme, setTheme] = useState<StoreTheme>(initial);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
-  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards">("presets");
+  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards" | "header">("presets");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
   const [hist, setHist] = useState<{ past: StoreTheme[]; future: StoreTheme[] }>({ past: [], future: [] });
@@ -38,7 +38,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const push = (t: StoreTheme) => {
     const v = themeToCssVars(t).vars;
     const vars = { ...v, "--st-bg": v["--t-bg"]!, "--st-surface": v["--t-surface"]!, "--st-fg": v["--t-fg"]!, "--st-muted": v["--t-muted"]!, "--st-border": v["--t-border"]!, "--st-accent": v["--t-accent"]!, "--st-on-accent": v["--t-on-accent"]!, "--st-radius": v["--t-radius-card"]! };
-    frame.current?.contentWindow?.postMessage({ type: "bazarga-theme", vars }, window.location.origin);
+    frame.current?.contentWindow?.postMessage({ type: "bazarga-theme", vars, header: { layout: t.header.layout, announce: t.header.announce ?? "" } }, window.location.origin);
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
           <button type="button" onClick={surprise} data-testid="theme-surprise" className="min-h-11 flex-[1.4] rounded-full border border-line text-[13px] hover:border-ink/30">{labels.surprise}</button>
         </div>
         <div className="flex flex-wrap gap-1 px-4 pb-3" role="tablist">
-          {(["presets", "colors", "type", "buttons", "cards"] as const).map((k) => (
+          {(["presets", "colors", "type", "buttons", "cards", "header"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
               {labels[k]}
             </button>
@@ -147,6 +147,24 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                 ))}
               </div>
             </fieldset>
+          </div>
+        )}
+        {tab === "header" && (
+          <div className="grid gap-5 px-4 pb-6" data-testid="theme-header">
+            <fieldset className="grid gap-2">
+              <legend className="t-label text-ink/60">{labels.headerLayout}</legend>
+              <div className="flex gap-2">
+                {(["centered", "split", "minimal"] as const).map((o) => (
+                  <button key={o} type="button" aria-pressed={theme.header.layout === o} onClick={() => commit((t) => ({ ...t, preset: "custom", header: { ...t.header, layout: o } }))} data-testid={`header-${o}`} className={`min-h-11 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.header.layout === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                    {labels.opt[o]}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <label className="grid gap-2">
+              <span className="t-label text-ink/60">{labels.announce}</span>
+              <input type="text" maxLength={80} value={theme.header.announce ?? ""} placeholder={labels.announcePh} onChange={(e) => commit((t) => ({ ...t, preset: "custom", header: { ...t.header, announce: e.target.value } }))} data-testid="header-announce" className="min-h-11 rounded-full border border-line bg-transparent px-4 text-[14px] outline-none focus:border-blue-600" />
+            </label>
           </div>
         )}
         {tab === "buttons" && (

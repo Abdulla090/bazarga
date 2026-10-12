@@ -840,7 +840,14 @@
       "landscape": "Wide",
       "solid": "Plain",
       "gradient": "Gradient",
-      "pattern": "Dots"
-    }
+      "pattern": "Dots",
+      "centered": "Centered",
+      "split": "Classic",
+      "minimal": "Minimal"
+    },
+    "header": "Header",
+    "headerLayout": "Header layout",
+    "announce": "Announcement bar",
+    "announcePh": "Free delivery over 50,000 IQD"
   }
 }

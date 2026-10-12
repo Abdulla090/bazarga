@@ -23,6 +23,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- 2026-10-12 15:00 Agent B: Theme Studio step 6a: Header tab (layout centered/classic/minimal + announcement bar, live in preview, 4 locales). Schema additive (header.announce optional).
+
 ### Oct 12 10:30 Agent B: theme studio 5a: Buttons tab (shape/style/size), storefront .btn/.btn-gold consume --t-btn-* vars, 4 locales. Gate OK. Next: cards + background controls.
 
 

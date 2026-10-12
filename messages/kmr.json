@@ -841,7 +841,14 @@
       "landscape": "Fireh",
       "solid": "Sade",
       "gradient": "Gradient",
-      "pattern": "Xal"
-    }
+      "pattern": "Xal",
+      "centered": "Navend",
+      "split": "Klasîk",
+      "minimal": "Sade"
+    },
+    "header": "Serrûpel",
+    "headerLayout": "Çêkirina serrûpelê",
+    "announce": "Nîşana daxuyaniyê",
+    "announcePh": "Gihandin belaş e"
   }
 }

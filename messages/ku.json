@@ -840,7 +840,14 @@
       "landscape": "پان",
       "solid": "ساده",
       "gradient": "تێکەڵ",
-      "pattern": "نوقتە"
-    }
+      "pattern": "نوقتە",
+      "centered": "ناوەڕاست",
+      "split": "کلاسیک",
+      "minimal": "کەمینە"
+    },
+    "header": "سەرپەڕە",
+    "headerLayout": "ڕێکخستنی سەرپەڕە",
+    "announce": "نوارەی ڕاگەیاندن",
+    "announcePh": "گەیاندن بێبەرامبەرە"
   }
 }

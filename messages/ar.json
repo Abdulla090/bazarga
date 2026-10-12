@@ -840,7 +840,14 @@
       "landscape": "عريض",
       "solid": "سادة",
       "gradient": "تدرج",
-      "pattern": "نقاط"
-    }
+      "pattern": "نقاط",
+      "centered": "في الوسط",
+      "split": "كلاسيكي",
+      "minimal": "مبسّط"
+    },
+    "header": "الترويسة",
+    "headerLayout": "تخطيط الترويسة",
+    "announce": "شريط الإعلان",
+    "announcePh": "توصيل مجاني"
   }
 }

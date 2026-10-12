@@ -483,3 +483,13 @@ form:has(:is(input, textarea, select):focus) .co-submit { position: static; }
 
 /* Storefront helper text reads at 13 px (the shared 12 px hint is sized for the dense dashboard). */
 .storefront .hint { font-size: 0.8125rem; }
+
+/* Theme Studio header layouts + announcement bar */
+.store-announce { background: var(--st-fg); color: var(--st-bg); text-align: center; font-size: 13px; line-height: 1.4; padding: 10px 16px; }
+.store-announce[hidden] { display: none; }
+.storefront[data-header="centered"] .store-header .store-page { display: grid; grid-template-columns: 1fr auto 1fr; }
+.storefront[data-header="centered"] .store-header .store-page > a:first-child { grid-column: 2; grid-row: 1; margin: 0; justify-self: center; }
+.storefront[data-header="centered"] .store-header .store-page > a:nth-child(2) { grid-column: 1; grid-row: 1; justify-self: start; }
+.storefront[data-header="centered"] .store-header .store-page > :nth-child(3) { grid-column: 3; grid-row: 1; justify-self: end; }
+.storefront[data-header="minimal"] .store-header [data-testid="header-search"] { display: none; }
+.storefront[data-header="minimal"] .store-header { border-bottom: 0; }

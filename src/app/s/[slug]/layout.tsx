@@ -11,7 +11,7 @@ import { Icon, Search } from "@/components/ui/icons";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { resolveTheme, themeStyle } from "@/lib/theme";
-import { publishedThemeStyle } from "@/lib/theme-studio/resolve";
+import { publishedThemeStyle, parseTheme } from "@/lib/theme-studio/resolve";
 import { normalizePhone } from "@/lib/phone";
 import { waLink } from "@/lib/whatsapp";
 
@@ -34,11 +34,13 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const about = pickText(store.about, locale);
   const returns = pickText(store.returnPolicy, locale);
   const theme = resolveTheme(store.themePreset, store.accentColor);
+  const hdr = parseTheme(store.themePublished)?.header;
   const wa = store.whatsapp ? normalizePhone(store.whatsapp) : null;
   const colHead = "t-label mb-3 text-muted";
   return (
-    <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
+    <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} data-header={hdr?.layout ?? "split"} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
       <PreviewBridge />
+      <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       <header className="store-header sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
         <div className="store-page flex h-16 items-center gap-3">
           <Link href={`/s/${store.slug}`} className="me-auto flex min-h-11 min-w-0 items-center gap-2.5">
