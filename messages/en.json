@@ -119,7 +119,11 @@
     "whatsappHint": "Customers message you here after ordering",
     "instagram": "Instagram",
     "city": "City",
-    "create": "Create my store"
+    "create": "Create my store",
+    "themeTitle": "Pick a look",
+    "themeSub": "Choose a starting style. You can edit every detail later.",
+    "themeUse": "Use this look",
+    "themeSkip": "Skip for now"
   },
   "dash": {
     "newOrders": "{count} new orders",
