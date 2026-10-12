@@ -9,7 +9,7 @@ function chars(text: string, from: number) {
 }
 
 /**
- * "$10 struck through, big glowing blue $1". Hook-free, so both server (hero) and client (pricing cards) use it.
+ * "$10 struck through, big crisp blue $1". Hook-free, so both server (hero) and client (pricing cards) use it.
  * Each amount is its own LTR island, so "$" stays in front of the digits in RTL; the row itself follows the page
  * direction (RTL readers meet the old price first, then the new one).
  * `roll`: split both amounts per character so they take part in the pricing toggle's blur swap.
@@ -24,7 +24,7 @@ export function PromoPrice({ size = "lg", srLabel, roll = false }: { size?: "md"
     <span className="inline-flex items-end gap-3" data-promo-price>
       <span className="sr-only">{srLabel}</span>
       <s aria-hidden="true" dir="ltr" data-was className={`was-price mb-1.5 ${small} font-normal`}>{roll ? chars(was, 0) : was}</s>
-      <span aria-hidden="true" dir="ltr" data-now className={`glow-price ${big} font-semibold`}>{roll ? chars(now, was.length) : now}</span>
+      <span aria-hidden="true" dir="ltr" data-now className={`promo-num ${big} font-semibold`}>{roll ? chars(now, was.length) : now}</span>
     </span>
   );
 }
