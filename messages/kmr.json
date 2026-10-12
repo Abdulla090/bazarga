@@ -792,6 +792,20 @@
       "mono": "Mono",
       "editorial": "Edîtorî",
       "fresh": "Teze"
+    },
+    "colors": "Reng",
+    "type": "Nivîs",
+    "accent": "Rengê sereke",
+    "bg": "Paşxane",
+    "surface": "Rû",
+    "text": "Nivîs",
+    "custom": "Rengê din",
+    "lowContrast": "Nivîs li ser vê paşxaneyê zor tê xwendin. Em bixwe ronî an tarî dikin.",
+    "sizeLabel": "Mezinahiya nivîsê",
+    "size": {
+      "s": "Biçûk",
+      "m": "Navîn",
+      "l": "Mezin"
     }
   }
 }
