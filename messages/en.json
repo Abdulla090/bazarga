@@ -780,6 +780,9 @@
     "desktop": "Desktop",
     "phone": "Phone",
     "saving": "Saving…",
+    "undo": "Undo",
+    "redo": "Redo",
+    "surprise": "Surprise me",
     "saved": "Saved",
     "preview": "Store preview",
     "preset": {
