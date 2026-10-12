@@ -117,6 +117,9 @@ export const stores = pgTable(
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */
     accentColor: text("accent_color"),
+    /** Theme Studio (src/lib/theme-studio): versioned theme JSON; storefront reads only themePublished (null = legacy preset). */
+    themeDraft: jsonb("theme_draft").$type<unknown>(),
+    themePublished: jsonb("theme_published").$type<unknown>(),
     coverImageUrl: text("cover_image_url"),
     coverImageKey: text("cover_image_key"),
     /** Tiny inline WebP data: URL shown while the cover loads. */

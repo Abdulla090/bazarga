@@ -44,6 +44,7 @@ export type StorefrontStore = {
   city: string | null;
   themePreset: "bazaar" | "mountain" | "night";
   accentColor: string | null;
+  themePublished: unknown;
   coverImageUrl: string | null;
   coverImagePlaceholder: string | null;
   coverImageRenditions: ImageRendition[];
@@ -68,6 +69,7 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       city: true,
       themePreset: true,
       accentColor: true,
+      themePublished: true,
       coverImageUrl: true,
       coverImagePlaceholder: true,
       coverImageRenditions: true,
