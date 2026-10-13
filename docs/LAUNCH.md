@@ -9,7 +9,7 @@
 
 ## Wed 14
 - [ ] K4 upgrade requests + /admin (ADMIN_EMAILS)
-- [ ] K5 cron endpoints (CRON_SECRET) + vercel.json
+- [x] K5 cron: /api/cron/daily (plan expiry + payments) + vercel.json daily; CRON_SECRET set on Vercel
 - [ ] K6 rate limits, audit log, security headers, npm audit
 - [ ] Themes Gallery, Boutique, Mono, Studio; theme thumbnails; one-click switch e2e
 
