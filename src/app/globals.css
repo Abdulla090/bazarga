@@ -774,66 +774,84 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
   }
 }
 
-/* ---- "Start free" hook CTA (agentb/hero-nav). Crisp only: hard 1.5px gradient stroke, flat 4px tint ring, no glows. ---- */
-@property --cta-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@property --cta-fill { syntax: "<color>"; inherits: false; initial-value: #2563eb; }
+/* ---- Hero CTA (agentb/hero-fix): restrained ink pill, 48px, sliding arrow. The headline's blue line is the hook. ---- */
 .cta-hook {
-  --cta-fill: #2563eb;
-  position: relative;
   display: inline-flex;
   min-height: 3rem;
   max-width: 100%;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding-inline: 0.5rem 1.25rem;
-  border: 1.5px solid transparent;
+  gap: 0.625rem;
+  padding-inline: 1.75rem 1.5rem;
   border-radius: 9999px;
-  color: #fff;
+  background: var(--color-ink);
+  color: var(--color-paper);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
-  background:
-    linear-gradient(var(--cta-fill), var(--cta-fill)) padding-box,
-    conic-gradient(from var(--cta-a), #1d4ed8 0deg, #60a5fa 40deg, #ffffff 75deg, #60a5fa 110deg, #1d4ed8 150deg, #1d4ed8 360deg) border-box;
-  box-shadow: 0 0 0 4px rgb(37 99 235 / 0.12), 0 1px 2px rgb(10 10 11 / 0.16);
-  transition: --cta-fill 200ms ease, box-shadow 200ms ease, transform 160ms ease;
+  box-shadow: 0 1px 2px rgb(10 10 11 / 0.18);
+  transition: background-color 200ms ease, transform 160ms ease;
 }
-.cta-hook:hover { --cta-fill: #0a0a0b; box-shadow: 0 0 0 4px rgb(10 10 11 / 0.08), 0 1px 2px rgb(10 10 11 / 0.2); }
-.cta-hook:active { --cta-fill: #000; transform: scale(0.98); }
-.cta-hook:focus-visible { outline: 2px solid #2563eb; outline-offset: 5px; }
+.cta-hook:hover { background: #26262a; }
+.cta-hook:active { background: #000; transform: scale(0.98); }
+.cta-hook:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
 .cta-arrow { transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1); }
 .cta-hook:hover .cta-arrow { transform: translateX(4px); }
 [dir="rtl"] .cta-hook:hover .cta-arrow { transform: translateX(-4px); }
-/* 7x4 orders heatmap on a white tile: 4px cells, 2px gaps, flows by column in reading direction. */
-.cta-heat {
-  display: grid;
-  flex-shrink: 0;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(4, 4px);
-  grid-auto-columns: 4px;
-  gap: 2px;
-  padding: 5px 6px;
-  border-radius: 9999px;
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgb(37 99 235 / 0.18);
+@media (forced-colors: active) {
+  .cta-hook { background: ButtonFace; border: 1px solid ButtonText; color: ButtonText; box-shadow: none; }
 }
-.cta-heat i { display: block; border-radius: 1px; background: #dbeafe; }
-.cta-heat i[data-l="1"] { background: #bfdbfe; }
-.cta-heat i[data-l="2"] { background: #93c5fd; }
-.cta-heat i[data-l="3"] { background: #3b82f6; }
-.cta-heat i[data-l="4"] { background: #1d4ed8; }
-@keyframes cta-spin { to { --cta-a: 360deg; } }
-@keyframes cta-cell { from { transform: scale(0); } to { transform: scale(1); } }
-@keyframes cta-today { 0%, 100% { background: #1d4ed8; } 50% { background: #93c5fd; } }
+
+/* ---- Hero headline line 2 "Start free." (agentb/hero-fix): crisp ink -> #2563EB -> light-blue gradient text, slow
+   sheen, hand-drawn underline that draws in once. Hard edges only, no glow. Extra block padding + line-height keep
+   Arabic-script descenders and diacritics inside the clipped background. ---- */
+.hero-hook {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding-bottom: 0.26em;
+  line-height: 1.22;
+}
+.hero-hook-text {
+  --hook-dir: 100deg;
+  /* inline (not inline-block) so it wraps naturally at 360px; block padding only widens the painted/clipped area */
+  display: inline;
+  padding-block: 0.1em 0.18em;
+  font-weight: 400;
+  color: #2563eb;
+  background-image:
+    linear-gradient(var(--hook-dir), transparent 0%, transparent 38%, rgb(255 255 255 / 0.55) 50%, transparent 62%, transparent 100%),
+    linear-gradient(var(--hook-dir), #0a0a0b 0%, #1e40af 22%, #2563eb 55%, #3b82f6 82%, #60a5fa 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-position: 120% 0, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+[dir="rtl"] .hero-hook-text { --hook-dir: 260deg; }
+.hero-hook-line {
+  position: absolute;
+  inset-inline: 2%;
+  bottom: -0.08em;
+  width: 96%;
+  height: 0.2em;
+  overflow: visible;
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+[dir="rtl"] .hero-hook-line { transform: scaleX(-1); }
+@keyframes hook-sheen { 0% { background-position: 120% 0, 0 0; } 30%, 100% { background-position: -20% 0, 0 0; } }
+@keyframes hook-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: no-preference) {
-  .cta-hook { animation: cta-spin 4.5s linear infinite; }
-  .cta-heat i { animation: cta-cell 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(700ms + var(--c, 0) * 70ms + var(--r, 0) * 20ms); }
-  .cta-heat i[data-today] {
-    animation: cta-cell 260ms cubic-bezier(0.22, 1, 0.36, 1) both, cta-today 2.4s ease-in-out infinite;
-    animation-delay: calc(700ms + var(--c, 0) * 70ms + var(--r, 0) * 20ms), calc(1.6s + var(--r, 0) * 300ms);
-  }
+  .hero-hook-text { animation: hook-sheen 7s cubic-bezier(0.45, 0, 0.25, 1) 1.4s infinite; }
+  .hero-hook-line path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hook-draw 900ms cubic-bezier(0.65, 0, 0.35, 1) 900ms forwards; }
 }
 @media (forced-colors: active) {
-  .cta-hook { background: ButtonFace; border-color: ButtonText; color: ButtonText; box-shadow: none; }
+  .hero-hook-text { background: none; -webkit-text-fill-color: currentColor; color: CanvasText; }
+  .hero-hook-line { stroke: CanvasText; }
 }

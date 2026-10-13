@@ -11,7 +11,7 @@ vi.mock("next-intl/server", () => ({
 
 const { SiteHeaderView } = await import("@/components/SiteHeader");
 const { HeroVisual } = await import("@/components/marketing/HeroVisual");
-const { HeroCta } = await import("@/components/marketing/HeroCta");
+const { HeroCta, HeroHook } = await import("@/components/marketing/HeroCta");
 
 const LOCALES = ["en", "ku", "kmr", "ar"] as const;
 const msgs = (l: string) => JSON.parse(readFileSync(`messages/${l}.json`, "utf8"));
@@ -90,25 +90,47 @@ describe("hero phone cards: hidden until scroll, aria-safe", () => {
   });
 });
 
-describe("Start free hook CTA", () => {
-  it("is a ≥48px link with a 7x4 decorative heatmap and a direction-aware arrow", () => {
+describe("hero: blue headline hook + restrained CTA", () => {
+  it("CTA is a clean ≥48px ink link with a direction-aware arrow and no heatmap/rotating border", () => {
     const html = renderToStaticMarkup(createElement(HeroCta, { href: "/signup", label: "Create your store free" }));
     expect(html).toContain('href="/signup"');
     expect(html).toContain("cta-hook");
-    expect(html).toMatch(/aria-hidden="true" class="cta-heat"/);
-    expect(html.match(/<i /g)?.length).toBe(28);
-    expect(html.match(/data-today/g)?.length).toBe(4);
+    expect(html).not.toContain("cta-heat");
+    expect(html).not.toContain("<i ");
     expect(html).toContain("rtl:-scale-x-100");
     const css = readFileSync("src/app/globals.css", "utf8");
     expect(css).toMatch(/\.cta-hook \{[^}]*min-height: 3rem/);
-    const block = css.slice(css.indexOf('"Start free" hook CTA'));
-    expect(block).not.toMatch(/orange|yellow|#f59e0b|#fbbf24|blur\(/i);
+    expect(css).toMatch(/\.cta-hook \{[^}]*background: var\(--color-ink\)/);
+    expect(css).not.toMatch(/cta-heat|cta-spin|--cta-a/);
   });
 
-  it("landing page uses it and keeps the free micro-line under it", () => {
+  it("headline line 2 is a crisp blue gradient-text hook with a decorative underline, no blur/glow", () => {
+    const html = renderToStaticMarkup(createElement(HeroHook, { text: "Start free." }));
+    expect(html).toContain("Start free.");
+    expect(html).toMatch(/<svg aria-hidden="true"[^>]*class="hero-hook-line"/);
+    const css = readFileSync("src/app/globals.css", "utf8");
+    const block = css.slice(css.indexOf("Hero headline line 2"), css.indexOf("@media (forced-colors: active)", css.indexOf("Hero headline line 2")));
+    expect(block).toMatch(/background-clip: text/);
+    expect(block).toMatch(/#2563eb/i);
+    expect(block).not.toMatch(/blur\(|text-shadow|drop-shadow/);
+    // reduced motion => static gradient: animations only live under no-preference
+    expect(block).toMatch(/prefers-reduced-motion: no-preference\) \{\s+\.hero-hook-text \{ animation/);
+  });
+
+  it("landing page wires the hook into the H1, keeps the free micro-line under the CTA and pushes the phone lower", () => {
     const src = readFileSync("src/app/(marketing)/page.tsx", "utf8");
+    expect(src).toContain('<HeroHook text={t("heroTitle2")} />');
     expect(src).toContain('<HeroCta href="/signup"');
     expect(src.indexOf("<HeroCta")).toBeLessThan(src.indexOf("data-hero-note"));
     expect(src).toContain("data-hero-promo");
+    expect(src).toMatch(/data-hero-phone className="[^"]*mt-10[^"]*sm:mt-\[5\.5rem\]/);
+  });
+
+  it("header is a 3-column grid with the links centred", () => {
+    const html = header("en");
+    expect(html).toContain("md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]");
+    expect(html).toMatch(/data-nav-links|md:justify-self-center/);
+    expect(html).toContain("md:justify-self-center");
+    expect(html).toContain("md:justify-self-end");
   });
 });

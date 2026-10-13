@@ -10,7 +10,7 @@ import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
 import { ArrowForward, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/components/ui/icons";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
-import { HeroCta } from "@/components/marketing/HeroCta";
+import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
 
 const DEMO_SLUG = "hawler-bazaar";
 
@@ -64,7 +64,7 @@ export default async function LandingPage() {
             </Link>
             <h1 className="hero-rise hero-d1 mt-4 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-5 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
               <span className="block">{t("heroTitle1")}</span>
-              <span className="block text-ink-50">{t("heroTitle2")}</span>
+              <span className="block"><HeroHook text={t("heroTitle2")} /></span>
             </h1>
             <p className="hero-rise hero-d2 mt-4 hidden max-w-xl text-ink-70 text-pretty sm:block sm:text-lg">{t("heroLead")}</p>
             <div className="hero-rise hero-d3 mt-6 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-7 sm:w-auto sm:flex-row sm:items-center">
@@ -72,7 +72,7 @@ export default async function LandingPage() {
               <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost min-h-12 px-7 text-base">{t("heroCta2")}</Link>
             </div>
             <p data-hero-note className="hero-rise hero-d3 mt-3 text-sm text-ink-50">{t("heroNote")}</p>
-            <div className="hero-rise hero-d4 mt-7 w-full sm:mt-12">
+            <div data-hero-phone className="hero-rise hero-d4 mt-10 w-full sm:mt-[5.5rem]">
               <HeroVisual locale={locale} />
             </div>
           </div>

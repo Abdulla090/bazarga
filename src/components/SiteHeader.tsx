@@ -13,7 +13,7 @@ export type SiteHeaderLabels = {
 };
 
 /**
- * Marketing header (/ and /pricing), one row, Linear/Vercel-style: logo · 3 links · language · Log in · one CTA.
+ * Marketing header (/ and /pricing), one row, Linear/Vercel-style: 3-column grid: logo | truly centred links | language · Log in · one CTA (mirrors in RTL).
  * No promo top bar: the hero's "$1 | Try Pro" pill carries the offer, so the header never repeats it.
  * Phones: logo + CTA + menu button only (links, Log in and language live in the sheet). 8px rhythm, hairline bottom.
  */
@@ -27,36 +27,38 @@ export function SiteHeaderView({ labels, locale, signedIn }: { labels: SiteHeade
   const cta = signedIn ? { href: "/dashboard", label: labels.dashboard } : { href: "/signup", label: labels.start };
   return (
     <div data-site-top className="sticky top-0 z-40 border-b border-ink/[0.08] bg-paper/85 pt-[env(safe-area-inset-top)] backdrop-blur-md backdrop-saturate-150">
-      <header className="container-page flex h-14 items-center gap-2 md:h-16">
-        <Link href="/" className="me-auto shrink-0 md:me-6" data-nav-logo>
+      <header className="container-page flex h-14 items-center gap-2 md:grid md:h-16 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4">
+        <Link href="/" className="me-auto shrink-0 md:me-0 md:justify-self-start" data-nav-logo>
           <Logo showKu="sm" />
         </Link>
-        <nav aria-label={labels.main} className="me-auto hidden items-center gap-1 md:flex" data-nav-links>
+        <nav aria-label={labels.main} className="hidden items-center gap-1 md:flex md:justify-self-center" data-nav-links>
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-ink-70 transition-colors hover:bg-ink/[0.04] hover:text-ink">
+            <Link key={l.href} href={l.href} className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-ink-70 transition-colors hover:bg-ink/[0.04] hover:text-ink">
               {l.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden md:block">
-          <LocaleMenu current={locale} locales={UI_LOCALES} label={labels.language} />
+        <div data-nav-end className="flex shrink-0 items-center gap-2 md:justify-self-end">
+          <div className="hidden md:block">
+            <LocaleMenu current={locale} locales={UI_LOCALES} label={labels.language} />
+          </div>
+          {login && (
+            <>
+              <span aria-hidden="true" className="mx-1 hidden h-4 w-px bg-ink/10 md:block" />
+              <Link href={login.href} data-nav-login className="hidden h-9 items-center px-3 text-sm font-medium whitespace-nowrap text-ink-70 transition-colors hover:text-ink md:inline-flex">
+                {login.label}
+              </Link>
+            </>
+          )}
+          <Link
+            href={cta.href}
+            data-nav-cta
+            className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-ink px-4 text-sm font-semibold whitespace-nowrap text-paper transition-colors hover:bg-[#2563EB] md:min-h-9"
+          >
+            {cta.label}
+          </Link>
+          <MobileMenu links={links} login={login} locale={locale} locales={UI_LOCALES} labels={{ menu: labels.menu, close: labels.close, language: labels.language }} />
         </div>
-        {login && (
-          <>
-            <span aria-hidden="true" className="mx-1 hidden h-4 w-px bg-ink/10 md:block" />
-            <Link href={login.href} data-nav-login className="hidden h-9 items-center px-3 text-sm font-medium text-ink-70 transition-colors hover:text-ink md:inline-flex">
-              {login.label}
-            </Link>
-          </>
-        )}
-        <Link
-          href={cta.href}
-          data-nav-cta
-          className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-ink px-4 text-sm font-semibold whitespace-nowrap text-paper transition-colors hover:bg-[#2563EB] md:min-h-9"
-        >
-          {cta.label}
-        </Link>
-        <MobileMenu links={links} login={login} locale={locale} locales={UI_LOCALES} labels={{ menu: labels.menu, close: labels.close, language: labels.language }} />
       </header>
     </div>
   );
