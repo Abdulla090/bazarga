@@ -673,3 +673,16 @@ export const storePlanHistory = pgTable("store_plan_history", {
   reason: text("reason").notNull().default("manual"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Manual upgrade requests (no money moves in-app): admin activates after the seller pays by FIB / ZainCash / cash. */
+export const upgradeRequests = pgTable("upgrade_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+  plan: text("plan").notNull(),
+  months: integer("months").notNull(),
+  method: text("method").notNull(),
+  status: text("status").notNull().default("pending"),
+  note: text("note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+}, (t) => [index("upgrade_requests_status_idx").on(t.status, t.createdAt)]);

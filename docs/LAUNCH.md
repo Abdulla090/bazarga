@@ -8,7 +8,7 @@
 - [x] Pricing page, hero, dashboard, auth, onboarding
 
 ## Wed 14
-- [ ] K4 upgrade requests + /admin (ADMIN_EMAILS)
+- [x] K4 upgrade requests (/dashboard/upgrade) + /admin (ADMIN_EMAILS; needs Abdulla to set ADMIN_EMAILS on Vercel)
 - [x] K5 cron: /api/cron/daily (plan expiry + payments) + vercel.json daily; CRON_SECRET set on Vercel
 - [ ] K6 rate limits, audit log, security headers, npm audit
 - [ ] Themes Gallery, Boutique, Mono, Studio; theme thumbnails; one-click switch e2e

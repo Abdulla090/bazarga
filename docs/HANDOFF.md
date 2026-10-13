@@ -32,6 +32,10 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+
+### 2026-10-13 · K4 upgrade requests + /admin (agentb/k4-upgrade)
+- Migration 0012 `upgrade_requests`; service `server/services/upgrades.ts` (one pending per store, activate extends from period end if same plan active, idempotent, history row `upgrade:<method>`); `/dashboard/upgrade` (4 locales, `upgrade.*`); `/admin` English-only, 404 unless session email in `ADMIN_EMAILS`. No money moves. tests/upgrades.test.ts.
+
 ### 2026-10-13 K5 cron (Agent B)
 - /api/cron/daily (Bearer CRON_SECRET, 404 if unset): expireLapsedPlans (pro/business past plan_period_end -> free + history row 'expired') + payment jobs. vercel.json daily 03:00 UTC (Hobby-safe). Test: tests/plan-expiry.test.ts.
 

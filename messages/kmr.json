@@ -991,5 +991,28 @@
     "firstMonthOnly": "meha yekem",
     "after": "paşê $10/meh",
     "wasNow": "Berê $10, niha $1 ji bo meha yekem"
+  },
+  "upgrade": {
+    "title": "Dikana xwe bilind bike",
+    "lead": "Plan û awayê dayînê hilbijêre. Gava drav bigihîje em çalak dikin.",
+    "plan": "Plan",
+    "period": "Dem",
+    "monthly": "Mehane",
+    "yearly": "Salane (2 meh belaş)",
+    "methodLabel": "Bi vê bide",
+    "method": {
+      "fib": "FIB",
+      "zaincash": "ZainCash",
+      "cash": "Pere (cash)"
+    },
+    "submit": "Daxwazê bişîne",
+    "steps": "Piştî şandina daxwazê, bi awayê hilbijartî bide û bi WhatsApp navê dikanê ji me re bişîne. Plan di nav rojekê de çalak dibe.",
+    "pending": "Daxwaz hat: {plan} bi {method}. Gava drav bigihîje em çalak dikin.",
+    "current": "Plana niha: {plan}",
+    "name": {
+      "free": "Belaş",
+      "pro": "Pro",
+      "business": "Business"
+    }
   }
 }
