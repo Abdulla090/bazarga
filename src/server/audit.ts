@@ -3,7 +3,7 @@ import { db } from "./db";
 import { auditLog } from "./db/schema";
 import { logger } from "./logger";
 
-export const AUDIT_ACTIONS = ["store.update", "store.theme", "store.storefront", "payment.toggle"] as const;
+export const AUDIT_ACTIONS = ["store.update", "store.theme", "store.storefront", "payment.toggle", "payout.profile"] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
 /** Short, secret-free description of what changed: field names only, never values. */

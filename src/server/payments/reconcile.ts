@@ -1,12 +1,13 @@
 import { and, asc, desc, eq, inArray, isNull, lt, lte, ne, or, sql } from "drizzle-orm";
 import type { Db } from "../db";
-import { orders, paymentTransactions } from "../db/schema";
+import { orders, paymentTransactions, payments as gatewayPayments } from "../db/schema";
 import { isAppError } from "../errors";
 import { logger } from "../logger";
 import { updateOrderStatus } from "../services/orders";
 import { applyPaymentStatus } from "./service";
 import { getProvider } from "./registry";
 import type { PaymentProvider } from "./types";
+import { reconcileGatewayPayments, type GatewayReconcileResult } from "./gateway/service";
 import type { PaymentMethod } from "@/lib/order-status";
 
 /**
@@ -140,6 +141,11 @@ export async function expireAbandonedOrders(database: Db, opts: JobOpts & { ttlM
       }
       await updateOrderStatus(database, o.storeId, o.id, "cancelled", null, EXPIRED_NOTE);
       await database.update(orders).set({ expiredAt: now }).where(and(eq(orders.id, o.id), eq(orders.storeId, o.storeId)));
+      // Gateway checkouts of this order: expire locally (a late provider "paid" still moves expired → paid).
+      await database
+        .update(gatewayPayments)
+        .set({ status: "expired", updatedAt: now })
+        .where(and(eq(gatewayPayments.orderId, o.id), eq(gatewayPayments.storeId, o.storeId), eq(gatewayPayments.status, "pending")));
       // Close the open attempts locally so they aren't polled forever; a late provider "paid" can still land.
       for (const tx of pending) {
         await applyPaymentStatus(database, tx.provider, tx.providerRef, "failed", { via: "expiry", expiredAt: now.toISOString() }).catch(() => undefined);
@@ -165,10 +171,13 @@ export async function expireAbandonedOrders(database: Db, opts: JobOpts & { ttlM
   return res;
 }
 
-export type PaymentJobsResult = { reconcile: ReconcileResult; expiry: ExpiryResult };
+export type PaymentJobsResult = { reconcile: ReconcileResult; gateway: GatewayReconcileResult; expiry: ExpiryResult };
 
 export async function runPaymentJobs(database: Db, opts: JobOpts & { ttlMinutes: number }): Promise<PaymentJobsResult> {
   const reconcile = await reconcilePendingPayments(database, opts);
+  // Gateway (Rasedi) payments pending > 15 min: no-op when PAYMENTS_PROVIDER is none. Runs before order expiry so a
+  // payment that did go through is applied before its order would be cancelled.
+  const gateway = await reconcileGatewayPayments(database, { now: opts.now });
   const expiry = await expireAbandonedOrders(database, opts);
-  return { reconcile, expiry };
+  return { reconcile, gateway, expiry };
 }

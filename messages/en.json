@@ -343,7 +343,8 @@
     "notConfigured": "Not connected on this server yet — customers won't see it until it is.",
     "comingSoon": "Coming soon",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "online": "Online payment"
   },
   "orders": {
     "export": "Download CSV",
@@ -1077,5 +1078,47 @@
       "pro": "Pro",
       "business": "Business"
     }
+  },
+  "gatewayPay": {
+    "returnTitle": "Payment status",
+    "checking": "Checking your payment…",
+    "paid": "Payment received. Thank you!",
+    "failed": "The payment didn't go through. No money was taken.",
+    "expired": "This payment link has expired.",
+    "refunded": "This payment was refunded.",
+    "pendingLong": "Still waiting for confirmation. If you paid, this page updates by itself within a few minutes.",
+    "continue": "Continue",
+    "tryAgain": "Try again",
+    "payOnline": "Pay online now",
+    "payOnlineLead": "Pay {amount} on a secure payment page. Your plan turns on as soon as the payment is confirmed.",
+    "promo": "First month offer",
+    "orManual": "Or send a request and pay manually",
+    "cartOnline": "Pay online",
+    "cartOnlineHint": "You'll continue to a secure payment page.",
+    "soon": "soon",
+    "settingsTitle": "Online payments",
+    "comingSoon": "Online payments: coming soon — waiting for gateway activation",
+    "comingSoonHint": "Add your payout details now so you're ready the day it turns on.",
+    "payoutTitle": "Payout details",
+    "payoutMethod": "Receive money by",
+    "method": {
+      "fib": "FIB account",
+      "zaincash": "ZainCash wallet",
+      "bank": "Bank account"
+    },
+    "accountName": "Account holder name",
+    "accountId": "Account number or phone",
+    "save": "Save payout details",
+    "status": {
+      "pending": "Under review",
+      "verified": "Verified",
+      "rejected": "Not accepted — check the details and save again"
+    },
+    "toggleLabel": "Accept online payments on my store",
+    "toggleHint": "Shoppers pay at checkout and we send the money to your payout account. Cash on delivery stays on.",
+    "needVerified": "You can turn this on once your payout details are verified.",
+    "balance": "Balance to be paid out",
+    "saved": "Saved",
+    "error": "Something went wrong. Please try again."
   }
 }

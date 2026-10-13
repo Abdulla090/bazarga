@@ -33,7 +33,7 @@ export const orderStatusEnum = pgEnum("order_status", [
   "returned",
   "cancelled",
 ]);
-export const paymentMethodEnum = pgEnum("payment_method", ["cod", "fib", "zaincash", "fastpay", "qicard"]);
+export const paymentMethodEnum = pgEnum("payment_method", ["cod", "fib", "zaincash", "fastpay", "qicard", "online"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["unpaid", "pending", "paid", "failed", "refunded"]);
 export const discountTypeEnum = pgEnum("discount_type", ["percentage", "fixed", "free_delivery"]);
 export const themePresetEnum = pgEnum("theme_preset", ["bazaar", "mountain", "night"]);
@@ -697,3 +697,112 @@ export const auditLog = pgTable("audit_log", {
   ip: text("ip"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("audit_log_store_idx").on(t.storeId, t.createdAt)]);
+
+// ---------------------------------------------------------------- gateway payments (Rasedi; migration 0014)
+/**
+ * One hosted-checkout attempt at the platform gateway (src/server/payments/gateway). `kind` = subscription (a seller
+ * paying Bazarga) or order (a shopper paying a store; the platform collects and owes the seller via the ledger).
+ * Status only moves forward (see gateway/state.ts) and only on a provider-confirmed status, never on a redirect.
+ */
+export const payments = pgTable(
+  "payments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    kind: text("kind").$type<"subscription" | "order">().notNull(),
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    orderId: uuid("order_id").references(() => orders.id, { onDelete: "set null" }),
+    upgradeRequestId: uuid("upgrade_request_id").references(() => upgradeRequests.id, { onDelete: "set null" }),
+    provider: text("provider").notNull(),
+    providerRef: text("provider_ref"),
+    amountIqd: integer("amount_iqd").notNull(),
+    currency: text("currency").notNull().default("IQD"),
+    status: text("status").$type<"pending" | "paid" | "failed" | "expired" | "refunded">().notNull().default("pending"),
+    gateway: text("gateway"),
+    checkoutUrl: text("checkout_url"),
+    meta: jsonb("meta").$type<Record<string, unknown>>().notNull().default({}),
+    raw: jsonb("raw").$type<Record<string, unknown>>().notNull().default({}),
+    commissionIqd: integer("commission_iqd").notNull().default(0),
+    checkCount: integer("check_count").notNull().default(0),
+    lastCheckedAt: timestamp("last_checked_at", { withTimezone: true }),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("payments_provider_ref_uq").on(t.provider, t.providerRef),
+    index("payments_store_created_idx").on(t.storeId, t.createdAt),
+    index("payments_order_idx").on(t.orderId),
+    index("payments_status_created_idx").on(t.status, t.createdAt),
+  ],
+);
+
+/** Webhook log; (provider, event_id) unique so a replayed callback is processed once. */
+export const paymentEvents = pgTable(
+  "payment_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    provider: text("provider").notNull(),
+    eventId: text("event_id").notNull(),
+    providerRef: text("provider_ref"),
+    paymentId: uuid("payment_id").references(() => payments.id, { onDelete: "set null" }),
+    status: text("status"),
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull().default({}),
+    outcome: text("outcome"),
+    receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("payment_events_provider_event_uq").on(t.provider, t.eventId)],
+);
+
+/** Where the platform pays a seller out. Online payments for a store need status = verified (admin-checked). */
+export const sellerPayoutProfiles = pgTable("seller_payout_profiles", {
+  storeId: uuid("store_id").primaryKey().references(() => stores.id, { onDelete: "cascade" }),
+  method: text("method").$type<"fib" | "zaincash" | "bank">().notNull(),
+  accountName: text("account_name").notNull(),
+  accountIdentifier: text("account_identifier").notNull(),
+  status: text("status").$type<"pending" | "verified" | "rejected">().notNull().default("pending"),
+  note: text("note"),
+  verifiedAt: timestamp("verified_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Money the platform sent (or will send) to a seller. A paid payout writes a `payout` ledger debit. */
+export const payouts = pgTable(
+  "payouts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    amountIqd: integer("amount_iqd").notNull(),
+    method: text("method").notNull(),
+    accountIdentifier: text("account_identifier").notNull(),
+    status: text("status").$type<"pending" | "paid" | "cancelled">().notNull().default("pending"),
+    reference: text("reference"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+  },
+  (t) => [index("payouts_store_created_idx").on(t.storeId, t.createdAt)],
+);
+
+/**
+ * Seller balances, double-entry-ish: a paid order writes seller +amount (sale), seller -commission (commission) and
+ * platform +commission (commission_income); a paid payout writes seller -amount (payout). Seller balance = SUM over
+ * account = 'seller'. (payment_id, account, entry_type) is unique so a payment is booked once.
+ */
+export const ledgerEntries = pgTable(
+  "ledger_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    account: text("account").$type<"seller" | "platform">().notNull(),
+    entryType: text("entry_type").$type<"sale" | "commission" | "commission_income" | "payout" | "refund">().notNull(),
+    amountIqd: integer("amount_iqd").notNull(),
+    paymentId: uuid("payment_id").references(() => payments.id, { onDelete: "set null" }),
+    payoutId: uuid("payout_id").references(() => payouts.id, { onDelete: "set null" }),
+    memo: text("memo"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("ledger_payment_type_uq").on(t.paymentId, t.account, t.entryType),
+    index("ledger_store_idx").on(t.storeId, t.account, t.createdAt),
+  ],
+);

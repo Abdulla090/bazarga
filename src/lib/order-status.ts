@@ -60,7 +60,8 @@ export const LOST_ORDER_STATUSES: readonly OrderStatus[] = ["cancelled", "refuse
 export const RESTOCK_ON: readonly OrderStatus[] = ["cancelled", "returned"];
 export const TERMINAL_ORDER_STATUSES: readonly OrderStatus[] = ORDER_STATUSES.filter((s) => ORDER_TRANSITIONS[s].length === 0);
 
-export const PAYMENT_METHODS = ["cod", "fib", "zaincash", "fastpay", "qicard"] as const;
+/** `online` = the platform gateway (Rasedi hosted checkout; src/server/payments/gateway). Offered only when enabled. */
+export const PAYMENT_METHODS = ["cod", "fib", "zaincash", "fastpay", "qicard", "online"] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 export const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   cod: "COD",
@@ -68,6 +69,7 @@ export const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   zaincash: "ZainCash",
   fastpay: "FastPay",
   qicard: "Qi Card",
+  online: "Online",
 };
 
 /** The next step on the happy path, shown as the big primary action in the dashboard. */

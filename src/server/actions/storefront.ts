@@ -17,6 +17,10 @@ import { notifySellerOfOrder } from "../services/notify-order";
 import { trackOrder } from "../services/tracking";
 import { getProvider, isProviderAvailable } from "../payments/registry";
 import { latestPaymentForOrder, startPayment, syncPaymentFromProvider } from "../payments/service";
+import { startOrderCheckout, storeOnlineStatus, syncGatewayPayment } from "../payments/gateway/service";
+import { gateway } from "../payments/gateway/registry";
+import { payments as gatewayPayments } from "../db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { cartItemSchema, cartSchema, checkoutSchema, localeSchema } from "@/lib/validation";
 import { toActionState, type ActionState } from "./util";
 import { CHECKOUT_PER_IP_PER_STORE } from "@/lib/order-risk";
@@ -76,7 +80,9 @@ export async function placeOrderAction(slug: string, payload: unknown): Promise<
     if (ip !== "unknown") await enforceRateLimit(db(), `checkout:${store.id}:${ip}`, CHECKOUT_PER_IP_PER_STORE.limit, CHECKOUT_PER_IP_PER_STORE.windowSeconds);
     const input = checkoutSchema.parse(payload);
     cartSchema.parse(input.items);
-    const order = await placeOrder(db(), store, input, { isProviderAvailable });
+    // `online` (platform gateway) is only accepted when the gateway is on, payouts are verified and the seller enabled it.
+    const online = input.paymentMethod === "online" ? (await storeOnlineStatus(db(), store.id)).available : false;
+    const order = await placeOrder(db(), store, input, { isProviderAvailable: (m) => (m === "online" ? online : isProviderAvailable(m)) });
     if (order.replayed) {
       // Double tap: the first order already decremented stock and notified the seller.
       logger.info("order.replayed", { storeId: store.id, orderId: order.id });
@@ -90,6 +96,15 @@ export async function placeOrderAction(slug: string, payload: unknown): Promise<
 
     const urls = paymentUrls(store.slug, order.publicId);
     if (order.paymentMethod === "cod") return { ok: true, redirectTo: urls.orderUrl };
+    if (order.paymentMethod === "online") {
+      try {
+        const c = await startOrderCheckout(db(), store.id, order.id, env().APP_URL, { storeName: store.name });
+        return { ok: true, redirectTo: c.url, external: true };
+      } catch (err) {
+        logger.error("gateway.order_checkout_failed", { orderId: order.id, err });
+        return { ok: true, redirectTo: urls.orderUrl };
+      }
+    }
     try {
       const init = await startPayment(db(), getProvider(order.paymentMethod), order, {
         storeName: store.name,
@@ -113,6 +128,14 @@ export async function refreshPaymentAction(slug: string, publicId: string): Prom
     await enforceRateLimit(db(), `paycheck:${publicId}`, 30, 600);
     const order = await getOrderByPublicId(db(), store.id, z.string().max(64).parse(publicId));
     if (!order) throw new AppError("NOT_FOUND");
+    if (order.paymentMethod === "online") {
+      const p = await db().query.payments.findFirst({
+        where: and(eq(gatewayPayments.orderId, order.id), eq(gatewayPayments.storeId, store.id)),
+        orderBy: desc(gatewayPayments.createdAt),
+      });
+      if (p && gateway()) await syncGatewayPayment(db(), p.id, "shopper_check");
+      return { ok: true };
+    }
     const tx = await latestPaymentForOrder(db(), order.id);
     if (tx) await syncPaymentFromProvider(db(), getProvider(tx.provider), tx.providerRef);
     return { ok: true };
@@ -129,6 +152,10 @@ export async function retryPaymentAction(slug: string, publicId: string): Promis
     if (!order || order.paymentMethod === "cod" || order.paymentStatus === "paid") throw new AppError("NOT_FOUND");
     if (order.status === "cancelled") throw new AppError("VALIDATION");
     const urls = paymentUrls(store.slug, order.publicId);
+    if (order.paymentMethod === "online") {
+      const c = await startOrderCheckout(db(), store.id, order.id, env().APP_URL, { storeName: store.name });
+      return { ok: true, redirectTo: c.url, external: true };
+    }
     const init = await startPayment(db(), getProvider(order.paymentMethod), order, {
       storeName: store.name,
       returnUrl: order.paymentMethod === "zaincash" ? urls.zaincashReturn : urls.orderUrl,

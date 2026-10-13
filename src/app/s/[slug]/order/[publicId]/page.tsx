@@ -32,7 +32,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   const t = await getTranslations("store");
   const tp = await getTranslations("payments");
   const locale = await currentLocale();
-  const paymentLabel = order.paymentMethod === "cod" ? tp("cod") : PAYMENT_LABEL[order.paymentMethod];
+  const paymentLabel = order.paymentMethod === "cod" ? tp("cod") : order.paymentMethod === "online" ? tp("online") : PAYMENT_LABEL[order.paymentMethod];
 
   let fib: { qrCode: string | null; readableCode: string | null; appLink: string | null } | null = null;
   if (order.paymentMethod === "fib") {

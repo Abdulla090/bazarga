@@ -7,7 +7,7 @@ import { AppError } from "../errors";
 export const upgradeInput = z.object({
   plan: z.enum(["pro", "business"]),
   months: z.union([z.literal(1), z.literal(12)]),
-  method: z.enum(["fib", "zaincash", "cash"]),
+  method: z.enum(["fib", "zaincash", "cash", "online"]),
 });
 export type UpgradeInput = z.infer<typeof upgradeInput>;
 
@@ -49,21 +49,29 @@ export function addMonths(base: Date, months: number): Date {
   return d;
 }
 
+type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
+
+/**
+ * Activation core, run inside the caller's transaction (manual admin activation and the gateway webhook both use it):
+ * extend from the current period end if the same plan is still active, else from now; write plan history.
+ */
+export async function activateRequestTx(tx: Tx, requestId: string, now: Date, reason?: string) {
+  const req = await tx.query.upgradeRequests.findFirst({ where: eq(upgradeRequests.id, requestId) });
+  if (!req) throw new AppError("NOT_FOUND");
+  if (req.status !== "pending") return { already: true as const };
+  const store = await tx.query.stores.findFirst({ where: eq(stores.id, req.storeId) });
+  if (!store) throw new AppError("NOT_FOUND");
+  const active = store.plan === req.plan && store.planPeriodEnd && store.planPeriodEnd > now;
+  const end = addMonths(active ? store.planPeriodEnd! : now, req.months);
+  await tx.update(stores).set({ plan: req.plan, planPeriodEnd: end }).where(eq(stores.id, store.id));
+  await tx.insert(storePlanHistory).values({ storeId: store.id, fromPlan: store.plan, toPlan: req.plan, periodEnd: end, reason: reason ?? `upgrade:${req.method}` });
+  await tx.update(upgradeRequests).set({ status: "activated", resolvedAt: now }).where(eq(upgradeRequests.id, req.id));
+  return { already: false as const, end };
+}
+
 /** Activate: extend from the current period end if still active (same plan), else from now. Idempotent per request. */
 export async function activateRequest(db: Db, requestId: string, now: Date = new Date()) {
-  return db.transaction(async (tx) => {
-    const req = await tx.query.upgradeRequests.findFirst({ where: eq(upgradeRequests.id, requestId) });
-    if (!req) throw new AppError("NOT_FOUND");
-    if (req.status !== "pending") return { already: true as const };
-    const store = await tx.query.stores.findFirst({ where: eq(stores.id, req.storeId) });
-    if (!store) throw new AppError("NOT_FOUND");
-    const active = store.plan === req.plan && store.planPeriodEnd && store.planPeriodEnd > now;
-    const end = addMonths(active ? store.planPeriodEnd! : now, req.months);
-    await tx.update(stores).set({ plan: req.plan, planPeriodEnd: end }).where(eq(stores.id, store.id));
-    await tx.insert(storePlanHistory).values({ storeId: store.id, fromPlan: store.plan, toPlan: req.plan, periodEnd: end, reason: `upgrade:${req.method}` });
-    await tx.update(upgradeRequests).set({ status: "activated", resolvedAt: now }).where(eq(upgradeRequests.id, req.id));
-    return { already: false as const, end };
-  });
+  return db.transaction(async (tx) => activateRequestTx(tx, requestId, now));
 }
 
 export async function rejectRequest(db: Db, requestId: string, note?: string) {

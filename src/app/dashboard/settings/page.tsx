@@ -10,12 +10,15 @@ import { IRAQI_CITIES } from "@/lib/cities";
 import { pickText } from "@/lib/i18n";
 import { pushConfig } from "@/server/push";
 import { LazyPushToggle } from "@/components/pwa/lazy";
+import Link from "next/link";
+import { gateway } from "@/server/payments/gateway/registry";
 
 export default async function SettingsPage() {
   const { store } = await requireStore();
   const t = await getTranslations("settings");
   const locale = await currentLocale();
   const push = pushConfig();
+  const tg = await getTranslations("gatewayPay");
   return (
     <div className="grid max-w-2xl gap-4">
       <h1 className="t-headline">{t("title")}</h1>
@@ -47,6 +50,13 @@ export default async function SettingsPage() {
           freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />
+      <Link href="/dashboard/payments" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-payments-link">
+        <span className="grid gap-0.5">
+          <span className="font-bold">{tg("settingsTitle")}</span>
+          <span className="hint">{gateway() ? tg("toggleLabel") : tg("comingSoon")}</span>
+        </span>
+        <span aria-hidden className="text-xl text-ink-70 rtl:rotate-180">›</span>
+      </Link>
       <ThemeForm
         initial={{
           themePreset: store.themePreset,
