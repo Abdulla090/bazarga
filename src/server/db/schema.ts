@@ -113,6 +113,9 @@ export const stores = pgTable(
     /** Future: custom domain mapping (verified via DNS TXT). */
     customDomain: text("custom_domain"),
     isActive: boolean("is_active").notNull().default(true),
+    /** Subscription plan (src/lib/plans.ts): free | pro | business. Limits enforced server-side. */
+    plan: text("plan").notNull().default("free"),
+    planPeriodEnd: timestamp("plan_period_end", { withTimezone: true }),
     // ---- storefront theme (src/lib/theme.ts)
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */
@@ -659,3 +662,14 @@ export const pushSubscriptions = pgTable(
     ),
   ],
 );
+
+/** Append-only plan changes per store (manual activation, expiry, downgrade). */
+export const storePlanHistory = pgTable("store_plan_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+  fromPlan: text("from_plan").notNull(),
+  toPlan: text("to_plan").notNull(),
+  periodEnd: timestamp("period_end", { withTimezone: true }),
+  reason: text("reason").notNull().default("manual"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

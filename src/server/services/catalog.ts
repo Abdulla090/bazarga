@@ -1,7 +1,8 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import type { Db } from "../db";
-import { categories, productImages, products } from "../db/schema";
+import { categories, productImages, products, stores } from "../db/schema";
 import { AppError } from "../errors";
+import { normalizePlan, productLimit } from "@/lib/plans";
 import type { LocalizedText } from "@/lib/i18n";
 import type { ProductImageInput, ProductInput } from "@/lib/validation";
 
@@ -130,6 +131,7 @@ async function replaceImages(database: Db, storeId: string, productId: string, i
 
 export async function createProduct(database: Db, storeId: string, input: ProductInput): Promise<Product> {
   await assertCategoryInStore(database, storeId, input.categoryId);
+  await assertWithinProductLimit(database, storeId);
   return database.transaction(async (tx) => {
     const [p] = await tx
       .insert(products)
@@ -193,4 +195,13 @@ export async function deleteProduct(database: Db, storeId: string, id: string) {
     .where(and(eq(products.id, id), eq(products.storeId, storeId)))
     .returning({ id: products.id });
   if (!r.length) throw new AppError("NOT_FOUND");
+}
+
+/** Free plan: at most 15 products. Throws a VALIDATION AppError with code message "plan_limit_products". */
+export async function assertWithinProductLimit(database: Db, storeId: string) {
+  const [st] = await database.select({ plan: stores.plan }).from(stores).where(eq(stores.id, storeId));
+  const limit = productLimit(normalizePlan(st?.plan));
+  if (limit === Infinity) return;
+  const [c] = await database.select({ n: count() }).from(products).where(eq(products.storeId, storeId));
+  if ((c?.n ?? 0) >= limit) throw new AppError("VALIDATION", "plan_limit_products");
 }
