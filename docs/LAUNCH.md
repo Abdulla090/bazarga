@@ -10,7 +10,8 @@
 ## Wed 14
 - [x] K4 upgrade requests (/dashboard/upgrade) + /admin (ADMIN_EMAILS; needs Abdulla to set ADMIN_EMAILS on Vercel)
 - [x] K5 cron: /api/cron/daily (plan expiry + payments) + vercel.json daily; CRON_SECRET set on Vercel
-- [ ] K6 rate limits, audit log, security headers, npm audit
+- [x] K6a audit log (migration 0013) for settings changes; rate limits already on auth, checkout, track, uploads
+- [ ] K6b npm audit review
 - [ ] Themes Gallery, Boutique, Mono, Studio; theme thumbnails; one-click switch e2e
 
 ## Thu 15
