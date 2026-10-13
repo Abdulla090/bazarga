@@ -1,4 +1,5 @@
 import type { PoolConfig } from "pg";
+import { SUPABASE_CA } from "./supabase-ca";
 
 /**
  * Turn a postgres:// URL into node-postgres Pool options (pure — unit tested).
@@ -33,7 +34,9 @@ export function pgPoolConfig(url: string, envVars: Record<string, string | undef
 
   return {
     connectionString: u.toString(),
-    ssl: wantsSsl ? { rejectUnauthorized } : false,
+    ssl: wantsSsl
+      ? { rejectUnauthorized, ...(/supabase\.(co|com)$/i.test(u.hostname) ? { ca: SUPABASE_CA } : {}) }
+      : false,
     enableChannelBinding: channelBinding === "require" || channelBinding === "prefer",
     max: Number.isFinite(max) && max > 0 ? max : 10,
     idleTimeoutMillis: serverless ? 5_000 : 30_000,
