@@ -1002,7 +1002,7 @@
     "methodLabel": "Bi vê bide",
     "method": {
       "fib": "FIB",
-      "zaincash": "ZainCash",
+      "zaincash": "Zain Cash",
       "cash": "Pere (cash)"
     },
     "submit": "Daxwazê bişîne",
@@ -1012,7 +1012,7 @@
     "name": {
       "free": "Belaş",
       "pro": "Pro",
-      "business": "Business"
+      "business": "Bazirganî"
     }
   }
 }
