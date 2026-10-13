@@ -33,6 +33,13 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 ## Log
 
 
+### 2026-10-13 · Hero fix: blue "Start free." headline, ink CTA, centred nav (agentb/hero-fix)
+- Per Abdulla's correction (17:42): the hook is the H1's 2nd line, not the button. `HeroHook` (in `HeroCta.tsx`) renders line 2 as crisp gradient text (ink → #1e40af → #2563EB → light blue, background-clip:text, mirrored 260deg in RTL, slow 7s sheen) plus a hand-drawn SVG underline that draws in once; reduced motion = static; forced-colors falls back to CanvasText. Inline span + block padding/line-height 1.22 so Arabic/Sorani dots and descenders are never clipped; wraps cleanly at 360px.
+- Hero CTA back to a restrained ink pill (48px, sliding arrow, "No card needed · Free forever" under it). Removed the rotating conic border, heatmap grid and all their CSS (`cta-heat`, `cta-spin`, `--cta-a`, `--cta-fill`).
+- Header: md+ is a 3-column grid `minmax(0,1fr) auto minmax(0,1fr)` (logo | centred links | language · Log in · CTA), mirrors in RTL; phones unchanged.
+- Phone visual lowered: `mt-10 sm:mt-[5.5rem]` (+12px mobile, +40px desktop). Card scroll reveal untouched.
+- Tests: `tests/hero-nav.test.ts` updated (no heatmap, ink CTA, hook CSS has no blur/text-shadow, grid header). Shots: `/workspace/work/daily-shots/2026-10-13/herofix-*`.
+
 ### 2026-10-13 · Marketing header + hero card reveal + Start-free hook CTA (agentb/hero-nav)
 - **Header** (`src/components/SiteHeader.tsx`, used by / and /pricing): one row, hairline bottom, 8px rhythm: logo · How it works (/#how) · Sample store · Pricing · language (`marketing/LocaleMenu.tsx`, one globe+code control) · quiet Log in · one ink "Start free" CTA. Phones: logo + CTA + menu button (`marketing/MobileMenu.tsx` sheet holds links, Log in, language). **Promo top bar removed** (`pricing/AnnouncementBar.tsx` deleted; it duplicated the hero $1 pill). New copy `nav.start/how/demo/menu/close/language/main` in 4 locales. `SiteHeaderView` is the pure, testable part.
 - **Hero cards** (`HeroVisual.tsx` + client island `marketing/HeroReveal.tsx`): server renders `data-reveal="off"` (opacity 0 + visibility hidden, nothing shows); after ~96px scroll (or IO 60% after any scroll) they blur in 450ms ease-out, 120ms stagger, ending on blur(0)/transform none = fully sharp. Reduced motion: shown, no blur. `<noscript>` fallback shows them. CSS in globals.css `.hv-reveal`.
