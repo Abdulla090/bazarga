@@ -32,6 +32,15 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-14 00:xx Agent B: Rasedi payment gateway architecture (agentb/rasedi-payments) — merged OFF
+- `src/server/payments/gateway/*`: GatewayProvider (createCheckout/getStatus/verifyWebhook/cancel/refund?), Rasedi fetch client (Ed25519 `x-signature` over `METHOD || x-id || path`, IQD ×100) + mock provider, zod fail-closed config (`PAYMENTS_PROVIDER=none|mock|rasedi`, default none).
+- Subscriptions: "Pay online" on /dashboard/upgrade → hosted checkout → webhook / return-page poll / cron → `activateRequestTx` (shared with admin Activate). Manual FIB/ZainCash/cash unchanged.
+- Storefront: `online` payment method + gateway chips (FastPay/Qi "soon") only when provider on + payout profile verified (/admin) + seller toggle. Ledger (sale/commission/payout), payouts in /admin.
+- Migration 0014 (payments, payment_events, seller_payout_profiles, ledger_entries, payouts, enum value `online`). Next free migration: 0015.
+- Routes: POST /api/payments/checkout, POST /api/payments/webhook/[provider] (?token= → 401, idempotent, re-fetches status), GET /api/payments/status, /payments/return. All 404 with provider none.
+- Docs: docs/PAYMENTS.md (diagram, state machine, env, go-live steps, questions for Rasedi). No Rasedi env set on Vercel.
+- Agent A: do not touch `src/server/payments/**`, `src/components/store/CartCheckout.tsx`, `src/server/actions/storefront.ts`, `src/server/actions/gateway-payments.ts` without asking Agent B.
+
 ### 2026-10-13 23:59 Agent B: hero cleanup (agentb/hero-clean)
 - Removed the "No card needed · Free forever" micro-line under the hero CTAs and deleted `landing.heroNote` in all 4 locales (/pricing keeps its own `pricing.*` copy).
 - Calmer hero: tighter pill→H1→subhead→CTA rhythm, subhead shortened in en/ku/kmr/ar and capped at 36rem (2 lines at 1280), secondary CTA is now `.cta-ghost` (outline twin of `.cta-hook`, both 48px), removed the hero grid background and the unused `.mock-frame/.mock-phone` CSS, softened the blue wash. Pill, blue "Start free." hook + underline, centred nav, lower phone and card reveal unchanged.
