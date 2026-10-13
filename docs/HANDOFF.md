@@ -24,13 +24,19 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 ## Agent A assignments
 - **2026-10-13 (from Agent B), small:** proofread the new hero visual strings `landing.hvAria/hvStep1/hvStep2/hvStep3/hvChatCaption/hvChatFrom/hvOrderTitle/hvNow/hvOrderMeta/hvPay` in ku/kmr/ar (keep `{count}`/`{price}` placeholders and Latin digits). Edit only `messages/*.json`. Do NOT edit `src/components/marketing/HeroVisual.tsx`, `src/app/(marketing)/page.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/app/globals.css`, `src/components/ui/icons.tsx`, `tests/pricing-render.test.ts`.
 - **2026-10-12 (from Agent B), `hark/hook-polish` from the new `origin/main`, after your plan-chip branch:**
-  (a) proofread/polish the new hero + pricing copy in ku/kmr/ar/en (messages keys `landing.heroTitle1/heroTitle2/heroLead/heroNote/hookLabel/hookThen/mock*`, `pricing.firstMonthOnly/after/wasNow`; edit only messages/*.json for this);
+  (a) proofread/polish the new hero + pricing copy in ku/kmr/ar/en (messages keys `landing.heroTitle1/heroTitle2/heroLead/heroNote/hookLabel/mock*` (hookThen removed 2026-10-13), `pricing.firstMonthOnly/after/wasNow`; edit only messages/*.json for this);
   (b) add the same "$1 first month · then $10/month" treatment to the onboarding/create-store Pro option and the signup page header (reuse `src/components/pricing/PromoPrice.tsx`, import it, don't change it);
   (c) e2e checks that the top bar (`[data-site-top]`) stays visible after scrolling at 390 and 1280;
   (d) run the full gate and email Agent B the branch name, gate results and screenshots.
   Do NOT edit: `src/app/(marketing)/page.tsx`, `src/app/(marketing)/pricing/page.tsx`, `src/app/globals.css` hero/glow block, `src/components/SiteHeader.tsx`, `src/components/pricing/AnnouncementBar.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/components/pricing/StickyFreeCta.tsx`.
 
 ## Log
+### 2026-10-13 03:40 Agent B: minimal hero pill, "$1 | Try Pro →" (`agentb/badge-short`)
+- Abdulla's ask: the eyebrow looked busy with "first month" and "then $10". The pill is now `$1` (blue, LTR-isolated) + hairline + one short label + arrow, still linking to /pricing; 44px tap target, RTL arrow flip, crisp border and sheen unchanged. Full terms (first month, then $10/month) stay on /pricing, the Pro card and the sr-only `pricing.wasNow` line inside the pill.
+- Copy: `landing.hookLabel` = en "Try Pro", ku "Pro تاقی بکەرەوە", kmr "Pro biceribîne", ar "جرّب Pro". `landing.hookThen` deleted (nothing else used it). Agent A: if you proofread, edit only `hookLabel`.
+- Tests: tests/pricing-render.test.ts asserts the pill is minimal (label key, hairline, arrow, min-h-11, no hookThen, short label with no digits in all 4 locales).
+- Gate5 GATE_OK (typecheck, lint, 493 vitest, build, budget, playwright 5, smoke). No overflow at 360 (ar, kmr). Shots: /workspace/work/daily-shots/2026-10-13/badgeshort-*.
+
 ### 2026-10-13 02:00 Agent B: $1 offer moved to the hero eyebrow, glow made crisp (`agentb/hero-1-badge`)
 Abdulla (01:31): "Move the $1 in the hero to the top, replacing the badge. The glow is not professional, fix it."
 - Hero (`src/app/(marketing)/page.tsx`): "Free forever" badge above the H1 removed; replaced by a `/pricing` pill (`data-hero-promo`, 44px tall): blue `$1` | "Pro, first month · then $10/month" + ArrowForward (mirrors in RTL). CTA row is now just the two CTAs; `landing.heroNote` = "No card needed · Free forever" renders once under them (`data-hero-note`).
