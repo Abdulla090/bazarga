@@ -50,7 +50,7 @@ export default async function LandingPage() {
       <a href="#main" className="sr-only focus:not-sr-only">{tc("skipToContent")}</a>
       <SiteHeader />
       <main id="main">
-        {/* Hero: centred and tight, $1 Pro offer as the eyebrow, two CTAs + free micro-line, then the product story as a picture (HeroVisual)
+        {/* Hero: centred and tight, minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), two CTAs + free micro-line, then the product story as a picture (HeroVisual)
             rising into the first viewport: chat photos + price -> a real store -> an order. */}
         <section className="hero-stage">
           <div className="container-page flex flex-col items-center pt-7 text-center sm:pt-12">
@@ -58,11 +58,7 @@ export default async function LandingPage() {
               <span className="sr-only">{tp("wasNow")}</span>
               <span aria-hidden="true" dir="ltr" className="promo-num text-xl font-bold">$1</span>
               <span aria-hidden="true" className="h-4 w-px shrink-0 bg-[#2563EB]/25" />
-              <span className="min-w-0 text-[13px] leading-tight text-ink-70 sm:text-sm">
-                <span className="font-semibold text-ink">{t("hookLabel")}</span>
-                <span aria-hidden="true" className="px-1.5 text-ink-50">·</span>
-                <span className="whitespace-nowrap">{t("hookThen")}</span>
-              </span>
+              <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-ink">{t("hookLabel")}</span>
               <ArrowForward className="text-base text-[#2563EB] transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>
             <h1 className="hero-rise hero-d1 mt-4 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-5 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">

@@ -53,7 +53,7 @@ describe("pricing render: $1 first-month treatment", () => {
       expect(html).not.toMatch(/[٠-٩]/);
       expect(html).not.toMatch(/>1\$|>10\$/);
       for (const k of ["firstMonthOnly", "after", "wasNow"]) expect(msgs(l).pricing[k]).toBeTruthy();
-      for (const k of ["heroTitle1", "heroTitle2", "heroLead", "heroNote", "hookLabel", "hookThen", "mockStore", "mockOrder", "mockAria"]) expect(msgs(l).landing[k]).toBeTruthy();
+      for (const k of ["heroTitle1", "heroTitle2", "heroLead", "heroNote", "hookLabel", "mockStore", "mockOrder", "mockAria"]) expect(msgs(l).landing[k]).toBeTruthy();
     }
   });
 
@@ -117,6 +117,23 @@ describe("home hero: $1 offer is the eyebrow, the glow is crisp", () => {
     expect(page).not.toContain('tp("badge")');
     expect(page).not.toContain("promo-chip");
     expect(page.match(/\$1</g)?.length).toBe(1);
+  });
+  it("the pill is minimal: $1, the hairline, a short label and the arrow; no first-month or after-price terms", () => {
+    const pill = page.slice(page.indexOf("data-hero-promo"), page.indexOf("</Link>", page.indexOf("data-hero-promo")));
+    expect(pill).toContain('t("hookLabel")');
+    expect(pill).not.toContain("hookThen");
+    expect(pill).toContain("w-px");
+    expect(pill).toContain("<ArrowForward");
+    expect(pill).toContain("min-h-11");
+    expect(pill).toContain('dir="ltr"');
+    expect(msgs("en").landing.hookLabel).toBe("Try Pro");
+    for (const l of LOCALES) {
+      const label: string = msgs(l).landing.hookLabel;
+      expect(msgs(l).landing.hookThen).toBeUndefined();
+      expect(label).toContain("Pro");
+      expect(label.length).toBeLessThanOrEqual(18);
+      expect(label).not.toMatch(/\$|\d|[٠-٩۰-۹]/);
+    }
   });
   it("'No card needed · Free forever' survives once, as the micro-line under the CTAs, in every locale", () => {
     expect(page.match(/t\("heroNote"\)/g)?.length).toBe(1);
