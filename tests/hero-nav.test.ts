@@ -117,11 +117,16 @@ describe("hero: blue headline hook + restrained CTA", () => {
     expect(block).toMatch(/prefers-reduced-motion: no-preference\) \{\s+\.hero-hook-text \{ animation/);
   });
 
-  it("landing page wires the hook into the H1, keeps the free micro-line under the CTA and pushes the phone lower", () => {
+  it("landing page wires the hook into the H1, has two equal-height CTAs, no micro-line, and pushes the phone lower", () => {
     const src = readFileSync("src/app/(marketing)/page.tsx", "utf8");
     expect(src).toContain('<HeroHook text={t("heroTitle2")} />');
     expect(src).toContain('<HeroCta href="/signup"');
-    expect(src.indexOf("<HeroCta")).toBeLessThan(src.indexOf("data-hero-note"));
+    expect(src).not.toContain("data-hero-note");
+    expect(src.indexOf("<HeroCta")).toBeLessThan(src.indexOf("data-hero-cta2"));
+    expect(src).toMatch(/data-hero-cta2 className="cta-ghost"/);
+    const css = readFileSync("src/app/globals.css", "utf8");
+    expect(css).toMatch(/\.cta-ghost \{[^}]*min-height: 3rem/);
+    expect(css).not.toMatch(/\.hero-stage::before/);
     expect(src).toContain("data-hero-promo");
     expect(src).toMatch(/data-hero-phone className="[^"]*mt-10[^"]*sm:mt-\[5\.5rem\]/);
   });

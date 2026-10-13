@@ -58,10 +58,10 @@ export default async function LandingPage() {
       <a href="#main" className="sr-only focus:not-sr-only">{tc("skipToContent")}</a>
       <SiteHeader />
       <main id="main">
-        {/* Hero: centred and tight, minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), two CTAs + free micro-line, then the product story as a picture (HeroVisual)
-            rising into the first viewport: chat photos + price -> a real store -> an order. */}
+        {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 with the blue
+            "Start free." hook, a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
         <section className="hero-stage">
-          <div className="container-page flex flex-col items-center pt-7 text-center sm:pt-12">
+          <div className="container-page flex flex-col items-center pt-8 text-center sm:pt-14">
             <Link href="/pricing" data-hero-promo className="promo-eyebrow hero-rise group inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full ps-3.5 pe-3 text-start">
               <span className="sr-only">{tp("wasNow")}</span>
               <span aria-hidden="true" dir="ltr" className="promo-num text-xl font-bold">$1</span>
@@ -69,16 +69,15 @@ export default async function LandingPage() {
               <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-ink">{t("hookLabel")}</span>
               <ArrowForward className="text-base text-[#2563EB] transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>
-            <h1 className="hero-rise hero-d1 mt-4 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-5 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
+            <h1 className="hero-rise hero-d1 mt-5 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
               <span className="block">{t("heroTitle1")}</span>
               <span className="block"><HeroHook text={t("heroTitle2")} /></span>
             </h1>
-            <p className="hero-rise hero-d2 mt-4 hidden max-w-xl text-ink-70 text-pretty sm:block sm:text-lg">{t("heroLead")}</p>
-            <div className="hero-rise hero-d3 mt-6 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-7 sm:w-auto sm:flex-row sm:items-center">
+            <p data-hero-lead className="hero-rise hero-d2 mt-4 hidden max-w-[36rem] text-ink-70 text-balance sm:block sm:text-lg sm:leading-relaxed">{t("heroLead")}</p>
+            <div data-hero-ctas className="hero-rise hero-d3 mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
               <HeroCta href="/signup" label={tp("cta")} />
-              <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost min-h-12 px-7 text-base">{t("heroCta2")}</Link>
+              <Link href={`/s/${DEMO_SLUG}`} data-hero-cta2 className="cta-ghost">{t("heroCta2")}</Link>
             </div>
-            <p data-hero-note className="hero-rise hero-d3 mt-3 text-sm text-ink-50">{t("heroNote")}</p>
             <div data-hero-phone className="hero-rise hero-d4 mt-10 w-full sm:mt-[5.5rem]">
               <HeroVisual locale={locale} />
             </div>
