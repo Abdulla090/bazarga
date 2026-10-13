@@ -32,6 +32,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### Oct 13 (Agent B) K2 DB TLS
+Supabase root CA bundled (src/server/db/supabase-ca.ts); pooler cert verifies; DATABASE_SSL_REJECT_UNAUTHORIZED removed from Vercel. Merged a1c60f4, gate OK.
+
 ### 2026-10-13 K1 Supabase Storage driver (agentb/k1-supabase-storage)
 - New `SupabaseStorage` adapter (REST, public bucket `uploads` auto-created on first write) chosen automatically on serverless when SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY exist (Vercel integration provides them); local disk stays the dev default. No new deps. Tests in tests/deploy.test.ts.
 ### 2026-10-13 03:40 Agent B: minimal hero pill, "$1 | Try Pro →" (`agentb/badge-short`)
