@@ -53,7 +53,7 @@ describe("pricing render: $1 first-month treatment", () => {
       expect(html).not.toMatch(/[٠-٩]/);
       expect(html).not.toMatch(/>1\$|>10\$/);
       for (const k of ["firstMonthOnly", "after", "wasNow"]) expect(msgs(l).pricing[k]).toBeTruthy();
-      for (const k of ["heroTitle1", "heroTitle2", "heroLead", "heroNote", "hookLabel", "mockStore", "mockOrder", "mockAria"]) expect(msgs(l).landing[k]).toBeTruthy();
+      for (const k of ["heroTitle1", "heroTitle2", "heroLead", "hookLabel", "mockStore", "mockOrder", "mockAria"]) expect(msgs(l).landing[k]).toBeTruthy();
     }
   });
 
@@ -135,10 +135,10 @@ describe("home hero: $1 offer is the eyebrow, the glow is crisp", () => {
       expect(label).not.toMatch(/\$|\d|[٠-٩۰-۹]/);
     }
   });
-  it("'No card needed · Free forever' survives once, as the micro-line under the CTAs, in every locale", () => {
-    expect(page.match(/t\("heroNote"\)/g)?.length).toBe(1);
-    expect(msgs("en").landing.heroNote).toBe("No card needed · Free forever");
-    for (const l of LOCALES) expect(msgs(l).landing.heroNote).toContain("·");
+  it("the hero has no 'No card needed · Free forever' micro-line (removed for a calmer hero), and the key is gone in every locale", () => {
+    expect(page).not.toContain("heroNote");
+    expect(page).not.toContain("data-hero-note");
+    for (const l of LOCALES) expect(msgs(l).landing.heroNote).toBeUndefined();
   });
   it("no blurred halo: no text-shadow or radial bloom on the promo price", () => {
     expect(css).not.toContain("glow-price");

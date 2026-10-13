@@ -32,6 +32,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-13 23:59 Agent B: hero cleanup (agentb/hero-clean)
+- Removed the "No card needed · Free forever" micro-line under the hero CTAs and deleted `landing.heroNote` in all 4 locales (/pricing keeps its own `pricing.*` copy).
+- Calmer hero: tighter pill→H1→subhead→CTA rhythm, subhead shortened in en/ku/kmr/ar and capped at 36rem (2 lines at 1280), secondary CTA is now `.cta-ghost` (outline twin of `.cta-hook`, both 48px), removed the hero grid background and the unused `.mock-frame/.mock-phone` CSS, softened the blue wash. Pill, blue "Start free." hook + underline, centred nav, lower phone and card reveal unchanged.
+- Tests updated (hero-nav, pricing-render). Gate GATE_OK (vitest 535, mobile 12/12, smoke). Shots: daily-shots/2026-10-13/heroclean-*.
+
 ### 2026-10-13 23:xx Agent B: K6a audit log
 - audit_log table (0013), src/server/audit.ts recordAudit (best-effort, field names only), hooked into store update, theme, storefront and payment toggle. Rate limits verified present on auth, checkout, track, uploads.
 

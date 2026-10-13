@@ -573,36 +573,20 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
   unicode-bidi: isolate;
 }
 
-/* Hero stage: faint grid fading out from the top centre + soft blue radial glow. */
+/* Hero stage: plain white with one very soft #2563EB wash at the top centre. No grid, no mockup chrome. */
 .hero-stage { position: relative; isolation: isolate; overflow: hidden; }
-.hero-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-image:
-    linear-gradient(to right, rgb(10 10 11 / 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(10 10 11 / 0.045) 1px, transparent 1px);
-  background-size: 56px 56px;
-  background-position: center top;
-  mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 25%, transparent 78%);
-}
 .hero-stage::after {
   content: "";
   position: absolute;
   z-index: -1;
   left: 50%;
-  top: -14rem;
-  width: min(72rem, 160%);
+  top: -16rem;
+  width: min(64rem, 160%);
   aspect-ratio: 2 / 1;
   transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgb(37 99 235 / 0.14), rgb(37 99 235 / 0.05) 55%, transparent);
+  background: radial-gradient(closest-side, rgb(37 99 235 / 0.08), rgb(37 99 235 / 0.03) 55%, transparent);
   pointer-events: none;
 }
-/* Storefront mockup: browser frame + tilted phone. */
-.mock-frame { box-shadow: 0 0 0 1px rgb(10 10 11 / 0.06), 0 40px 80px -40px rgb(10 10 11 / 0.35), 0 12px 24px -12px rgb(37 99 235 / 0.18); }
-.mock-phone { transform: rotate(6deg); box-shadow: 0 30px 60px -24px rgb(10 10 11 / 0.45); }
-[dir="rtl"] .mock-phone { transform: rotate(-6deg); }
 /* Staged reveal on load. Only when motion is welcome; otherwise everything is simply visible. */
 @keyframes hero-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
@@ -798,8 +782,27 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 .cta-arrow { transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1); }
 .cta-hook:hover .cta-arrow { transform: translateX(4px); }
 [dir="rtl"] .cta-hook:hover .cta-arrow { transform: translateX(-4px); }
+/* Hero secondary CTA: outline twin of .cta-hook, same 48px height, radius, type and padding. */
+.cta-ghost {
+  display: inline-flex;
+  min-height: 3rem;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 1.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgb(10 10 11 / 0.18);
+  background: #fff;
+  color: var(--color-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: border-color 150ms ease-out, background-color 150ms ease-out;
+}
+.cta-ghost:hover { border-color: var(--color-ink); background: var(--color-paper); }
+.cta-ghost:active { transform: scale(0.98); }
+.cta-ghost:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
 @media (forced-colors: active) {
-  .cta-hook { background: ButtonFace; border: 1px solid ButtonText; color: ButtonText; box-shadow: none; }
+  .cta-hook, .cta-ghost { background: ButtonFace; border: 1px solid ButtonText; color: ButtonText; box-shadow: none; }
 }
 
 /* ---- Hero headline line 2 "Start free." (agentb/hero-fix): crisp ink -> #2563EB -> light-blue gradient text, slow
