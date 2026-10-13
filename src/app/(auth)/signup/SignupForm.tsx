@@ -7,6 +7,7 @@ import { Field, FormError } from "@/components/forms/Field";
 
 export function SignupForm() {
   const t = useTranslations("auth");
+  const lg = useTranslations("legal");
   const locale = useLocale();
   const [state, action, pending] = useActionState(signUpAction, {});
   return (
@@ -21,6 +22,12 @@ export function SignupForm() {
       <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
       <Field label={t("password")} name="password" type="password" autoComplete="new-password" minLength={8} required ltr hint={t("passwordHint")} error={state.fieldErrors?.password} />
       <button className="btn-gold w-full" disabled={pending}>{t("signup")}</button>
+      <p className="text-sm text-ink-70" data-legal-consent>
+        {lg.rich("agree", {
+          terms: (c) => <Link href="/terms" target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-semibold underline">{c}</Link>,
+          privacy: (c) => <Link href="/privacy" target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-semibold underline">{c}</Link>,
+        })}
+      </p>
       <p className="text-sm">{t("haveAccount")} <Link href="/login" className="inline-flex min-h-11 items-center font-bold underline">{t("login")}</Link></p>
     </form>
   );

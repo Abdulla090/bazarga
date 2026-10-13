@@ -1,0 +1,73 @@
+import type { LegalByLocale } from "./types";
+
+/** Terms of Service. Same 11 sections in every language, in the same order. Needs a lawyer's read before real launch. */
+export const TERMS: LegalByLocale = {
+  en: {
+    title: "Terms of Service",
+    intro: "These terms are the agreement between you and Bazarga. By creating an account or using Bazarga you accept them. If you don't, please don't use the service.",
+    sections: [
+      { h: "1. What Bazarga is", p: ["Bazarga lets sellers in Kurdistan and Iraq build an online store, share it on Instagram and WhatsApp, and take orders from customers. We provide the software. We do not sell, store or deliver the goods."] },
+      { h: "2. Your account", p: ["Give us true information and keep your password private. You are responsible for everything that happens under your account. You must be 18 or older, or have a parent or guardian's permission."] },
+      { h: "3. Your store and content", p: ["Your products, photos and texts stay yours. You allow Bazarga to host and show them so your store works. You are responsible for your prices, stock, quality, delivery and for following the law."] },
+      { h: "4. What is not allowed", p: ["Do not sell illegal, stolen, counterfeit or dangerous goods, weapons, drugs or adult content. Do not cheat customers, send spam, or try to break the service or reach another store's data. We can remove content that breaks these rules."] },
+      { h: "5. Orders between you and your customers", p: ["Every sale is between the seller and the customer. Bazarga is not a party to it and does not hold the goods or the money. Cash on delivery is collected by the seller or the courier. Disputes about an order are settled between them."] },
+      { h: "6. Plans and payment", p: ["The Free plan has the limits shown on the Pricing page. Pro and other paid plans cost what the Pricing page shows, including any first-month offer. You pay by FIB, ZainCash or cash after sending an upgrade request, and we turn the plan on once your payment arrives. We never charge you automatically.", "When a paid period ends, your store moves back to the Free plan. We do not delete your store or products."] },
+      { h: "7. Availability", p: ["We work to keep Bazarga running, but we cannot promise it will never be interrupted or free of errors. We may improve, change or pause features."] },
+      { h: "8. Closing and suspension", p: ["You can stop using Bazarga at any time. We may suspend or close an account that breaks these terms, harms others or commits fraud."] },
+      { h: "9. Our responsibility", p: ["Bazarga is provided \"as is\". As far as the law allows, we are not responsible for lost sales, lost profit or indirect losses. Our total responsibility to you is limited to what you paid us in the last 3 months."] },
+      { h: "10. Changes to these terms", p: ["We may update these terms. When the change is important we will tell you in the app or by email. If you keep using Bazarga after a change, you accept it."] },
+      { h: "11. Law and contact", p: ["These terms follow the laws of Iraq, and disputes go to the competent courts in the Kurdistan Region. Questions about these terms: use the contact details on this page."] },
+    ],
+  },
+  ku: {
+    title: "مەرجەکانی بەکارهێنان",
+    intro: "ئەم مەرجانە ڕێککەوتنی نێوان تۆ و بازارگەن. بە دروستکردنی هەژمار یان بەکارهێنانی بازارگە، ئەم مەرجانە قبووڵ دەکەیت. ئەگەر قبووڵت نییە، تکایە خزمەتگوزارییەکە بەکار مەهێنە.",
+    sections: [
+      { h: "1. بازارگە چییە", p: ["بازارگە یارمەتی فرۆشیارانی کوردستان و عێراق دەدات دوکانێکی ئۆنلاین دروست بکەن، لە ئینستاگرام و واتسئاپ بیڵاوی بکەنەوە و داواکاری لە کڕیاران وەربگرن. ئێمە نەرمامێرەکە دابین دەکەین. ئێمە کاڵاکان نافرۆشین، هەڵناگرین و ناشیانگەیەنین."] },
+      { h: "2. هەژمارەکەت", p: ["زانیاری ڕاست بدە و وشەی نهێنیەکەت بپارێزە. تۆ بەرپرسیت لە هەموو ئەو شتانەی لە ژێر هەژمارەکەتدا ڕوودەدەن. دەبێت تەمەنت 18 ساڵ یان زیاتر بێت، یان ڕەزامەندی دایک و باوک یان سەرپەرشتیارت هەبێت."] },
+      { h: "3. دوکان و ناوەڕۆکەکەت", p: ["بەرهەم و وێنە و دەقەکانت هی خۆتن و دەمێننەوە. تۆ ڕێگە دەدەیت بازارگە هۆستیان بکات و پیشانیان بدات بۆ ئەوەی دوکانەکەت کار بکات. تۆ بەرپرسیت لە نرخ، کۆگا، کوالێتی، گەیاندن و ڕێزگرتن لە یاسا."] },
+      { h: "4. ئەوەی ڕێگەپێنەدراوە", p: ["کاڵای نایاسایی، دزراو، ساختە یان مەترسیدار، چەک، مادەی هۆشبەر و ناوەڕۆکی گەورەسالان مەفرۆشە. کڕیار مەخەڵەتێنە، سپام مەنێرە، و هەوڵ مەدە خزمەتگوزارییەکە بشکێنیت یان بگەیتە داتای دوکانێکی تر. دەتوانین ئەو ناوەڕۆکە لابەرین کە ئەم یاسایانە دەشکێنێت."] },
+      { h: "5. داواکاری نێوان تۆ و کڕیارەکانت", p: ["هەموو فرۆشتنێک لە نێوان فرۆشیار و کڕیاردایە. بازارگە لایەنی ئەو فرۆشتنە نییە و نە کاڵا و نە پارە هەڵدەگرێت. پارە لە کاتی گەیاندن لەلایەن فرۆشیار یان شۆفێرەوە وەردەگیرێت. کێشەی داواکاری لە نێوان خۆیان چارەسەر دەکرێت."] },
+      { h: "6. پلان و پارەدان", p: ["پلانی بێبەرامبەر ئەو سنوورانەی هەیە کە لە پەڕەی نرخەکان نیشان دراوە. Pro و پلانە پارەدارەکانی تر بە نرخی ناو پەڕەی نرخەکانن، لەگەڵ هەر ئۆفەرێکی مانگی یەکەم. دوای ناردنی داواکاری بەرزکردنەوە، بە FIB، ZainCash یان کاش پارە دەدەیت و ئێمە کاتێک پارەکەت گەیشت پلانەکە چالاک دەکەین. هەرگیز خۆکارانە پارەت لێ نابڕین.", "کاتێک ماوەی پارەدراو تەواو دەبێت، دوکانەکەت دەگەڕێتەوە بۆ پلانی بێبەرامبەر. دوکان و بەرهەمەکانت ناسڕینەوە."] },
+      { h: "7. بەردەستبوون", p: ["هەوڵ دەدەین بازارگە کارا بێت، بەڵام بەڵێن نادەین هەرگیز نەوەستێت یان هەڵەی تێدا نەبێت. لەوانەیە تایبەتمەندییەکان بەرەوپێش ببەین، بیانگۆڕین یان ڕایانگرین."] },
+      { h: "8. داخستن و ڕاگرتن", p: ["دەتوانیت هەر کاتێک بازارگە بەکار نەهێنیت. ئێمە دەتوانین هەژمارێک ڕابگرین یان دایبخەین کە ئەم مەرجانە دەشکێنێت، زیان بە کەسانی تر دەگەیەنێت یان فێڵی تێدایە."] },
+      { h: "9. بەرپرسیارێتی ئێمە", p: ["بازارگە «وەک خۆی» پێشکەش دەکرێت. تا ئەو ڕادەیەی یاسا ڕێگە دەدات، ئێمە بەرپرس نین لە فرۆشتنی لەدەستچوو، قازانجی لەدەستچوو یان زیانی ناڕاستەوخۆ. کۆی بەرپرسیارێتیمان بەرامبەرت سنووردارە بە ئەو بڕەی لە 3 مانگی ڕابردوودا پێتداوین."] },
+      { h: "10. گۆڕانکاری لە مەرجەکان", p: ["لەوانەیە ئەم مەرجانە نوێ بکەینەوە. کاتێک گۆڕانکارییەکە گرنگ بێت، لە ناو ئەپەکە یان بە ئیمەیل پێت دەڵێین. ئەگەر دوای گۆڕانکاری بازارگە بەکار بهێنیت، قبووڵت کردووە."] },
+      { h: "11. یاسا و پەیوەندی", p: ["ئەم مەرجانە بە یاساکانی عێراق دەڕۆن و کێشەکان دەچنە دادگا بەتوانا و پەیوەندیدارەکانی هەرێمی کوردستان. بۆ پرسیار دەربارەی ئەم مەرجانە، زانیاری پەیوەندی ئەم پەڕەیە بەکار بهێنە."] },
+    ],
+  },
+  kmr: {
+    title: "Mercên Bikaranînê",
+    intro: "Ev merc lihevkirina di navbera te û Bazargayê de ne. Bi vekirina hesabekî an bikaranîna Bazargayê, tu van mercan qebûl dikî. Eger qebûl nakî, ji kerema xwe vê karûbarê bi kar neyîne.",
+    sections: [
+      { h: "1. Bazarga çi ye", p: ["Bazarga alîkariya firoşkarên Kurdistan û Iraqê dike ku dikanekî online ava bikin, li Instagram û WhatsApp parve bikin û ji kirrîyaran sifariş bistînin. Em nermalavê peyda dikin. Em kelûpelan nafiroşin, nagirin û negihînin."] },
+      { h: "2. Hesabê te", p: ["Agahiya rast bide û şîfreya xwe veşêre. Tu berpirsiyarê her tiştê yê di bin hesabê te de diqewime. Divê te 18 sal an zêdetir be, an jî destûra dê û bavê te an serperiştyarê te hebe."] },
+      { h: "3. Dikan û naveroka te", p: ["Hilber, wêne û nivîsên te yên te dimînin. Tu destûr didî Bazargayê wan hosting bike û nîşan bide da ku dikana te bixebite. Tu berpirsiyarê bihayan, stokê, kalîteyê, gihandinê û rêzgirtina qanûnê yî."] },
+      { h: "4. Çi qedexe ye", p: ["Kelûpelên neqanûnî, diziyê, sexte an xeternak, çek, madeyên hişbir û naveroka mezinan nefiroşe. Kirrîyaran nexapîne, spam neşîne û hewl nede karûbarê bişkînî an bigihîjî daneyên dikanekî din. Em dikarin naveroka ku van rêgezan dişkîne rakin."] },
+      { h: "5. Sifarişên di navbera te û kirrîyarên te de", p: ["Her firotin di navbera firoşkar û kirrîyar de ye. Bazarga alî nîne û ne kelûpel û ne jî pere digire. Dayîn di gihandinê de ji aliyê firoşkar an şofêr ve tê girtin. Nakokiya li ser sifarişê di navbera wan de tê çareserkirin."] },
+      { h: "6. Plan û dayîn", p: ["Plana belaş bi sînorên ku di rûpela bihayan de têne nîşandan e. Pro û planên din ên bi pere bi bihayê rûpela bihayan in, bi pêşniyara meha yekem re jî. Piştî şandina daxwaza bilindkirinê, tu bi FIB, ZainCash an kaş didî û em dema ku dayîna te gihîşt planê çalak dikin. Em tu carî bixwe pereyan ji te nabirin.", "Dema ku heyama dayî diqede, dikana te vedigere plana belaş. Em dikan û hilberên te nasarin."] },
+      { h: "7. Berdestbûn", p: ["Em dixebitin ku Bazarga çalak bimîne, lê soz nadin ku tu carî nesekine an çewtî tê de nebe. Dibe ku em taybetmendiyan çêtir bikin, biguherin an rawestînin."] },
+      { h: "8. Girtin û sekinandin", p: ["Tu dikarî her dem Bazargayê bi kar neyînî. Em dikarin hesabekî ku van mercan dişkîne, zirarê dide kesên din an xapandinê dike, bisekinînin an bigirin."] },
+      { h: "9. Berpirsiyariya me", p: ["Bazarga \"wekî ku heye\" tê pêşkêşkirin. Heta ku qanûn destûr dide, em ne berpirsiyarê firotinên winda, qezenca winda an zirarên nerasterast in. Tevahiya berpirsiyariya me li hember te bi wê mîqdarê tê sînorkirin ya ku te di 3 mehên dawî de da me."] },
+      { h: "10. Guhertina mercan", p: ["Dibe ku em van mercan nû bikin. Dema ku guhertin girîng be, em di appê de an bi e-nameyê ji te re dibêjin. Eger piştî guhertinê Bazargayê bi kar bîne, te qebûl kiriye."] },
+      { h: "11. Qanûn û têkilî", p: ["Ev merc li gor qanûnên Iraqê ne û nakokî diçin dadgehên selahiyetdar ên Herêma Kurdistanê. Ji bo pirsan derbarê van mercan, agahiyên têkiliyê yên vê rûpelê bi kar bîne."] },
+    ],
+  },
+  ar: {
+    title: "شروط الخدمة",
+    intro: "هذه الشروط هي الاتفاق بينك وبين بازارگە. بإنشاء حساب أو استخدام بازارگە فأنت توافق عليها. وإن لم توافق، فنرجو ألّا تستخدم الخدمة.",
+    sections: [
+      { h: "1. ما هو بازارگە", p: ["يتيح بازارگە للبائعين في كردستان والعراق بناء متجر إلكتروني ومشاركته على إنستغرام وواتساب واستقبال الطلبات من الزبائن. نحن نوفّر البرنامج فقط، ولا نبيع البضائع ولا نخزّنها ولا نوصلها."] },
+      { h: "2. حسابك", p: ["قدّم معلومات صحيحة واحفظ كلمة مرورك سرية. أنت مسؤول عن كل ما يحدث تحت حسابك. يجب أن يكون عمرك 18 سنة أو أكثر، أو أن تحصل على إذن من أحد والديك أو وليّ أمرك."] },
+      { h: "3. متجرك ومحتواك", p: ["منتجاتك وصورك ونصوصك تبقى ملكك. أنت تسمح لبازارگە باستضافتها وعرضها حتى يعمل متجرك. أنت المسؤول عن أسعارك ومخزونك وجودة بضاعتك وتوصيلها والالتزام بالقانون."] },
+      { h: "4. ما هو غير مسموح", p: ["لا تبع بضائع غير قانونية أو مسروقة أو مقلّدة أو خطرة، ولا أسلحة ولا مخدرات ولا محتوى للبالغين. لا تخدع الزبائن، ولا ترسل رسائل مزعجة، ولا تحاول اختراق الخدمة أو الوصول إلى بيانات متجر آخر. يحق لنا حذف المحتوى المخالف."] },
+      { h: "5. الطلبات بينك وبين زبائنك", p: ["كل عملية بيع هي بين البائع والزبون. بازارگە ليس طرفًا فيها ولا يحتفظ بالبضاعة أو بالمال. الدفع عند الاستلام يتسلمه البائع أو السائق. تُحَلّ خلافات الطلب بينهما."] },
+      { h: "6. الخطط والدفع", p: ["للخطة المجانية الحدود الظاهرة في صفحة الأسعار. وخطة Pro والخطط المدفوعة الأخرى بالأسعار الظاهرة في صفحة الأسعار، بما فيها أي عرض للشهر الأول. بعد إرسال طلب الترقية تدفع عبر FIB أو زين كاش أو نقدًا، ونفعّل الخطة عند وصول دفعتك. لا نسحب منك أي مبلغ تلقائيًا.", "عند انتهاء المدة المدفوعة يعود متجرك إلى الخطة المجانية. ولا نحذف متجرك ولا منتجاتك."] },
+      { h: "7. توفّر الخدمة", p: ["نعمل على إبقاء بازارگە شغّالًا، لكن لا نضمن ألّا ينقطع أو يخلو من الأخطاء. قد نحسّن الميزات أو نغيّرها أو نوقفها مؤقتًا."] },
+      { h: "8. الإغلاق والإيقاف", p: ["يمكنك التوقف عن استخدام بازارگە في أي وقت. ويحق لنا إيقاف أو إغلاق أي حساب يخالف هذه الشروط أو يؤذي الآخرين أو يمارس الاحتيال."] },
+      { h: "9. مسؤوليتنا", p: ["يُقدَّم بازارگە «كما هو». وبقدر ما يسمح القانون، لا نتحمل مسؤولية المبيعات الفائتة أو الأرباح الضائعة أو الخسائر غير المباشرة. ومسؤوليتنا الإجمالية تجاهك محدودة بما دفعته لنا خلال آخر 3 أشهر."] },
+      { h: "10. تغيير الشروط", p: ["قد نحدّث هذه الشروط. وعندما يكون التغيير مهمًا سنخبرك داخل التطبيق أو بالبريد الإلكتروني. استمرارك في استخدام بازارگە بعد التغيير يعني موافقتك عليه."] },
+      { h: "11. القانون والتواصل", p: ["تخضع هذه الشروط لقوانين العراق، وتُحال الخلافات إلى المحاكم المختصة في إقليم كردستان. للاستفسار عن هذه الشروط استخدم بيانات التواصل في هذه الصفحة."] },
+    ],
+  },
+};

@@ -1021,5 +1021,18 @@
       "pro": "Pro",
       "business": "Bazirganî"
     }
+  },
+  "legal": {
+    "terms": "Mercên Bikaranînê",
+    "privacy": "Nepenîtî",
+    "refunds": "Vegerandina peran",
+    "footerLabel": "Qanûnî",
+    "updated": "Cara dawî nûkirî: {date}",
+    "contactTitle": "Têkilî",
+    "contactEmail": "E-name: {email}",
+    "contactWhatsapp": "WhatsApp: {phone}",
+    "contactFallback": "Bi WhatsApp ji me re peyamê bişîne bi jimara rûpela bilindkirinê di dashboardê de.",
+    "agree": "Bi vekirina hesabekî, tu bi <terms>Mercên Bikaranînê</terms> û <privacy>Siyaseta Nepenîtiyê</privacy> razî dibî.",
+    "other": "Rûpelên qanûnî yên din"
   }
 }

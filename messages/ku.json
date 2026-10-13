@@ -1020,5 +1020,18 @@
       "pro": "Pro",
       "business": "Business"
     }
+  },
+  "legal": {
+    "terms": "مەرجەکانی بەکارهێنان",
+    "privacy": "نهێنیێتی",
+    "refunds": "گەڕاندنەوەی پارە",
+    "footerLabel": "یاسایی",
+    "updated": "دوایین نوێکردنەوە: {date}",
+    "contactTitle": "پەیوەندی",
+    "contactEmail": "ئیمەیل: {email}",
+    "contactWhatsapp": "واتسئاپ: {phone}",
+    "contactFallback": "بە واتسئاپ پەیاممان بۆ بنێرە بە ژمارەی پەڕەی بەرزکردنەوە لە داشبۆردەکەت.",
+    "agree": "بە دروستکردنی هەژمار، ڕازیت بە <terms>مەرجەکانی بەکارهێنان</terms> و <privacy>سیاسەتی نهێنیێتی</privacy>.",
+    "other": "پەڕە یاساییەکانی تر"
   }
 }

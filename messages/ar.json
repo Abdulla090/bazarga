@@ -1020,5 +1020,18 @@
       "pro": "Pro",
       "business": "Business"
     }
+  },
+  "legal": {
+    "terms": "شروط الخدمة",
+    "privacy": "الخصوصية",
+    "refunds": "الاسترداد",
+    "footerLabel": "قانوني",
+    "updated": "آخر تحديث: {date}",
+    "contactTitle": "التواصل",
+    "contactEmail": "البريد الإلكتروني: {email}",
+    "contactWhatsapp": "واتساب: {phone}",
+    "contactFallback": "راسلنا على واتساب على الرقم الموجود في صفحة الترقية داخل لوحة التحكم.",
+    "agree": "بإنشاء حساب فأنت توافق على <terms>شروط الخدمة</terms> و<privacy>سياسة الخصوصية</privacy>.",
+    "other": "صفحات قانونية أخرى"
   }
 }
