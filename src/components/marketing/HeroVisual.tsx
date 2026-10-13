@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { formatIQD } from "@/lib/money";
 import { pickText, type Locale } from "@/lib/i18n";
+import { HeroReveal } from "./HeroReveal";
 import { Banknote, Bell, Check, Icon, ImageIcon, ShoppingBag, Whatsapp } from "@/components/ui/icons";
 
 /**
@@ -8,7 +9,8 @@ import { Banknote, Bell, Check, Icon, ImageIcon, ShoppingBag, Whatsapp } from "@
  * Start side: the seller's chat message (3 photos + a price) with a curved connector into the phone.
  * Centre: a phone showing the real demo store (hawler-bazaar seed products and images).
  * End side: a "New order" notification and the payment chip.
- * Pure HTML/CSS/SVG (CSP-safe, no client JS). Positions use logical insets, so RTL mirrors the story for free.
+ * Pure HTML/CSS/SVG plus one tiny client island (HeroReveal): the floating cards stay invisible until the first
+ * scroll, then blur in one after the other and settle fully sharp. CSP-safe (no inline script). Positions use logical insets, so RTL mirrors the story for free.
  * Seed images are already resized WebP renditions; plain <img srcset> on purpose (same reason as ResponsiveImage).
  */
 
@@ -30,10 +32,13 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
   const t = await getTranslations("landing");
   const price = formatIQD(P.mugs.price, locale);
   return (
-    <div className="hv relative mx-auto w-full max-w-5xl" role="img" aria-label={t("hvAria")}>
+    <div className="hv relative mx-auto w-full max-w-5xl" role="img" aria-label={t("hvAria")} data-hv data-reveal="off">
+      <HeroReveal />
+      {/* No JS: never leave the cards hidden. */}
+      <noscript dangerouslySetInnerHTML={{ __html: "<style>[data-hv] .hv-reveal,[data-hv] .hv-reveal-fade{opacity:1!important;visibility:visible!important;filter:none!important;transform:none!important}</style>" }} />
       <div aria-hidden="true" className="relative mx-auto h-[26rem] sm:h-[34rem]">
         {/* Connector: chat card → phone (desktop only). Mirrored in RTL. */}
-        <svg className="hv-wire pointer-events-none absolute end-[calc(50%+8.4rem)] top-[5.5rem] hidden h-28 w-[4.75rem] lg:block rtl:-scale-x-100" viewBox="0 0 76 112" fill="none">
+        <svg className="hv-wire hv-reveal-fade pointer-events-none absolute end-[calc(50%+8.4rem)] top-[5.5rem] hidden h-28 w-[4.75rem] lg:block rtl:-scale-x-100" viewBox="0 0 76 112" fill="none">
           <path d="M2 8 C 44 8, 30 102, 70 102" stroke="url(#hvw)" strokeWidth="2" strokeLinecap="round" className="hv-dash" />
           <circle cx="71" cy="102" r="3.5" fill="#2563EB" />
           <defs>
@@ -43,7 +48,7 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
             </linearGradient>
           </defs>
         </svg>
-        <svg className="hv-wire pointer-events-none absolute start-[calc(50%+8.4rem)] top-[8rem] hidden h-24 w-[4.75rem] lg:block rtl:-scale-x-100" viewBox="0 0 76 96" fill="none">
+        <svg className="hv-wire hv-reveal-fade hv-rv-1 pointer-events-none absolute start-[calc(50%+8.4rem)] top-[8rem] hidden h-24 w-[4.75rem] lg:block rtl:-scale-x-100" viewBox="0 0 76 96" fill="none">
           <path d="M5 86 C 44 86, 32 10, 74 10" stroke="url(#hvw2)" strokeWidth="2" strokeLinecap="round" className="hv-dash" />
           <circle cx="5" cy="86" r="3.5" fill="#2563EB" />
           <defs>
@@ -102,6 +107,7 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
 
         {/* Start side: the seller's chat message */}
         <div className="hv-par-a absolute start-0 top-[7.5rem] z-20 sm:top-28 lg:top-14 lg:start-auto lg:end-[calc(50%+12.75rem)]">
+          <div className="hv-reveal" data-reveal-card="chat">
           <div className="hv-card hv-float w-[9.75rem] p-2 text-start sm:w-60 sm:p-3">
             <p className="flex items-center gap-1.5 text-[10px] font-semibold text-ink-50 sm:text-xs">
               <span className="num inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#2563EB] text-[9px] text-white sm:h-5 sm:w-5 sm:text-[10px]">1</span>
@@ -123,10 +129,12 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
               <span className="truncate">{t("hvChatFrom")}</span>
             </p>
           </div>
+          </div>
         </div>
 
         {/* End side: the order that comes in, then how it gets paid */}
         <div className="hv-par-b absolute end-0 top-[15.5rem] z-20 sm:top-64 lg:top-[8.5rem] lg:end-auto lg:start-[calc(50%+12.75rem)]">
+          <div className="hv-reveal hv-rv-1" data-reveal-card="order">
           <div className="hv-card hv-float hv-float-2 w-[10.25rem] p-2 text-start sm:w-64 sm:p-3">
             <p className="flex items-center gap-1.5 text-[10px] font-semibold text-ink-50 sm:text-xs">
               <span className="num inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#2563EB] text-[9px] text-white sm:h-5 sm:w-5 sm:text-[10px]">3</span>
@@ -149,11 +157,14 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
             <Icon as={Banknote} size="1.1em" className="text-[#2563EB]" />
             {t("hvPay")}
           </span>
+          </div>
         </div>
 
         {/* Lower start side: the store is live (desktop) */}
-        <span className="hv-chip hv-float hv-float-3 absolute top-[17.5rem] z-20 hidden items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold lg:inline-flex lg:end-[calc(50%+13.5rem)]">
-          <Icon as={Check} className="text-[#2563EB]" /> {t("badge")}
+        <span className="hv-reveal hv-rv-2 absolute top-[17.5rem] z-20 hidden lg:block lg:end-[calc(50%+13.5rem)]">
+          <span className="hv-chip hv-float hv-float-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold">
+            <Icon as={Check} className="text-[#2563EB]" /> {t("badge")}
+          </span>
         </span>
       </div>
     </div>

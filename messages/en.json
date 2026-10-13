@@ -28,7 +28,14 @@
   "nav": {
     "cta": "Build my store",
     "login": "Log in",
-    "dashboard": "My store"
+    "dashboard": "My store",
+    "start": "Start free",
+    "how": "How it works",
+    "demo": "Sample store",
+    "menu": "Menu",
+    "close": "Close menu",
+    "language": "Language",
+    "main": "Main"
   },
   "landing": {
     "metaTitle": "Bazarga · Your store, in your language",

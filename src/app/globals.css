@@ -738,3 +738,102 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 @media (prefers-reduced-motion: reduce) { .plans-thumb { transition: none; } }
 /* line-through does not reach inline-block children, so the split "$10" strikes each character itself. */
 .was-price .sw { text-decoration: inherit; text-decoration-line: line-through; text-decoration-thickness: 2px; text-decoration-color: rgb(10 10 11 / 0.45); }
+
+/* ---- Hero cards: invisible until the first scroll, then a macOS-style blur-in (agentb/hero-nav) ----
+ * Off: opacity 0 + visibility hidden, so nothing at all shows on first paint (no ghost, no outline, no shadow).
+ * On (HeroReveal sets data-reveal="on" after ~96px of scroll): 450ms ease-out from blur(12px), 10px down and 96% scale
+ * to blur(0) / none, staggered 120ms. The blur exists only during the transition; the end state is fully sharp.
+ * Absolute-positioned wrappers + opacity/filter/transform only, so no layout shift. Logical insets: RTL mirrors. */
+.hv-reveal, .hv-reveal-fade {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0s;
+}
+.hv-reveal { filter: blur(0); transform: none; }
+.hv-rv-1 { transition-delay: 120ms; }
+.hv-rv-2 { transition-delay: 240ms; }
+[data-hv][data-reveal="off"] .hv-reveal,
+[data-hv][data-reveal="off"] .hv-reveal-fade {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: none;
+}
+[data-hv][data-reveal="off"] .hv-reveal { filter: blur(12px); transform: translateY(10px) scale(0.96); }
+@media (prefers-reduced-motion: reduce) {
+  [data-hv] .hv-reveal, [data-hv] .hv-reveal-fade {
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---- "Start free" hook CTA (agentb/hero-nav). Crisp only: hard 1.5px gradient stroke, flat 4px tint ring, no glows. ---- */
+@property --cta-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@property --cta-fill { syntax: "<color>"; inherits: false; initial-value: #2563eb; }
+.cta-hook {
+  --cta-fill: #2563eb;
+  position: relative;
+  display: inline-flex;
+  min-height: 3rem;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-inline: 0.5rem 1.25rem;
+  border: 1.5px solid transparent;
+  border-radius: 9999px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  background:
+    linear-gradient(var(--cta-fill), var(--cta-fill)) padding-box,
+    conic-gradient(from var(--cta-a), #1d4ed8 0deg, #60a5fa 40deg, #ffffff 75deg, #60a5fa 110deg, #1d4ed8 150deg, #1d4ed8 360deg) border-box;
+  box-shadow: 0 0 0 4px rgb(37 99 235 / 0.12), 0 1px 2px rgb(10 10 11 / 0.16);
+  transition: --cta-fill 200ms ease, box-shadow 200ms ease, transform 160ms ease;
+}
+.cta-hook:hover { --cta-fill: #0a0a0b; box-shadow: 0 0 0 4px rgb(10 10 11 / 0.08), 0 1px 2px rgb(10 10 11 / 0.2); }
+.cta-hook:active { --cta-fill: #000; transform: scale(0.98); }
+.cta-hook:focus-visible { outline: 2px solid #2563eb; outline-offset: 5px; }
+.cta-arrow { transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1); }
+.cta-hook:hover .cta-arrow { transform: translateX(4px); }
+[dir="rtl"] .cta-hook:hover .cta-arrow { transform: translateX(-4px); }
+/* 7x4 orders heatmap on a white tile: 4px cells, 2px gaps, flows by column in reading direction. */
+.cta-heat {
+  display: grid;
+  flex-shrink: 0;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, 4px);
+  grid-auto-columns: 4px;
+  gap: 2px;
+  padding: 5px 6px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(37 99 235 / 0.18);
+}
+.cta-heat i { display: block; border-radius: 1px; background: #dbeafe; }
+.cta-heat i[data-l="1"] { background: #bfdbfe; }
+.cta-heat i[data-l="2"] { background: #93c5fd; }
+.cta-heat i[data-l="3"] { background: #3b82f6; }
+.cta-heat i[data-l="4"] { background: #1d4ed8; }
+@keyframes cta-spin { to { --cta-a: 360deg; } }
+@keyframes cta-cell { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes cta-today { 0%, 100% { background: #1d4ed8; } 50% { background: #93c5fd; } }
+@media (prefers-reduced-motion: no-preference) {
+  .cta-hook { animation: cta-spin 4.5s linear infinite; }
+  .cta-heat i { animation: cta-cell 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(700ms + var(--c, 0) * 70ms + var(--r, 0) * 20ms); }
+  .cta-heat i[data-today] {
+    animation: cta-cell 260ms cubic-bezier(0.22, 1, 0.36, 1) both, cta-today 2.4s ease-in-out infinite;
+    animation-delay: calc(700ms + var(--c, 0) * 70ms + var(--r, 0) * 20ms), calc(1.6s + var(--r, 0) * 300ms);
+  }
+}
+@media (forced-colors: active) {
+  .cta-hook { background: ButtonFace; border-color: ButtonText; color: ButtonText; box-shadow: none; }
+}

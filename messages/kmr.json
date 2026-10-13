@@ -29,7 +29,14 @@
   "nav": {
     "cta": "Dikana min ava bike",
     "login": "Têkeve",
-    "dashboard": "Dikana min"
+    "dashboard": "Dikana min",
+    "start": "Belaş dest pê bike",
+    "how": "Çawa dixebite",
+    "demo": "Dikana mînak",
+    "menu": "Menû",
+    "close": "Menûyê bigire",
+    "language": "Ziman",
+    "main": "Sereke"
   },
   "setup": {
     "title": "Firoşgeha xwe amade bike",

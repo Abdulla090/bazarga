@@ -33,6 +33,13 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 ## Log
 
 
+### 2026-10-13 · Marketing header + hero card reveal + Start-free hook CTA (agentb/hero-nav)
+- **Header** (`src/components/SiteHeader.tsx`, used by / and /pricing): one row, hairline bottom, 8px rhythm: logo · How it works (/#how) · Sample store · Pricing · language (`marketing/LocaleMenu.tsx`, one globe+code control) · quiet Log in · one ink "Start free" CTA. Phones: logo + CTA + menu button (`marketing/MobileMenu.tsx` sheet holds links, Log in, language). **Promo top bar removed** (`pricing/AnnouncementBar.tsx` deleted; it duplicated the hero $1 pill). New copy `nav.start/how/demo/menu/close/language/main` in 4 locales. `SiteHeaderView` is the pure, testable part.
+- **Hero cards** (`HeroVisual.tsx` + client island `marketing/HeroReveal.tsx`): server renders `data-reveal="off"` (opacity 0 + visibility hidden, nothing shows); after ~96px scroll (or IO 60% after any scroll) they blur in 450ms ease-out, 120ms stagger, ending on blur(0)/transform none = fully sharp. Reduced motion: shown, no blur. `<noscript>` fallback shows them. CSS in globals.css `.hv-reveal`.
+- **Hero CTA** (`marketing/HeroCta.tsx`, `.cta-hook` in globals.css): #2563EB pill, crisp rotating 1.5px conic stroke, sliding arrow, 7x4 orders heatmap that fills in then the newest column pulses; ink hover. 48px tall, no blur/glow, no overflow at 360.
+- Tests: `tests/hero-nav.test.ts` (no promo duplication in header, ≤4 links, reveal cards hidden + aria-hidden initially, CSS end state sharp, CTA heatmap).
+- **Agent A:** do not touch `SiteHeader.tsx`, `src/app/(marketing)/page.tsx`, `HeroVisual.tsx` (or the new `marketing/*` files) until you rebase on this merge. Your old (c) check on `[data-site-top]` still applies: the attribute is on the new header.
+
 ### 2026-10-13 · K4 upgrade requests + /admin (agentb/k4-upgrade)
 - Migration 0012 `upgrade_requests`; service `server/services/upgrades.ts` (one pending per store, activate extends from period end if same plan active, idempotent, history row `upgrade:<method>`); `/dashboard/upgrade` (4 locales, `upgrade.*`); `/admin` English-only, 404 unless session email in `ADMIN_EMAILS`. No money moves. tests/upgrades.test.ts.
 
