@@ -74,6 +74,8 @@ const schema = z.object({
    * /api/cron/payments only runs with `Authorization: Bearer <CRON_SECRET>`; unset → the route is off (404).
    */
   CRON_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16).optional()),
+  /** Comma-separated emails allowed into /admin (manual plan activation). Unset → /admin is 404. */
+  ADMIN_EMAILS: z.string().default(""),
   /** Unpaid online orders still pending after this many minutes are cancelled and their stock released. */
   PAYMENT_ORDER_TTL_MINUTES: z.coerce.number().int().min(5).max(7 * 24 * 60).default(60),
 

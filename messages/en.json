@@ -990,5 +990,28 @@
     "firstMonthOnly": "first month",
     "after": "$10/month after",
     "wasNow": "Was $10, now $1 for your first month"
+  },
+  "upgrade": {
+    "title": "Upgrade your store",
+    "lead": "Pick a plan and how you'll pay. We activate it as soon as your payment arrives.",
+    "plan": "Plan",
+    "period": "Billing",
+    "monthly": "Monthly",
+    "yearly": "Yearly (2 months free)",
+    "methodLabel": "Pay with",
+    "method": {
+      "fib": "FIB",
+      "zaincash": "ZainCash",
+      "cash": "Cash"
+    },
+    "submit": "Send request",
+    "steps": "After you send the request, pay by your chosen method and message us on WhatsApp with your store name. Your plan turns on within a day.",
+    "pending": "Request received: {plan} via {method}. We'll activate it once payment arrives.",
+    "current": "Current plan: {plan}",
+    "name": {
+      "free": "Free",
+      "pro": "Pro",
+      "business": "Business"
+    }
   }
 }

@@ -85,6 +85,13 @@
       "when": 1791478000000,
       "tag": "0011_store_plans",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791481000000,
+      "tag": "0012_upgrade_requests",
+      "breakpoints": true
     }
   ]
 }
