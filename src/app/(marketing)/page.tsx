@@ -8,11 +8,19 @@ import { WaitlistForm } from "./WaitlistForm";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
-import { ArrowForward, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/components/ui/icons";
+import { ArrowForward } from "@/components/ui/icons";
+import { headers } from "next/headers";
+import { NONCE_HEADER } from "@/server/csp";
+import { serializeJsonLd } from "@/lib/product-page";
+import { WhyBento } from "@/components/marketing/WhyBento";
+import { WhoMarquee } from "@/components/marketing/WhoMarquee";
+import { FaqList } from "@/components/marketing/FaqList";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
 
 const DEMO_SLUG = "hawler-bazaar";
+const WHO_KEYS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c11", "c12"] as const;
+const FAQ_KEYS = ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"] as const;
 
 const SHIRT = { img: "product-shirt", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } };
 /** Demo tiles use the pre-built pipeline WebP renditions (public/images/seed, 320–1024 w) via srcset. */
@@ -36,19 +44,14 @@ export default async function LandingPage() {
     { who: t("we"), title: t("s2Title"), body: t("s2Body") },
     { who: t("you"), title: t("s3Title"), body: t("s3Body") },
   ];
-  const why = [
-    { icon: "ک", title: t("w1Title"), body: t("w1Body") },
-    { icon: "0", title: t("w2Title"), body: t("w2Body") },
-    { icon: "IQD", title: t("w3Title"), body: t("w3Body") },
-    { icon: "∞", title: t("w4Title"), body: t("w4Body") },
-  ];
-  const who = [
-    [Shirt, t("c1")],
-    [Sparkles, t("c2")],
-    [Droplet, t("c3")],
-    [Scissors, t("c4")],
-    [Smartphone, t("c5")],
-  ] as const;
+  const faqItems = FAQ_KEYS.map((k) => ({ q: t(`faq.${k}.q`), a: t(`faq.${k}.a`) }));
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: locale === "ku" ? "ckb" : locale,
+    mainEntity: faqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
+  const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
 
   return (
     <>
@@ -85,7 +88,7 @@ export default async function LandingPage() {
         {/* How it works */}
         <section id="how" className="scroll-mt-20 bg-white py-14">
           <div className="container-page">
-            <p className="eyebrow">{t("howEyebrow")}</p>
+            <p className="mk-eyebrow">{t("howEyebrow")}</p>
             <h2 className="mt-2 text-3xl font-extrabold">{t("howTitle")}</h2>
             <ol className="mt-8 grid gap-4 md:grid-cols-3">
               {steps.map((s, i) => (
@@ -104,7 +107,7 @@ export default async function LandingPage() {
 
         {/* Demo */}
         <section className="container-page py-14">
-          <p className="eyebrow">{t("demoEyebrow")}</p>
+          <p className="mk-eyebrow">{t("demoEyebrow")}</p>
           <h2 className="mt-2 text-3xl font-extrabold">{t("demoTitle")}</h2>
           <p className="mt-3 max-w-prose text-ink-70">{t("demoBody")}</p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -122,35 +125,20 @@ export default async function LandingPage() {
           <Link href={`/s/${DEMO_SLUG}`} className="btn-ink mt-6">{t("demoCta")}</Link>
         </section>
 
-        {/* Why */}
-        <section className="bg-ink py-14 text-paper">
-          <div className="container-page">
-            <p className="text-sm font-bold uppercase tracking-wide text-gold">{t("whyEyebrow")}</p>
-            <h2 className="mt-2 text-3xl font-extrabold">{t("whyTitle")}</h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {why.map((w) => (
-                <div key={w.title} className="rounded-[var(--radius-card)] border border-white/10 bg-white/5 p-5">
-                  <span className="num inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-gold px-2 font-extrabold text-on-gold">{w.icon}</span>
-                  <h3 className="mt-3 text-lg font-bold">{w.title}</h3>
-                  <p className="mt-1 text-paper/75">{w.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <WhyBento
+          locale={locale}
+          l={{
+            eyebrow: t("whyEyebrow"), title: t("whyTitle"), lead: t("whyLead"),
+            w1Title: t("w1Title"), w1Body: t("w1Body"), w2Title: t("w2Title"), w2Body: t("w2Body"),
+            w3Title: t("w3Title"), w3Body: t("w3Body"), w4Title: t("w4Title"), w4Body: t("w4Body"),
+            chatName: t("whyChatName"), chatMsg: t("whyChatMsg"), cardBadge: t("whyCardBadge"), cardCta: t("whyCardCta"),
+            payLabel: t("whyPayLabel"), soon: t("whySoon"), deliveryLabel: t("whyDeliveryLabel"), mapLabel: t("whyMapLabel"),
+            berlin: t("cityBerlin"), stockholm: t("cityStockholm"), london: t("cityLondon"),
+            productName: pickText(SHIRT.name, locale),
+          }}
+        />
 
-        {/* Who */}
-        <section className="container-page py-14">
-          <p className="eyebrow">{t("whoEyebrow")}</p>
-          <h2 className="mt-2 text-3xl font-extrabold">{t("whoTitle")}</h2>
-          <ul className="mt-6 flex flex-wrap gap-3">
-            {who.map(([icon, label]) => (
-              <li key={label} className="card flex items-center gap-2 px-4 py-3 font-semibold">
-                <Icon as={icon} className="text-2xl text-green" /> {label}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <WhoMarquee l={{ eyebrow: t("whoEyebrow"), title: t("whoTitle"), lead: t("whoLead"), cats: WHO_KEYS.map((k) => t(k)) }} />
 
         {/* Pricing */}
         <section id="pricing" className="container-page scroll-mt-20 py-14">
@@ -159,10 +147,27 @@ export default async function LandingPage() {
           <PricingPlans />
         </section>
 
+        {/* FAQ (agentb/why-faq): accordion island + FAQPage JSON-LD (nonce CSP) */}
+        <section id="faq" className="faq-band scroll-mt-20" aria-labelledby="faq-title">
+          <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }} />
+          <div className="container-page grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <p className="mk-eyebrow">{t("faqEyebrow")}</p>
+              <h2 id="faq-title" className="mt-3 text-[2rem] font-light leading-[1.1] tracking-tight text-balance sm:text-[2.75rem]">{t("faqTitle")}</h2>
+              <p className="mt-4 max-w-sm text-pretty text-ink-70">{t("faqLead")}</p>
+              <Link href="/pricing" className="faq-more group mt-5">
+                {t("faqMore")}
+                <ArrowForward className="text-base transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+              </Link>
+            </div>
+            <FaqList items={faqItems} />
+          </div>
+        </section>
+
         {/* Waitlist */}
         <section id="join" className="scroll-mt-20 bg-white py-14">
           <div className="container-page max-w-2xl">
-            <p className="eyebrow">{t("joinEyebrow")}</p>
+            <p className="mk-eyebrow">{t("joinEyebrow")}</p>
             <h2 className="mt-2 mb-6 text-3xl font-extrabold">{t("joinTitle")}</h2>
             <WaitlistForm cities={IRAQI_CITIES.map((c) => ({ key: c.key, name: pickText(c.name, locale) }))} />
           </div>

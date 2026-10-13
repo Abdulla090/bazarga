@@ -107,7 +107,65 @@
     "hvOrderTitle": "New order",
     "hvNow": "now",
     "hvOrderMeta": "Erbil · {price}",
-    "hvPay": "Cash on delivery · FIB"
+    "hvPay": "Cash on delivery · FIB",
+    "whyLead": "Every detail tuned for how people actually sell here: in our languages, over chat, paid in dinars.",
+    "whyChatName": "Your chat",
+    "whyChatMsg": "Linen overshirt, all sizes",
+    "whyCardBadge": "Live in your store",
+    "whyCardCta": "Add to cart",
+    "whyPayLabel": "Payments",
+    "whySoon": "soon",
+    "whyDeliveryLabel": "Delivery by city",
+    "whyMapLabel": "Stores from Erbil to Berlin",
+    "cityBerlin": "Berlin",
+    "cityStockholm": "Stockholm",
+    "cityLondon": "London",
+    "c6": "Jewellery",
+    "c7": "Home & decor",
+    "c8": "Baby & kids",
+    "c9": "Sweets & bakery",
+    "c10": "Perfume",
+    "c11": "Books",
+    "c12": "Plants",
+    "whoLead": "If you sell it in a chat today, it can be a store tonight.",
+    "faqEyebrow": "FAQ",
+    "faqTitle": "Questions, answered.",
+    "faqLead": "Everything sellers ask before opening their store.",
+    "faqMore": "Compare plans",
+    "faq": {
+      "q1": {
+        "q": "Is it really free?",
+        "a": "Yes. The Free plan has no time limit and needs no card: up to 15 products, starter themes and cash on delivery. A small Bazarga badge shows on your store."
+      },
+      "q2": {
+        "q": "What does the $1 Pro month include?",
+        "a": "Everything in Pro for $1 your first month, then $10 a month, or $100 a year (2 months free). Pro gives you unlimited products, all themes plus Theme Studio, analytics, FIB and ZainCash payments, and no Bazarga badge."
+      },
+      "q3": {
+        "q": "Which payments are supported?",
+        "a": "Cash on delivery works on every plan. Pro adds online payment with FIB and ZainCash. FastPay and Qi Card are on the way."
+      },
+      "q4": {
+        "q": "Do customers need an app or account?",
+        "a": "No. Shoppers open your link in any browser and order with their name, phone and address. No app, no sign-up. They can track the order later with the order number and phone."
+      },
+      "q5": {
+        "q": "Can I use my own domain?",
+        "a": "Yes, on the Business plan ($20 a month): connect a domain like shop.yourbrand.com. Free and Pro stores get their own Bazarga link."
+      },
+      "q6": {
+        "q": "How does delivery pricing per city work?",
+        "a": "Your store starts with a delivery fee for every Iraqi governorate, from 3,000 IQD in Erbil. Change any fee, add towns or neighbourhoods with their own price, or offer free delivery over an amount. Shoppers see the fee for their city before they order."
+      },
+      "q7": {
+        "q": "Can I sell in Kurdish and Arabic at once?",
+        "a": "Yes. Your store works in Sorani, Kurmanji, Arabic and English, right-to-left included, and shoppers switch with one tap. Write product names and descriptions in each language you want."
+      },
+      "q8": {
+        "q": "How do I get paid, and can I cancel anytime?",
+        "a": "Cash orders are collected by your courier as usual. FIB and ZainCash orders are paid online and marked paid automatically. Plans are month to month: cancel anytime and your store and products stay exactly as they are."
+      }
+    }
   },
   "auth": {
     "loginTitle": "Welcome back",

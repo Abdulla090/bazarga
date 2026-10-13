@@ -58,7 +58,14 @@ import {
   WhatsappIcon,
   Image01Icon,
   Notification01Icon,
-  Store01Icon
+  Store01Icon,
+  Diamond02Icon,
+  Sofa01Icon,
+  Baby01Icon,
+  CakeIcon,
+  PerfumeIcon,
+  Book02Icon,
+  Plant02Icon,
 } from "@hugeicons/core-free-icons";
 
 export const ChartColumnIncreasing = Analytics01Icon;
@@ -110,6 +117,13 @@ export const ArrowLeft = ArrowLeft01Icon;
 export const ChevronRight = ArrowRight01Icon;
 export const ChevronLeft = ArrowLeft01Icon;
 export const ChevronDown = ArrowDown01Icon;
+export const Gem = Diamond02Icon;
+export const Sofa = Sofa01Icon;
+export const Baby = Baby01Icon;
+export const Cake = CakeIcon;
+export const Perfume = PerfumeIcon;
+export const Book = Book02Icon;
+export const Plant = Plant02Icon;
 
 export type LucideIcon = IconSvgElement;
 export type IconProps = { label?: string; className?: string; size?: number | string; strokeWidth?: number };
