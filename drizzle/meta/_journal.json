@@ -78,6 +78,13 @@
       "when": 1791475000000,
       "tag": "0010_store_theme_studio",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791478000000,
+      "tag": "0011_store_plans",
+      "breakpoints": true
     }
   ]
 }

@@ -48,3 +48,12 @@ export const COMPARE: FeatureRow[] = [
   { key: "staff", free: false, pro: false, business: true },
   { key: "support", free: "community", pro: "email", business: "priority" },
 ];
+
+/** Server-side limits per plan. */
+export const FREE_PRODUCT_LIMIT = 15;
+export function productLimit(plan: PlanId): number {
+  return plan === "free" ? FREE_PRODUCT_LIMIT : Infinity;
+}
+export function normalizePlan(v: string | null | undefined): PlanId {
+  return v === "pro" || v === "business" ? v : "free";
+}
