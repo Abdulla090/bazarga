@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { Icon, RotateCcw } from "@/components/ui/icons";
 
@@ -23,7 +24,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
         <button className="btn-gold min-h-11 px-6" onClick={reset}>
           <Icon as={RotateCcw} /> {t.retry}
         </button>
-        <a href="/" className="btn-ghost min-h-11 px-6">{t.home}</a>
+        <Link href="/" className="btn-ghost min-h-11 px-6">{t.home}</Link>
       </div>
       <a href="mailto:founder@kurdistanai.app" className="text-sm underline" dir="ltr">{t.help}: founder@kurdistanai.app</a>
       {error.digest ? <p className="num text-xs opacity-60" dir="ltr">ref {error.digest}</p> : null}
