@@ -4,7 +4,6 @@ import { listRequests } from "@/server/services/upgrades";
 import { activateUpgradeAction, rejectUpgradeAction } from "@/server/actions/upgrade";
 
 export const metadata = { title: "Admin", robots: { index: false } };
-export const dynamic = "force-dynamic";
 
 /** Internal, English-only. Gated by ADMIN_EMAILS (404 otherwise). */
 export default async function AdminPage() {
