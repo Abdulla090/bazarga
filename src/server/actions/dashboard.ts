@@ -338,6 +338,8 @@ export async function toggleDiscountAction(id: string, isActive: boolean): Promi
 export async function togglePaymentAction(method: string, enabled: boolean) {
   const { store, user } = await requireStore();
   const input = paymentToggleSchema.parse({ method, enabled });
+  // The platform gateway has its own gate (provider on + verified payouts): never via the generic toggle.
+  if (input.method === "online") throw new Error("use setOnlinePaymentsAction");
   await setPaymentMethod(db(), store.id, input.method, input.enabled);
   await recordAudit(store.id, user.id, "payment.toggle", `${input.method}:${input.enabled ? "on" : "off"}`);
   invalidateStore(store.id);

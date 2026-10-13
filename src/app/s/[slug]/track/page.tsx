@@ -120,7 +120,7 @@ function TrackedOrderView({
   const fmt = dateFmt(locale);
   const steps = buildTrackingTimeline(order.status, order.events);
   const current = steps.find((s) => s.state === "current") ?? steps.at(-1)!;
-  const paymentLabel = order.paymentMethod === "cod" ? tp("cod") : PAYMENT_LABEL[order.paymentMethod];
+  const paymentLabel = order.paymentMethod === "cod" ? tp("cod") : order.paymentMethod === "online" ? tp("online") : PAYMENT_LABEL[order.paymentMethod];
   return (
     <>
       <section className="grid gap-1 pt-2 sm:pt-6" data-testid="track-result" aria-labelledby="trk-title">

@@ -4,6 +4,7 @@ import { CodProvider } from "./cod";
 import { FibProvider } from "./fib";
 import { ZainCashProvider } from "./zaincash";
 import { FastPayProvider, QiCardProvider } from "./stubs";
+import { OnlineGatewayShim } from "./stubs-online";
 import type { PaymentProvider } from "./types";
 
 type Registry = {
@@ -12,6 +13,7 @@ type Registry = {
   zaincash: ZainCashProvider;
   fastpay: FastPayProvider;
   qicard: QiCardProvider;
+  online: OnlineGatewayShim;
 };
 
 let registry: Registry | undefined;
@@ -36,6 +38,7 @@ function build(): Registry {
     }),
     fastpay: new FastPayProvider(e.FASTPAY_ENABLED),
     qicard: new QiCardProvider(e.QICARD_ENABLED),
+    online: new OnlineGatewayShim(),
   };
 }
 

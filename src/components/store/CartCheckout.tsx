@@ -21,7 +21,10 @@ const OTHER = "__other";
 
 
 
-export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity, whatsapp, storeName }: { whatsapp?: string | null; storeName?: string; labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string }) {
+/** Platform gateway (Rasedi) option: which wallets/cards the hosted page offers; `soon` ones are shown greyed. */
+export type OnlineOption = { label: string; hint: string; soonLabel: string; chips: { code: string; label: string; soon: boolean }[] };
+
+export function CartCheckout({ labels: L, slug, locale, zones, payments, defaultCity, whatsapp, storeName, online }: { whatsapp?: string | null; storeName?: string; labels: CartLabels; slug: string; locale: Locale; zones: Zone[]; payments: PaymentMethod[]; defaultCity: string; online?: OnlineOption | null }) {
   const te = (k: string) => L.errors[k] ?? L.errors.generic ?? k;
   const router = useRouter();
   const { lines, setQty, clear } = useCart(slug);
@@ -284,7 +287,20 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             {payments.map((m) => (
               <label key={m} className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-4 text-[15px] transition-[border-color,box-shadow] duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#2563EB] ${method === m ? "border-st-fg ring-1 ring-st-fg" : "border-st-border hover:border-st-fg/40"}`}>
                 <input type="radio" name="paymentMethod" value={m} checked={method === m} onChange={() => setMethod(m)} className="h-5 w-5 shrink-0 accent-ink" />
-                {m === "cod" ? L.cod : PAYMENT_LABEL[m]}
+                {m === "online" && online ? (
+                  <span className="grid min-w-0 flex-1 gap-1.5 py-2.5">
+                    <span>{online.label}</span>
+                    <span className="flex flex-wrap gap-1.5" data-testid="gateway-chips">
+                      {online.chips.map((c) => (
+                        <span key={c.code} dir="ltr" className={`inline-flex min-h-7 items-center rounded-full border px-2.5 text-xs font-medium ${c.soon ? "border-dashed border-st-border text-muted" : "border-st-border"}`}>
+                          {c.label}
+                          {c.soon && <span className="ms-1 text-[10px] uppercase" dir="auto">· {online.soonLabel}</span>}
+                        </span>
+                      ))}
+                    </span>
+                    {method === "online" && <span className="text-xs text-muted">{online.hint}</span>}
+                  </span>
+                ) : m === "cod" ? L.cod : PAYMENT_LABEL[m]}
               </label>
             ))}
           </div>

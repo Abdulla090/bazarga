@@ -788,7 +788,8 @@
     "notConfigured": "Li ser vê serverê hîn nehatiye girêdan — heta ku neyê girêdan kirrîyar nabînin.",
     "comingSoon": "Zû tê",
     "on": "Vekirî",
-    "off": "Girtî"
+    "off": "Girtî",
+    "online": "Dayîna serhêl"
   },
   "customers": {
     "title": "Kirrîyar",
@@ -1078,5 +1079,47 @@
       "pro": "Pro",
       "business": "Bazirganî"
     }
+  },
+  "gatewayPay": {
+    "returnTitle": "Rewşa dayînê",
+    "checking": "Em dayîna te kontrol dikin…",
+    "paid": "Pere gihîşt. Spas!",
+    "failed": "Dayîn bi ser neket. Tu pere nehat birîn.",
+    "expired": "Dema vê girêdana dayînê derbas bûye.",
+    "refunded": "Ev dayîn hate vegerandin.",
+    "pendingLong": "Em hê li benda pejirandinê ne. Heke te dayîn kiribe, ev rûpel di çend deqeyan de bi xwe nû dibe.",
+    "continue": "Bidomîne",
+    "tryAgain": "Dîsa biceribîne",
+    "payOnline": "Niha serhêl bide",
+    "payOnlineLead": "{amount} li ser rûpeleke dayînê ya ewle bide. Plana te gava dayîn hat pejirandin çalak dibe.",
+    "promo": "Pêşniyara meha yekem",
+    "orManual": "An daxwazekê bişîne û bi destan bide",
+    "cartOnline": "Serhêl bide",
+    "cartOnlineHint": "Tu yê herî rûpeleke dayînê ya ewle.",
+    "soon": "di nêzîk de",
+    "settingsTitle": "Dayînên serhêl",
+    "comingSoon": "Dayînên serhêl: di nêzîk de — li benda çalakkirina deriyê dayînê",
+    "comingSoonHint": "Niha agahiyên wergirtina pereyan zêde bike da ku roja ku çalak bibe tu amade bî.",
+    "payoutTitle": "Agahiyên wergirtina pereyan",
+    "payoutMethod": "Pereyan wergire bi",
+    "method": {
+      "fib": "Hesabê FIB",
+      "zaincash": "Cûzdana ZainCash",
+      "bank": "Hesabê bankê"
+    },
+    "accountName": "Navê xwediyê hesabê",
+    "accountId": "Hejmara hesabê an telefon",
+    "save": "Agahiyan tomar bike",
+    "status": {
+      "pending": "Di vekolînê de",
+      "verified": "Hate piştrastkirin",
+      "rejected": "Nehat qebûlkirin — agahiyan kontrol bike û dîsa tomar bike"
+    },
+    "toggleLabel": "Li firoşgeha min dayînên serhêl qebûl bike",
+    "toggleHint": "Kiryar di dema kirînê de didin û em pereyan dişînin hesabê te. Dayîna li ber derî wekî xwe dimîne.",
+    "needVerified": "Piştî ku agahiyên te hatin piştrastkirin tu dikarî vê çalak bikî.",
+    "balance": "Bermahiya ji bo şandinê",
+    "saved": "Hate tomarkirin",
+    "error": "Tiştek xelet çû. Ji kerema xwe dîsa biceribîne."
   }
 }
