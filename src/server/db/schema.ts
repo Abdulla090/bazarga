@@ -686,3 +686,14 @@ export const upgradeRequests = pgTable("upgrade_requests", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   resolvedAt: timestamp("resolved_at", { withTimezone: true }),
 }, (t) => [index("upgrade_requests_status_idx").on(t.status, t.createdAt)]);
+
+/** Append-only trail of seller settings changes (who changed what, when). Never stores secrets or values, only field names. */
+export const auditLog = pgTable("audit_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+  userId: uuid("user_id"),
+  action: text("action").notNull(),
+  detail: text("detail"),
+  ip: text("ip"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index("audit_log_store_idx").on(t.storeId, t.createdAt)]);

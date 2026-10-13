@@ -32,6 +32,10 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-13 23:xx Agent B: K6a audit log
+- audit_log table (0013), src/server/audit.ts recordAudit (best-effort, field names only), hooked into store update, theme, storefront and payment toggle. Rate limits verified present on auth, checkout, track, uploads.
+
+
 
 ### 2026-10-13 · Hero fix: blue "Start free." headline, ink CTA, centred nav (agentb/hero-fix)
 - Per Abdulla's correction (17:42): the hook is the H1's 2nd line, not the button. `HeroHook` (in `HeroCta.tsx`) renders line 2 as crisp gradient text (ink → #1e40af → #2563EB → light blue, background-clip:text, mirrored 260deg in RTL, slow 7s sheen) plus a hand-drawn SVG underline that draws in once; reduced motion = static; forced-colors falls back to CanvasText. Inline span + block padding/line-height 1.22 so Arabic/Sorani dots and descenders are never clipped; wraps cleanly at 360px.

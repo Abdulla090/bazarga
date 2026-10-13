@@ -6,6 +6,7 @@ import { invalidateCatalog, invalidateStore } from "../cache/tags";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
+import { recordAudit, auditDetail } from "../audit";
 import { requireStore, requireUser } from "../auth/session";
 import { createStore, getStoreForOwner, updateStore, updateStoreStorefront, updateStoreTheme } from "../services/stores";
 import {
@@ -68,13 +69,14 @@ export async function createStoreAction(_prev: ActionState, fd: FormData): Promi
 
 export async function updateStoreAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store, user } = await requireStore();
     const input = storeInputFromForm(fd);
     let logoUrl: string | null | undefined;
     const logo = fd.get("logo");
     if (logo instanceof File && logo.size > 0) logoUrl = (await uploadProcessedImage(store.id, logo)).url;
     if (fd.get("removeLogo") === "1") logoUrl = null;
     await updateStore(db(), store.id, { ...input, logoUrl });
+    await recordAudit(store.id, user.id, "store.update", auditDetail([...Object.keys(input), ...(logoUrl !== undefined ? ["logo"] : [])]));
     invalidateStore(store.id, [store.slug, input.slug]);
     revalidatePath("/dashboard", "layout");
     return { ok: true };
@@ -85,7 +87,7 @@ export async function updateStoreAction(_prev: ActionState, fd: FormData): Promi
 
 export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store, user } = await requireStore();
     const input = storeThemeSchema.parse({
       themePreset: fd.get("themePreset") ?? undefined,
       accentColor: typeof fd.get("accentColor") === "string" ? (fd.get("accentColor") as string) : undefined,
@@ -93,6 +95,7 @@ export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise
       returnPolicy: localizedFromForm(fd, "returnPolicy"),
     });
     await updateStoreTheme(db(), store.id, input);
+    await recordAudit(store.id, user.id, "store.theme", auditDetail(Object.keys(input)));
     invalidateStore(store.id);
     revalidatePath("/dashboard/settings");
     return { ok: true };
@@ -114,7 +117,7 @@ function jsonField(v: FormDataEntryValue | null): unknown {
 /** Cover photo (uploaded client-side to /api/uploads first) + free-delivery threshold. */
 export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store, user } = await requireStore();
     const input = storeStorefrontSchema.parse({
       coverImageUrl: fd.get("coverImageUrl") ?? null,
       coverImagePlaceholder: fd.get("coverImagePlaceholder") ?? null,
@@ -122,6 +125,7 @@ export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Pr
       freeDeliveryThreshold: fd.get("freeDeliveryThreshold") ?? null,
     });
     await updateStoreStorefront(db(), store.id, input);
+    await recordAudit(store.id, user.id, "store.storefront", auditDetail(Object.keys(input)));
     invalidateStore(store.id, [store.slug]);
     revalidatePath("/dashboard/settings");
     return { ok: true };
@@ -332,9 +336,10 @@ export async function toggleDiscountAction(id: string, isActive: boolean): Promi
 
 // ---------------------------------------------------------------- payments
 export async function togglePaymentAction(method: string, enabled: boolean) {
-  const { store } = await requireStore();
+  const { store, user } = await requireStore();
   const input = paymentToggleSchema.parse({ method, enabled });
   await setPaymentMethod(db(), store.id, input.method, input.enabled);
+  await recordAudit(store.id, user.id, "payment.toggle", `${input.method}:${input.enabled ? "on" : "off"}`);
   invalidateStore(store.id);
   revalidatePath("/dashboard/payments");
 }
