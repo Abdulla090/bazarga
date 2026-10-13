@@ -113,3 +113,12 @@ describe("resolveStorageConfig (Supabase)", () => {
     expect(() => resolveStorageConfig({ UPLOAD_DIR: "x", S3_REGION: "auto", STORAGE_DRIVER: "supabase" })).toThrow();
   });
 });
+
+describe("supabase CA", () => {
+  it("bundles the Supabase root CA and verifies by default", async () => {
+    const { pgPoolConfig } = await import("../src/server/db/pg-config");
+    const c = pgPoolConfig("postgres://u:p@aws-0-eu-central-1.pooler.supabase.com:6543/postgres", {});
+    expect((c.ssl as { rejectUnauthorized: boolean; ca: string }).rejectUnauthorized).toBe(true);
+    expect((c.ssl as { ca: string }).ca).toContain("BEGIN CERTIFICATE");
+  });
+});
