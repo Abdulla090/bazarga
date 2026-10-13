@@ -11,6 +11,7 @@
  */
 export type StorageConfig =
   | { driver: "local"; uploadDir: string }
+  | { driver: "supabase"; url: string; serviceKey: string; bucket: string }
   | {
       driver: "s3";
       endpoint?: string;
@@ -22,7 +23,10 @@ export type StorageConfig =
     };
 
 export interface StorageEnv {
-  STORAGE_DRIVER?: "local" | "s3";
+  STORAGE_DRIVER?: "local" | "s3" | "supabase";
+  SUPABASE_URL?: string;
+  SUPABASE_SERVICE_ROLE_KEY?: string;
+  SUPABASE_BUCKET?: string;
   UPLOAD_DIR: string;
   S3_ENDPOINT?: string;
   S3_REGION: string;
@@ -49,7 +53,13 @@ export function resolveStorageConfig(
     .filter(([, v]) => !v)
     .map(([k]) => k);
 
-  const driver = e.STORAGE_DRIVER ?? (missing.length === 0 ? "s3" : "local");
+  const sbReady = !!(e.SUPABASE_URL && e.SUPABASE_SERVICE_ROLE_KEY);
+  const driver = e.STORAGE_DRIVER ?? (missing.length === 0 ? "s3" : sbReady && runtime.serverless ? "supabase" : "local");
+
+  if (driver === "supabase") {
+    if (!sbReady) throw new Error("Supabase storage requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY");
+    return { driver, url: e.SUPABASE_URL!.replace(/\/$/, ""), serviceKey: e.SUPABASE_SERVICE_ROLE_KEY!, bucket: e.SUPABASE_BUCKET || "uploads" };
+  }
 
   if (driver === "s3") {
     if (missing.length) throw new Error(`S3/R2 storage requires ${missing.join(", ")}`);

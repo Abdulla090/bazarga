@@ -75,11 +75,51 @@ export class S3Storage implements StorageAdapter {
   }
 }
 
+/** Supabase Storage over its REST API (public bucket, created on first write). Free-tier friendly, no S3 keys needed. */
+export class SupabaseStorage implements StorageAdapter {
+  readonly name = "supabase";
+  private ready?: Promise<void>;
+  constructor(private cfg: { url: string; serviceKey: string; bucket: string }) {}
+  private headers(extra: Record<string, string> = {}) {
+    return { Authorization: `Bearer ${this.cfg.serviceKey}`, apikey: this.cfg.serviceKey, ...extra };
+  }
+  private ensureBucket() {
+    this.ready ??= (async () => {
+      const r = await fetch(`${this.cfg.url}/storage/v1/bucket`, {
+        method: "POST",
+        headers: this.headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ id: this.cfg.bucket, name: this.cfg.bucket, public: true }),
+      });
+      if (!r.ok && r.status !== 409 && !(await r.clone().text()).includes("already exists")) {
+        this.ready = undefined;
+        throw new Error(`supabase bucket create failed (${r.status})`);
+      }
+    })();
+    return this.ready;
+  }
+  async put(key: string, body: Uint8Array, contentType: string) {
+    assertSafeKey(key);
+    await this.ensureBucket();
+    const r = await fetch(`${this.cfg.url}/storage/v1/object/${this.cfg.bucket}/${key}`, {
+      method: "POST",
+      headers: this.headers({ "Content-Type": contentType, "Cache-Control": "max-age=31536000", "x-upsert": "true" }),
+      body: Buffer.from(body),
+    });
+    if (!r.ok) throw new Error(`supabase upload failed (${r.status})`);
+    return { key, url: `${this.cfg.url}/storage/v1/object/public/${this.cfg.bucket}/${key}` };
+  }
+  async delete(key: string) {
+    assertSafeKey(key);
+    await fetch(`${this.cfg.url}/storage/v1/object/${this.cfg.bucket}/${key}`, { method: "DELETE", headers: this.headers() }).catch(() => undefined);
+  }
+}
+
 let adapter: StorageAdapter | undefined;
 export function storage(): StorageAdapter {
   if (adapter) return adapter;
   const cfg = resolveStorageConfig(env(), { serverless: !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME });
-  adapter = cfg.driver === "s3" ? new S3Storage(cfg) : new LocalDiskStorage(cfg.uploadDir);
+  adapter =
+    cfg.driver === "supabase" ? new SupabaseStorage(cfg) : cfg.driver === "s3" ? new S3Storage(cfg) : new LocalDiskStorage(cfg.uploadDir);
   return adapter;
 }
 

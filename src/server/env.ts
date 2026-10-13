@@ -20,8 +20,11 @@ const schema = z.object({
 
   // Storage
   /** Unset → R2/S3 when S3_BUCKET + keys + S3_PUBLIC_URL are all present, else local disk. */
-  STORAGE_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["local", "s3"]).optional()),
+  STORAGE_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["local", "s3", "supabase"]).optional()),
   UPLOAD_DIR: z.string().default("./uploads"),
+  SUPABASE_URL: z.string().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+  SUPABASE_BUCKET: z.string().optional(),
   S3_ENDPOINT: z.string().optional(),
   S3_REGION: z.string().default("auto"),
   S3_BUCKET: z.string().optional(),
