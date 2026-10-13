@@ -31,6 +31,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
   Do NOT edit: `src/app/(marketing)/page.tsx`, `src/app/(marketing)/pricing/page.tsx`, `src/app/globals.css` hero/glow block, `src/components/SiteHeader.tsx`, `src/components/pricing/AnnouncementBar.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/components/pricing/StickyFreeCta.tsx`.
 
 ## Log
+
+### 2026-10-13 K1 Supabase Storage driver (agentb/k1-supabase-storage)
+- New `SupabaseStorage` adapter (REST, public bucket `uploads` auto-created on first write) chosen automatically on serverless when SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY exist (Vercel integration provides them); local disk stays the dev default. No new deps. Tests in tests/deploy.test.ts.
 ### 2026-10-13 03:40 Agent B: minimal hero pill, "$1 | Try Pro →" (`agentb/badge-short`)
 - Abdulla's ask: the eyebrow looked busy with "first month" and "then $10". The pill is now `$1` (blue, LTR-isolated) + hairline + one short label + arrow, still linking to /pricing; 44px tap target, RTL arrow flip, crisp border and sheen unchanged. Full terms (first month, then $10/month) stay on /pricing, the Pro card and the sr-only `pricing.wasNow` line inside the pill.
 - Copy: `landing.hookLabel` = en "Try Pro", ku "Pro تاقی بکەرەوە", kmr "Pro biceribîne", ar "جرّب Pro". `landing.hookThen` deleted (nothing else used it). Agent A: if you proofread, edit only `hookLabel`.

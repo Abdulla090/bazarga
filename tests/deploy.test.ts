@@ -100,3 +100,16 @@ describe("resolveStorageConfig (R2 / local)", () => {
     expect(resolveStorageConfig(r2, { serverless: true }).driver).toBe("s3");
   });
 });
+
+describe("resolveStorageConfig (Supabase)", () => {
+  const sb: StorageEnv = { UPLOAD_DIR: "./uploads", S3_REGION: "auto", SUPABASE_URL: "https://x.supabase.co/", SUPABASE_SERVICE_ROLE_KEY: "k" };
+  it("uses Supabase Storage on serverless when its env is present", () => {
+    expect(resolveStorageConfig(sb, { serverless: true })).toEqual({ driver: "supabase", url: "https://x.supabase.co", serviceKey: "k", bucket: "uploads" });
+  });
+  it("stays on local disk in dev even if Supabase env exists", () => {
+    expect(resolveStorageConfig(sb).driver).toBe("local");
+  });
+  it("requires keys when forced", () => {
+    expect(() => resolveStorageConfig({ UPLOAD_DIR: "x", S3_REGION: "auto", STORAGE_DRIVER: "supabase" })).toThrow();
+  });
+});
