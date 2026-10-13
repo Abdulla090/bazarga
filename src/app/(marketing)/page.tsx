@@ -10,6 +10,7 @@ import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
 import { ArrowForward, Droplet, Icon, Scissors, Shirt, Smartphone, Sparkles } from "@/components/ui/icons";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
+import { HeroCta } from "@/components/marketing/HeroCta";
 
 const DEMO_SLUG = "hawler-bazaar";
 
@@ -67,7 +68,7 @@ export default async function LandingPage() {
             </h1>
             <p className="hero-rise hero-d2 mt-4 hidden max-w-xl text-ink-70 text-pretty sm:block sm:text-lg">{t("heroLead")}</p>
             <div className="hero-rise hero-d3 mt-6 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-7 sm:w-auto sm:flex-row sm:items-center">
-              <Link href="/signup" className="btn-gold min-h-12 px-7 text-base">{tp("cta")}</Link>
+              <HeroCta href="/signup" label={tp("cta")} />
               <Link href={`/s/${DEMO_SLUG}`} className="btn-ghost min-h-12 px-7 text-base">{t("heroCta2")}</Link>
             </div>
             <p data-hero-note className="hero-rise hero-d3 mt-3 text-sm text-ink-50">{t("heroNote")}</p>
@@ -78,7 +79,7 @@ export default async function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section className="bg-white py-14">
+        <section id="how" className="scroll-mt-20 bg-white py-14">
           <div className="container-page">
             <p className="eyebrow">{t("howEyebrow")}</p>
             <h2 className="mt-2 text-3xl font-extrabold">{t("howTitle")}</h2>
@@ -148,14 +149,14 @@ export default async function LandingPage() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="container-page scroll-mt-32 py-14">
+        <section id="pricing" className="container-page scroll-mt-20 py-14">
           <h2 className="text-3xl font-light sm:text-4xl">{tp("title")}</h2>
           <p className="mt-2 mb-8 max-w-xl text-ink-70">{tp("lead")}</p>
           <PricingPlans />
         </section>
 
         {/* Waitlist */}
-        <section id="join" className="scroll-mt-32 bg-white py-14">
+        <section id="join" className="scroll-mt-20 bg-white py-14">
           <div className="container-page max-w-2xl">
             <p className="eyebrow">{t("joinEyebrow")}</p>
             <h2 className="mt-2 mb-6 text-3xl font-extrabold">{t("joinTitle")}</h2>

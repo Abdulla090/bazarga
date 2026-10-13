@@ -33,6 +33,7 @@ import {
   LinkSquare02Icon,
   Location01Icon,
   Menu01Icon,
+  Globe02Icon,
   Message01Icon,
   Money03Icon,
   PackageIcon,
@@ -68,6 +69,7 @@ export const CreditCard = CreditCardIcon;
 export const ExternalLink = LinkSquare02Icon;
 export const House = Home01Icon;
 export const Menu = Menu01Icon;
+export const Globe = Globe02Icon;
 export const MessageCircle = Message01Icon;
 export const Package = PackageIcon;
 export const Plus = Add01Icon;
