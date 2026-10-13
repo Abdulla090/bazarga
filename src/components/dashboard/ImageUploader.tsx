@@ -5,10 +5,11 @@ import { Icon, Plus, X } from "@/components/ui/icons";
 import type { ProductImageInput } from "@/lib/validation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
+import { compressForUpload } from "@/lib/client-image-compress";
 
 /**
  * Uploads to /api/uploads (resize → WebP renditions, EXIF/GPS stripped) and keeps each result as a hidden
- * `images` input holding the pipeline metadata as JSON. The first image is the product's cover.
+ * `images` input holding the pipeline metadata as JSON. Photos are pre-compressed in the browser (compressForUpload). The first image is the product's cover.
  */
 export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: ProductImageInput[]; maxMb: number; max?: number }) {
   const t = useTranslations("products");
@@ -22,7 +23,9 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
     setBusy(true);
     setError(undefined);
     try {
-      for (const f of Array.from(files).slice(0, max - images.length)) {
+      for (const picked of Array.from(files).slice(0, max - images.length)) {
+        // Downscale to ≤2048 px WebP in the browser first (mobile data + Vercel's body limit); server finishes it.
+        const f = await compressForUpload(picked);
         if (f.size > maxMb * 1024 * 1024) {
           setError("file_too_large");
           continue;

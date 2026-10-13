@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { saveStorefrontAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Icon, Plus, X } from "@/components/ui/icons";
+import { compressForUpload } from "@/lib/client-image-compress";
 
 type Rendition = { width: number; height: number; url: string; key: string; bytes: number };
 type Values = { coverImageUrl: string | null; coverImagePlaceholder: string | null; coverImageRenditions: Rendition[]; freeDeliveryThreshold: number | null };
@@ -25,12 +26,14 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
   const [uploadError, setUploadError] = useState<string>();
   const fe = state.fieldErrors ?? {};
 
-  async function onFile(file: File | undefined) {
-    if (!file) return;
+  async function onFile(picked: File | undefined) {
+    if (!picked) return;
     setUploadError(undefined);
-    if (file.size > maxMb * 1024 * 1024) return setUploadError("file_too_large");
     setBusy(true);
     try {
+      // Downscale to ≤2048 px WebP in the browser first (mobile data + Vercel's body limit); server finishes it.
+      const file = await compressForUpload(picked);
+      if (file.size > maxMb * 1024 * 1024) return setUploadError("file_too_large");
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/uploads", { method: "POST", body: fd });

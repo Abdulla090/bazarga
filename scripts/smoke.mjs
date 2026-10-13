@@ -260,7 +260,7 @@ if (smokeOrderId) {
 
 // Seller uploads a photo (magic-byte check) and creates a product that shows up in the storefront.
 const photo = new FormData();
-photo.append("file", new Blob([readFileSync("public/images/product-mugs.jpg")], { type: "image/jpeg" }), "mugs.jpg");
+photo.append("file", new Blob([readFileSync("public/images/product-mugs.webp")], { type: "image/webp" }), "mugs.webp");
 const up = await fetch(`${BASE}/api/uploads`, { method: "POST", headers: { Cookie: demoCookie, Origin: BASE }, body: photo });
 const upJson = await up.json();
 ok(up.status === 200 && typeof upJson.url === "string", "seller image upload accepted");
