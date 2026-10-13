@@ -141,7 +141,65 @@
     "hvOrderTitle": "Siparîşa nû",
     "hvNow": "niha",
     "hvOrderMeta": "Hewlêr · {price}",
-    "hvPay": "Dayîn di gihandinê de · FIB"
+    "hvPay": "Dayîn di gihandinê de · FIB",
+    "whyLead": "Her hûrgulî li gorî awayê ku mirov li vir difiroşin hatiye çêkirin: bi zimanên me, di chatê de, bi dînaran.",
+    "whyChatName": "Chata te",
+    "whyChatMsg": "Kirasê kitanî, hemû mezinahî",
+    "whyCardBadge": "Di firoşgeha te de amade ye",
+    "whyCardCta": "Têxe selikê",
+    "whyPayLabel": "Pere dan",
+    "whySoon": "di nêzîk de",
+    "whyDeliveryLabel": "Gihandin li gorî bajar",
+    "whyMapLabel": "Firoşgeh ji Hewlêrê heta Berlînê",
+    "cityBerlin": "Berlîn",
+    "cityStockholm": "Stockholm",
+    "cityLondon": "London",
+    "c6": "Zêr û xemil",
+    "c7": "Mal û xemla malê",
+    "c8": "Zarok û pitik",
+    "c9": "Şîrînî û nanpêjî",
+    "c10": "Bîhn",
+    "c11": "Pirtûk",
+    "c12": "Riwek",
+    "whoLead": "Heke tu îro di chatê de difiroşî, îşev dikare bibe firoşgeh.",
+    "faqEyebrow": "Pirs",
+    "faqTitle": "Pirs û bersiv.",
+    "faqLead": "Her tiştê ku firoşkar berî vekirina firoşgehê dipirsin.",
+    "faqMore": "Planan berhev bike",
+    "faq": {
+      "q1": {
+        "q": "Bi rastî belaş e?",
+        "a": "Erê. Plana Belaş sînorê demê nîne û kart nexwaze: heta 15 berhem, temayên destpêkê û pere dan dema gihandinê. Nîşaneyek biçûk a Bazarga li firoşgeha te xuya dibe."
+      },
+      "q2": {
+        "q": "Meha Pro ya $1 çi dihewîne?",
+        "a": "Hemû Pro ji bo meha yekem bi $1, paşê mehê $10, an salê $100 (2 meh belaş). Pro berhemên bêsînor, hemû tema û Theme Studio, analîtîk, pere dan bi FIB û ZainCash dide û nîşaneya Bazarga radike."
+      },
+      "q3": {
+        "q": "Kîjan rêyên pere danê têne piştgirî kirin?",
+        "a": "Pere dan dema gihandinê di hemû planan de dixebite. Pro pere dana online bi FIB û ZainCash zêde dike. FastPay û Qi Card di rê de ne."
+      },
+      "q4": {
+        "q": "Kirrîyar hewceyî app an hesabê ne?",
+        "a": "Na. Kirrîyar girêdana te di her gerokê de vedike û bi nav, telefon û navnîşanê ferman dide. Bê app, bê tomarbûn. Paşê dikarin bi hejmara fermanê û telefonê fermanê bişopînin."
+      },
+      "q5": {
+        "q": "Ez dikarim domaina xwe bi kar bînim?",
+        "a": "Erê, di plana Business de (mehê $20): domainek wek shop.yourbrand.com girê bide. Firoşgehên Free û Pro girêdana xwe ya Bazarga digirin."
+      },
+      "q6": {
+        "q": "Bihayê gihandinê li gorî bajar çawa dixebite?",
+        "a": "Firoşgeha te bi bihayê gihandinê ji bo her parêzgeha Iraqê dest pê dike, ji 3,000 IQD li Hewlêrê. Her bihayê biguherîne, bajarok an tax bi bihayê xwe zêde bike, an ji mîqdarekê û pê ve gihandina belaş pêşkêş bike. Kirrîyar berî fermanê bihayê bajarê xwe dibîne."
+      },
+      "q7": {
+        "q": "Ez dikarim bi hev re bi kurdî û erebî bifiroşim?",
+        "a": "Erê. Firoşgeha te bi soranî, kurmancî, erebî û îngilîzî dixebite, ji rastê ber bi çepê jî, û kirrîyar bi yek destlêdanê ziman diguherînin. Nav û danasîna berheman bi her zimanê ku tu dixwazî binivîse."
+      },
+      "q8": {
+        "q": "Ez pereyê xwe çawa werdigirim, û ez dikarim her dem betal bikim?",
+        "a": "Fermanên kaş wek her car ji aliyê kuryerê te ve têne berhev kirin. Fermanên FIB û ZainCash online têne dayîn û bixweber wek dayî têne nîşankirin. Plan meh bi meh in: her dem betal bike û firoşgeh û berhemên te wek xwe dimînin."
+      }
+    }
   },
   "store": {
     "cart": "Selik",
