@@ -10,7 +10,8 @@ export default async function NotFound() {
       <Logo />
       <p className="num text-6xl font-extrabold text-gold">404</p>
       <p className="text-lg">{t("NOT_FOUND")}</p>
-      <Link href="/" className="btn-gold">{tc("back")}</Link>
+      <Link href="/" className="btn-gold min-h-11 px-6">{tc("back")}</Link>
+      <a href="mailto:founder@kurdistanai.app" className="text-sm underline" dir="ltr">founder@kurdistanai.app</a>
     </main>
   );
 }
