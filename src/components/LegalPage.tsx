@@ -9,8 +9,8 @@ import { currentLocale } from "@/server/locale";
 export async function LegalPage({ slug }: { slug: LegalSlug }) {
   const [locale, t] = await Promise.all([currentLocale(), getTranslations("legal")]);
   const doc = legalDoc(slug, locale);
-  const email = process.env.SUPPORT_EMAIL?.trim();
-  const phone = process.env.SUPPORT_WHATSAPP?.trim();
+  const email = (process.env.SUPPORT_EMAIL?.trim() || "founder@kurdistanai.app");
+  const phone = (process.env.SUPPORT_WHATSAPP?.trim() || "+9647516695482");
   return (
     <>
       <SiteHeader />
