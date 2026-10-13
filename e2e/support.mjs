@@ -120,6 +120,9 @@ export async function setup() {
       ...(trackCookie ? [{ name: "track-result", path: `/s/${SLUG}/track`, anon: true, cookies: [trackCookie] }] : []),
       { name: "login", path: "/login", anon: true },
       { name: "signup", path: "/signup", anon: true },
+      { name: "terms", path: "/terms", anon: true },
+      { name: "privacy", path: "/privacy", anon: true },
+      { name: "refunds", path: "/refunds", anon: true },
       { name: "forgot-password", path: "/forgot-password", anon: true },
       { name: "reset-password", path: "/reset-password?token=mobile-overflow-check-not-a-real-token", anon: true },
       // A fresh seller with no store yet: the store-setup form, whose link field carries the APP_URL host.
