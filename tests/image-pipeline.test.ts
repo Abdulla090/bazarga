@@ -5,6 +5,7 @@ import {
   MAX_INPUT_PIXELS,
   RENDITION_KEY_RE,
   RENDITION_WIDTHS,
+  WEBP_OPTIONS,
   addMissingRenditions,
   missingRenditionWidths,
   parseRenditionKey,
@@ -56,7 +57,8 @@ const STORE = "11111111-2222-4333-8444-555555555555";
 describe("renditionWidths", () => {
   it("never upscales and keeps the source width as the top size", () => {
     expect(renditionWidths(4000)).toEqual([...RENDITION_WIDTHS]);
-    expect(renditionWidths(1600)).toEqual([320, 480, 640, 1024, 1600]);
+    expect(renditionWidths(1600)).toEqual([320, 480, 640, 1024, 1280]);
+    expect(renditionWidths(1280)).toEqual([320, 480, 640, 1024, 1280]);
     expect(renditionWidths(1200)).toEqual([320, 480, 640, 1024, 1200]);
     expect(renditionWidths(500)).toEqual([320, 480, 500]);
     expect(renditionWidths(480)).toEqual([320, 480]);
@@ -146,12 +148,12 @@ describe("storeImage (through the abstract storage sink)", () => {
   it("writes every rendition under the store prefix and returns metadata the product form accepts", async () => {
     const sink = new MemorySink();
     const stored = await storeImage(sink, STORE, await jpegWithGps(2000, 1500, 1), { maxMb: 5 });
-    expect(stored.renditions.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1600]);
+    expect(stored.renditions.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1280]);
     expect([...sink.files.keys()].every((k) => RENDITION_KEY_RE.test(k) && k.startsWith(`stores/${STORE}/`))).toBe(true);
     expect([...sink.files.values()].every((f) => f.type === "image/webp")).toBe(true);
     expect(stored.url).toMatch(/-1024\.webp$/);
     expect(stored.storageKey).toMatch(/-1024\.webp$/);
-    expect({ w: stored.width, h: stored.height }).toEqual({ w: 1600, h: 1200 });
+    expect({ w: stored.width, h: stored.height }).toEqual({ w: 1280, h: 960 });
     expect(stored.renditions.every((r) => r.bytes > 0 && r.height === Math.round((r.width * 3) / 4))).toBe(true);
     expect(productImageSchema.safeParse(stored).success).toBe(true);
     expect(renditionKey(STORE, STORE, 320)).toBe(`stores/${STORE}/${STORE}-320.webp`);
@@ -160,7 +162,7 @@ describe("storeImage (through the abstract storage sink)", () => {
 
 describe("rendition backfill (480 w for images uploaded before it existed)", () => {
   const OTHER = "99999999-2222-4333-8444-555555555555";
-  /** An upload as the old pipeline stored it: 320/640/1024/1600, no 480. */
+  /** An upload as an older pipeline stored it: no 480. */
   async function legacyUpload(sink: MemorySink) {
     const stored = await storeImage(sink, STORE, await jpegWithGps(2000, 1500, 1), { maxMb: 5 });
     const old = stored.renditions.filter((r) => r.width !== 480);
@@ -171,6 +173,9 @@ describe("rendition backfill (480 w for images uploaded before it existed)", () 
   it("lists only the widths the pipeline would emit below the stored top size", () => {
     expect(missingRenditionWidths([320, 640, 1024, 1600])).toEqual([480]);
     expect(missingRenditionWidths([320, 480, 640, 1024, 1600])).toEqual([]);
+    // Pre-Oct-2026 uploads topped out at 1600: they stay readable as-is and never get a near-duplicate 1280.
+    expect(missingRenditionWidths([320, 640, 1024, 1600])).toEqual([480]);
+    expect(missingRenditionWidths([320, 480, 640, 1024, 1280])).toEqual([]);
     expect(missingRenditionWidths([320, 500])).toEqual([480]);
     expect(missingRenditionWidths([300])).toEqual([]);
     expect(missingRenditionWidths([])).toEqual([]);
@@ -187,9 +192,9 @@ describe("rendition backfill (480 w for images uploaded before it existed)", () 
     const old = await legacyUpload(sink);
     const top = old[old.length - 1]!;
     const next = await addMissingRenditions(sink, STORE, old, sink.files.get(top.key)!.body);
-    expect(next!.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1600]);
+    expect(next!.map((r) => r.width)).toEqual([320, 480, 640, 1024, 1280]);
     const added = next!.find((r) => r.width === 480)!;
-    expect(added.key).toBe(top.key.replace(/-1600\.webp$/, "-480.webp"));
+    expect(added.key).toBe(top.key.replace(/-1280\.webp$/, "-480.webp"));
     expect(added.height).toBe(360);
     expect(sink.files.get(added.key)?.type).toBe("image/webp");
     expect((await sharp(sink.files.get(added.key)!.body).metadata()).width).toBe(480);
@@ -207,6 +212,19 @@ describe("rendition backfill (480 w for images uploaded before it existed)", () 
     const seed = old.map((r) => ({ ...r, key: `seed/x-${r.width}.webp` }));
     expect(await addMissingRenditions(sink, STORE, seed, src)).toBeNull();
     expect(sink.files.size).toBe(before);
+  });
+});
+
+describe("lean rendition settings (Oct 2026)", () => {
+  it("pins widths, default width and the WebP encoder options", () => {
+    expect([...RENDITION_WIDTHS]).toEqual([320, 480, 640, 1024, 1280]);
+    expect(pickDefaultRendition(RENDITION_WIDTHS.map((width) => ({ width }))).width).toBe(1024);
+    expect(WEBP_OPTIONS).toEqual({ quality: 72, effort: 6, smartSubsample: true });
+  });
+  it("legacy rows with a 1600 rendition still get a srcset and the 1024 default", () => {
+    const legacy = [320, 480, 640, 1024, 1600].map((w) => ({ width: w, height: w, url: `/x-${w}.webp` }));
+    expect(buildSrcSet(legacy)).toBe("/x-320.webp 320w, /x-480.webp 480w, /x-640.webp 640w, /x-1024.webp 1024w, /x-1600.webp 1600w");
+    expect(pickDefaultRendition(legacy).width).toBe(1024);
   });
 });
 

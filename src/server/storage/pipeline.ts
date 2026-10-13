@@ -21,10 +21,18 @@ import { validateImage } from "./image";
  * 480 sits between the phone grid tile (2 columns ≈ 173–195 CSS px × DPR 2–2.75) and the 640 hero size, so
  * product-grid thumbnails stop downloading the 640 file on most phones (docs/PERFORMANCE.md).
  */
-export const RENDITION_WIDTHS = [320, 480, 640, 1024, 1600] as const;
+/**
+ * Oct 2026 "lean" settings: the top size is 1280 (was 1600 — nothing in the UI renders an image wider than
+ * ~1120 device px except a full-bleed cover on a desktop retina screen) and q72/effort 6 (was q78/effort 4).
+ * Measured on three 4000 px product photos: −31% bytes per upload across all renditions with no visible
+ * difference in a 2× side-by-side crop (docs/CAPACITY.md). Older uploads keep their 1600 rendition: srcset and
+ * pickDefaultRendition read whatever widths a row stores, and the backfill never deletes or re-encodes them.
+ */
+export const RENDITION_WIDTHS = [320, 480, 640, 1024, 1280] as const;
 export const DEFAULT_RENDITION_WIDTH = 1024;
 export const MAX_INPUT_PIXELS = 50_000_000; // ~ 8660×5773 — anything above is rejected, not decoded
-const WEBP_QUALITY = 78;
+/** sharp WebP encoder options for every rendition (pipeline + backfill). Exported so tests pin them. */
+export const WEBP_OPTIONS = { quality: 72, effort: 6, smartSubsample: true } as const;
 const PLACEHOLDER_WIDTH = 16;
 
 export type ProcessedRendition = { width: number; height: number; data: Buffer };
@@ -68,7 +76,7 @@ export async function processImage(input: Uint8Array, opts: { maxMb: number }): 
     renditionWidths(width).map(async (w) => {
       const { data, info } = await base()
         .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: WEBP_QUALITY, effort: 4, smartSubsample: true })
+        .webp(WEBP_OPTIONS)
         .toBuffer({ resolveWithObject: true });
       return { width: info.width, height: info.height, data };
     }),
@@ -115,7 +123,10 @@ export function missingRenditionWidths(existing: readonly number[], targets: rea
   if (!existing.length) return [];
   const top = Math.max(...existing);
   const have = new Set(existing);
-  return renditionWidths(top, targets).filter((w) => w < top && !have.has(w));
+  // A legacy upload whose top is above today's largest target (1600 vs 1280) already covers that slot: only
+  // fill widths below the current cap, never add a second near-duplicate large file.
+  const cap = Math.min(top, targets[targets.length - 1]!);
+  return renditionWidths(top, targets).filter((w) => w < cap && !have.has(w));
 }
 
 /** imageId from a pipeline key (stores/<storeId>/<imageId>-<width>.webp); null for seed/legacy keys. */
@@ -147,7 +158,7 @@ export async function addMissingRenditions(
     missing.map(async (w) => {
       const { data, info } = await sharp(source, { limitInputPixels: MAX_INPUT_PIXELS, failOn: "error" })
         .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: WEBP_QUALITY, effort: 4, smartSubsample: true })
+        .webp(WEBP_OPTIONS)
         .toBuffer({ resolveWithObject: true });
       const { key, url } = await sink.put(renditionKey(parsed.storeId, parsed.imageId, info.width), new Uint8Array(data), "image/webp");
       return { width: info.width, height: info.height, key, url, bytes: data.byteLength };

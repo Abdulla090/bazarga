@@ -232,7 +232,9 @@ numbers are wrapped in `.num` (Inter, `unicode-bidi: isolate`). Fonts are self-h
   CSP still allows `'unsafe-inline'` scripts (Next inline bootstrap) — nonce-based CSP is on the roadmap.
 * **Uploads:** type detected from magic bytes (JPEG/PNG/WebP only, SVG rejected), size limit `MAX_UPLOAD_MB`,
   random keys under `stores/<storeId>/`, served with `nosniff` + sandbox CSP. Stored as WebP renditions at
-  320/480/640/1024/1600 px (never upscaled); `npm run images:backfill` adds a newly introduced width to old uploads.
+  320/480/640/1024/1280 px, q72/effort 6 (never upscaled; older uploads keep their 1600 px file); the uploader
+  pre-shrinks photos in the browser to ≤2048 px WebP first. `npm run images:backfill` adds a newly introduced width
+  to old uploads. Storage/DB sizing: `docs/CAPACITY.md`.
 * **Logging:** JSON-lines to stdout with secret-field redaction (`src/server/logger.ts`).
 * **Health:** `GET /api/health` → `200 {status:"ok",db:"ok"}` or `503`.
 * **Payment reconciliation:** every 5 min (`/api/cron/payments` with `CRON_SECRET`, or `npm run payments:reconcile`):

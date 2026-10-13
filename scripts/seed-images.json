@@ -11,28 +11,28 @@
         "height": 320,
         "key": "seed/product-shirt-320.webp",
         "url": "/images/seed/product-shirt-320.webp",
-        "bytes": 4416
+        "bytes": 3382
       },
       {
         "width": 480,
         "height": 480,
         "key": "seed/product-shirt-480.webp",
         "url": "/images/seed/product-shirt-480.webp",
-        "bytes": 8576
+        "bytes": 6626
       },
       {
         "width": 640,
         "height": 640,
         "key": "seed/product-shirt-640.webp",
         "url": "/images/seed/product-shirt-640.webp",
-        "bytes": 14720
+        "bytes": 11068
       },
       {
         "width": 1024,
         "height": 1024,
         "key": "seed/product-shirt-1024.webp",
         "url": "/images/seed/product-shirt-1024.webp",
-        "bytes": 35306
+        "bytes": 24792
       }
     ]
   },
@@ -48,14 +48,14 @@
         "height": 320,
         "key": "seed/product-shirt-collar-320.webp",
         "url": "/images/seed/product-shirt-collar-320.webp",
-        "bytes": 6214
+        "bytes": 4636
       },
       {
         "width": 400,
         "height": 400,
         "key": "seed/product-shirt-collar-400.webp",
         "url": "/images/seed/product-shirt-collar-400.webp",
-        "bytes": 9824
+        "bytes": 6848
       }
     ]
   },
@@ -71,21 +71,21 @@
         "height": 256,
         "key": "seed/product-shirt-hem-320.webp",
         "url": "/images/seed/product-shirt-hem-320.webp",
-        "bytes": 5218
+        "bytes": 3926
       },
       {
         "width": 480,
         "height": 384,
         "key": "seed/product-shirt-hem-480.webp",
         "url": "/images/seed/product-shirt-hem-480.webp",
-        "bytes": 10386
+        "bytes": 7514
       },
       {
         "width": 500,
         "height": 400,
         "key": "seed/product-shirt-hem-500.webp",
         "url": "/images/seed/product-shirt-hem-500.webp",
-        "bytes": 12408
+        "bytes": 8870
       }
     ]
   },
@@ -101,14 +101,14 @@
         "height": 320,
         "key": "seed/product-shirt-sleeve-320.webp",
         "url": "/images/seed/product-shirt-sleeve-320.webp",
-        "bytes": 6130
+        "bytes": 4418
       },
       {
         "width": 420,
         "height": 420,
         "key": "seed/product-shirt-sleeve-420.webp",
         "url": "/images/seed/product-shirt-sleeve-420.webp",
-        "bytes": 11396
+        "bytes": 7908
       }
     ]
   },
@@ -124,28 +124,28 @@
         "height": 320,
         "key": "seed/product-shirt-full-320.webp",
         "url": "/images/seed/product-shirt-full-320.webp",
-        "bytes": 4318
+        "bytes": 3364
       },
       {
         "width": 480,
         "height": 480,
         "key": "seed/product-shirt-full-480.webp",
         "url": "/images/seed/product-shirt-full-480.webp",
-        "bytes": 8406
+        "bytes": 6488
       },
       {
         "width": 640,
         "height": 640,
         "key": "seed/product-shirt-full-640.webp",
         "url": "/images/seed/product-shirt-full-640.webp",
-        "bytes": 14180
+        "bytes": 10752
       },
       {
         "width": 1024,
         "height": 1024,
         "key": "seed/product-shirt-full-1024.webp",
         "url": "/images/seed/product-shirt-full-1024.webp",
-        "bytes": 36526
+        "bytes": 24884
       }
     ]
   },
@@ -161,28 +161,28 @@
         "height": 320,
         "key": "seed/product-mugs-320.webp",
         "url": "/images/seed/product-mugs-320.webp",
-        "bytes": 2342
+        "bytes": 2016
       },
       {
         "width": 480,
         "height": 480,
         "key": "seed/product-mugs-480.webp",
         "url": "/images/seed/product-mugs-480.webp",
-        "bytes": 4178
+        "bytes": 3412
       },
       {
         "width": 640,
         "height": 640,
         "key": "seed/product-mugs-640.webp",
         "url": "/images/seed/product-mugs-640.webp",
-        "bytes": 6370
+        "bytes": 5218
       },
       {
         "width": 1024,
         "height": 1024,
         "key": "seed/product-mugs-1024.webp",
         "url": "/images/seed/product-mugs-1024.webp",
-        "bytes": 13276
+        "bytes": 10836
       }
     ]
   },
@@ -198,14 +198,14 @@
         "height": 320,
         "key": "seed/product-mugs-left-320.webp",
         "url": "/images/seed/product-mugs-left-320.webp",
-        "bytes": 3186
+        "bytes": 2634
       },
       {
         "width": 440,
         "height": 440,
         "key": "seed/product-mugs-left-440.webp",
         "url": "/images/seed/product-mugs-left-440.webp",
-        "bytes": 5198
+        "bytes": 4104
       }
     ]
   },
@@ -221,14 +221,14 @@
         "height": 320,
         "key": "seed/product-mugs-right-320.webp",
         "url": "/images/seed/product-mugs-right-320.webp",
-        "bytes": 2054
+        "bytes": 1728
       },
       {
         "width": 440,
         "height": 440,
         "key": "seed/product-mugs-right-440.webp",
         "url": "/images/seed/product-mugs-right-440.webp",
-        "bytes": 3214
+        "bytes": 2698
       }
     ]
   },
@@ -244,14 +244,14 @@
         "height": 240,
         "key": "seed/product-mugs-saucer-320.webp",
         "url": "/images/seed/product-mugs-saucer-320.webp",
-        "bytes": 3710
+        "bytes": 2900
       },
       {
         "width": 480,
         "height": 360,
         "key": "seed/product-mugs-saucer-480.webp",
         "url": "/images/seed/product-mugs-saucer-480.webp",
-        "bytes": 6558
+        "bytes": 5204
       }
     ]
   },
@@ -267,28 +267,28 @@
         "height": 320,
         "key": "seed/product-skincare-320.webp",
         "url": "/images/seed/product-skincare-320.webp",
-        "bytes": 2000
+        "bytes": 1584
       },
       {
         "width": 480,
         "height": 480,
         "key": "seed/product-skincare-480.webp",
         "url": "/images/seed/product-skincare-480.webp",
-        "bytes": 3854
+        "bytes": 3036
       },
       {
         "width": 640,
         "height": 640,
         "key": "seed/product-skincare-640.webp",
         "url": "/images/seed/product-skincare-640.webp",
-        "bytes": 6264
+        "bytes": 4788
       },
       {
         "width": 1024,
         "height": 1024,
         "key": "seed/product-skincare-1024.webp",
         "url": "/images/seed/product-skincare-1024.webp",
-        "bytes": 14530
+        "bytes": 11366
       }
     ]
   },
@@ -304,7 +304,7 @@
         "height": 420,
         "key": "seed/product-skincare-serum-300.webp",
         "url": "/images/seed/product-skincare-serum-300.webp",
-        "bytes": 2762
+        "bytes": 2256
       }
     ]
   },
@@ -320,7 +320,7 @@
         "height": 440,
         "key": "seed/product-skincare-pump-320.webp",
         "url": "/images/seed/product-skincare-pump-320.webp",
-        "bytes": 1758
+        "bytes": 1508
       }
     ]
   },
@@ -336,7 +336,7 @@
         "height": 280,
         "key": "seed/product-skincare-jar-300.webp",
         "url": "/images/seed/product-skincare-jar-300.webp",
-        "bytes": 1812
+        "bytes": 1456
       }
     ]
   },
@@ -352,28 +352,28 @@
         "height": 320,
         "key": "seed/product-tote-320.webp",
         "url": "/images/seed/product-tote-320.webp",
-        "bytes": 2260
+        "bytes": 1822
       },
       {
         "width": 480,
         "height": 480,
         "key": "seed/product-tote-480.webp",
         "url": "/images/seed/product-tote-480.webp",
-        "bytes": 4088
+        "bytes": 3198
       },
       {
         "width": 640,
         "height": 640,
         "key": "seed/product-tote-640.webp",
         "url": "/images/seed/product-tote-640.webp",
-        "bytes": 7430
+        "bytes": 5212
       },
       {
         "width": 1024,
         "height": 1024,
         "key": "seed/product-tote-1024.webp",
         "url": "/images/seed/product-tote-1024.webp",
-        "bytes": 34846
+        "bytes": 25088
       }
     ]
   },
@@ -389,7 +389,7 @@
         "height": 320,
         "key": "seed/product-tote-handles-320.webp",
         "url": "/images/seed/product-tote-handles-320.webp",
-        "bytes": 3552
+        "bytes": 2672
       }
     ]
   },
@@ -405,21 +405,21 @@
         "height": 320,
         "key": "seed/product-tote-detail-320.webp",
         "url": "/images/seed/product-tote-detail-320.webp",
-        "bytes": 10046
+        "bytes": 5660
       },
       {
         "width": 400,
         "height": 400,
         "key": "seed/product-tote-detail-400.webp",
         "url": "/images/seed/product-tote-detail-400.webp",
-        "bytes": 23068
+        "bytes": 18150
       }
     ]
   },
   "hero": {
     "url": "/images/seed/hero-1024.webp",
-    "width": 1376,
-    "height": 768,
+    "width": 1280,
+    "height": 714,
     "placeholder": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAADwAQCdASoQAAkAA4BaJQBOgCG/M8KA5AAA/u2h3vVn7PqI3nB0wg9vtK1CsVLgAAA=",
     "dominantColor": "#e8e8d8",
     "renditions": [
@@ -428,35 +428,35 @@
         "height": 179,
         "key": "seed/hero-320.webp",
         "url": "/images/seed/hero-320.webp",
-        "bytes": 2488
+        "bytes": 1982
       },
       {
         "width": 480,
         "height": 268,
         "key": "seed/hero-480.webp",
         "url": "/images/seed/hero-480.webp",
-        "bytes": 4284
+        "bytes": 3426
       },
       {
         "width": 640,
         "height": 357,
         "key": "seed/hero-640.webp",
         "url": "/images/seed/hero-640.webp",
-        "bytes": 6618
+        "bytes": 5274
       },
       {
         "width": 1024,
         "height": 572,
         "key": "seed/hero-1024.webp",
         "url": "/images/seed/hero-1024.webp",
-        "bytes": 13700
+        "bytes": 10330
       },
       {
-        "width": 1376,
-        "height": 768,
-        "key": "seed/hero-1376.webp",
-        "url": "/images/seed/hero-1376.webp",
-        "bytes": 23014
+        "width": 1280,
+        "height": 714,
+        "key": "seed/hero-1280.webp",
+        "url": "/images/seed/hero-1280.webp",
+        "bytes": 14554
       }
     ]
   }

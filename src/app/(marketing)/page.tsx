@@ -14,11 +14,15 @@ import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
 
 const DEMO_SLUG = "hawler-bazaar";
 
-const SHIRT = { img: "/images/product-shirt.jpg", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } };
+const SHIRT = { img: "product-shirt", price: 85000, name: { ku: "کراسی کەتان", ar: "قميص كتان", en: "Linen overshirt" } };
+/** Demo tiles use the pre-built pipeline WebP renditions (public/images/seed, 320–1024 w) via srcset. */
+const seedSrc = (base: string, w: number) => `/images/seed/${base}-${w}.webp`;
+const seedSrcSet = (base: string) => [320, 480, 640, 1024].map((w) => `${seedSrc(base, w)} ${w}w`).join(", ");
+const DEMO_SIZES = "(min-width: 1152px) 360px, (min-width: 640px) calc(33vw - 24px), calc(50vw - 22px)";
 const DEMO = [
   SHIRT,
-  { img: "/images/product-mugs.jpg", price: 25000, name: { ku: "سێتی کوپی گڵ · 2 دانە", ar: "طقم أكواب فخارية · قطعتان", en: "Stoneware mug set · 2 pcs" } },
-  { img: "/images/product-skincare.jpg", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
+  { img: "product-mugs", price: 25000, name: { ku: "سێتی کوپی گڵ · 2 دانە", ar: "طقم أكواب فخارية · قطعتان", en: "Stoneware mug set · 2 pcs" } },
+  { img: "product-skincare", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
 ];
 
 export default async function LandingPage() {
@@ -107,7 +111,7 @@ export default async function LandingPage() {
             {DEMO.map((p) => (
               <Link key={p.img} href={`/s/${DEMO_SLUG}`} className="group overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.img} alt={pickText(p.name, locale)} className="aspect-square w-full object-cover transition group-hover:scale-[1.02]" loading="lazy" />
+                <img src={seedSrc(p.img, 640)} srcSet={seedSrcSet(p.img)} sizes={DEMO_SIZES} width={1024} height={1024} alt={pickText(p.name, locale)} className="aspect-square h-auto w-full object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                 <div className="p-3">
                   <p className="font-bold">{pickText(p.name, locale)}</p>
                   <p className="num text-ink-70">{formatIQD(p.price, locale)}</p>

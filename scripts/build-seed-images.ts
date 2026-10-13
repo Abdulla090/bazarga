@@ -1,5 +1,6 @@
 /*
- * Run the upload pipeline over the demo photos in public/images and write the WebP renditions to
+ * Run the upload pipeline over the demo photos in public/images (WebP masters, q75 — the JPEG originals were
+ * converted and removed in Oct 2026) and write the WebP renditions to
  * public/images/seed/ plus a manifest (scripts/seed-images.json) that scripts/seed.ts reads — so the demo store
  * exercises srcset/placeholders and multi-photo galleries without needing a storage bucket or any download.
  * Extra gallery photos are derived from the same originals with sharp: detail crops (collar, hem, jar…) and one
@@ -58,7 +59,7 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   const manifest: Record<string, unknown> = {};
   for (const name of NAMES) {
-    const src = await readFile(path.join(process.cwd(), "public/images", `${name}.jpg`));
+    const src = await readFile(path.join(process.cwd(), "public/images", `${name}.webp`));
     await emit(name, new Uint8Array(src), manifest);
     for (const d of DERIVED[name]) {
       let s = sharp(src);
