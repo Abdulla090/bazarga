@@ -168,11 +168,11 @@
     "faq": {
       "q1": {
         "q": "Bi rastî belaş e?",
-        "a": "Erê. Plana Belaş sînorê demê nîne û kart nexwaze: heta 15 berhem, temayên destpêkê û pere dan dema gihandinê. Nîşaneyek biçûk a Bazarga li firoşgeha te xuya dibe."
+        "a": "Erê. Plana Belaş sînorê demê nîne û kart nexwaze: heta 10 berhem, temayên destpêkê, pere dan dema gihandinê û fermanên WhatsApp. Nîşaneyek biçûk a Bazarga li firoşgeha te xuya dibe."
       },
       "q2": {
         "q": "Meha Pro ya $1 çi dihewîne?",
-        "a": "Hemû Pro ji bo meha yekem bi $1, paşê mehê $10, an salê $100 (2 meh belaş). Pro berhemên bêsînor, hemû tema û Theme Studio, analîtîk, pere dan bi FIB û ZainCash dide û nîşaneya Bazarga radike."
+        "a": "Hemû Pro ji bo meha yekem bi $1, paşê mehê $15, an salê $150 (2 meh belaş). Pro heta 100 berhem, hemû tema û Theme Studio, analîtîka 90 rojan û kodên daxistinê dide û nîşaneya Bazarga radike."
       },
       "q3": {
         "q": "Kîjan rêyên pere danê têne piştgirî kirin?",
@@ -184,7 +184,7 @@
       },
       "q5": {
         "q": "Ez dikarim domaina xwe bi kar bînim?",
-        "a": "Erê, di plana Business de (mehê $20): domainek wek shop.yourbrand.com girê bide. Firoşgehên Free û Pro girêdana xwe ya Bazarga digirin."
+        "a": "Erê, di planên Business (mehê $50) û Max de: domainek wek shop.yourbrand.com girê bide (zû çalak dibe). Firoşgehên Free û Pro girêdana xwe ya Bazarga digirin."
       },
       "q6": {
         "q": "Bihayê gihandinê li gorî bajar çawa dixebite?",
@@ -565,7 +565,9 @@
     "invalid_discount_code": "3–32 tîpên Latînî, hejmar, - an _ bi kar bîne.",
     "invalid_percent": "Ji sedî divê di navbera 1 û 90 de be.",
     "invalid_date": "Ev dîrok derbasdar nîne.",
-    "invalid_date_range": "Dîroka dawîyê divê heman roj an piştî dîroka destpêkê be."
+    "invalid_date_range": "Dîroka dawîyê divê heman roj an piştî dîroka destpêkê be.",
+    "plan_limit_products": "Tu gihîştî sînorê berheman ê plana xwe. Ji bo zêdetir planê bilind bike.",
+    "plan_limit_studio": "Guhertinên Product Studio yên vê mehê qediyan. Ji bo zêdetir planê bilind bike."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -978,7 +980,7 @@
     "perMonth": "/meh",
     "perYear": "/sal",
     "forever": "Her tim belaş",
-    "then": "paşê $10/meh",
+    "then": "paşê $15/meh",
     "firstMonth": "Meha yekem $1",
     "twoFree": "2 meh belaş",
     "popular": "Herî populer",
@@ -987,10 +989,10 @@
     "business": "Business",
     "freeDesc": "Her tiştê ji bo vekirina dikanê.",
     "proDesc": "Zêdetir bifroşe, spehîtir xuya bike, online pere bistîne.",
-    "businessDesc": "Ji bo marqeyên mezin ên bi tîm.",
+    "businessDesc": "Ji bo marqeyên mezin ên bi tîm û katalogeke rastîn.",
     "ctaFree": "Belaş dest pê bike",
     "ctaPro": "Belaş dest pê bike, paşê bilind bike",
-    "ctaBusiness": "Belaş dest pê bike",
+    "ctaBusiness": "Business hilbijêre",
     "compare": "Planan bidin ber hev",
     "faqTitle": "Pirs",
     "finalTitle": "Di çend deqeyan de dikana xwe veke. Belaş.",
@@ -998,51 +1000,86 @@
     "chip": "Plana belaş · Pro bi $1",
     "onb": "Niha belaş · Pro meha yekem $1",
     "features": {
-      "products15": "Heta 15 hilber",
-      "themesBasic": "Rûkarên destpêkê",
-      "cod": "Dayîn li dema gihîştinê",
-      "badge": "Nîşana Bazarga",
-      "productsUnlimited": "Hilberên bê sînor",
-      "themesAll": "Hemû rûkar + Theme Studio",
-      "analytics": "Analîtîk",
-      "fibZain": "Dayîna FIB û ZainCash",
+      "store1": "1 firoşgeh",
+      "subdomain": "Girêdana te ya bazarga",
+      "products": "Heta {count} berhem",
+      "codWhatsapp": "Dayîn li dema gihandinê + fermanên WhatsApp",
+      "themesStarter": "2 temayên destpêkê",
+      "analytics7": "Analîtîka 7 rojan",
+      "badge": "Nîşana Bazarga li jêrê firoşgehê",
+      "studio": "{count} guhertinên AI yên Product Studio/meh",
+      "themesAll": "Hemû tema + Theme Studio",
       "noBadge": "Bê nîşana Bazarga",
-      "everythingPro": "Hemû tiştên Pro",
+      "analytics90": "Analîtîka 90 rojan bi grafîkan",
+      "discounts": "Kodên daxistinê",
+      "onlinePay": "Dayîna online: FIB, ZainCash, kart",
+      "orderNotify": "Agahdariyên fermanan",
+      "team2": "2 endamên tîmê",
+      "productsUnlimited": "Berhemên bêsînor",
       "domain": "Domaina taybet",
-      "staff": "Hesabên karmendan",
-      "priority": "Piştgiriya pêşî"
+      "stores3": "3 firoşgeh",
+      "team5": "5 endamên tîmê",
+      "analyticsAdvanced": "Analîtîka pêşketî: funnel, nexşeya germê, export CSV",
+      "bulkCsv": "Import û export bi CSV bi komî",
+      "aiDescriptions": "Danasînên berheman bi AI bi 4 zimanan",
+      "lowStock": "Hişyariyên stoka kêm",
+      "abandonedCart": "Bîranînên selika hiştî bi WhatsApp",
+      "priority": "Piştgiriya pêşî",
+      "exclusiveDesigns": "Dîzaynên taybet ên super-premium",
+      "aiDesigner": "Dîzaynerê malperê bi AI: firoşgeheke temam ji nivîsekê an ji Instagrama te",
+      "stores10": "10 firoşgeh",
+      "teamUnlimited": "Tîma bêsînor",
+      "igImport": "Anîna berheman ji Instagram bi AI",
+      "whiteLabel": "White-label: li tu derê Bazarga tune",
+      "api": "Gihîştina API",
+      "earlyAccess": "Gihîştina zû bo taybetmendiyên nû",
+      "accountManager": "Rêveberê hesabê taybet"
     },
     "rows": {
-      "products": "Hilber",
-      "themes": "Rûkar",
+      "products": "Berhem",
+      "studio": "Guhertinên AI yên Product Studio / meh",
+      "stores": "Firoşgeh",
+      "team": "Endamên tîmê",
+      "themes": "Tema",
       "analytics": "Analîtîk",
       "payments": "Dayîn",
-      "badge": "Nîşana Bazarga",
+      "discounts": "Kodên daxistinê",
+      "badge": "Navê Bazarga",
       "domain": "Domaina taybet",
-      "staff": "Hesabên karmendan",
+      "bulkCsv": "CSV bi komî",
+      "aiDescriptions": "Danasînên AI (4 ziman)",
+      "abandonedCart": "Bîranînên selikê",
+      "aiDesigner": "Dîzaynerê malperê bi AI",
+      "igImport": "Anîn ji Instagram",
+      "api": "API",
       "support": "Piştgirî"
     },
     "cells": {
-      "c15": "15",
-      "unlimited": "Bê sînor",
-      "basic": "Destpêk",
-      "all": "Hemû",
-      "codOnly": "Dema gihîştinê",
-      "codFibZain": "Gihîştin, FIB, ZainCash",
+      "unlimited": "Bêsînor",
+      "starter": "2 destpêk",
+      "all": "Hemû + Theme Studio",
+      "exclusive": "Hemû + taybet",
+      "d7": "7 roj",
+      "d90": "90 roj + grafîk",
+      "advanced": "Funnel, nexşeya germê, CSV",
+      "codWa": "Gihandin + WhatsApp",
+      "codOnline": "Gihandin + online",
       "shown": "Xuya",
       "removed": "Hatiye rakirin",
+      "whiteLabel": "Bê navê Bazarga",
       "community": "Navenda alîkariyê",
       "email": "E-name",
-      "priority": "Pêşî"
+      "priority": "Pêşî",
+      "manager": "Rêveberê hesabê"
     },
     "faq": {
       "q1": {
         "q": "Bi rastî belaş e?",
-        "a": "Erê. Plana belaş sînordar nîne û kart naxwaze."
+        "a": "Erê. Plana belaş sînorê demê nîne û kart naxwaze: 10 berhem, dayîn li dema gihandinê û fermanên WhatsApp."
       },
       "q2": {
         "q": "Pro çiqas e?",
-        "a": "$10 meh, û meha yekem $1. Salane $100 e, yanî 2 meh belaş."
+        "a": "$15 mehê, û meha yekem $1. Salane $150 e, yanî 2 meh belaş."
       },
       "q3": {
         "q": "Ez dikarim paşê plan biguherim?",
@@ -1050,12 +1087,28 @@
       },
       "q4": {
         "q": "Dayîna online heye?",
-        "a": "Pro FIB û ZainCash zêde dike. Dikanên belaş li dema gihîştinê pere distînin."
+        "a": "Dayîna online bi FIB, ZainCash û kartê ji bo Pro û jortir di rê de ye. Îro hemû plan li dema gihandinê pere distînin."
+      },
+      "q5": {
+        "q": "Business û Max çi zêde dikin?",
+        "a": "Business ji bo marqeyên mezin e: berhemên bêsînor, 100 guhertinên Product Studio her meh, domaina taybet û tîm. Max dîzaynên taybet, dîzaynerê malperê bi AI, white-label û rêveberê hesabê taybet zêde dike."
       }
     },
     "firstMonthOnly": "meha yekem",
-    "after": "paşê $10/meh",
-    "wasNow": "Berê $10, niha $1 ji bo meha yekem"
+    "after": "paşê $15/meh",
+    "wasNow": "Berê $15, niha $1 ji bo meha yekem",
+    "max": "Max",
+    "maxDesc": "Bazarga ya temam: dîzaynên taybet û AI ku ji te re ava dike.",
+    "ctaMax": "Max hilbijêre",
+    "everything": "Hemû tiştên {plan}, û:",
+    "soon": "Di rê de",
+    "premium": "Premîum",
+    "planChip": "Plana {plan}",
+    "usageProducts": "{used} ji {limit} berheman",
+    "usageProductsUnlimited": "{used} berhem · bêsînor",
+    "usageStudio": "Product Studio: {used} ji {limit} guhertinan vê mehê",
+    "upgradeCta": "Bilind bike",
+    "limitHint": "Tu gihîştî sînorê berheman ê plana xwe. Ji bo zêdetir planê bilind bike."
   },
   "upgrade": {
     "title": "Dikana xwe bilind bike",
@@ -1077,7 +1130,8 @@
     "name": {
       "free": "Belaş",
       "pro": "Pro",
-      "business": "Bazirganî"
+      "business": "Bazirganî",
+      "max": "Max"
     }
   },
   "gatewayPay": {

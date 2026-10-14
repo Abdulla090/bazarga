@@ -3,9 +3,10 @@ import { z } from "zod";
 import type { Db } from "../db";
 import { stores, storePlanHistory, upgradeRequests } from "../db/schema";
 import { AppError } from "../errors";
+import { PAID_PLAN_IDS } from "@/lib/plans";
 
 export const upgradeInput = z.object({
-  plan: z.enum(["pro", "business"]),
+  plan: z.enum(PAID_PLAN_IDS),
   months: z.union([z.literal(1), z.literal(12)]),
   method: z.enum(["fib", "zaincash", "cash", "online"]),
 });

@@ -21,15 +21,15 @@ export default async function PricingPage() {
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-light leading-tight tracking-tight sm:text-6xl">{t("title")}</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-ink-70">{t("lead")}</p>
         </section>
-        <section className="container-page pb-16"><PricingPlans /></section>
-        <section className="container-page max-w-4xl pb-16">
+        <section className="container-page pb-16 xl:max-w-7xl"><PricingPlans /></section>
+        <section className="container-page max-w-5xl pb-16">
           <h2 className="mb-6 text-2xl font-light">{t("compare")}</h2>
           <CompareTable />
         </section>
         <section className="container-page max-w-3xl pb-16">
           <h2 className="mb-6 text-2xl font-light">{t("faqTitle")}</h2>
           <dl className="divide-y divide-line border-y border-line">
-            {(["q1", "q2", "q3", "q4"] as const).map((k) => (
+            {(["q1", "q2", "q3", "q4", "q5"] as const).map((k) => (
               <div key={k} className="py-5">
                 <dt className="font-semibold">{t(`faq.${k}.q`)}</dt>
                 <dd className="mt-1 text-ink-70">{t(`faq.${k}.a`)}</dd>

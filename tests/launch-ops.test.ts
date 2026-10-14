@@ -129,11 +129,11 @@ describe("migration 0015 (indexes)", () => {
       "stores_paid_period_end_idx",
     ]) expect(names.has(n), n).toBe(true);
   });
-  it("is the last journal entry and numbered after 0014", () => {
+  it("is in the journal right after 0014 (later migrations may follow)", () => {
     const j = JSON.parse(readFileSync(path.join(process.cwd(), "drizzle/meta/_journal.json"), "utf8")) as { entries: { idx: number; tag: string }[] };
-    const last = j.entries.at(-1)!;
-    expect(last.tag).toBe("0015_idempotency_indexes");
-    expect(last.idx).toBe(15);
+    const e15 = j.entries.find((e: { idx: number }) => e.idx === 15)!;
+    expect(e15.tag).toBe("0015_idempotency_indexes");
+    expect(j.entries.at(-1)!.idx).toBeGreaterThanOrEqual(15);
   });
 });
 

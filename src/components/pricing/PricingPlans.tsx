@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, type CSSProperties, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { PLANS, usd, yearlyMonthsFree, type Plan } from "@/lib/plans";
+import { PLANS, usd, yearlyMonthsFree, type Plan, type PlanFeature } from "@/lib/plans";
 import { PromoPrice } from "./PromoPrice";
 import { Check, Icon } from "@/components/ui/icons";
 
@@ -30,6 +30,7 @@ export function RollText({ text, from = 0, className }: { text: string; from?: n
 
 function PriceState({ plan, yearly }: { plan: Plan; yearly: boolean }) {
   const t = useTranslations("pricing");
+  const muted = plan.premium ? "text-white/65" : "text-ink-70";
   // Pro, monthly: the $1 first-month treatment. Yearly has no promo, so it falls back to the plain price.
   if (plan.firstMonth && !yearly) {
     return (
@@ -47,10 +48,10 @@ function PriceState({ plan, yearly }: { plan: Plan; yearly: boolean }) {
   return (
     <>
       <p className="flex items-baseline gap-1.5">
-        <RollText text={amount} className="num text-6xl font-light tracking-tight" />
-        <Sw i={amount.length} className="text-sm text-ink-70">{yearly ? t("perYear") : t("perMonth")}</Sw>
+        <RollText text={amount} className="num text-[3.25rem] leading-none font-light tracking-tight" />
+        <Sw i={amount.length} className={`text-sm ${muted}`}>{yearly ? t("perYear") : t("perMonth")}</Sw>
       </p>
-      <p className="mt-3 text-sm text-ink-70">
+      <p className={`mt-3 text-sm ${plan.premium ? "text-[#93b4ff]" : "text-ink-70"}`}>
         <Sw i={amount.length + 1}>{yearly && yearlyMonthsFree(plan) > 0 ? t("twoFree") : "\u00a0"}</Sw>
       </p>
     </>
@@ -63,7 +64,7 @@ function Price({ plan, yearly, card }: { plan: Plan; yearly: boolean; card: numb
   if (plan.id === "free") {
     return (
       <>
-        <p className="num text-6xl font-light tracking-tight" dir="ltr">$0</p>
+        <p className="num text-[3.25rem] leading-none font-light tracking-tight" dir="ltr">$0</p>
         <p className="mt-3 text-sm text-ink-70">{t("forever")}</p>
       </>
     );
@@ -79,6 +80,29 @@ function Price({ plan, yearly, card }: { plan: Plan; yearly: boolean; card: numb
         );
       })}
     </div>
+  );
+}
+
+/** One feature line; counts come from the plan config, never from copy. Unbuilt features carry a small "Soon" tag. */
+function FeatureItem({ plan, f, soonLabel }: { plan: Plan; f: PlanFeature; soonLabel: string }) {
+  const t = useTranslations("pricing");
+  const count = f.key === "products" ? String(plan.productsShown ?? "") : f.key === "studio" ? String(plan.studioEdits) : "";
+  return (
+    <li className="flex items-start gap-2" data-feature={f.key} data-soon={f.soon ? "" : undefined}>
+      <Icon as={Check} className={`mt-0.5 shrink-0 ${plan.premium ? "text-[#93b4ff]" : "text-[#2563EB]"}`} />
+      <span className="min-w-0">
+        {t(`features.${f.key}` as "features.store1", { count })}
+        {f.soon && (
+          <span
+            className={`ms-1.5 inline-flex translate-y-[-1px] items-center rounded-full border px-1.5 py-px align-middle text-[0.6875rem] font-semibold leading-4 whitespace-nowrap ${
+              plan.premium ? "border-white/25 text-white/70" : "border-line text-ink-70"
+            }`}
+          >
+            {soonLabel}
+          </span>
+        )}
+      </span>
+    </li>
   );
 }
 
@@ -110,35 +134,52 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
           ))}
         </div>
       )}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {PLANS.map((p, idx) => (
           <article
             key={p.id}
             data-plan={p.id}
-            className={`relative flex flex-col rounded-3xl border p-6 ${p.highlight ? "border-[#2563EB] bg-[linear-gradient(180deg,rgba(37,99,235,.06),#fff_45%)] shadow-[0_0_0_1px_#2563EB,0_24px_60px_-28px_rgba(37,99,235,.55)]" : "border-line bg-white"}`}
+            className={`relative flex flex-col rounded-3xl border p-6 ${
+              p.premium
+                ? "plan-max border-[#0A0A0B] bg-[#0A0A0B] text-white shadow-[0_0_0_1px_rgba(37,99,235,.55),0_30px_70px_-30px_rgba(10,10,11,.85)]"
+                : p.highlight
+                  ? "border-[#2563EB] bg-[linear-gradient(180deg,rgba(37,99,235,.06),#fff_45%)] shadow-[0_0_0_1px_#2563EB,0_24px_60px_-28px_rgba(37,99,235,.55)]"
+                  : "border-line bg-white"
+            }`}
           >
             {p.highlight && (
               <span className="absolute -top-3 start-6 rounded-full bg-[#2563EB] px-3 py-1 text-xs font-semibold text-white shadow-[0_6px_16px_-6px_rgba(37,99,235,.6)]">
                 {t("popular")}
               </span>
             )}
+            {p.premium && (
+              <span data-premium className="absolute -top-3 start-6 rounded-full border border-[#2563EB] bg-[#0A0A0B] px-3 py-1 text-xs font-semibold text-[#93b4ff]">
+                {t("premium")}
+              </span>
+            )}
             <h3 className="text-lg font-bold">{t(p.id)}</h3>
-            <p className="mt-1 min-h-10 text-sm text-ink-70">{t(`${p.id}Desc` as "freeDesc")}</p>
-            <div className="mt-6 min-h-[7.25rem]"><Price plan={p} yearly={yearly} card={idx} /></div>
+            <p className={`mt-1 min-h-10 text-sm ${p.premium ? "text-white/65" : "text-ink-70"}`}>{t(`${p.id}Desc` as "freeDesc")}</p>
+            <div className="mt-6 sm:min-h-[7.25rem]"><Price plan={p} yearly={yearly} card={idx} /></div>
             <Link
               href="/signup"
-              className={`mt-5 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold ${p.highlight ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8]" : "border border-ink text-ink hover:bg-ink hover:text-paper"} transition-colors duration-200`}
+              className={`mt-5 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold transition-colors duration-200 ${
+                p.premium
+                  ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8] focus-visible:outline-white"
+                  : p.highlight
+                    ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+                    : "border border-ink text-ink hover:bg-ink hover:text-paper"
+              }`}
             >
-              {t(p.id === "free" ? "ctaFree" : p.id === "pro" ? "ctaPro" : "ctaBusiness")}
+              {t(p.id === "free" ? "ctaFree" : p.id === "pro" ? "ctaPro" : p.id === "business" ? "ctaBusiness" : "ctaMax")}
             </Link>
-            <ul className="mt-6 space-y-3 border-t border-line pt-5 text-sm">
-              {p.features.map((f) => (
-                <li key={f} className="flex items-start gap-2">
-                  <Icon as={Check} className="mt-0.5 shrink-0 text-[#2563EB]" />
-                  {t(`features.${f}` as "features.cod")}
-                </li>
-              ))}
-            </ul>
+            <div className={`mt-6 border-t pt-5 text-sm ${p.premium ? "border-white/15" : "border-line"}`}>
+              {p.includes && <p className={`mb-3 font-semibold ${p.premium ? "text-white" : "text-ink"}`}>{t("everything", { plan: t(p.includes) })}</p>}
+              <ul className="space-y-3">
+                {p.features.map((f) => (
+                  <FeatureItem key={f.key} plan={p} f={f} soonLabel={t("soon")} />
+                ))}
+              </ul>
+            </div>
           </article>
         ))}
       </div>

@@ -25,43 +25,87 @@ const layer = (html: string, plan: string, which: "monthly" | "yearly") => {
 };
 
 describe("pricing render: $1 first-month treatment", () => {
-  it("Pro card shows a struck $10 and a crisp blue $1 with 'first month' and the after-price", () => {
+  it("Pro card shows a struck $15 and a crisp blue $1 with 'first month' and the after-price", () => {
     const html = render("en");
     const pro = html.slice(html.indexOf('data-plan="pro"'), html.indexOf('data-plan="business"'));
-    expect(visible(pro.match(/<s [^>]*data-was[^>]*>.*?<\/s>/)![0])).toBe("$10");
+    expect(visible(pro.match(/<s [^>]*data-was[^>]*>.*?<\/s>/)![0])).toBe("$15");
     expect(visible(pro.match(/data-now[^>]*class="promo-num[^"]*">(.*?)<\/span><\/span>/)?.[1] ?? "")).toBe("$1");
     expect(pro).toContain("first month");
-    expect(pro).toContain("$10/month after");
-    expect(pro).toContain("Was $10, now $1 for your first month");
-    expect(pro).toContain("Most popular");
+    expect(pro).toContain("$15/month after");
+    expect(pro).toContain("Was $15, now $1 for your first month");
+    expect(pro).not.toContain("Most popular");
+    const biz = html.slice(html.indexOf('data-plan="business"'), html.indexOf('data-plan="max"'));
+    expect(biz).toContain("Most popular");
   });
 
-  it("only Pro gets the promo; Free stays $0 and Business $20", () => {
+  it("only Pro gets the promo; Free stays $0, Business $50, Max $100", () => {
     const html = render("en");
     expect(html.match(/data-promo-price/g)?.length).toBe(1);
     const free = html.slice(html.indexOf('data-plan="free"'), html.indexOf('data-plan="pro"'));
     expect(free).toContain("$0");
-    expect(html.slice(html.indexOf('data-plan="business"'))).toContain("$20");
+    expect(html.slice(html.indexOf('data-plan="business"'), html.indexOf('data-plan="max"'))).toContain("$50");
+    expect(html.slice(html.indexOf('data-plan="max"'))).toContain("$100");
   });
 
   it("every locale renders the promo with ASCII $ and Latin digits, amounts isolated LTR", () => {
     for (const l of LOCALES) {
       const html = render(l);
       const promo = html.slice(html.indexOf("data-promo-price"));
-      expect(visible(promo.match(/data-was[^>]*>(.*?)<\/s>/)?.[1] ?? "")).toBe("$10");
+      expect(visible(promo.match(/data-was[^>]*>(.*?)<\/s>/)?.[1] ?? "")).toBe("$15");
       expect(visible(promo.match(/data-now[^>]*>(.*?)<\/span><\/span>/)?.[1] ?? "")).toBe("$1");
       expect(html).not.toMatch(/[٠-٩]/);
-      expect(html).not.toMatch(/>1\$|>10\$/);
+      expect(html).not.toMatch(/>1\$|>15\$/);
       for (const k of ["firstMonthOnly", "after", "wasNow"]) expect(msgs(l).pricing[k]).toBeTruthy();
       for (const k of ["heroTitle1", "heroTitle2", "heroLead", "hookLabel", "mockStore", "mockOrder", "mockAria"]) expect(msgs(l).landing[k]).toBeTruthy();
     }
   });
 
   it("PromoPrice marks both amounts dir=ltr and hides them from AT behind one sr-only sentence", () => {
-    const html = renderToStaticMarkup(createElement(PromoPrice, { srLabel: "Was $10, now $1" }));
+    const html = renderToStaticMarkup(createElement(PromoPrice, { srLabel: "Was $15, now $1" }));
     expect(html.match(/dir="ltr"/g)?.length).toBe(2);
-    expect(html).toContain('class="sr-only">Was $10, now $1<');
+    expect(html).toContain('class="sr-only">Was $15, now $1<');
     expect(html.match(/aria-hidden="true"/g)?.length).toBe(2);
+  });
+});
+
+describe("pricing v2: four cards, cumulative features, Soon tags", () => {
+  it("renders Free, Pro, Business, Max in order; Max is the ink premium card with a blue accent", () => {
+    for (const l of LOCALES) {
+      const html = render(l);
+      const order = ["free", "pro", "business", "max"].map((p) => html.indexOf(`data-plan="${p}"`));
+      expect(order.every((v, i) => v > -1 && (i === 0 || v > order[i - 1]!))).toBe(true);
+      const max = html.slice(html.indexOf('data-plan="max"'));
+      expect(max).toContain("bg-[#0A0A0B]");
+      expect(max).toContain("#2563EB");
+      expect(max).toContain("data-premium");
+      expect(html).not.toMatch(/orange|amber|yellow|#f59e0b|#ea580c/i);
+      expect(html).not.toMatch(/[٠-٩]/);
+    }
+  });
+  it("feature counts come from config and the hidden caps never render", () => {
+    const html = visible(render("en"));
+    expect(html).toContain("Up to 10 products");
+    expect(html).toContain("Up to 100 products");
+    expect(html).toContain("10 Product Studio AI edits/month");
+    expect(html).toContain("100 Product Studio AI edits/month");
+    expect(html).toContain("Unlimited products");
+    expect(html).toContain("Everything in Free, plus:");
+    expect(html).toContain("Everything in Pro, plus:");
+    expect(html).toContain("Everything in Business, plus:");
+    expect(html).not.toMatch(/(?<!\$)\b10?,?000\b/);
+  });
+  it("unbuilt features carry a Soon tag, built ones do not", () => {
+    const html = render("en");
+    const item = (plan: string, key: string) => {
+      const card = html.slice(html.indexOf(`data-plan="${plan}"`));
+      const i = card.indexOf(`data-feature="${key}"`);
+      return card.slice(i, card.indexOf("</li>", i));
+    };
+    expect(item("pro", "studio")).toContain("data-soon");
+    expect(item("pro", "studio")).toContain(">Soon<");
+    expect(item("max", "aiDesigner")).toContain(">Soon<");
+    expect(item("pro", "discounts")).not.toContain("data-soon");
+    expect(item("free", "codWhatsapp")).not.toContain("Soon");
   });
 });
 
@@ -69,13 +113,15 @@ describe("pricing toggle: blur swap between monthly and yearly", () => {
   it("renders both states, monthly active by default, yearly hidden from AT", () => {
     const html = render("en");
     expect(html).toContain('data-yearly="false"');
-    for (const plan of ["pro", "business"]) {
+    for (const plan of ["pro", "business", "max"]) {
       expect(layer(html, plan, "monthly")).toContain('data-on="true"');
       expect(layer(html, plan, "yearly")).toMatch(/data-on="false" aria-hidden="true"/);
     }
-    expect(visible(layer(html, "pro", "yearly"))).toContain("$100/year");
-    expect(visible(layer(html, "business", "monthly"))).toContain("$20/month");
-    expect(visible(layer(html, "business", "yearly"))).toContain("$200/year");
+    expect(visible(layer(html, "pro", "yearly"))).toContain("$150/year");
+    expect(visible(layer(html, "business", "monthly"))).toContain("$50/month");
+    expect(visible(layer(html, "business", "yearly"))).toContain("$500/year");
+    expect(visible(layer(html, "max", "monthly"))).toContain("$100/month");
+    expect(visible(layer(html, "max", "yearly"))).toContain("$1000/year");
     expect(visible(layer(html, "business", "yearly"))).toContain("2 months free");
   });
 
@@ -95,7 +141,7 @@ describe("pricing toggle: blur swap between monthly and yearly", () => {
     expect(biz).toMatch(/class="sw motion-reduce:transition-none sw-ch"/);
     expect(html).toMatch(/class="plans-thumb[^"]*motion-reduce:transition-none/);
     expect(html).toMatch(/class="swap" style="--card:1"/);
-    expect(html).toContain('<span class="sr-only">$200</span>');
+    expect(html).toContain('<span class="sr-only">$500</span>');
   });
 
   it("free stays a single static $0 (nothing to swap)", () => {

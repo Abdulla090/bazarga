@@ -113,7 +113,7 @@ export const stores = pgTable(
     /** Future: custom domain mapping (verified via DNS TXT). */
     customDomain: text("custom_domain"),
     isActive: boolean("is_active").notNull().default(true),
-    /** Subscription plan (src/lib/plans.ts): free | pro | business. Limits enforced server-side. */
+    /** Subscription plan (src/lib/plans.ts): free | pro | business | max. Limits enforced server-side. */
     plan: text("plan").notNull().default("free"),
     planPeriodEnd: timestamp("plan_period_end", { withTimezone: true }),
     // ---- storefront theme (src/lib/theme.ts)
@@ -692,6 +692,18 @@ export const storePlanHistory = pgTable("store_plan_history", {
   reason: text("reason").notNull().default("manual"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Product Studio (AI photo/product edits) usage per store per calendar month (Asia/Baghdad), "YYYY-MM". Quota: src/lib/plans.ts. */
+export const productStudioUsage = pgTable(
+  "product_studio_usage",
+  {
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    period: text("period").notNull(),
+    used: integer("used").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.storeId, t.period] })],
+);
 
 /** Manual upgrade requests (no money moves in-app): admin activates after the seller pays by FIB / ZainCash / cash. */
 export const upgradeRequests = pgTable("upgrade_requests", {

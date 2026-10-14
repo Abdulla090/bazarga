@@ -2,7 +2,7 @@ import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import type { Db } from "../db";
 import { categories, productImages, products, stores } from "../db/schema";
 import { AppError } from "../errors";
-import { normalizePlan, productLimit } from "@/lib/plans";
+import { normalizePlan, productLimit, productsShown } from "@/lib/plans";
 import type { LocalizedText } from "@/lib/i18n";
 import type { ProductImageInput, ProductInput } from "@/lib/validation";
 
@@ -197,11 +197,19 @@ export async function deleteProduct(database: Db, storeId: string, id: string) {
   if (!r.length) throw new AppError("NOT_FOUND");
 }
 
-/** Free plan: at most 15 products. Throws a VALIDATION AppError with code message "plan_limit_products". */
+/**
+ * Product cap per plan (src/lib/plans.ts PRODUCT_CAP: 10 / 100 / hidden 1000 / hidden 10000).
+ * Throws a VALIDATION AppError with code message "plan_limit_products".
+ */
 export async function assertWithinProductLimit(database: Db, storeId: string) {
+  const usage = await getProductUsage(database, storeId);
+  if (usage.used >= usage.cap) throw new AppError("VALIDATION", "plan_limit_products");
+}
+
+/** Products used vs the plan cap. `shown` is null for "Unlimited" plans (their cap is a hidden safety net). */
+export async function getProductUsage(database: Db, storeId: string) {
   const [st] = await database.select({ plan: stores.plan }).from(stores).where(eq(stores.id, storeId));
-  const limit = productLimit(normalizePlan(st?.plan));
-  if (limit === Infinity) return;
+  const plan = normalizePlan(st?.plan);
   const [c] = await database.select({ n: count() }).from(products).where(eq(products.storeId, storeId));
-  if ((c?.n ?? 0) >= limit) throw new AppError("VALIDATION", "plan_limit_products");
+  return { plan, used: Number(c?.n ?? 0), cap: productLimit(plan), shown: productsShown(plan) };
 }

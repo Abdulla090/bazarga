@@ -88,9 +88,10 @@ describe("pricing", () => {
     expect(usdToIqd(10, 1310)).toBe(13_000);
     expect(usdToIqd(1, 1310)).toBe(1_250);
     expect(subscriptionPrice("pro", 1, 1310, true)).toEqual({ usd: 1, iqd: 1_250, promo: true });
-    expect(subscriptionPrice("pro", 1, 1310, false)).toEqual({ usd: 10, iqd: 13_000, promo: false });
-    expect(subscriptionPrice("pro", 12, 1310, true)).toEqual({ usd: 100, iqd: 131_000, promo: false });
-    expect(subscriptionPrice("business", 1, 1310, true).usd).toBe(20);
+    expect(subscriptionPrice("pro", 1, 1310, false)).toEqual({ usd: 15, iqd: 19_750, promo: false });
+    expect(subscriptionPrice("pro", 12, 1310, true)).toEqual({ usd: 150, iqd: 196_500, promo: false });
+    expect(subscriptionPrice("business", 1, 1310, true).usd).toBe(50);
+    expect(subscriptionPrice("max", 12, 1310, true)).toMatchObject({ usd: 1000, promo: false });
     expect(commissionIqd(25_000, 500)).toBe(1_250);
     expect(commissionIqd(25_000, 0)).toBe(0);
   });
@@ -169,7 +170,7 @@ describe("mock provider end-to-end", () => {
     expect(h.map((x) => x.reason)).toEqual(["upgrade:online"]);
     // Second purchase is full price (promo used).
     const c2 = await startSubscriptionCheckout(database, s.store.id, { plan: "pro", months: 1 }, APP);
-    expect((await database.query.payments.findFirst({ where: eq(payments.id, c2.paymentId) }))!.amountIqd).toBe(13_000);
+    expect((await database.query.payments.findFirst({ where: eq(payments.id, c2.paymentId) }))!.amountIqd).toBe(19_750);
   });
 
   it("order: checkout → webhook paid → order paid → ledger (sale, commission)", async () => {

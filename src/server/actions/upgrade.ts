@@ -5,6 +5,9 @@ import { requireStore } from "../auth/session";
 import { requireAdmin } from "../auth/admin";
 import { activateRequest, createUpgradeRequest, rejectRequest } from "../services/upgrades";
 import { toActionState, type ActionState } from "./util";
+import { eq } from "drizzle-orm";
+import { stores, upgradeRequests } from "../db/schema";
+import { invalidateStore } from "../cache/tags";
 
 export async function requestUpgradeAction(raw: unknown): Promise<ActionState> {
   try {
@@ -19,7 +22,12 @@ export async function requestUpgradeAction(raw: unknown): Promise<ActionState> {
 
 export async function activateUpgradeAction(formData: FormData): Promise<void> {
   await requireAdmin();
-  await activateRequest(db(), String(formData.get("id")));
+  const id = String(formData.get("id"));
+  await activateRequest(db(), id);
+  // The storefront footer badge depends on the plan: drop the cached store.
+  const req = await db().query.upgradeRequests.findFirst({ where: eq(upgradeRequests.id, id) });
+  const st = req ? await db().query.stores.findFirst({ where: eq(stores.id, req.storeId), columns: { id: true, slug: true } }) : null;
+  if (st) invalidateStore(st.id, [st.slug]);
   revalidatePath("/admin");
 }
 

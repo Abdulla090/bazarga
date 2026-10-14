@@ -140,7 +140,7 @@ export default async function LandingPage() {
         <WhoMarquee l={{ eyebrow: t("whoEyebrow"), title: t("whoTitle"), lead: t("whoLead"), cats: WHO_KEYS.map((k) => t(k)) }} />
 
         {/* Pricing */}
-        <section id="pricing" className="container-page scroll-mt-20 py-14">
+        <section id="pricing" className="container-page scroll-mt-20 py-14 xl:max-w-7xl">
           <h2 className="text-3xl font-light sm:text-4xl">{tp("title")}</h2>
           <p className="mt-2 mb-8 max-w-xl text-ink-70">{tp("lead")}</p>
           <PricingPlans />
