@@ -10,6 +10,7 @@ import { countNewOrders } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { DashNav } from "@/components/dashboard/DashNav";
 import { ExternalLink, Icon } from "@/components/ui/icons";
+import { normalizePlan } from "@/lib/plans";
 
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
@@ -21,6 +22,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { store } = await requireStore();
   const t = await getTranslations("dash");
   const tc = await getTranslations("common");
+  const tp = await getTranslations("pricing");
+  const plan = normalizePlan(store.plan);
   const locale = await currentLocale();
   const newOrders = await countNewOrders(db(), store.id);
   return (
@@ -31,6 +34,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <Link href="/dashboard" className="me-auto flex min-h-11 min-w-0 items-center gap-3" aria-label={`Bazarga · ${store.name}`}>
             <Awning className="h-3.5 w-9 shrink-0" />
             <span className="truncate text-[15px] font-medium text-ink">{store.name}</span>
+          </Link>
+          <Link
+            href="/dashboard/upgrade"
+            data-plan-chip={plan}
+            className={`hidden min-h-9 items-center rounded-full px-3 text-[13px] font-medium transition-colors duration-150 sm:inline-flex ${
+              plan === "max" ? "bg-[#0A0A0B] text-white ring-1 ring-[#2563EB]/70" : plan === "free" ? "border border-line text-ink/70 hover:text-ink" : "border border-[#2563EB]/40 text-[#2563EB]"
+            }`}
+          >
+            {tp("planChip", { plan: tp(plan) })}
           </Link>
           <div className="hidden md:block"><LocaleSwitcher current={locale} compact /></div>
           <Link href={`/s/${store.slug}`} target="_blank" className="btn-ghost btn-sm" aria-label={t("viewStore")}>

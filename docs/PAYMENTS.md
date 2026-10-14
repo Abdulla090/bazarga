@@ -47,9 +47,13 @@ The older per-method code (`fib.ts`, `zaincash.ts`, `payment_transactions`) is u
 
 ## Flows
 
-**(a) Subscriptions.** Pro $10/mo ($1 first month, once per store — no earlier pro/business plan history), $100/yr;
-Business $20/mo ($200/yr). IQD = USD × `USD_IQD_RATE` (default 1310) rounded to 250 → Pro 13,000 · first month
-1,250 · yearly 131,000 · Business 26,250 IQD. "Pay online" creates an upgrade request (`method = online`) and a
+**(a) Subscriptions** (pricing v2, 2026-10-14; source of truth `src/lib/plans.ts`, see docs/PRICING.md). Pro $15/mo
+($1 first month, once per store — no earlier pro/business plan history), $150/yr; Business $50/mo ($500/yr); Max $100/mo
+($1000/yr). IQD = USD × `USD_IQD_RATE` (default 1310) rounded to 250 → Pro 19,750 · first month 1,250 · yearly 196,500 ·
+Business 65,500 IQD. **Max is manual-only for now**: the gateway (`src/server/payments/**`, untouched by pricing v2) still
+validates `plan: pro | business`; /dashboard/upgrade quotes Max in USD and Max is activated from /admin after a manual
+payment. Adding Max online = widen the two `z.enum(["pro", "business"])` in `gateway/http.ts` + `gateway/service.ts`
+and the first-month history check (owner: Agent B, payments lane). "Pay online" creates an upgrade request (`method = online`) and a
 `payments` row, then redirects to the hosted page. The webhook (or return-page poll, or cron) confirms with Rasedi
 and activates via `activateRequestTx` — the same code the admin "Activate" button uses (extends from the current
 period end, writes `store_plan_history`, existing plan-expiry cron handles the end). If the seller replaced the

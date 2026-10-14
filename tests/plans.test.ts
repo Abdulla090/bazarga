@@ -1,28 +1,115 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { COMPARE, PLANS, getPlan, usd, yearlyMonthsFree } from "../src/lib/plans";
+import {
+  COMPARE, MAX_MONTHLY_USD, PAID_PLAN_IDS, PLANS, PLAN_IDS, PRODUCT_CAP, getPlan, isPaidPlan, normalizePlan, productLimit, productsShown,
+  showsBazargaBadge, studioEditsLimit, usd, yearlyMonthsFree,
+} from "../src/lib/plans";
 
-describe("plans config", () => {
-  it("has the agreed round USD prices", () => {
-    expect(getPlan("free").monthly).toBe(0);
-    expect(getPlan("pro")).toMatchObject({ monthly: 10, yearly: 100, firstMonth: 1 });
-    expect(getPlan("business").monthly).toBe(20);
-    for (const p of PLANS) expect(Number.isInteger(p.monthly) && Number.isInteger(p.yearly)).toBe(true);
+const LOCALES = ["en", "ku", "kmr", "ar"] as const;
+const msgs = (l: string) => JSON.parse(readFileSync(`messages/${l}.json`, "utf8"));
+
+describe("plans config (pricing v2, 2026-10-14)", () => {
+  it("has the agreed round USD prices; yearly is 2 months free", () => {
+    expect(PLANS.map((p) => p.id)).toEqual(["free", "pro", "business", "max"]);
+    expect(getPlan("free")).toMatchObject({ monthly: 0, yearly: 0 });
+    expect(getPlan("pro")).toMatchObject({ monthly: 15, yearly: 150, firstMonth: 1 });
+    expect(getPlan("business")).toMatchObject({ monthly: 50, yearly: 500 });
+    expect(getPlan("max")).toMatchObject({ monthly: MAX_MONTHLY_USD, yearly: MAX_MONTHLY_USD * 10 });
+    expect(MAX_MONTHLY_USD).toBe(100);
+    for (const p of PLANS) {
+      expect(Number.isInteger(p.monthly) && Number.isInteger(p.yearly)).toBe(true);
+      expect(String(p.monthly)).not.toMatch(/9$/); // never .99-style prices
+      if (p.monthly) expect(yearlyMonthsFree(p)).toBe(2);
+    }
+    expect(usd(15)).toBe("$15");
   });
-  it("yearly Pro is 2 months free; usd uses ASCII", () => {
-    expect(yearlyMonthsFree(getPlan("pro"))).toBe(2);
-    expect(usd(10)).toBe("$10");
+
+  it("product caps: 10 / 100 / hidden 1000 / hidden 10000; unlimited plans show no number", () => {
+    expect(PRODUCT_CAP).toEqual({ free: 10, pro: 100, business: 1000, max: 10000 });
+    expect(PLAN_IDS.map(productLimit)).toEqual([10, 100, 1000, 10000]);
+    expect(PLAN_IDS.map(productsShown)).toEqual([10, 100, null, null]);
   });
-  it("every feature, row and cell key exists in all 4 locales", () => {
-    for (const loc of ["en", "ku", "kmr", "ar"]) {
-      const m = JSON.parse(readFileSync(`messages/${loc}.json`, "utf8")).pricing;
-      for (const p of PLANS) { expect(m[p.id]).toBeTruthy(); for (const f of p.features) expect(m.features[f]).toBeTruthy(); }
-      for (const r of COMPARE) {
-        expect(m.rows[r.key]).toBeTruthy();
-        for (const v of [r.free, r.pro, r.business]) if (typeof v === "string") expect(m.cells[v]).toBeTruthy();
+
+  it("Product Studio quota: 0 / 10 / 100 / 100 edits a month", () => {
+    expect(PLAN_IDS.map(studioEditsLimit)).toEqual([0, 10, 100, 100]);
+  });
+
+  it("normalizePlan / isPaidPlan accept max, everything unknown is free", () => {
+    expect(normalizePlan("max")).toBe("max");
+    expect(normalizePlan("business")).toBe("business");
+    expect(normalizePlan("enterprise")).toBe("free");
+    expect(normalizePlan(null)).toBe("free");
+    expect(PAID_PLAN_IDS).toEqual(["pro", "business", "max"]);
+    expect(isPaidPlan("max")).toBe(true);
+    expect(isPaidPlan("free")).toBe(false);
+  });
+
+  it("Business is the popular card, Max the premium one; tiers are cumulative", () => {
+    expect(PLANS.filter((p) => p.highlight).map((p) => p.id)).toEqual(["business"]);
+    expect(PLANS.filter((p) => p.premium).map((p) => p.id)).toEqual(["max"]);
+    expect(PLANS.map((p) => p.includes)).toEqual([undefined, "free", "pro", "business"]);
+    expect(showsBazargaBadge("free")).toBe(true);
+    for (const p of ["pro", "business", "max"] as const) expect(showsBazargaBadge(p)).toBe(false);
+  });
+
+  it("the hidden caps never appear in any copy, card or table", () => {
+    for (const r of COMPARE) for (const id of PLAN_IDS) {
+      const c = r[id];
+      const v = typeof c === "object" ? c.v : c;
+      expect(v === 1000 || v === 10000).toBe(false);
+    }
+    for (const l of LOCALES) {
+      const copy = JSON.stringify({ pricing: msgs(l).pricing, faq: msgs(l).landing.faq, errors: msgs(l).errors });
+      expect(copy).not.toMatch(/(?<!\$)\b10?[,.]?000\b/);
+    }
+  });
+
+  it("every feature, row and cell key exists in all 4 locales; no Eastern-Arabic digits; counts come from config", () => {
+    for (const loc of LOCALES) {
+      const m = msgs(loc).pricing;
+      for (const k of ["max", "maxDesc", "ctaMax", "everything", "soon", "premium", "planChip", "usageProducts", "usageProductsUnlimited", "upgradeCta", "limitHint"]) {
+        expect(m[k], `${loc}.pricing.${k}`).toBeTruthy();
       }
-      for (const k of ["q1", "q2", "q3", "q4"]) expect(m.faq[k].a).toBeTruthy();
+      for (const p of PLANS) {
+        expect(m[p.id]).toBeTruthy();
+        expect(m[`${p.id}Desc`]).toBeTruthy();
+        for (const f of p.features) expect(m.features[f.key], `${loc} features.${f.key}`).toBeTruthy();
+      }
+      expect(m.features.products).toContain("{count}");
+      expect(m.features.studio).toContain("{count}");
+      for (const r of COMPARE) {
+        expect(m.rows[r.key], `${loc} rows.${r.key}`).toBeTruthy();
+        for (const id of PLAN_IDS) {
+          const c = r[id];
+          const v = typeof c === "object" ? c.v : c;
+          if (typeof v === "string") expect(m.cells[v], `${loc} cells.${v}`).toBeTruthy();
+        }
+      }
+      for (const k of ["q1", "q2", "q3", "q4", "q5"]) expect(m.faq[k].a).toBeTruthy();
       expect(JSON.stringify(m)).not.toMatch(/[٠-٩]/);
+      expect(msgs(loc).upgrade.name.max).toBe("Max");
+      expect(msgs(loc).errors.plan_limit_products).toBeTruthy();
+      expect(msgs(loc).errors.plan_limit_studio).toBeTruthy();
+    }
+  });
+
+  it("all 4 locale files have exactly the same pricing keys", () => {
+    const keys = (o: Record<string, unknown>, p = ""): string[] =>
+      Object.entries(o).flatMap(([k, v]) => (v && typeof v === "object" ? keys(v as Record<string, unknown>, `${p}${k}.`) : [`${p}${k}`])).sort();
+    const en = keys(msgs("en").pricing);
+    for (const l of ["ku", "kmr", "ar"]) expect(keys(msgs(l).pricing)).toEqual(en);
+  });
+
+  it("no old prices ($10 Pro, $20 Business, $100/$200 yearly, 15 products) are left in copy", () => {
+    for (const l of LOCALES) {
+      const p = msgs(l).pricing;
+      const all = JSON.stringify({ pricing: p, faq: msgs(l).landing.faq });
+      expect(all).not.toMatch(/\$10(?!\d)|\$20(?!\d)|\$200(?!\d)/);
+      expect(all).not.toMatch(/\b15 (products|بەرهەم|berhem|منتج)/);
+      // $100 only ever appears as the Max price, which lives in config, not copy.
+      expect(all).not.toMatch(/\$100(?!\d)/);
+      expect(p.after).toContain("$15");
+      expect(p.wasNow).toContain("$15");
     }
   });
 });

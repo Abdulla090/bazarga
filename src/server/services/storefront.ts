@@ -51,6 +51,8 @@ export type StorefrontStore = {
   about: LocalizedText;
   returnPolicy: LocalizedText;
   freeDeliveryThreshold: number | null;
+  /** Subscription plan (drives the "Made with Bazarga" footer badge). */
+  plan: string;
 };
 
 export async function loadStorefrontStore(database: Db, slug: string): Promise<StorefrontStore | null> {
@@ -76,6 +78,7 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       about: true,
       returnPolicy: true,
       freeDeliveryThreshold: true,
+      plan: true,
     },
   });
   return s ?? null;

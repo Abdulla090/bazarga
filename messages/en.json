@@ -134,11 +134,11 @@
     "faq": {
       "q1": {
         "q": "Is it really free?",
-        "a": "Yes. The Free plan has no time limit and needs no card: up to 15 products, starter themes and cash on delivery. A small Bazarga badge shows on your store."
+        "a": "Yes. The Free plan has no time limit and needs no card: up to 10 products, starter themes, cash on delivery and WhatsApp orders. A small Bazarga badge shows on your store."
       },
       "q2": {
         "q": "What does the $1 Pro month include?",
-        "a": "Everything in Pro for $1 your first month, then $10 a month, or $100 a year (2 months free). Pro gives you unlimited products, all themes plus Theme Studio, analytics, FIB and ZainCash payments, and no Bazarga badge."
+        "a": "Everything in Pro for $1 your first month, then $15 a month, or $150 a year (2 months free). Pro gives you 100 products, all themes plus Theme Studio, 90-day analytics, discount codes and no Bazarga badge."
       },
       "q3": {
         "q": "Which payments are supported?",
@@ -150,7 +150,7 @@
       },
       "q5": {
         "q": "Can I use my own domain?",
-        "a": "Yes, on the Business plan ($20 a month): connect a domain like shop.yourbrand.com. Free and Pro stores get their own Bazarga link."
+        "a": "Yes, on Business ($50 a month) and Max: connect a domain like shop.yourbrand.com (switching on soon). Free and Pro stores get their own Bazarga link."
       },
       "q6": {
         "q": "How does delivery pricing per city work?",
@@ -679,7 +679,9 @@
     "invalid_date_range": "The end date must be on or after the start date.",
     "order_rejected": "We couldn't place this order. Please contact the store on WhatsApp.",
     "too_many_orders": "You've placed many orders today. Please contact the store on WhatsApp.",
-    "payment_check_unavailable": "This payment provider isn't connected yet."
+    "payment_check_unavailable": "This payment provider isn't connected yet.",
+    "plan_limit_products": "You've reached your plan's product limit. Upgrade to add more.",
+    "plan_limit_studio": "You've used this month's Product Studio edits. Upgrade for more."
   },
   "pwa": {
     "installTitle": "Install Bazarga",
@@ -977,7 +979,7 @@
     "perMonth": "/month",
     "perYear": "/year",
     "forever": "Free forever",
-    "then": "then $10/month",
+    "then": "then $15/month",
     "firstMonth": "First month $1",
     "twoFree": "2 months free",
     "popular": "Most popular",
@@ -986,10 +988,10 @@
     "business": "Business",
     "freeDesc": "Everything you need to open your shop.",
     "proDesc": "Sell more, look better, get paid online.",
-    "businessDesc": "For growing brands with a team.",
+    "businessDesc": "For growing brands with a team and a real catalog.",
     "ctaFree": "Start free",
     "ctaPro": "Start free, upgrade anytime",
-    "ctaBusiness": "Start free",
+    "ctaBusiness": "Choose Business",
     "compare": "Compare plans",
     "faqTitle": "Questions",
     "finalTitle": "Open your store in minutes. Free.",
@@ -997,51 +999,86 @@
     "chip": "Free plan · Pro for $1",
     "onb": "Free now · Pro $1 first month",
     "features": {
-      "products15": "Up to 15 products",
-      "themesBasic": "Starter themes",
-      "cod": "Cash on delivery",
-      "badge": "Bazarga badge",
-      "productsUnlimited": "Unlimited products",
+      "store1": "1 store",
+      "subdomain": "Your own bazarga link",
+      "products": "Up to {count} products",
+      "codWhatsapp": "Cash on delivery + WhatsApp orders",
+      "themesStarter": "2 starter themes",
+      "analytics7": "7-day analytics",
+      "badge": "Bazarga badge in your footer",
+      "studio": "{count} Product Studio AI edits/month",
       "themesAll": "All themes + Theme Studio",
-      "analytics": "Analytics",
-      "fibZain": "FIB + ZainCash payments",
       "noBadge": "No Bazarga badge",
-      "everythingPro": "Everything in Pro",
+      "analytics90": "90-day analytics with charts",
+      "discounts": "Discount codes",
+      "onlinePay": "Online payments: FIB, ZainCash, cards",
+      "orderNotify": "Order notifications",
+      "team2": "2 team members",
+      "productsUnlimited": "Unlimited products",
       "domain": "Custom domain",
-      "staff": "Staff accounts",
-      "priority": "Priority support"
+      "stores3": "3 stores",
+      "team5": "5 team members",
+      "analyticsAdvanced": "Advanced analytics: funnels, heatmaps, CSV export",
+      "bulkCsv": "Bulk CSV import and export",
+      "aiDescriptions": "AI product descriptions in 4 languages",
+      "lowStock": "Low-stock alerts",
+      "abandonedCart": "WhatsApp abandoned-cart reminders",
+      "priority": "Priority support",
+      "exclusiveDesigns": "Super-premium exclusive designs",
+      "aiDesigner": "AI Website Designer: a full store from a prompt or your Instagram",
+      "stores10": "10 stores",
+      "teamUnlimited": "Unlimited team",
+      "igImport": "AI Instagram product import",
+      "whiteLabel": "White-label: no Bazarga anywhere",
+      "api": "API access",
+      "earlyAccess": "Early access to new features",
+      "accountManager": "Dedicated account manager"
     },
     "rows": {
       "products": "Products",
+      "studio": "Product Studio AI edits / month",
+      "stores": "Stores",
+      "team": "Team members",
       "themes": "Themes",
       "analytics": "Analytics",
       "payments": "Payments",
-      "badge": "Bazarga badge",
+      "discounts": "Discount codes",
+      "badge": "Bazarga branding",
       "domain": "Custom domain",
-      "staff": "Staff accounts",
+      "bulkCsv": "Bulk CSV import/export",
+      "aiDescriptions": "AI descriptions (4 languages)",
+      "abandonedCart": "Abandoned-cart reminders",
+      "aiDesigner": "AI Website Designer",
+      "igImport": "Instagram import",
+      "api": "API access",
       "support": "Support"
     },
     "cells": {
-      "c15": "15",
       "unlimited": "Unlimited",
-      "basic": "Starter",
-      "all": "All",
-      "codOnly": "Cash on delivery",
-      "codFibZain": "COD, FIB, ZainCash",
+      "starter": "2 starter",
+      "all": "All + Theme Studio",
+      "exclusive": "All + exclusive",
+      "d7": "7 days",
+      "d90": "90 days + charts",
+      "advanced": "Funnels, heatmaps, CSV",
+      "codWa": "COD + WhatsApp",
+      "codOnline": "COD + online",
       "shown": "Shown",
       "removed": "Removed",
+      "whiteLabel": "White-label",
       "community": "Help center",
       "email": "Email",
-      "priority": "Priority"
+      "priority": "Priority",
+      "manager": "Account manager"
     },
     "faq": {
       "q1": {
         "q": "Is it really free?",
-        "a": "Yes. The free plan has no time limit and needs no card."
+        "a": "Yes. The Free plan has no time limit and needs no card: 10 products, cash on delivery and WhatsApp orders."
       },
       "q2": {
         "q": "What does Pro cost?",
-        "a": "$10 a month, and your first month is $1. Yearly is $100, which is 2 months free."
+        "a": "$15 a month, and your first month is $1. Yearly is $150, which is 2 months free."
       },
       "q3": {
         "q": "Can I switch plans later?",
@@ -1049,12 +1086,28 @@
       },
       "q4": {
         "q": "Is online payment included?",
-        "a": "Pro adds FIB and ZainCash. Free stores take cash on delivery."
+        "a": "Online payments with FIB, ZainCash and cards are coming to Pro and up. Today every plan takes cash on delivery."
+      },
+      "q5": {
+        "q": "What do Business and Max add?",
+        "a": "Business is for growing brands: unlimited products, 100 Product Studio edits a month, a custom domain and a team. Max adds exclusive designs, the AI Website Designer, white-label and a dedicated account manager."
       }
     },
     "firstMonthOnly": "first month",
-    "after": "$10/month after",
-    "wasNow": "Was $10, now $1 for your first month"
+    "after": "$15/month after",
+    "wasNow": "Was $15, now $1 for your first month",
+    "max": "Max",
+    "maxDesc": "All of Bazarga: exclusive designs and AI that builds for you.",
+    "ctaMax": "Choose Max",
+    "everything": "Everything in {plan}, plus:",
+    "soon": "Soon",
+    "premium": "Premium",
+    "planChip": "{plan} plan",
+    "usageProducts": "{used} of {limit} products",
+    "usageProductsUnlimited": "{used} products · Unlimited",
+    "usageStudio": "Product Studio: {used} of {limit} edits this month",
+    "upgradeCta": "Upgrade",
+    "limitHint": "You've reached your plan's product limit. Upgrade to add more."
   },
   "upgrade": {
     "title": "Upgrade your store",
@@ -1076,7 +1129,8 @@
     "name": {
       "free": "Free",
       "pro": "Pro",
-      "business": "Business"
+      "business": "Business",
+      "max": "Max"
     }
   },
   "gatewayPay": {

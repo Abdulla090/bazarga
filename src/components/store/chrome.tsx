@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { normalizePlan, showsBazargaBadge } from "@/lib/plans";
 import { getTranslations } from "next-intl/server";
 import { CartLink } from "@/components/store/CartLink";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -8,7 +9,7 @@ import { waLink } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
 import type { DesignSpec } from "@/lib/theme-studio/designs";
 
-type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null };
+type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null; plan?: string | null };
 
 function Mark({ store, size = "h-7 w-7" }: { store: ChromeStore; size?: string }) {
   return store.logoUrl ? (
@@ -109,9 +110,12 @@ export async function StoreFooter({
   const bar = (
     <div className="store-page flex flex-wrap items-center justify-between gap-3 border-t border-st-border py-4">
       <LocaleSwitcher current={locale} locales={["ku", "ar", "en", "kmr"]} />
-      <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-st-fg">
-        <Awning className="h-3 w-7" /> {t("poweredBy")}
-      </Link>
+      {/* "Made with Bazarga" shows on Free only (src/lib/plans.ts showsBazargaBadge); Pro and up remove it. */}
+      {showsBazargaBadge(normalizePlan(store.plan)) && (
+        <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-st-fg" data-bazarga-badge>
+          <Awning className="h-3 w-7" /> {t("poweredBy")}
+        </Link>
+      )}
     </div>
   );
 

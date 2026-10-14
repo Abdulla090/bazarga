@@ -65,14 +65,14 @@ describe("landing FAQ accordion", () => {
     expect(en.q2.a).toContain(`$${pro.monthly}`);
     expect(en.q2.a).toContain(`$${pro.yearly}`);
     expect(en.q5.a).toContain(`$${getPlan("business").monthly}`);
-    expect(PLANS.length).toBe(3);
+    expect(PLANS.length).toBe(4);
     for (const l of LOCALES) {
       const f = msgs(l).landing.faq;
-      expect(f.q1.a).toContain("15");
+      expect(f.q1.a).toContain(String(FREE_PRODUCT_LIMIT));
       expect(f.q2.a).toMatch(/\$1\b/);
-      expect(f.q2.a).toContain("$10");
-      expect(f.q2.a).toContain("$100");
-      expect(f.q5.a).toContain("$20");
+      expect(f.q2.a).toContain(`$${pro.monthly}`);
+      expect(f.q2.a).toContain(`$${pro.yearly}`);
+      expect(f.q5.a).toContain(`$${getPlan("business").monthly}`);
       for (const p of ["FIB", "ZainCash", "FastPay", "Qi"]) expect(f.q3.a).toContain(p);
     }
   });

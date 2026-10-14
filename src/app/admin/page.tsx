@@ -5,6 +5,7 @@ import { activateUpgradeAction, rejectUpgradeAction } from "@/server/actions/upg
 import { createPayoutAction, markPayoutPaidAction, reviewPayoutProfileAction } from "@/server/actions/gateway-payments";
 import { adminListPayments, adminListPayoutProfiles, adminListPayouts, sellerBalance } from "@/server/payments/gateway/service";
 import { gateway } from "@/server/payments/gateway/registry";
+import { getPlan, isPaidPlan, usd } from "@/lib/plans";
 
 export const metadata = { title: "Admin", robots: { index: false } };
 
@@ -27,7 +28,7 @@ export default async function AdminPage() {
             <div className="min-w-0 flex-1">
               <p className="font-medium">{storeName} <span className="text-ink-70">/{slug}</span></p>
               <p className="text-sm text-ink-70">
-                {r.plan} · {r.months === 12 ? "12 months" : "1 month"} · {r.method} · now {currentPlan}
+                {r.plan}{isPaidPlan(r.plan) ? ` (${usd(r.months === 12 ? getPlan(r.plan).yearly : getPlan(r.plan).monthly)})` : ""} · {r.months === 12 ? "12 months" : "1 month"} · {r.method} · now {currentPlan}
                 {end ? ` until ${end.toISOString().slice(0, 10)}` : ""} · {r.createdAt.toISOString().slice(0, 16).replace("T", " ")} · {r.status}
               </p>
             </div>

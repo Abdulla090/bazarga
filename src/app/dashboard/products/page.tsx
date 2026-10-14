@@ -3,19 +3,22 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
 import { db } from "@/server/db";
-import { listProducts } from "@/server/services/catalog";
+import { getProductUsage, listProducts } from "@/server/services/catalog";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
 import { ActiveToggle } from "./ActiveToggle";
 import { Icon, Sparkles } from "@/components/ui/icons";
+import { PlanUsage } from "@/components/dashboard/PlanUsage";
 
 export default async function ProductsPage() {
   const { store } = await requireStore();
   const t = await getTranslations("products");
   const td = await getTranslations("dash");
   const locale = await currentLocale();
-  const products = await listProducts(db(), store.id);
+  const tp = await getTranslations("pricing");
+  const [products, usage] = await Promise.all([listProducts(db(), store.id), getProductUsage(db(), store.id)]);
+  const atLimit = usage.used >= usage.cap;
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <div className="flex flex-wrap items-center gap-3">
@@ -23,6 +26,14 @@ export default async function ProductsPage() {
         <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
         <Link href="/dashboard/products/new" className="btn-gold btn-sm">+ {t("new")}</Link>
       </div>
+      <PlanUsage
+        label={usage.shown === null ? tp("usageProductsUnlimited", { used: String(usage.used) }) : tp("usageProducts", { used: String(usage.used), limit: String(usage.shown) })}
+        used={usage.used}
+        shown={usage.shown}
+        plan={tp(usage.plan)}
+        hint={atLimit ? tp("limitHint") : null}
+        cta={usage.plan === "max" ? null : tp("upgradeCta")}
+      />
       {products.length === 0 ? (
         <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/products/new" cta={t("emptyCta")} testId="products-empty" />
       ) : (

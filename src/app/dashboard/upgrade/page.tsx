@@ -8,20 +8,22 @@ import { gateway } from "@/server/payments/gateway/registry";
 import { quoteSubscription } from "@/server/payments/gateway/service";
 import { formatIQD } from "@/lib/money";
 import { currentLocale } from "@/server/locale";
-import { PLANS, usd, normalizePlan } from "@/lib/plans";
+import { PLANS, usd, normalizePlan, isPaidPlan } from "@/lib/plans";
 
 export default async function UpgradePage({ searchParams }: { searchParams: Promise<{ plan?: string; pay?: string }> }) {
   const { store } = await requireStore();
   const t = await getTranslations("upgrade");
   const sp = await searchParams;
-  const want = sp.plan === "business" ? "business" : "pro";
+  const want = sp.plan && isPaidPlan(sp.plan) ? sp.plan : "pro";
+  // The online gateway (src/server/payments/**, owned separately) only quotes Pro and Business; Max is paid manually for now.
+  const wantOnline = want === "max" ? "business" : want;
   const pending = await pendingRequestFor(db(), store.id);
   const current = normalizePlan(store.plan);
   // Online checkout (Rasedi) only when PAYMENTS_PROVIDER is on; otherwise this page is exactly the manual flow.
   const online = gateway() !== null;
   const tg = await getTranslations("gatewayPay");
   const locale = await currentLocale();
-  const quote = online ? await quoteSubscription(db(), store.id, want, 1) : null;
+  const quote = online ? await quoteSubscription(db(), store.id, wantOnline, 1) : null;
   const iqd = online
     ? Object.fromEntries(
         await Promise.all(
@@ -48,7 +50,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
               <span className="flex-1">{t(`name.${p.id}`)}</span>
               <span dir="ltr" className="text-end">
                 {usd(p.monthly)}/mo · {usd(p.yearly)}/yr
-                {iqd?.[p.id] && <span className="block text-xs text-ink-70">{formatIQD(iqd[p.id]![0], locale)} · {formatIQD(iqd[p.id]![1], locale)}</span>}
+                {iqd && p.id !== "max" && iqd[p.id] && <span className="block text-xs text-ink-70">{formatIQD(iqd[p.id]![0], locale)} · {formatIQD(iqd[p.id]![1], locale)}</span>}
               </span>
             </label>
           ))}

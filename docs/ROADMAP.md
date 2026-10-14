@@ -188,4 +188,4 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 - Billing: free tier + paid plan (FIB/ZainCash recurring or manual), plan limits.
 
 ## Billing (future)
-Pricing UI shipped (src/lib/plans.ts, /pricing). No real billing or plan enforcement yet: add a payment provider, a subscriptions table, 15-product limit enforcement on Free, and the $1 first-month Pro trial logic.
+Pricing v2 shipped 2026-10-14 (docs/PRICING.md): Free/Pro/Business/Max, server-side product caps and Product Studio quota; manual upgrades + Rasedi gateway (off) for billing.

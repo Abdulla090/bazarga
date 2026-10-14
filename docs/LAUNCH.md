@@ -5,7 +5,8 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 ## Done
 - [x] K1 persistent uploads (Supabase Storage driver)
 - [x] K2 DB TLS with bundled Supabase root CA
-- [x] K3 plans model + Free limits (15 products), demo store on Pro
+- [x] K3 plans model + Free limits, demo store on Pro
+- [x] Pricing v2 (Oct 14): Free $0/10 products · Pro $15 ($1 first month)/100 · Business $50/unlimited · Max $100/unlimited; yearly 2 months free; Product Studio quota 0/10/100/100 (docs/PRICING.md)
 - [x] Live test deploy on Vercel (bazarga.vercel.app)
 - [x] Pricing page, hero, dashboard, auth, onboarding
 
@@ -31,5 +32,6 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [ ] Bug bash all routes x 4 locales x 360/390/1280 · [ ] full e2e green
 
 ## Needs Abdulla
+- Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).
 - Rasedi: KYC → test keys → set on Vercel (Production): `PAYMENTS_PROVIDER=rasedi`, `RASEDI_MODE=test`, `RASEDI_KEY_ID`, `RASEDI_PRIVATE_KEY`, `RASEDI_WEBHOOK_SECRET` (optional: `RASEDI_GATEWAYS`, `USD_IQD_RATE`=1310, `PLATFORM_COMMISSION_BPS`=0, `RASEDI_FEE_FROM_CUSTOMER`) → test payment → live keys + `RASEDI_MODE=live`. Steps + questions for Rasedi in docs/PAYMENTS.md.
 - Domain, email provider key, Contabo VPS (when paying sellers), payment method accounts (FIB/ZainCash)
