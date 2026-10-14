@@ -86,7 +86,8 @@ describe("error page copy (4 locales)", () => {
 describe("brand + boundaries", () => {
   const files = [
     "src/app/global-error.tsx",
-    "src/app/error.tsx",
+    "src/app/(marketing)/error.tsx",
+    "src/app/(auth)/error.tsx",
     "src/app/not-found.tsx",
     "src/app/dashboard/error.tsx",
     "src/app/dashboard/not-found.tsx",
@@ -100,11 +101,16 @@ describe("brand + boundaries", () => {
   it("no orange/yellow anywhere in the error pages", () => {
     for (const f of files) expect(read(f), f).not.toMatch(/#F5B700|#F59E0B|#FBBF24|#EAB308|#F97316|orange|yellow|amber/i);
   });
-  it("global-error renders its own html with the blue/ink palette", () => {
+  it("global-error renders its own html with the blue/ink palette and stays tiny (it ships on every route)", () => {
     const g = read("src/app/global-error.tsx");
     expect(g).toContain("<html");
     expect(g).toContain("#2563EB");
     expect(g).toContain("#0A0A0B");
+    expect(g).not.toMatch(/^import /m);
+  });
+  it("no root error.tsx (it would ship in every storefront bundle); each area has its own boundary", () => {
+    expect(() => read("src/app/error.tsx")).toThrow();
+    for (const d of ["(marketing)", "(auth)", "onboarding", "admin", "payments", "dashboard", "s/[slug]"]) expect(read(`src/app/${d}/error.tsx`)).toContain("export default function");
   });
   it("server errors are logged as structured lines with their digest, without query strings", () => {
     const i = read("src/instrumentation.ts");
