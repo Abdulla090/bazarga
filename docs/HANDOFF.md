@@ -32,6 +32,16 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-14 16:40 Agent B: launch sprint slice 1 — agentb/ops-hardening (merge 1992bff)
+- Dates moved by Abdulla: **Fri Oct 16 = full prototype working end to end live** (seller + shopper journey e2e), **Tue Oct 20 = production**.
+- `/api/health`: DB `select 1` with a 3 s timeout, `sha` (VERCEL_GIT_COMMIT_SHA → GIT_SHA → unknown), env, time, `Cache-Control: no-store`; 503 `degraded` on DB failure. Live: sha matches the merge.
+- **Idempotent orders**: CartCheckout mints one key per checkout attempt (`src/lib/idempotency.ts`, 128-bit base64url via getRandomValues, works on http), rotated only after a definitive server "no". `placeOrder` takes an advisory lock on (store, key) and returns the existing order (`replayed`) before any re-check, so a retried request never double-charges stock even after the last unit sold. Key reused with a different phone is never handed back (stored null). zod drops malformed keys.
+- **Migration 0015_idempotency_indexes** (additive): `orders.idempotency_key` + partial unique (store_id, key); indexes from the hot-query review: unpaid-online expiry partial index, customers (store_id, last_order_at), order_items(product_id), products (store_id, sort, created_at) + (category_id), stores partial (plan_period_end) where plan <> free. Note: Vercel's build command runs `db:migrate:deploy` on every build incl. previews, against the shared Supabase DB. Next free migration: **0016**.
+- Email: provider interface now console | resend | **brevo** (free 300/day), zod-validated messages, 10 s timeout, missing key → console + `email.provider_key_missing` warn.
+- Daily cron also prunes rate-limit counters. Security headers + rate limits (auth, checkout, track, uploads) verified by tests/launch-ops.test.ts.
+- `docs/OPS.md`: deploy runbook, rollback, env, backups (pg_dump + bucket mirror) and restore drill, monitoring, incident table.
+- Gate GATE_OK (vitest 571, mobile 12/12, smoke 136). Vercel READY dpl_G1ptaft8GiiHRr71j9ckxNXGdKU7.
+
 ### 2026-10-14 00:xx Agent B: Rasedi payment gateway architecture (agentb/rasedi-payments) — merged OFF
 - `src/server/payments/gateway/*`: GatewayProvider (createCheckout/getStatus/verifyWebhook/cancel/refund?), Rasedi fetch client (Ed25519 `x-signature` over `METHOD || x-id || path`, IQD ×100) + mock provider, zod fail-closed config (`PAYMENTS_PROVIDER=none|mock|rasedi`, default none).
 - Subscriptions: "Pay online" on /dashboard/upgrade → hosted checkout → webhook / return-page poll / cron → `activateRequestTx` (shared with admin Activate). Manual FIB/ZainCash/cash unchanged.

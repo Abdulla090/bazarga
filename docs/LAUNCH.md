@@ -1,4 +1,6 @@
-# Bazarga — launch checklist (deadline Fri 2026-10-16, end of day Asia/Baghdad)
+# Bazarga — launch checklist
+
+Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). Tue 2026-10-20: production.
 
 ## Done
 - [x] K1 persistent uploads (Supabase Storage driver)
@@ -16,9 +18,9 @@
 - [ ] Themes Gallery, Boutique, Mono, Studio; theme thumbnails; one-click switch e2e
 
 ## Thu 15
-- [ ] /api/health, structured logging, error boundary
-- [ ] Transactional email provider interface (needs Abdulla: free Resend/Brevo key)
-- [ ] Idempotent orders, DB indexes, docs/OPS.md backups
+- [x] /api/health (DB ping + build sha), structured logging (src/server/logger.ts) — error boundaries: see error pages
+- [x] Transactional email provider interface: console | resend | brevo, env-gated (needs Abdulla: free Resend/Brevo key + EMAIL_FROM domain)
+- [x] Idempotent orders (idempotency key, migration 0015), DB indexes (0015), docs/OPS.md backups + deploy runbook
 - [ ] Lighthouse 90+ (store home, product, landing, pricing)
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
