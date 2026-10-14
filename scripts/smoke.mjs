@@ -166,6 +166,9 @@ if (orderNumber) {
   // Storefront routes stream (partial prerender), so notFound() arrives as the 404 boundary in a 200 response.
   const cross = await (await fetch(`${BASE}/s/smoke-nope-store/track`, { headers: { Cookie: hit.cookie } })).text();
   ok(cross.includes("NEXT_HTTP_ERROR_FALLBACK;404") && !cross.includes('data-testid="track-result"'), "unknown store slug renders not-found on the tracking page");
+  // A browser navigation (Accept: text/html) to an unknown store gets a real 404 status from the proxy.
+  const nfDoc = await fetch(`${BASE}/s/smoke-nope-store/track`, { headers: { Accept: "text/html" } });
+  ok(nfDoc.status === 404 && (await nfDoc.text()).includes('data-testid="store-missing"'), "unknown store slug answers a real 404 (branded page)");
   let limited = null;
   for (let i = 0; i < 12 && !limited; i++) {
     const r = await track(String(900000 + i), "0770 111 2233", `${ipBase}.9`);

@@ -1120,5 +1120,18 @@
     "balance": "Balance to be paid out",
     "saved": "Saved",
     "error": "Something went wrong. Please try again."
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This page doesn’t exist",
+    "body": "The link may be old or mistyped. Let’s get you back on track.",
+    "home": "Go to homepage",
+    "start": "Start your store",
+    "help": "Need help? Email us",
+    "storeTitle": "This store isn’t here",
+    "storeBody": "The store may have changed its link or closed. Check the address, or open your own store in minutes.",
+    "dashTitle": "This page isn’t in your dashboard",
+    "dashBody": "It may have been deleted or moved.",
+    "dashHome": "Back to dashboard"
   }
 }

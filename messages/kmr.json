@@ -1121,5 +1121,18 @@
     "balance": "Bermahiya ji bo şandinê",
     "saved": "Hate tomarkirin",
     "error": "Tiştek xelet çû. Ji kerema xwe dîsa biceribîne."
+  },
+  "notFound": {
+    "eyebrow": "Çewtiya 404",
+    "title": "Ev rûpel tune ye",
+    "body": "Dibe ku girêdan kevn be an jî şaş hatibe nivîsandin. Em te vegerînin rê.",
+    "home": "Here rûpela sereke",
+    "start": "Firoşgeha xwe ava bike",
+    "help": "Alîkarî lazim e? Ji me re e-name bişîne",
+    "storeTitle": "Ev firoşgeh li vir tune ye",
+    "storeBody": "Dibe ku firoşgehê girêdana xwe guhertibe an girtî be. Navnîşanê kontrol bike, an jî di çend deqeyan de firoşgeha xwe veke.",
+    "dashTitle": "Ev rûpel di dashboarda te de tune ye",
+    "dashBody": "Dibe ku hatibe jêbirin an veguhestin.",
+    "dashHome": "Vegere dashboardê"
   }
 }
