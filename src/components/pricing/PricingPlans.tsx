@@ -157,7 +157,7 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
                 {t("premium")}
               </span>
             )}
-            <h3 className="text-lg font-bold">{t(p.id)}</h3>
+            <h2 className="text-lg font-bold">{t(p.id)}</h2>
             <p className={`mt-1 min-h-10 text-sm ${p.premium ? "text-white/65" : "text-ink-70"}`}>{t(`${p.id}Desc` as "freeDesc")}</p>
             <div className="mt-6 sm:min-h-[7.25rem]"><Price plan={p} yearly={yearly} card={idx} /></div>
             <Link
