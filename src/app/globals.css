@@ -858,3 +858,59 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
   .hero-hook-text { background: none; -webkit-text-fill-color: currentColor; color: CanvasText; }
   .hero-hook-line { stroke: CanvasText; }
 }
+
+/* ---- Max plan: orange-gold premium accent (Abdulla 2026-10-14). The ONLY place gold/orange is allowed; every other
+ * accent stays blue #2563EB + ink. The ring is a conic gradient on an oversized layer that only rotates (transform,
+ * compositor-only), clipped to the card's radius and covered by an inset ink fill, so just a 2px border shows.
+ * Glow = static gold shadow whose opacity breathes (also compositor-only). Reduced motion: static gradients. ---- */
+.max-card { position: relative; isolation: isolate; background: transparent; border-color: transparent; }
+.max-ring, .max-fill, .max-glow { position: absolute; pointer-events: none; border-radius: inherit; }
+.max-ring { inset: -1px; z-index: -2; overflow: hidden; background: #c98a1e; }
+.max-ring::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 400%; aspect-ratio: 1; margin: -200% 0 0 -200%;
+  background: conic-gradient(from 0deg, #fde68a, #f5b83d 18%, #f08a24 34%, #fbbf24 52%, #fff1c2 66%, #f5a524 82%, #fde68a);
+  will-change: transform;
+}
+.max-fill { inset: 1px; z-index: -1; border-radius: calc(1.5rem - 2px); background: radial-gradient(120% 60% at 50% 0%, #17130c 0%, #0a0a0b 60%); }
+.max-glow { inset: -1px; z-index: -3; box-shadow: 0 0 0 1px rgb(245 184 61 / 0.25), 0 24px 70px -24px rgb(245 158 11 / 0.55), 0 0 40px -12px rgb(240 138 36 / 0.45); opacity: 0.7; }
+.max-badge {
+  color: #1a1206; border: 0;
+  background: linear-gradient(110deg, #fde68a, #f5b83d 45%, #f08a24);
+  box-shadow: 0 6px 18px -6px rgb(240 138 36 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.5);
+}
+.max-gold-text, .max-gold-text .sw {
+  background-image: linear-gradient(180deg, #fff1c2 0%, #fbcf5a 40%, #f5a524 72%, #ea7a1a 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #f5b83d;
+}
+.max-cta {
+  color: #1a1206 !important;
+  background: linear-gradient(110deg, #fde68a, #f5b83d 45%, #f08a24) !important;
+  box-shadow: 0 10px 24px -12px rgb(240 138 36 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.45);
+  transition: filter 200ms, box-shadow 200ms;
+}
+.max-cta:hover { filter: brightness(1.07) saturate(1.05); box-shadow: 0 14px 30px -12px rgb(240 138 36 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.5); }
+.max-check { color: #f7c25a; }
+.max-soft { color: #f7d27a; }
+.max-soon { border-color: rgb(247 194 90 / 0.35) !important; color: rgb(247 210 122 / 0.85) !important; }
+/* (border = card's 1px transparent border, so the ring sits at -1px to cover it.) */
+/* Small Max chips (comparison table header, dashboard plan chip): ink pill with a gold gradient border + gold text. */
+.max-chip {
+  color: #f7d27a; border: 1px solid transparent;
+  background: linear-gradient(#0a0a0b, #0a0a0b) padding-box, linear-gradient(110deg, #fde68a, #f5b83d, #f08a24, #fde68a) border-box;
+  background-size: 100% 100%, 300% 100%;
+}
+.max-col { background: rgb(245 158 11 / 0.045); }
+.max-col-check { color: #b45309; }
+@keyframes max-spin { to { transform: rotate(1turn); } }
+@keyframes max-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes max-shift { from { background-position: 0 0, 0% 0; } to { background-position: 0 0, 100% 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .max-ring::before { animation: max-spin 7s linear infinite; }
+  .max-glow { animation: max-breathe 7s ease-in-out infinite; }
+  .max-chip { animation: max-shift 3.5s ease-in-out infinite alternate; }
+}
+@media (forced-colors: active) {
+  .max-gold-text, .max-gold-text .sw { background: none; -webkit-text-fill-color: currentColor; }
+  .max-ring, .max-glow { display: none; }
+  .max-card { border-color: CanvasText; }
+}

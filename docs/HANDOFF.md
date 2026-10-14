@@ -32,6 +32,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-14 21:55 · Agent B · Max gold + margin pass (agentb/pricing-max-gold)
+- **Max look (Abdulla, deliberate Max-only exception to "no orange/yellow"):** ink card with an animated orange-gold ring (oversized conic layer rotating via transform, 7s loop, clipped to the radius under an inset ink fill: 2px crisp border) + breathing gold glow (opacity only), gold gradient "Premium" badge, gold gradient `$100`, gold "Choose Max" button with dark text, gold checks/Soon tags. Same accent (`max-chip`, animated gold border) on the comparison-table Max header and the dashboard plan chip when plan = max; Max column cells tinted amber with #B45309 checks. Home pricing reuses PricingPlans. CSS: `globals.css` "Max plan" block; reduced motion → static; forced-colors → plain. Everything else stays blue #2563EB + ink (test enforces: no `max-`/gold/orange on the other 3 cards).
+- **Margin pass:** removed API access, dedicated account manager, AI Instagram product import, WhatsApp abandoned-cart reminders (cards, comparison table, FAQ q5, all 4 locales); AI Website Designer copy no longer says "from your Instagram". Max 10 stores → **5**, unlimited team → **10 team members**; new `STORE_LIMIT` / `TEAM_LIMIT` in `src/lib/plans.ts` (not enforced yet, features are Soon). Max adds Priority Product Studio processing, Premium store templates library, Advanced SEO tools, Monthly design refresh (all Soon). Max support cell = Priority. Price unchanged ($100). docs/PRICING.md updated.
+- Gate5 GATE_OK (vitest 618, mobile 25, smoke all passed, budget green). Screenshots: `/workspace/work/daily-shots/2026-10-14/pricing-max-gold-*.png` (two 390 ku frames 2s apart confirm the ring rotates).
+
 ### 2026-10-14 21:40 · Agent B · Lighthouse pass (agentb/perf-lighthouse)
 - Local prod build, Lighthouse mobile emulation (`/tmp/lh`, `npx lighthouse` with chromium; the PageSpeed API needs a key): landing 90 (was 73), pricing 92 (was 89), store home 95 (was 86). a11y 100/100/96, SEO 100, best-practices 100.
 - Changes (already on main via f362e08): hero h1 no longer fades in (it is the LCP element), hook sheen runs twice not forever, pricing plan names are h2 (heading order), strike-through compare-at price uses text-muted (contrast).

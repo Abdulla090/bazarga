@@ -1022,17 +1022,17 @@
       "bulkCsv": "هاوردە و هەناردەی بەکۆمەڵ بە CSV",
       "aiDescriptions": "وەسفی بەرهەم بە AI بە 4 زمان",
       "lowStock": "ئاگادارکردنەوەی کەمبوونی کاڵا",
-      "abandonedCart": "بیرخستنەوەی سەبەتەی بەجێهێڵراو بە WhatsApp",
       "priority": "پشتگیری لە پێشینە",
       "exclusiveDesigns": "دیزاینی تاقانە و زۆر پرێمیەم",
-      "aiDesigner": "دیزاینەری ماڵپەڕ بە AI: فرۆشگایەکی تەواو لە چەند وشەیەک یان لە Instagram ـەکەت",
-      "stores10": "10 فرۆشگا",
-      "teamUnlimited": "تیمی بێسنوور",
-      "igImport": "هێنانی بەرهەم لە Instagram بە AI",
+      "aiDesigner": "دیزاینەری ماڵپەڕ بە AI: فرۆشگایەکی تەواو لە چەند وشەیەک",
       "whiteLabel": "White-label: هیچ شوێنێک ناوی Bazarga نییە",
-      "api": "دەستگەیشتن بە API",
       "earlyAccess": "یەکەم کەس تایبەتمەندییە نوێیەکان بەکاربهێنە",
-      "accountManager": "بەڕێوەبەری هەژماری تایبەت"
+      "stores5": "5 فرۆشگا",
+      "team10": "10 ئەندامی تیم",
+      "priorityStudio": "پرۆسێسکردنی لە پێشینە لە Product Studio",
+      "templatesPremium": "کتێبخانەی قاڵبی پرێمیەمی فرۆشگا",
+      "seoAdvanced": "ئامرازی پێشکەوتووی SEO",
+      "designRefresh": "نوێکردنەوەی مانگانەی دیزاینی ڕووکاری فرۆشگاکەت"
     },
     "rows": {
       "products": "بەرهەم",
@@ -1047,17 +1047,18 @@
       "domain": "دۆمەینی تایبەت",
       "bulkCsv": "CSV ـی بەکۆمەڵ",
       "aiDescriptions": "وەسفی AI (4 زمان)",
-      "abandonedCart": "بیرخستنەوەی سەبەتە",
       "aiDesigner": "دیزاینەری ماڵپەڕ بە AI",
-      "igImport": "هێنان لە Instagram",
-      "api": "API",
+      "lowStock": "ئاگادارکردنەوەی کەمبوونی کاڵا",
+      "priorityStudio": "Product Studio ـی لە پێشینە",
+      "seoAdvanced": "ئامرازی پێشکەوتووی SEO",
+      "designRefresh": "نوێکردنەوەی مانگانەی دیزاین",
       "support": "پشتگیری"
     },
     "cells": {
       "unlimited": "بێسنوور",
       "starter": "2 سەرەتایی",
       "all": "هەموو + Theme Studio",
-      "exclusive": "هەموو + تاقانە",
+      "exclusive": "هەموو + کتێبخانەی پرێمیەم",
       "d7": "7 ڕۆژ",
       "d90": "90 ڕۆژ + چارت",
       "advanced": "فەنەڵ، نەخشەی گەرمی، CSV",
@@ -1068,8 +1069,7 @@
       "whiteLabel": "White-label",
       "community": "ناوەندی یارمەتی",
       "email": "ئیمەیڵ",
-      "priority": "لە پێشینە",
-      "manager": "بەڕێوەبەری هەژمار"
+      "priority": "لە پێشینە"
     },
     "faq": {
       "q1": {
@@ -1090,7 +1090,7 @@
       },
       "q5": {
         "q": "Business و Max چی زیاد دەکەن؟",
-        "a": "Business بۆ براندی گەشەکردووە: بەرهەمی بێسنوور، 100 دەستکاریی Product Studio لە مانگێکدا، دۆمەینی تایبەت و تیم. Max دیزاینی تاقانە، دیزاینەری ماڵپەڕ بە AI، white-label و بەڕێوەبەری هەژماری تایبەت زیاد دەکات."
+        "a": "Business بۆ براندی گەشەکردووە: بەرهەمی بێسنوور، 100 دەستکاریی Product Studio لە مانگێکدا، دۆمەینی تایبەت و تیم. Max دیزاینەری ماڵپەڕ بە AI، دیزاین و قاڵبی زۆر پرێمیەم، پرۆسێسکردنی لە پێشینە لە Product Studio، SEO ـی پێشکەوتوو، نوێکردنەوەی مانگانەی دیزاین و white-label زیاد دەکات."
       }
     },
     "firstMonthOnly": "مانگی یەکەم",

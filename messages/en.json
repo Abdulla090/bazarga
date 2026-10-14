@@ -1022,17 +1022,17 @@
       "bulkCsv": "Bulk CSV import and export",
       "aiDescriptions": "AI product descriptions in 4 languages",
       "lowStock": "Low-stock alerts",
-      "abandonedCart": "WhatsApp abandoned-cart reminders",
       "priority": "Priority support",
       "exclusiveDesigns": "Super-premium exclusive designs",
-      "aiDesigner": "AI Website Designer: a full store from a prompt or your Instagram",
-      "stores10": "10 stores",
-      "teamUnlimited": "Unlimited team",
-      "igImport": "AI Instagram product import",
+      "aiDesigner": "AI Website Designer: a full store from a prompt",
       "whiteLabel": "White-label: no Bazarga anywhere",
-      "api": "API access",
       "earlyAccess": "Early access to new features",
-      "accountManager": "Dedicated account manager"
+      "stores5": "5 stores",
+      "team10": "10 team members",
+      "priorityStudio": "Priority Product Studio processing",
+      "templatesPremium": "Premium store templates library",
+      "seoAdvanced": "Advanced SEO tools",
+      "designRefresh": "Monthly design refresh of your store theme"
     },
     "rows": {
       "products": "Products",
@@ -1047,17 +1047,18 @@
       "domain": "Custom domain",
       "bulkCsv": "Bulk CSV import/export",
       "aiDescriptions": "AI descriptions (4 languages)",
-      "abandonedCart": "Abandoned-cart reminders",
       "aiDesigner": "AI Website Designer",
-      "igImport": "Instagram import",
-      "api": "API access",
+      "lowStock": "Low-stock alerts",
+      "priorityStudio": "Priority Product Studio",
+      "seoAdvanced": "Advanced SEO tools",
+      "designRefresh": "Monthly design refresh",
       "support": "Support"
     },
     "cells": {
       "unlimited": "Unlimited",
       "starter": "2 starter",
       "all": "All + Theme Studio",
-      "exclusive": "All + exclusive",
+      "exclusive": "All + premium library",
       "d7": "7 days",
       "d90": "90 days + charts",
       "advanced": "Funnels, heatmaps, CSV",
@@ -1068,8 +1069,7 @@
       "whiteLabel": "White-label",
       "community": "Help center",
       "email": "Email",
-      "priority": "Priority",
-      "manager": "Account manager"
+      "priority": "Priority"
     },
     "faq": {
       "q1": {
@@ -1090,7 +1090,7 @@
       },
       "q5": {
         "q": "What do Business and Max add?",
-        "a": "Business is for growing brands: unlimited products, 100 Product Studio edits a month, a custom domain and a team. Max adds exclusive designs, the AI Website Designer, white-label and a dedicated account manager."
+        "a": "Business is for growing brands: unlimited products, 100 Product Studio edits a month, a custom domain and a team. Max adds the AI Website Designer, super-premium designs and templates, priority Product Studio processing, advanced SEO, a monthly design refresh and white-label."
       }
     },
     "firstMonthOnly": "first month",

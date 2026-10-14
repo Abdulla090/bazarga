@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import {
-  COMPARE, MAX_MONTHLY_USD, PAID_PLAN_IDS, PLANS, PLAN_IDS, PRODUCT_CAP, getPlan, isPaidPlan, normalizePlan, productLimit, productsShown,
+  COMPARE, MAX_MONTHLY_USD, STORE_LIMIT, TEAM_LIMIT, PAID_PLAN_IDS, PLANS, PLAN_IDS, PRODUCT_CAP, getPlan, isPaidPlan, normalizePlan, productLimit, productsShown,
   showsBazargaBadge, studioEditsLimit, usd, yearlyMonthsFree,
 } from "../src/lib/plans";
 
@@ -50,6 +50,35 @@ describe("plans config (pricing v2, 2026-10-14)", () => {
     expect(PLANS.map((p) => p.includes)).toEqual([undefined, "free", "pro", "business"]);
     expect(showsBazargaBadge("free")).toBe(true);
     for (const p of ["pro", "business", "max"] as const) expect(showsBazargaBadge(p)).toBe(false);
+  });
+
+  it("margin pass: no API, account manager, Instagram import or WhatsApp cart reminders; Max is 5 stores / 10 seats", () => {
+    const gone = ["api", "accountManager", "igImport", "abandonedCart", "teamUnlimited", "stores10"];
+    for (const p of PLANS) for (const f of p.features) expect(gone).not.toContain(f.key);
+    for (const r of COMPARE) expect(["api", "igImport", "abandonedCart"]).not.toContain(r.key);
+    for (const r of COMPARE) for (const id of PLAN_IDS) {
+      const c = r[id];
+      expect(typeof c === "object" ? c.v : c).not.toBe("manager");
+    }
+    expect(STORE_LIMIT).toEqual({ free: 1, pro: 1, business: 3, max: 5 });
+    expect(TEAM_LIMIT).toEqual({ free: 0, pro: 2, business: 5, max: 10 });
+    // Card feature keys carry the same numbers as the limits.
+    for (const p of PLANS) for (const f of p.features) {
+      const m = f.key.match(/^(stores|team)(\d+)$/);
+      if (m) expect(Number(m[2])).toBe(m[1] === "stores" ? STORE_LIMIT[p.id] : TEAM_LIMIT[p.id]);
+    }
+    const maxKeys = getPlan("max").features.map((f) => f.key);
+    for (const k of ["aiDesigner", "exclusiveDesigns", "whiteLabel", "earlyAccess", "priorityStudio", "templatesPremium", "seoAdvanced", "designRefresh", "stores5", "team10"]) {
+      expect(maxKeys).toContain(k);
+    }
+    for (const k of ["priorityStudio", "templatesPremium", "seoAdvanced", "designRefresh"]) expect(getPlan("max").features.find((f) => f.key === k)?.soon).toBe(true);
+    const r = (k: string) => COMPARE.find((x) => x.key === k)!;
+    expect(r("stores").max).toEqual({ v: 5, soon: true });
+    expect(r("team").max).toEqual({ v: 10, soon: true });
+    for (const l of LOCALES) {
+      const copy = JSON.stringify(msgs(l).pricing);
+      expect(copy).not.toMatch(/API access|account manager|Instagram product import|abandoned-cart|Unlimited team/i);
+    }
   });
 
   it("the hidden caps never appear in any copy, card or table", () => {
