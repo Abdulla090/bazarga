@@ -1,11 +1,61 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { NONCE_HEADER, buildCsp, generateNonce } from "@/server/csp";
+import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn } from "@/lib/not-found";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
 const ROOT = (process.env.ROOT_DOMAIN ?? "mymarket.app").toLowerCase();
 const RESERVED_SUBDOMAINS = new Set(["www", "app", "api", "admin", "static", "mail"]);
 const IS_DEV = process.env.NODE_ENV === "development";
 const UPGRADE_INSECURE = (process.env.APP_URL ?? "").startsWith("https://");
+const GATEWAY_ON = paymentsGatewayOn(process.env.PAYMENTS_PROVIDER);
+const storeExistence = new ExistenceCache();
+
+/** A full-page browser navigation (not an RSC/prefetch/server-action request), the only kind we answer with an HTML 404. */
+function isDocumentRequest(req: NextRequest): boolean {
+  if (req.method !== "GET" && req.method !== "HEAD") return false;
+  if (req.headers.get("rsc") || req.headers.get("next-router-prefetch") || req.headers.get("next-action")) return false;
+  return (req.headers.get("accept") ?? "").includes("text/html");
+}
+
+async function storeExists(origin: string, slug: string): Promise<boolean> {
+  const cached = storeExistence.get(slug);
+  if (cached !== undefined) return cached;
+  try {
+    const r = await fetch(`${origin}/api/store-exists/${slug}`, { headers: { [INTERNAL_404_HEADER]: "1" }, signal: AbortSignal.timeout(2000), cache: "no-store" });
+    if (!r.ok) return true; // fail open: the page still renders its own not-found UI
+    const exists = Boolean(((await r.json()) as { exists?: unknown }).exists);
+    storeExistence.set(slug, exists);
+    return exists;
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Answer with the branded 404 page and a real 404 status. With Cache Components the status line of a page is sent
+ * before `notFound()` can run, so the proxy renders /e404 itself (forwarding cookies + language so the page is in the
+ * visitor's locale) and returns that HTML with status 404 and the page's own CSP (its scripts carry that nonce).
+ */
+async function notFoundResponse(req: NextRequest, kind: "page" | "store"): Promise<NextResponse | null> {
+  try {
+    const headers = new Headers({ [INTERNAL_404_HEADER]: "1", accept: "text/html" });
+    for (const h of ["cookie", "accept-language", "x-forwarded-host", "x-forwarded-proto"]) {
+      const v = req.headers.get(h);
+      if (v) headers.set(h, v);
+    }
+    const r = await fetch(`${req.nextUrl.origin}/e404${kind === "store" ? "?k=store" : ""}`, { headers, signal: AbortSignal.timeout(5000), cache: "no-store", redirect: "manual" });
+    if (!r.ok) return null;
+    const out = new NextResponse(req.method === "HEAD" ? null : await r.text(), { status: 404 });
+    out.headers.set("Content-Type", "text/html; charset=utf-8");
+    out.headers.set("Cache-Control", "no-store");
+    out.headers.set("X-Robots-Tag", "noindex");
+    const csp = r.headers.get("content-security-policy");
+    if (csp) out.headers.set("Content-Security-Policy", csp);
+    return out;
+  } catch {
+    return null; // fall back to the in-page not-found UI (status 200)
+  }
+}
 
 /**
  * Edge of the app (Next 16 "proxy", formerly middleware):
@@ -14,7 +64,7 @@ const UPGRADE_INSECURE = (process.env.APP_URL ?? "").startsWith("https://");
  *  - /s/{slug}/…         → tag the request with the store slug (store-language default)
  *  - custom domains      → TODO(roadmap): look up a verified `stores.custom_domain` (cache it) and rewrite the same way.
  */
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "").split(":")[0]!.toLowerCase();
   const url = req.nextUrl;
   const requestHeaders = new Headers(req.headers);
@@ -23,6 +73,21 @@ export function proxy(req: NextRequest) {
   // Never trust client-sent values for headers we own.
   requestHeaders.delete(STORE_SLUG_HEADER);
   requestHeaders.delete(NONCE_HEADER);
+
+  // Real 404 status for unknown stores, /payments/return while payments are off, and /e404 itself.
+  if (!isApi && !req.headers.get(INTERNAL_404_HEADER) && isDocumentRequest(req)) {
+    const sub = host.endsWith(`.${ROOT}`) ? host.slice(0, -(ROOT.length + 1)) : "";
+    const subSlug = sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub) ? sub : null;
+    const pathSlug = /^\/s\/([^/]+)(?:\/|$)/.exec(url.pathname)?.[1] ?? null;
+    const decision = decideNotFound({ pathname: url.pathname, search: url.searchParams, storeSlug: subSlug ?? pathSlug, gatewayOn: GATEWAY_ON });
+    let kind: "page" | "store" | null = null;
+    if (decision && "kind" in decision) kind = decision.kind;
+    else if (decision && !(await storeExists(url.origin, decision.checkStore))) kind = "store";
+    if (kind) {
+      const nf = await notFoundResponse(req, kind);
+      if (nf) return nf;
+    }
+  }
 
   let csp: string | undefined;
   if (!isApi) {
@@ -33,7 +98,8 @@ export function proxy(req: NextRequest) {
   }
 
   let res: NextResponse;
-  if (host.endsWith(`.${ROOT}`) && !isApi) {
+  // /e404 is the platform 404 body (fetched by the proxy itself): never rewrite it into a storefront.
+  if (host.endsWith(`.${ROOT}`) && !isApi && url.pathname !== "/e404") {
     const sub = host.slice(0, -(ROOT.length + 1));
     if (sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub)) {
       requestHeaders.set(STORE_SLUG_HEADER, sub);

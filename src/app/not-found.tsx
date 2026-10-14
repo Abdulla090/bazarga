@@ -1,16 +1,8 @@
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-import { Logo } from "@/components/Logo";
+import type { Metadata } from "next";
+import { PlatformNotFound } from "@/components/PlatformNotFound";
 
-export default async function NotFound() {
-  const t = await getTranslations("errors");
-  const tc = await getTranslations("common");
-  return (
-    <main className="container-page flex min-h-dvh flex-col items-center justify-center gap-4 text-center">
-      <Logo />
-      <p className="num text-6xl font-extrabold text-gold">404</p>
-      <p className="text-lg">{t("NOT_FOUND")}</p>
-      <Link href="/" className="btn-gold">{tc("back")}</Link>
-    </main>
-  );
+export const metadata: Metadata = { title: "404", robots: { index: false, follow: false } };
+
+export default function NotFound() {
+  return <PlatformNotFound />;
 }
