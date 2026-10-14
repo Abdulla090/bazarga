@@ -26,7 +26,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
-- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [ ] SEO · [ ] a11y · [ ] skeletons · [ ] translation pass
+- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [ ] a11y · [ ] skeletons · [ ] translation pass
 
 ## Fri 16 freeze
 - [ ] Bug bash all routes x 4 locales x 360/390/1280 · [ ] full e2e green
