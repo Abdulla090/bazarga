@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             href="/dashboard/upgrade"
             data-plan-chip={plan}
             className={`hidden min-h-9 items-center rounded-full px-3 text-[13px] font-medium transition-colors duration-150 sm:inline-flex ${
-              plan === "max" ? "bg-[#0A0A0B] text-white ring-1 ring-[#2563EB]/70" : plan === "free" ? "border border-line text-ink/70 hover:text-ink" : "border border-[#2563EB]/40 text-[#2563EB]"
+              plan === "max" ? "max-chip" : plan === "free" ? "border border-line text-ink/70 hover:text-ink" : "border border-[#2563EB]/40 text-[#2563EB]"
             }`}
           >
             {tp("planChip", { plan: tp(plan) })}

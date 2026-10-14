@@ -48,10 +48,10 @@ function PriceState({ plan, yearly }: { plan: Plan; yearly: boolean }) {
   return (
     <>
       <p className="flex items-baseline gap-1.5">
-        <RollText text={amount} className="num text-[3.25rem] leading-none font-light tracking-tight" />
+        <RollText text={amount} className={`num text-[3.25rem] leading-none font-light tracking-tight${plan.premium ? " max-gold-text font-normal" : ""}`} />
         <Sw i={amount.length} className={`text-sm ${muted}`}>{yearly ? t("perYear") : t("perMonth")}</Sw>
       </p>
-      <p className={`mt-3 text-sm ${plan.premium ? "text-[#93b4ff]" : "text-ink-70"}`}>
+      <p className={`mt-3 text-sm ${plan.premium ? "max-soft" : "text-ink-70"}`}>
         <Sw i={amount.length + 1}>{yearly && yearlyMonthsFree(plan) > 0 ? t("twoFree") : "\u00a0"}</Sw>
       </p>
     </>
@@ -89,13 +89,13 @@ function FeatureItem({ plan, f, soonLabel }: { plan: Plan; f: PlanFeature; soonL
   const count = f.key === "products" ? String(plan.productsShown ?? "") : f.key === "studio" ? String(plan.studioEdits) : "";
   return (
     <li className="flex items-start gap-2" data-feature={f.key} data-soon={f.soon ? "" : undefined}>
-      <Icon as={Check} className={`mt-0.5 shrink-0 ${plan.premium ? "text-[#93b4ff]" : "text-[#2563EB]"}`} />
+      <Icon as={Check} className={`mt-0.5 shrink-0 ${plan.premium ? "max-check" : "text-[#2563EB]"}`} />
       <span className="min-w-0">
         {t(`features.${f.key}` as "features.store1", { count })}
         {f.soon && (
           <span
             className={`ms-1.5 inline-flex translate-y-[-1px] items-center rounded-full border px-1.5 py-px align-middle text-[0.6875rem] font-semibold leading-4 whitespace-nowrap ${
-              plan.premium ? "border-white/25 text-white/70" : "border-line text-ink-70"
+              plan.premium ? "max-soon" : "border-line text-ink-70"
             }`}
           >
             {soonLabel}
@@ -141,7 +141,7 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
             data-plan={p.id}
             className={`relative flex flex-col rounded-3xl border p-6 ${
               p.premium
-                ? "plan-max border-[#0A0A0B] bg-[#0A0A0B] text-white shadow-[0_0_0_1px_rgba(37,99,235,.55),0_30px_70px_-30px_rgba(10,10,11,.85)]"
+                ? "plan-max max-card text-white"
                 : p.highlight
                   ? "border-[#2563EB] bg-[linear-gradient(180deg,rgba(37,99,235,.06),#fff_45%)] shadow-[0_0_0_1px_#2563EB,0_24px_60px_-28px_rgba(37,99,235,.55)]"
                   : "border-line bg-white"
@@ -153,9 +153,15 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
               </span>
             )}
             {p.premium && (
-              <span data-premium className="absolute -top-3 start-6 rounded-full border border-[#2563EB] bg-[#0A0A0B] px-3 py-1 text-xs font-semibold text-[#93b4ff]">
-                {t("premium")}
-              </span>
+              <>
+                {/* Animated gold ring + glow (globals.css "Max plan"); decorative only. */}
+                <span aria-hidden="true" className="max-glow" />
+                <span aria-hidden="true" className="max-ring" />
+                <span aria-hidden="true" className="max-fill" />
+                <span data-premium className="max-badge absolute -top-3 start-6 rounded-full px-3 py-1 text-xs font-semibold">
+                  {t("premium")}
+                </span>
+              </>
             )}
             <h2 className="text-lg font-bold">{t(p.id)}</h2>
             <p className={`mt-1 min-h-10 text-sm ${p.premium ? "text-white/65" : "text-ink-70"}`}>{t(`${p.id}Desc` as "freeDesc")}</p>
@@ -164,7 +170,7 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
               href="/signup"
               className={`mt-5 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold transition-colors duration-200 ${
                 p.premium
-                  ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8] focus-visible:outline-white"
+                  ? "max-cta focus-visible:outline-white"
                   : p.highlight
                     ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
                     : "border border-ink text-ink hover:bg-ink hover:text-paper"

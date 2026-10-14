@@ -1023,17 +1023,17 @@
       "bulkCsv": "Import û export bi CSV bi komî",
       "aiDescriptions": "Danasînên berheman bi AI bi 4 zimanan",
       "lowStock": "Hişyariyên stoka kêm",
-      "abandonedCart": "Bîranînên selika hiştî bi WhatsApp",
       "priority": "Piştgiriya pêşî",
       "exclusiveDesigns": "Dîzaynên taybet ên super-premium",
-      "aiDesigner": "Dîzaynerê malperê bi AI: firoşgeheke temam ji nivîsekê an ji Instagrama te",
-      "stores10": "10 firoşgeh",
-      "teamUnlimited": "Tîma bêsînor",
-      "igImport": "Anîna berheman ji Instagram bi AI",
+      "aiDesigner": "Dîzaynerê malperê bi AI: firoşgeheke temam ji nivîsekê",
       "whiteLabel": "White-label: li tu derê Bazarga tune",
-      "api": "Gihîştina API",
       "earlyAccess": "Gihîştina zû bo taybetmendiyên nû",
-      "accountManager": "Rêveberê hesabê taybet"
+      "stores5": "5 firoşgeh",
+      "team10": "10 endamên tîmê",
+      "priorityStudio": "Pêvajoya pêşî ya Product Studio",
+      "templatesPremium": "Pirtûkxaneya şablonên premium ên firoşgehê",
+      "seoAdvanced": "Amûrên SEO yên pêşketî",
+      "designRefresh": "Her meh nûkirina dîzayna tema firoşgeha te"
     },
     "rows": {
       "products": "Berhem",
@@ -1048,17 +1048,18 @@
       "domain": "Domaina taybet",
       "bulkCsv": "CSV bi komî",
       "aiDescriptions": "Danasînên AI (4 ziman)",
-      "abandonedCart": "Bîranînên selikê",
       "aiDesigner": "Dîzaynerê malperê bi AI",
-      "igImport": "Anîn ji Instagram",
-      "api": "API",
+      "lowStock": "Hişyariya kêmbûna stokê",
+      "priorityStudio": "Product Studio ya pêşî",
+      "seoAdvanced": "Amûrên SEO yên pêşketî",
+      "designRefresh": "Nûkirina dîzaynê ya mehane",
       "support": "Piştgirî"
     },
     "cells": {
       "unlimited": "Bêsînor",
       "starter": "2 destpêk",
       "all": "Hemû + Theme Studio",
-      "exclusive": "Hemû + taybet",
+      "exclusive": "Hemû + pirtûkxaneya premium",
       "d7": "7 roj",
       "d90": "90 roj + grafîk",
       "advanced": "Funnel, nexşeya germê, CSV",
@@ -1069,8 +1070,7 @@
       "whiteLabel": "Bê navê Bazarga",
       "community": "Navenda alîkariyê",
       "email": "E-name",
-      "priority": "Pêşî",
-      "manager": "Rêveberê hesabê"
+      "priority": "Pêşî"
     },
     "faq": {
       "q1": {
@@ -1091,7 +1091,7 @@
       },
       "q5": {
         "q": "Business û Max çi zêde dikin?",
-        "a": "Business ji bo marqeyên mezin e: berhemên bêsînor, 100 guhertinên Product Studio her meh, domaina taybet û tîm. Max dîzaynên taybet, dîzaynerê malperê bi AI, white-label û rêveberê hesabê taybet zêde dike."
+        "a": "Business ji bo marqeyên mezin e: berhemên bêsînor, 100 guhertinên Product Studio her meh, domaina taybet û tîm. Max dîzaynerê malperê bi AI, dîzayn û şablonên super-premium, pêvajoya pêşî ya Product Studio, SEO ya pêşketî, nûkirina dîzaynê ya mehane û white-label zêde dike."
       }
     },
     "firstMonthOnly": "meha yekem",

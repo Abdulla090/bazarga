@@ -69,16 +69,18 @@ describe("pricing render: $1 first-month treatment", () => {
 });
 
 describe("pricing v2: four cards, cumulative features, Soon tags", () => {
-  it("renders Free, Pro, Business, Max in order; Max is the ink premium card with a blue accent", () => {
+  it("renders Free, Pro, Business, Max in order; Max is the ink premium card with the animated gold accent (Max only)", () => {
     for (const l of LOCALES) {
       const html = render(l);
       const order = ["free", "pro", "business", "max"].map((p) => html.indexOf(`data-plan="${p}"`));
       expect(order.every((v, i) => v > -1 && (i === 0 || v > order[i - 1]!))).toBe(true);
       const max = html.slice(html.indexOf('data-plan="max"'));
-      expect(max).toContain("bg-[#0A0A0B]");
-      expect(max).toContain("#2563EB");
+      for (const c of ["max-card", "max-ring", "max-fill", "max-glow", "max-badge", "max-gold-text", "max-cta", "max-check"]) expect(max).toContain(c);
       expect(max).toContain("data-premium");
-      expect(html).not.toMatch(/orange|amber|yellow|#f59e0b|#ea580c/i);
+      // Gold is a Max-only exception: the other three cards stay blue + ink.
+      const rest = html.slice(0, html.indexOf('data-plan="max"'));
+      expect(rest).not.toMatch(/max-|orange|amber|yellow|gold/i);
+      expect(rest).toContain("#2563EB");
       expect(html).not.toMatch(/[٠-٩]/);
     }
   });
