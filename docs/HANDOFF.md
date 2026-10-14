@@ -32,6 +32,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- 2026-10-14 agentb/seller-journey-e2e: Playwright browser journey (signup→store→product→shopper COD order→seller sees order→/dashboard/upgrade). Gate OK.
+
 ### 2026-10-14 16:40 Agent B: launch sprint slice 1 — agentb/ops-hardening (merge 1992bff)
 - Dates moved by Abdulla: **Fri Oct 16 = full prototype working end to end live** (seller + shopper journey e2e), **Tue Oct 20 = production**.
 - `/api/health`: DB `select 1` with a 3 s timeout, `sha` (VERCEL_GIT_COMMIT_SHA → GIT_SHA → unknown), env, time, `Cache-Control: no-store`; 503 `degraded` on DB failure. Live: sha matches the merge.
