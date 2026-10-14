@@ -851,7 +851,7 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 @keyframes hook-sheen { 0% { background-position: 120% 0, 0 0; } 30%, 100% { background-position: -20% 0, 0 0; } }
 @keyframes hook-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-hook-text { animation: hook-sheen 7s cubic-bezier(0.45, 0, 0.25, 1) 1.4s infinite; }
+  .hero-hook-text { animation: hook-sheen 7s cubic-bezier(0.45, 0, 0.25, 1) 1.4s 2; }
   .hero-hook-line path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hook-draw 900ms cubic-bezier(0.65, 0, 0.35, 1) 900ms forwards; }
 }
 @media (forced-colors: active) {

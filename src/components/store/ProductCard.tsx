@@ -20,7 +20,7 @@ export function CardPrice({ p, locale, from }: { p: CatalogProduct; locale: Loca
   return (
     <p className="num flex flex-wrap items-baseline gap-x-2 text-[15px] md:text-base">
       <span className="font-medium">{p.priceMax > p.price ? fill(from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
-      {isOnSale(p) && <s className="text-[13px] text-faint md:text-sm">{formatIQD(p.compareAtPrice!, locale)}</s>}
+      {isOnSale(p) && <s className="text-[13px] text-muted md:text-sm">{formatIQD(p.compareAtPrice!, locale)}</s>}
     </p>
   );
 }
