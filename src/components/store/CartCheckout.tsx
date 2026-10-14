@@ -15,6 +15,7 @@ import { shopperCityCookie } from "@/lib/shopper-city";
 import { checkoutFallbackLink } from "@/lib/checkout-fallback";
 import { SAVED_DETAILS_KEY, parseDetails, serializeDetails } from "@/lib/saved-details";
 import { ViewPixel } from "./ViewPixel";
+import { newIdempotencyKey } from "@/lib/idempotency";
 
 type Zone = { key: string; name: string; fee: number; areas: { id: string; name: string; fee: number }[] };
 const OTHER = "__other";
@@ -44,6 +45,9 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
 
   // Fake-order protection: when the checkout form first appeared (bots submit instantly) — see src/lib/order-risk.ts.
   const openedAt = useRef(0);
+  // One key per checkout attempt: a retry of the same attempt (lost response, double submit) gets the same order back.
+  // A definitive "no" from the server rotates it, since nothing was created under it.
+  const idemKey = useRef("");
   const hasLines = lines.length > 0;
   useEffect(() => {
     if (hasLines && !openedAt.current) openedAt.current = Date.now();
@@ -94,6 +98,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
     try {
       localStorage.setItem(SAVED_DETAILS_KEY, serializeDetails({ name: String(fd.get("customerName") ?? ""), phone: String(fd.get("phone") ?? ""), landmark: String(fd.get("landmark") ?? "") }));
     } catch {}
+    if (!idemKey.current) idemKey.current = newIdempotencyKey();
     startPlacing(async () => {
       const r = await placeOrderAction(slug, {
         items: available.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
@@ -110,8 +115,10 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         locale,
         hp: String(fd.get("website") ?? ""),
         elapsedMs: openedAt.current ? Date.now() - openedAt.current : undefined,
+        idempotencyKey: idemKey.current,
       });
       if (!r.ok) {
+        idemKey.current = "";
         setError(r.error === "VALIDATION" ? undefined : r.error);
         setFieldErrors(r.fieldErrors ?? {});
         if (r.error === "OUT_OF_STOCK" || r.error === "out_of_stock" || r.error === "product_unavailable") {

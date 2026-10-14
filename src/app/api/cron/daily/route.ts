@@ -5,8 +5,9 @@ import { logger } from "@/server/logger";
 import { isCronAuthorized } from "@/lib/cron-auth";
 import { expireLapsedPlans } from "@/server/services/plan-expiry";
 import { runPaymentJobs } from "@/server/payments/reconcile";
+import { pruneRateLimits } from "@/server/auth/rate-limit";
 
-/** Daily housekeeping (Vercel Hobby cron): plan expiry + payment reconcile/abandoned-order expiry. Bearer CRON_SECRET; unset → 404. */
+/** Daily housekeeping (Vercel Hobby cron): plan expiry + payment reconcile/abandoned-order expiry + stale rate-limit counters. Bearer CRON_SECRET; unset → 404. */
 export async function GET(req: Request) {
   await connection();
   const e = env();
@@ -17,6 +18,8 @@ export async function GET(req: Request) {
   try {
     const plans = await expireLapsedPlans(db());
     const payments = await runPaymentJobs(db(), { ttlMinutes: e.PAYMENT_ORDER_TTL_MINUTES });
+    // Counters older than a day can't affect any window (longest is 1 h); keeps rate_limits small.
+    await pruneRateLimits(db());
     return NextResponse.json({ ok: true, plans, payments }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     logger.error("cron.daily_failed", { err });

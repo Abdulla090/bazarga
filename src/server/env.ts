@@ -36,9 +36,11 @@ const schema = z.object({
   MAX_UPLOAD_MB: z.coerce.number().positive().default(5),
 
   // Email
-  EMAIL_DRIVER: z.enum(["console", "resend"]).default("console"),
+  /** console (default, logs the mail) | resend | brevo (both have free tiers). A provider without its key falls back to console. */
+  EMAIL_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["console", "resend", "brevo"]).default("console")),
   EMAIL_FROM: z.string().default("Bazarga <hello@mymarket.app>"),
   RESEND_API_KEY: z.string().optional(),
+  BREVO_API_KEY: z.string().optional(),
 
   // Notifications (comma separated: console,telegram,whatsapp,email)
   NOTIFY_CHANNELS: z.string().default("console"),

@@ -50,6 +50,7 @@ async function callFormAction(name, fields, { cookie, path = "/" } = {}) {
 
 const health = await (await fetch(`${BASE}/api/health`)).json();
 ok(health.status === "ok", "health check ok");
+ok(typeof health.sha === "string" && health.sha.length > 0 && health.db === "ok", "health reports db ok + build sha");
 
 const landing = await fetch(`${BASE}/`);
 const landingHtml = await landing.text();
