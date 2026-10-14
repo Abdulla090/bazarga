@@ -1,15 +1,23 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "./Logo";
+import { currentLocale } from "@/server/locale";
+import { LEGAL_DOCS, LEGAL_PATH, LEGAL_UI } from "@/lib/legal-ui";
 
 export async function SiteFooter() {
   const t = await getTranslations("landing");
   const p = await getTranslations("pricing");
+  const ui = LEGAL_UI[await currentLocale()];
   return (
-    <footer className="border-t border-line py-8">
-      <div className="container-page flex flex-wrap items-center justify-between gap-4 text-sm text-ink-70">
+    <footer className="border-t border-line py-8" data-testid="site-footer">
+      <div className="container-page flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-sm text-ink-70">
         <Logo />
-        <Link href="/pricing" className="min-h-11 content-center hover:text-ink">{p("nav")}</Link>
+        <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5">
+          <Link href="/pricing" className="min-h-11 content-center hover:text-ink">{p("nav")}</Link>
+          {LEGAL_DOCS.map((d) => (
+            <Link key={d} href={LEGAL_PATH[d]} className="min-h-11 content-center hover:text-ink">{ui.nav[d]}</Link>
+          ))}
+        </nav>
         <p>{t("madeIn")} · © {new Date().getFullYear()} Bazarga</p>
       </div>
     </footer>

@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { signUpAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
 
-export function SignupForm() {
+export function SignupForm({ legal }: { legal?: React.ReactNode }) {
   const t = useTranslations("auth");
   const locale = useLocale();
   const [state, action, pending] = useActionState(signUpAction, {});
@@ -21,6 +21,7 @@ export function SignupForm() {
       <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
       <Field label={t("password")} name="password" type="password" autoComplete="new-password" minLength={8} required ltr hint={t("passwordHint")} error={state.fieldErrors?.password} />
       <button className="btn-gold w-full" disabled={pending}>{t("signup")}</button>
+      {legal}
       <p className="text-sm">{t("haveAccount")} <Link href="/login" className="inline-flex min-h-11 items-center font-bold underline">{t("login")}</Link></p>
     </form>
   );
