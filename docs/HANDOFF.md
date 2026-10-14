@@ -32,6 +32,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-14 21:40 · Agent B · Lighthouse pass (agentb/perf-lighthouse)
+- Local prod build, Lighthouse mobile emulation (`/tmp/lh`, `npx lighthouse` with chromium; the PageSpeed API needs a key): landing 90 (was 73), pricing 92 (was 89), store home 95 (was 86). a11y 100/100/96, SEO 100, best-practices 100.
+- Changes (already on main via f362e08): hero h1 no longer fades in (it is the LCP element), hook sheen runs twice not forever, pricing plan names are h2 (heading order), strike-through compare-at price uses text-muted (contrast).
+- Open: product page not measured; store sign-off watermark still flagged for contrast by Lighthouse (aria-hidden, decorative). Re-run against the live domain on launch day.
+
 - 2026-10-14 21:05 Agent B: **pricing v2** (`agentb/pricing-v2`, merge b9a17fb, Vercel READY dpl_3h69AAJ8rgzXG3h4ZCvM5d3zWgsr). Abdulla's new plans: Free $0 · 10 products; Pro $15/mo ($1 first month) · 100 products · 10 Product Studio edits/mo; Business $50/mo · "Unlimited" (hidden cap 1000) · 100 edits, "Most popular"; **Max** $100/mo (Hark's pick, `MAX_MONTHLY_USD` in `src/lib/plans.ts`) · unlimited (hidden cap 10000) · 100 edits, ink premium card. Yearly = 2 months free ($150/$500/$1000). Never show 1000/10000 (tests enforce). Features cumulative, unbuilt ones carry a "Soon" tag (`soon: true`). Server: `PRODUCT_CAP` + `getProductUsage`; Product Studio quota `src/server/services/studio-quota.ts` (atomic conditional upsert, Baghdad month) on table `product_studio_usage` (**migration 0016**; next free: **0017**). Upgrades + /admin accept `max`; online gateway still pro|business only (Max manual; see docs/PAYMENTS.md). Footer "Made with Bazarga" now Free-only. Dashboard: plan chip in header, "5 of 10 products" meter on Products. UI: 4 cards + monthly/yearly toggle, 17-row comparison table (sticky labels on phones), 4 locales in sync. Docs: docs/PRICING.md. Gate GATE_OK (vitest 617, mobile 25/25, smoke all passed). Shots: daily-shots/2026-10-14/pricingv2-*.
 - 2026-10-14 agentb/seller-journey-e2e: Playwright browser journey (signup→store→product→shopper COD order→seller sees order→/dashboard/upgrade). Gate OK.
 
