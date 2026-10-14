@@ -1,3 +1,4 @@
+import { IDEMPOTENCY_KEY_RE } from "./idempotency";
 import { z } from "zod";
 import { PRODUCT_BADGES } from "./merch";
 import { LOCALES } from "./i18n";
@@ -280,6 +281,8 @@ export const checkoutSchema = z.object({
   hp: z.string().max(200).nullish().catch("x"),
   /** ms the checkout form was open before submit; garbage is ignored rather than failing the order. */
   elapsedMs: z.number().int().nonnegative().max(2_147_483_647).optional().catch(undefined),
+  /** Client-minted checkout attempt key (src/lib/idempotency.ts); a malformed one is dropped, never fails the order. */
+  idempotencyKey: z.string().regex(IDEMPOTENCY_KEY_RE).optional().catch(undefined),
 }).superRefine((v, ctx) => {
   if (!v.landmark && v.address.length < 3) ctx.addIssue({ code: "custom", path: ["landmark"], message: "address_required" });
 });

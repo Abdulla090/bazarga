@@ -338,7 +338,7 @@ export type PlaceOrderOptions = {
   now?: Date;
 };
 
-type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode" | "hp" | "elapsedMs";
+type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode" | "hp" | "elapsedMs" | "idempotencyKey";
 /** Parsed checkout input; area, landmark and discount code are optional for callers that don't collect them. */
 export type PlaceOrderInput = Omit<CheckoutInput, OptionalCheckoutFields> & Partial<Pick<CheckoutInput, OptionalCheckoutFields>>;
 
@@ -366,6 +366,23 @@ export async function placeOrder(
   const items = mergeCart(input.items);
 
   return database.transaction(async (tx) => {
+    // ---- idempotency (migration 0015): the same checkout attempt sent twice returns the order it already created,
+    // before anything else is re-checked (a retry must not fail just because the last unit was sold by the first try).
+    // Serialised on the key, so two in-flight copies can't both miss the lookup. Keys are per store; a key that was
+    // used for another phone is never handed back (it would leak that order) and is simply not stored again.
+    let idempotencyKey = input.idempotencyKey ?? null;
+    if (idempotencyKey) {
+      await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`order-idem:${storeId}:${idempotencyKey}`}))`);
+      const existing = await tx.query.orders.findFirst({
+        where: and(eq(orders.storeId, storeId), eq(orders.idempotencyKey, idempotencyKey)),
+      });
+      if (existing && existing.customerPhone === input.phone) {
+        const existingItems = await tx.query.orderItems.findMany({ where: eq(orderItems.orderId, existing.id) });
+        return { ...existing, items: existingItems, replayed: true };
+      }
+      if (existing) idempotencyKey = null;
+    }
+
     // Payment method must be enabled by the seller (and configured, for online providers).
     const pm = await tx.query.storePaymentMethods.findFirst({
       where: and(eq(storePaymentMethods.storeId, storeId), eq(storePaymentMethods.method, input.paymentMethod)),
@@ -546,6 +563,7 @@ export async function placeOrder(
         storeId,
         number: seq.n,
         publicId: randomBytes(12).toString("base64url"),
+        idempotencyKey,
         customerId: customer?.id ?? null,
         customerName: input.customerName,
         customerPhone: input.phone,

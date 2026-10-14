@@ -146,6 +146,8 @@ export const stores = pgTable(
     uniqueIndex("stores_slug_uq").on(t.slug),
     uniqueIndex("stores_custom_domain_uq").on(t.customDomain),
     index("stores_owner_idx").on(t.ownerId),
+    // Daily plan-expiry cron: paid stores whose period ended.
+    index("stores_paid_period_end_idx").on(t.planPeriodEnd).where(sql`${t.plan} <> 'free'`),
     check("stores_accent_color_hex", sql`${t.accentColor} IS NULL OR ${t.accentColor} ~ '^#[0-9A-Fa-f]{6}$'`),
     check("stores_free_delivery_pos", sql`${t.freeDeliveryThreshold} IS NULL OR ${t.freeDeliveryThreshold} > 0`),
   ],
@@ -193,6 +195,9 @@ export const products = pgTable(
   },
   (t) => [
     index("products_store_idx").on(t.storeId, t.isActive),
+    // Catalog + dashboard list: ORDER BY sort, created_at DESC within a store; category deletes null category_id.
+    index("products_store_sort_idx").on(t.storeId, t.sort, t.createdAt),
+    index("products_category_idx").on(t.categoryId),
     check("products_price_nonneg", sql`${t.price} >= 0`),
     check("products_stock_nonneg", sql`${t.stock} IS NULL OR ${t.stock} >= 0`),
     check("products_badge_known", sql`${t.badge} IS NULL OR ${t.badge} IN ('new', 'featured')`),
@@ -440,7 +445,11 @@ export const customers = pgTable(
     lastOrderAt: timestamp("last_order_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("customers_store_phone_uq").on(t.storeId, t.phone)],
+  (t) => [
+    uniqueIndex("customers_store_phone_uq").on(t.storeId, t.phone),
+    // Customers page: newest buyers first, per store.
+    index("customers_store_last_order_idx").on(t.storeId, t.lastOrderAt),
+  ],
 );
 
 export const orders = pgTable(
@@ -492,6 +501,8 @@ export const orders = pgTable(
     cartHash: text("cart_hash"),
     /** Set when an unpaid online order was cancelled by the abandoned-order expiry job (migration 0008). */
     expiredAt: timestamp("expired_at", { withTimezone: true }),
+    /** Client-minted checkout attempt key (src/lib/idempotency.ts); unique per store when set (migration 0015). */
+    idempotencyKey: text("idempotency_key"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -500,6 +511,9 @@ export const orders = pgTable(
     index("orders_store_phone_created_idx").on(t.storeId, t.customerPhone, t.createdAt),
     index("orders_store_created_idx").on(t.storeId, t.createdAt),
     index("orders_store_status_idx").on(t.storeId, t.status),
+    uniqueIndex("orders_store_idempotency_uq").on(t.storeId, t.idempotencyKey).where(sql`${t.idempotencyKey} IS NOT NULL`),
+    // Abandoned online-order expiry (src/server/payments/reconcile.ts) scans only these rows.
+    index("orders_unpaid_online_created_idx").on(t.createdAt).where(sql`${t.status} = 'pending' AND ${t.paymentMethod} <> 'cod' AND ${t.expiredAt} IS NULL`),
     check("orders_discount_nonneg", sql`${t.discountAmount} >= 0 AND ${t.discountAmount} <= ${t.subtotal}`),
   ],
 );
@@ -557,7 +571,12 @@ export const orderItems = pgTable(
     quantity: integer("quantity").notNull(),
     lineTotal: integer("line_total").notNull(),
   },
-  (t) => [index("order_items_order_idx").on(t.orderId), check("order_items_qty_pos", sql`${t.quantity} > 0`)],
+  (t) => [
+    index("order_items_order_idx").on(t.orderId),
+    // Best sellers / product deletes look order lines up by product.
+    index("order_items_product_idx").on(t.productId),
+    check("order_items_qty_pos", sql`${t.quantity} > 0`),
+  ],
 );
 
 /**

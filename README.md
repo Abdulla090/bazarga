@@ -69,7 +69,7 @@ See `.env.example` for a commented template.
 |---|---|---|
 | Core | `ROOT_DOMAIN` (storefront subdomains + allowed server-action origins), `SESSION_COOKIE_NAME`, `SESSION_TTL_DAYS`, `LOG_LEVEL`, `DATABASE_POOL_MAX` | `mymarket.app`, `mm_session`, `30`, `info`, `10` |
 | Storage | `STORAGE_DRIVER` (`local`\|`s3`), `UPLOAD_DIR`, `MAX_UPLOAD_MB`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL` | `local`, `./uploads`, `5` |
-| Email | `EMAIL_DRIVER` (`console`\|`resend`), `EMAIL_FROM`, `RESEND_API_KEY` | `console` |
+| Email | `EMAIL_DRIVER` (`console`\|`resend`\|`brevo`), `EMAIL_FROM`, `RESEND_API_KEY` / `BREVO_API_KEY` (missing key → console) | `console` |
 | Notifications | `NOTIFY_CHANNELS` (`console,telegram,whatsapp,email`), `TELEGRAM_BOT_TOKEN`, `TELEGRAM_DEFAULT_CHAT_ID`, `WHATSAPP_CLOUD_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_API_VERSION` | `console` |
 | Web push | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (`mailto:` or `https:`) — generate with `npx web-push generate-vapid-keys`; never commit the private key. Missing any → the new-order alert toggle in Dashboard → Settings is hidden and nothing is sent | off |
 | OTP | `OTP_DRIVER` (`console` only in v1) | `console` |
