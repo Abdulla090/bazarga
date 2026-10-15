@@ -15,11 +15,11 @@ function walk(dir: string, out: string[] = []): string[] {
 describe("custom button classes", () => {
   it("only uses btn-* utilities that globals.css defines", () => {
     const css = readFileSync("src/app/globals.css", "utf8");
-    const defined = new Set([...css.matchAll(/@utility (btn(?:-[a-z0-9]+)?)\b/g)].map((m) => m[1]));
+    const defined = new Set([...css.matchAll(/@utility (btn(?:-[a-z0-9]+)?)\b/g)].map((m) => m[1] as string));
     const used = new Map<string, string>();
     for (const file of walk("src")) {
       const src = readFileSync(file, "utf8");
-      for (const m of src.matchAll(/(?<![\w-])(btn-[a-z][a-z0-9]*)(?![\w-])/g)) if (!used.has(m[1])) used.set(m[1], file);
+      for (const m of src.matchAll(/(?<![\w-])(btn-[a-z][a-z0-9]*)(?![\w-])/g)) { const c = m[1] as string; if (!used.has(c)) used.set(c, file); }
     }
     const undefinedUsed = [...used].filter(([c]) => !defined.has(c) && !css.includes(`.${c}`)).map(([c, f]) => `${c} (${f})`);
     expect(undefinedUsed).toEqual([]);
