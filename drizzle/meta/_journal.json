@@ -120,6 +120,13 @@
       "when": 1791493000000,
       "tag": "0016_product_studio_usage",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791496000000,
+      "tag": "0017_email_verification",
+      "breakpoints": true
     }
   ]
 }

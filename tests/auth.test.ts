@@ -4,11 +4,16 @@ import {
   authenticate,
   createSession,
   deleteSession,
+  isEmailVerified,
   requestPasswordReset,
   resetPassword,
+  sendVerificationEmail,
   signUp,
   validateSession,
+  verifyEmail,
 } from "@/server/auth/service";
+import { emailVerificationTokens, users } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { hitRateLimit } from "@/server/auth/rate-limit";
 import { ConsoleEmailProvider, setEmailProvider } from "@/server/email";
@@ -82,5 +87,60 @@ describe("rate limiting", () => {
     for (let i = 0; i < 6; i++) results.push((await hitRateLimit(database, "login:1.2.3.4", 5, 60)).allowed);
     expect(results).toEqual([true, true, true, true, true, false]);
     expect((await hitRateLimit(database, "login:5.6.7.8", 5, 60)).allowed).toBe(true);
+  });
+});
+
+const tokenFrom = (text: string) => decodeURIComponent(/token=([^\s]+)/.exec(text)![1]!);
+
+describe("email verification", () => {
+  it("sends a localized single-use link and marks the address verified", async () => {
+    const u = await signUp(database, { name: "Di", email: "di@example.com", password: "password123", locale: "ku" });
+    expect(await isEmailVerified(database, u.id)).toBe(false);
+    expect(await sendVerificationEmail(database, u.id, "http://localhost:3000")).toBe(true);
+    const msg = mail.sent.at(-1)!;
+    expect(msg.to).toBe("di@example.com");
+    expect(msg.subject).toMatch(/[\u0600-\u06FF]/); // Sorani, not the English fallback
+    expect(msg.text).toContain("/verify-email?token=");
+    const token = tokenFrom(msg.text);
+    const stored = await database.query.emailVerificationTokens.findMany();
+    expect(stored.some((r) => r.tokenHash === token)).toBe(false); // only the hash is stored
+    await verifyEmail(database, token);
+    expect(await isEmailVerified(database, u.id)).toBe(true);
+    await expect(verifyEmail(database, token)).rejects.toMatchObject({ code: "VALIDATION" });
+    expect(await sendVerificationEmail(database, u.id, "http://x")).toBe(false); // already verified
+  });
+
+  it("rejects unknown and expired tokens, and a newer link retires the older one", async () => {
+    const u = await signUp(database, { name: "Ed", email: "ed@example.com", password: "password123", locale: "en" });
+    await expect(verifyEmail(database, "x".repeat(40))).rejects.toMatchObject({ code: "VALIDATION" });
+    await sendVerificationEmail(database, u.id, "http://localhost:3000");
+    const first = tokenFrom(mail.sent.at(-1)!.text);
+    await sendVerificationEmail(database, u.id, "http://localhost:3000");
+    const second = tokenFrom(mail.sent.at(-1)!.text);
+    await expect(verifyEmail(database, first)).rejects.toMatchObject({ code: "VALIDATION" });
+    await database.update(emailVerificationTokens).set({ expiresAt: new Date(Date.now() - 1000) }).where(eq(emailVerificationTokens.userId, u.id));
+    await expect(verifyEmail(database, second)).rejects.toMatchObject({ code: "VALIDATION" });
+    expect(await isEmailVerified(database, u.id)).toBe(false);
+  });
+
+  it("does not verify when the account email changed after the link was issued", async () => {
+    const u = await signUp(database, { name: "Fy", email: "fy@example.com", password: "password123", locale: "en" });
+    await sendVerificationEmail(database, u.id, "http://localhost:3000");
+    const token = tokenFrom(mail.sent.at(-1)!.text);
+    await database.update(users).set({ email: "fy2@example.com" }).where(eq(users.id, u.id));
+    await verifyEmail(database, token);
+    expect(await isEmailVerified(database, u.id)).toBe(false);
+  });
+
+  it("a password reset also confirms the address, and a new reset request retires the old link", async () => {
+    const u = await signUp(database, { name: "Gi", email: "gi@example.com", password: "password123", locale: "kmr" });
+    await requestPasswordReset(database, "gi@example.com", "http://localhost:3000");
+    const old = tokenFrom(mail.sent.at(-1)!.text);
+    await requestPasswordReset(database, "gi@example.com", "http://localhost:3000");
+    const fresh = tokenFrom(mail.sent.at(-1)!.text);
+    expect(mail.sent.at(-1)!.subject).toContain("Şîfreya"); // Kurmanji copy
+    await expect(resetPassword(database, old, "brandnewpass1")).rejects.toMatchObject({ code: "VALIDATION" });
+    await resetPassword(database, fresh, "brandnewpass1");
+    expect(await isEmailVerified(database, u.id)).toBe(true);
   });
 });

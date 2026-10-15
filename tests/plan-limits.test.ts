@@ -131,6 +131,6 @@ describe("migration 0016 (product studio usage)", () => {
     const sqlText = readFileSync("drizzle/0016_product_studio_usage.sql", "utf8");
     expect(sqlText).not.toMatch(/\bDROP\b|\bRENAME\b|ALTER COLUMN|\bTRUNCATE\b|\bDELETE FROM\b|^UPDATE\b/im);
     const j = JSON.parse(readFileSync("drizzle/meta/_journal.json", "utf8")) as { entries: { idx: number; tag: string }[] };
-    expect(j.entries.at(-1)).toMatchObject({ idx: 16, tag: "0016_product_studio_usage" });
+    expect(j.entries.find((e) => e.idx === 16)).toMatchObject({ tag: "0016_product_studio_usage" });
   });
 });

@@ -1,11 +1,12 @@
-import { and, eq, gt, isNull, lt } from "drizzle-orm";
+import { and, eq, gt, isNull, lt, sql } from "drizzle-orm";
 import type { Db } from "../db";
-import { passwordResetTokens, sessions, users } from "../db/schema";
+import { emailVerificationTokens, passwordResetTokens, sessions, users } from "../db/schema";
 import { AppError } from "../errors";
 import { dummyHash, hashPassword, verifyPassword } from "./password";
 import { newToken, sha256 } from "./tokens";
 import { emailProvider } from "../email";
 import { logger } from "../logger";
+import { resetMail, verifyMail } from "./mail-copy";
 import type { Locale } from "@/lib/i18n";
 
 export type SessionUser = { id: string; email: string; name: string; locale: Locale };
@@ -84,26 +85,88 @@ export async function deleteExpiredSessions(database: Db) {
   await database.delete(sessions).where(lt(sessions.expiresAt, new Date()));
 }
 
-/** Always resolves (never reveals whether the email exists). */
+/** Always resolves (never reveals whether the email exists). A new request retires any link still outstanding. */
 export async function requestPasswordReset(database: Db, email: string, appUrl: string): Promise<void> {
   const u = await database.query.users.findFirst({ where: eq(users.email, email) });
   if (!u) return;
   const token = newToken();
-  await database.insert(passwordResetTokens).values({
-    tokenHash: sha256(token),
-    userId: u.id,
-    expiresAt: new Date(Date.now() + 60 * 60_000),
+  await database.transaction(async (tx) => {
+    await tx
+      .update(passwordResetTokens)
+      .set({ usedAt: new Date() })
+      .where(and(eq(passwordResetTokens.userId, u.id), isNull(passwordResetTokens.usedAt)));
+    await tx.insert(passwordResetTokens).values({
+      tokenHash: sha256(token),
+      userId: u.id,
+      expiresAt: new Date(Date.now() + 60 * 60_000),
+    });
   });
   const link = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
   try {
-    await emailProvider().send({
-      to: u.email,
-      subject: "Bazarga — reset your password / وشەی نهێنی نوێ",
-      text: `Reset your Bazarga password (valid 1 hour):\n${link}\n\nIf you didn't ask for this, ignore this email.`,
-    });
+    await emailProvider().send({ to: u.email, ...resetMail(u.locale, link) });
   } catch (err) {
     logger.error("auth.reset_email_failed", { err });
   }
+}
+
+const VERIFY_TTL_MS = 24 * 3600_000;
+
+export async function isEmailVerified(database: Db, userId: string): Promise<boolean> {
+  const u = await database.query.users.findFirst({ where: eq(users.id, userId), columns: { emailVerifiedAt: true } });
+  return !!u?.emailVerifiedAt;
+}
+
+/**
+ * Emails a one-time confirmation link to the account's current address. No-op when already verified.
+ * Never throws on a provider failure (sign-up must not break because mail is down); returns whether a mail went out.
+ */
+export async function sendVerificationEmail(database: Db, userId: string, appUrl: string): Promise<boolean> {
+  const u = await database.query.users.findFirst({ where: eq(users.id, userId) });
+  if (!u || u.emailVerifiedAt) return false;
+  const token = newToken();
+  await database.transaction(async (tx) => {
+    await tx
+      .update(emailVerificationTokens)
+      .set({ usedAt: new Date() })
+      .where(and(eq(emailVerificationTokens.userId, u.id), isNull(emailVerificationTokens.usedAt)));
+    await tx.insert(emailVerificationTokens).values({
+      tokenHash: sha256(token),
+      userId: u.id,
+      email: u.email,
+      expiresAt: new Date(Date.now() + VERIFY_TTL_MS),
+    });
+  });
+  const link = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
+  try {
+    await emailProvider().send({ to: u.email, ...verifyMail(u.locale, link) });
+    return true;
+  } catch (err) {
+    logger.error("auth.verify_email_failed", { err });
+    return false;
+  }
+}
+
+/** Single-use: marks the address verified only if it is still the one the link was issued for. */
+export async function verifyEmail(database: Db, token: string): Promise<void> {
+  const tokenHash = sha256(token);
+  await database.transaction(async (tx) => {
+    const [t] = await tx
+      .update(emailVerificationTokens)
+      .set({ usedAt: new Date() })
+      .where(
+        and(
+          eq(emailVerificationTokens.tokenHash, tokenHash),
+          isNull(emailVerificationTokens.usedAt),
+          gt(emailVerificationTokens.expiresAt, new Date()),
+        ),
+      )
+      .returning();
+    if (!t) throw new AppError("VALIDATION", "invalid_or_expired_token");
+    await tx
+      .update(users)
+      .set({ emailVerifiedAt: new Date(), updatedAt: new Date() })
+      .where(and(eq(users.id, t.userId), eq(users.email, t.email)));
+  });
 }
 
 export async function resetPassword(database: Db, token: string, newPassword: string): Promise<void> {
@@ -122,7 +185,11 @@ export async function resetPassword(database: Db, token: string, newPassword: st
       )
       .returning();
     if (!t) throw new AppError("VALIDATION", "invalid_or_expired_token");
-    await tx.update(users).set({ passwordHash, updatedAt: new Date() }).where(eq(users.id, t.userId));
+    // Receiving the reset link proves the address is theirs.
+    await tx
+      .update(users)
+      .set({ passwordHash, emailVerifiedAt: sql`coalesce(${users.emailVerifiedAt}, now())`, updatedAt: new Date() })
+      .where(eq(users.id, t.userId));
     // Sign out everywhere after a reset.
     await tx.delete(sessions).where(eq(sessions.userId, t.userId));
   });

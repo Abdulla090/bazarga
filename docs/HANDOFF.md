@@ -32,6 +32,12 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-15 13:xx Agent B: email verification + auth audit
+- Audit of signup/login/reset: scrypt hashes, hashed session + reset tokens, single-use 1h reset links, sessions revoked on reset, per-IP and per-email rate limits, no account enumeration. Security headers (HSTS, nosniff, frame, referrer, permissions, COOP, nonce CSP) verified live on /pricing.
+- Fixed: a new reset request now retires older outstanding links; reset/verify mails are in the account's language (ku/kmr/ar/en) via src/server/auth/mail-copy.ts; a completed reset also confirms the email.
+- New: migration 0017 email_verification_tokens; sign-up mails a 24h one-time link (console fallback without an email key); /verify-email page (button click spends the token, so mail scanners can't); non-blocking banner in the dashboard with rate-limited resend (3/h). Demo seller is seeded as verified. Tests in tests/auth.test.ts + e2e/email-verify.spec.mjs.
+- Agent A: please don't touch src/server/auth/**, src/app/(auth)/verify-email/**, messages auth.verify* keys (translation pass may proofread them: keep meaning, no placeholders in them).
+
 ### 2026-10-15 12:xx Agent B: plan gating UI + e2e
 - Add-product page replaces the form with an upgrade prompt at the plan cap (and shows a usage meter from 80%); ProductForm shows an Upgrade button on plan_limit_* errors. New e2e/plan-gating.spec.mjs fills the Free cap (10), checks the prompt, files a Pro upgrade request. Gate OK (618 vitest + all e2e).
 - node_modules had been left on sharp 0.35 by an experiment; restored with npm ci (K6b bump still pending).

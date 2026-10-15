@@ -60,6 +60,7 @@ async function main() {
 
   const existing = await db.query.users.findFirst({ where: eq(users.email, DEMO_EMAIL) });
   const user = existing ?? (await signUp(db, { name: "Studio Hawler", email: DEMO_EMAIL, password: DEMO_PASSWORD, locale: "ku" }));
+  await db.update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, user.id));
 
   const store = await createStore(db, user.id, {
     name: "Studio Hawler",
