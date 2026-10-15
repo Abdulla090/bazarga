@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import sharp from "sharp";
+import sharp, { type OutputInfo } from "sharp";
 import type { ImageRendition } from "../db/schema";
 import { AppError } from "../errors";
 import { validateImage } from "./image";
@@ -59,7 +59,7 @@ export async function processImage(input: Uint8Array, opts: { maxMb: number }): 
   validateImage(input, opts.maxMb);
   const decode = () => sharp(input, { limitInputPixels: MAX_INPUT_PIXELS, failOn: "error", pages: 1 });
 
-  let oriented: { data: Buffer; info: sharp.OutputInfo };
+  let oriented: { data: Buffer; info: OutputInfo };
   try {
     // rotate() with no args = apply EXIF Orientation. Output to a lossless intermediate in sRGB; sharp does
     // not copy metadata unless withMetadata()/keepMetadata() is called, so EXIF/GPS/XMP are gone from here on.

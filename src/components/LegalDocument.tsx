@@ -13,7 +13,7 @@ export function LegalDocument({ doc, locale }: { doc: LegalDoc; locale: Locale }
     <>
       <SiteHeader />
       <main id="main" className="container-page max-w-3xl pb-20 pt-10 sm:pt-16" data-testid={`legal-${doc}`}>
-        <nav aria-label={ui.contents} className="mb-10 flex flex-wrap gap-2">
+        <nav aria-label={LEGAL_DOCS.map((d) => ui.nav[d]).join(" · ")} className="mb-10 flex flex-wrap gap-2">
           {LEGAL_DOCS.map((d) => (
             <Link
               key={d}

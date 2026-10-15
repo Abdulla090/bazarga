@@ -26,7 +26,7 @@ export async function CompareTable() {
       value(c, max)
     );
   return (
-    <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" data-compare>
+    <div className="-mx-4 overflow-x-auto px-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] sm:mx-0 sm:px-0" data-compare role="region" aria-label={t("compare")} tabIndex={0}>
       <table className="w-full min-w-[42rem] border-collapse text-sm">
         <caption className="sr-only">{t("compare")}</caption>
         <thead>

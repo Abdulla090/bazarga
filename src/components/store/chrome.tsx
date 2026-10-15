@@ -206,7 +206,7 @@ export async function StoreFooter({
     <>
       {/* Sign-off: the store name set very large and faint as a closing statement (Layout v3 §8). */}
       <div className="store-page section pb-6 sm:pb-8" aria-hidden data-testid="sign-off">
-        <p className="t-hero select-none break-words text-st-fg/[0.08]">{store.name}</p>
+        <p aria-hidden="true" className="t-hero select-none break-words text-st-fg/[0.08]">{store.name}</p>
       </div>
       <footer className="store-footer border-t border-st-border text-sm" data-footer="classic">
         <div className="store-page grid-12 gap-y-10 py-12 sm:py-16">

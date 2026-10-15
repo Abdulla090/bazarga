@@ -1,6 +1,6 @@
 import "server-only";
 import path from "node:path";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { escapeMarkup, qrMatrix, qrPath, STORY_SIZE } from "@/lib/share-kit";
 import type { ThemeTokens } from "@/lib/theme";
 
@@ -132,7 +132,7 @@ export async function renderStoryPng(input: StoryInput): Promise<Buffer> {
     textBlock(input.text.poweredBy, { weight: "regular", px: 30, color: t.onHero, width: 900, opacity: 0.6 }),
   ]);
 
-  const layers: sharp.OverlayOptions[] = [];
+  const layers: OverlayOptions[] = [];
   let y = 200;
   layers.push({ input: logo, left: center(LOGO), top: y });
   y += LOGO + 56;
