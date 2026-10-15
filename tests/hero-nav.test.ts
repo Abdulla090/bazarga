@@ -49,6 +49,29 @@ describe("marketing header: one clean row", () => {
     expect(html).not.toContain('role="group" aria-label="Language"');
   });
 
+  it("phones (<768px): logo + hamburger only; the Start free pill is desktop-only and lives in the sheet on mobile", () => {
+    for (const l of LOCALES) {
+      const html = header(l);
+      const cta = html.match(/<a[^>]*data-nav-cta[^>]*>/)?.[0] ?? html.match(/<a[^>]*class="([^"]*)"[^>]*data-nav-cta/)?.[0] ?? "";
+      const tag = html.slice(html.lastIndexOf("<a", html.indexOf("data-nav-cta")), html.indexOf(">", html.indexOf("data-nav-cta")) + 1);
+      expect(tag || cta).toMatch(/class="hidden [^"]*md:inline-flex/);
+      expect(html).toContain("data-nav-menu-button");
+      // the language control in the bar is desktop-only too
+      expect(html).toMatch(/<div class="hidden md:block"><div data-locale-menu/);
+    }
+    expect(readFileSync("src/components/marketing/MobileMenu.tsx", "utf8")).toContain("data-menu-cta");
+  });
+
+  it("language control is one compact dropdown: globe + current language name, menu roles, no pills", () => {
+    const ku = header("ku");
+    expect(ku).toContain('aria-haspopup="menu"');
+    expect(ku).toContain('aria-expanded="false"');
+    expect(ku).toContain("سۆرانی");
+    expect(ku).toContain("data-lang-trigger");
+    expect(ku).not.toContain("aria-pressed");
+    expect(header("en")).toMatch(/data-lang-trigger[\s\S]*English/);
+  });
+
   it("signed in: no Log in, the CTA goes to the dashboard", () => {
     const html = header("en", true);
     expect(html).not.toContain("data-nav-login");
@@ -66,6 +89,17 @@ describe("marketing header: one clean row", () => {
       expect(src).toContain("<SiteHeader />");
       expect(src).not.toContain("AnnouncementBar");
     }
+  });
+});
+
+describe("hero floating cards: desktop only", () => {
+  it("both floating cards are hidden below md (phone mockup stays)", async () => {
+    const html = renderToStaticMarkup(await HeroVisual({ locale: "ku" }));
+    const floats = [...html.matchAll(/<div data-hv-float="[^"]*" class="([^"]*)"/g)].map((m) => m[1]);
+    expect(floats).toHaveLength(2);
+    for (const c of floats) expect(c).toMatch(/(^| )hidden( |$)/), expect(c).toContain("md:block");
+    expect(html).toContain("hv-par-phone");
+    expect(html).not.toMatch(/class="hv-par-phone[^"]*hidden/);
   });
 });
 

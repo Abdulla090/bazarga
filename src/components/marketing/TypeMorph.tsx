@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { LanguageDropdown } from "@/components/LanguageDropdown";
 
 export type MorphPhrase = { lang: string; dir: "rtl" | "ltr"; label: string; text: string };
 
@@ -13,16 +14,18 @@ function graphemes(s: string): string[] {
  * Typewriter morph for the "Kurdish-first" bento tile: the same phrase cycles Sorani → Kurmanji → Arabic → English,
  * each line in its own lang/dir so RTL shaping and alignment are correct. Server/first paint shows the first phrase in
  * full (no layout jump, no-JS safe); it starts erasing only after a hold and only while on screen. Under
- * prefers-reduced-motion it never animates. Decorative: the tile's heading + body carry the meaning (aria-hidden).
+ * prefers-reduced-motion it never animates. The language picker is the shared compact dropdown (direction-aware, tidy at
+ * 360px): it follows the cycle, and picking a language shows that phrase in full and stops the auto-cycle.
  */
-export function TypeMorph({ phrases }: { phrases: MorphPhrase[] }) {
+export function TypeMorph({ phrases, label = "Language" }: { phrases: MorphPhrase[]; label?: string }) {
   const [idx, setIdx] = useState(0);
+  const [picked, setPicked] = useState(false);
   const [count, setCount] = useState(() => graphemes(phrases[0]?.text ?? "").length);
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = root.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!el || picked || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let visible = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let i = 0;
@@ -74,21 +77,29 @@ export function TypeMorph({ phrases }: { phrases: MorphPhrase[] }) {
       clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [phrases]);
+  }, [phrases, picked]);
 
   const p = phrases[idx] ?? phrases[0];
   if (!p) return null;
   const shown = graphemes(p.text).slice(0, count).join("");
   return (
-    <div ref={root} className="tm" aria-hidden="true">
-      <div className="tm-tabs">
-        {phrases.map((x, i) => (
-          <span key={x.lang} lang={x.lang} dir={x.dir} className="tm-tab" data-on={i === idx || undefined}>
-            {x.label}
-          </span>
-        ))}
+    <div ref={root} className="tm" data-tm>
+      <div className="tm-bar">
+        <LanguageDropdown
+          tone="dark"
+          label={label}
+          items={phrases.map((x) => ({ value: x.lang, label: x.label, lang: x.lang, dir: x.dir }))}
+          value={p.lang}
+          onSelect={(v) => {
+            const i = phrases.findIndex((x) => x.lang === v);
+            if (i < 0) return;
+            setPicked(true);
+            setIdx(i);
+            setCount(graphemes(phrases[i]!.text).length);
+          }}
+        />
       </div>
-      <p lang={p.lang} dir={p.dir} className="tm-line">
+      <p lang={p.lang} dir={p.dir} className="tm-line" aria-live="off">
         <span>{shown}</span>
         <span className="tm-caret" />
       </p>

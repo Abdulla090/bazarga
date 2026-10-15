@@ -2,34 +2,38 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { setLocaleAction } from "@/server/actions/locale";
-import { HTML_LANG, LOCALE_LABEL, UI_LOCALES, type Locale } from "@/lib/i18n";
+import { UI_LOCALES, isLocale, switcherItems, type Locale } from "@/lib/i18n";
+import { LanguageDropdown } from "@/components/LanguageDropdown";
 
-/** Language buttons. `current` comes from the server (no client i18n runtime needed, so storefronts can use it). */
-export function LocaleSwitcher({ current, locales = UI_LOCALES, compact = false }: { current: Locale; locales?: readonly Locale[]; compact?: boolean }) {
+/**
+ * Site language control: one compact dropdown (globe + current language), same everywhere.
+ * `current` comes from the server (no client i18n runtime needed, so storefronts can use it).
+ * `compact` shows the short code on the trigger for tight bars (dashboard top bar, auth).
+ */
+export function LocaleSwitcher({ current, locales = UI_LOCALES, compact = false, label = "Language", tone = "light" }: {
+  current: Locale;
+  locales?: readonly Locale[];
+  compact?: boolean;
+  label?: string;
+  tone?: "light" | "dark";
+}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   return (
-    <div role="group" aria-label="Language" className="flex flex-wrap items-center gap-1">
-      {locales.map((l) => (
-        <button
-          key={l}
-          type="button"
-          lang={HTML_LANG[l]}
-          aria-pressed={current === l}
-          disabled={pending}
-          onClick={() =>
-            start(async () => {
-              await setLocaleAction(l);
-              router.refresh();
-            })
-          }
-          className={`min-h-11 min-w-11 rounded-full px-2.5 py-1 sm:min-h-9 sm:min-w-0 text-sm font-semibold transition ${
-            current === l ? "bg-ink text-paper" : "text-ink-70 hover:bg-ink/5"
-          }`}
-        >
-          {compact ? l.toUpperCase() : LOCALE_LABEL[l]}
-        </button>
-      ))}
-    </div>
+    <LanguageDropdown
+      items={switcherItems(locales)}
+      value={current}
+      label={label}
+      tone={tone}
+      showCode={compact}
+      disabled={pending}
+      onSelect={(v) => {
+        if (!isLocale(v)) return;
+        start(async () => {
+          await setLocaleAction(v);
+          router.refresh();
+        });
+      }}
+    />
   );
 }

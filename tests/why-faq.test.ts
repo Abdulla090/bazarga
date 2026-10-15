@@ -134,9 +134,24 @@ describe("marketing sections are blue + ink only", () => {
       expect(html.match(/class="bento-tile/g)?.length).toBe(4);
       for (const p of ["COD", "FIB", "ZainCash", "FastPay", "Qi Card"]) expect(html).toContain(p);
       expect(html).toContain('class="map-dots"');
-      expect(html).toContain('dir="rtl"'); // Sorani/Arabic typewriter lines carry their own direction
+      // the typewriter line carries its own direction (Sorani/Arabic rtl, English/Kurmanji ltr)
+      expect(html).toMatch(new RegExp(`dir="${l === "ku" || l === "ar" ? "rtl" : "ltr"}" class="tm-line"`));
       expect(html).not.toContain("bg-gold");
+      // language demo: one compact dropdown, not a row of 4 chips
+      expect(html).not.toContain("tm-tab");
+      expect(html.match(/data-lang-dropdown/g)?.length).toBe(1);
+      expect(html).toContain('aria-haspopup="menu"');
     }
+  });
+
+  it("Sorani Why copy reads naturally (Oct 15 review) and every locale has the demo picker label", () => {
+    const ku = msgs("ku").landing;
+    expect(ku.whyEyebrow).toBe("بۆچی بازارگا؟");
+    expect(ku.whyTitle).toBe("بۆ بازاڕی ئێمە دروستکراوە.");
+    expect(ku.whyLead).toContain("بەپێی شێوازی فرۆشتنی خەڵکی ئێرە");
+    expect(ku.w1Title).toBe("کوردی لە پێشەوە");
+    expect(ku.w1Body).toContain("بە تەواوی پشتگیری دەکرێن");
+    for (const l of LOCALES) expect(msgs(l).landing.whyLangPick, l).toBeTruthy();
   });
 
   it("who marquee: 12 chips, filler copy hidden from assistive tech", () => {

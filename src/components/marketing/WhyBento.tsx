@@ -38,6 +38,8 @@ export type WhyLabels = {
   stockholm: string;
   london: string;
   productName: string;
+  /** Accessible name for the demo's language dropdown. */
+  langPick?: string;
 };
 
 /** The same promise in each language the store speaks; the page's own locale goes first. */
@@ -150,7 +152,7 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
               <p className="bento-body">{l.w1Body}</p>
             </div>
             <div className="bento-vis bento-vis-a">
-              <TypeMorph phrases={phrases} />
+              <TypeMorph phrases={phrases} label={l.langPick} />
             </div>
           </article>
 
