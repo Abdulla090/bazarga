@@ -18,6 +18,7 @@ test("new seller sees the verify banner, can resend, and a bogus link is rejecte
   await page.locator('input[name="password"]').fill("verify-pass-12345");
   await page.locator("form button").last().click();
   await page.waitForURL("**/onboarding**", { timeout: 30_000 });
+  await page.goto("/onboarding", { waitUntil: "networkidle" });
   await page.locator('input[name="name"]').fill(`Verify Shop ${tag}`);
   await page.locator('input[name="slug"]').fill(`vf-${tag}`.slice(0, 30));
   await page.locator('input[name="whatsapp"]').fill("0750 123 4567");
