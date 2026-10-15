@@ -6,7 +6,8 @@ import { logger } from "../logger";
 import { requireStore } from "../auth/session";
 import { getProduct } from "../services/catalog";
 import { qrMatrix, qrPath } from "@/lib/share-kit";
-import { productUrl, withSource } from "@/lib/social";
+import { withSource } from "@/lib/social";
+import { shortLinkUrl } from "@/lib/short-link";
 
 export type ProductShareKit = {
   ok: true;
@@ -49,7 +50,8 @@ export async function productShareKitAction(productId: unknown): Promise<Product
     const { store } = await requireStore();
     const product = await getProduct(db(), store.id, id);
     if (!product) return { ok: false };
-    const url = productUrl(env().APP_URL, store.slug, product.id);
+    // Short link (S2): /p/<code> redirects to the product page and keeps ?src, and makes the QR smaller to scan.
+    const url = shortLinkUrl(env().APP_URL, product.shortCode);
     const qr = qrMatrix(withSource(url, "qr"));
     const cover = product.images[0];
     // Biggest rendition up to ~1280 px wide is plenty for a 936 px photo slot.
