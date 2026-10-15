@@ -543,7 +543,7 @@
 .dvb-live { display: inline-flex; align-items: center; gap: 0.45rem; border-radius: 9999px; background: rgb(255 255 255 / 0.08); padding: 0.25rem 0.7rem; font: 600 0.75rem/1.2 var(--font-latin); color: rgb(255 255 255 / 0.75); direction: ltr; white-space: nowrap; }
 .dvb-live-dot { width: 0.45rem; height: 0.45rem; border-radius: 9999px; background: #60a5fa; box-shadow: 0 0 0 3px rgb(96 165 250 / 0.25); }
 .dvb-order { margin-top: 1rem; border-radius: 1rem; background: #fff; padding: 1rem; color: var(--color-ink); box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.5); }
-.dvb-k { font-size: 0.8rem; line-height: 1.45; filter: grayscale(1); opacity: 0.7; }
+.dvb-k { display: flex; align-items: center; min-height: 1.45em; color: var(--color-ink-50); }
 .dvb-src { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 9999px; background: #eef3ff; color: #1d4ed8; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
 .dvb-src-dot { width: 0.45rem; height: 0.45rem; border-radius: 2px; background: #0a0a0b; }
 .dvb-cod { border-radius: 9999px; background: var(--mk-blue); color: #fff; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 700; }
