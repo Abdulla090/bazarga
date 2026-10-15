@@ -16,7 +16,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [x] K6a audit log (migration 0013) for settings changes; rate limits already on auth, checkout, track, uploads
 - [x] Rasedi payment gateway architecture (migration 0014, docs/PAYMENTS.md) — merged OFF (`PAYMENTS_PROVIDER` unset)
 - [ ] K6b npm audit review: only 1 high (sharp libheif/librsvg, fix needs sharp 0.35 major bump); upgrade + gate pending
-- [ ] Themes Gallery, Boutique, Mono, Studio; theme thumbnails; one-click switch e2e
+- [x] Gallery design (Oct 15) · [ ] Boutique, Mono, Studio designs; theme thumbnails; one-click switch e2e
 
 ## Thu 15
 - [x] /api/health (DB ping + build sha), structured logging (src/server/logger.ts) — error boundaries: see error pages
@@ -28,7 +28,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
-- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [ ] a11y · [ ] skeletons · [ ] translation pass
+- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [ ] axe pass · [x] skeletons (dashboard, 1f18d4b) · [ ] translation pass
 
 ## Fri 16 freeze
 - [ ] Bug bash all routes x 4 locales x 360/390/1280 · [ ] full e2e green

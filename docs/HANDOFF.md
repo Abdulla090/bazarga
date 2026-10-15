@@ -32,6 +32,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-15 15:xx Agent B: Gallery design + hark/a11y merge
+- Merged hark/a11y (1f18d4b): dashboard route skeletons (loading.tsx + PageSkeleton) and input labels. Axe pass still pending on Agent A.
+- New store design "gallery" (BUILT_DESIGNS): full-bleed hero (HeroFullbleed), edge-to-edge 2/3/4-col tile grid, "tile" product card (caption on a scrim, square plus button, badge top-start via MerchBadges corner="top"), centred uppercase header, minimal footer. The Gallery preset now sets design "gallery". CSS under `data-design="gallery"` in globals.css.
+- Still classic until built: boutique, mono, studio. Agent A: don't touch src/lib/theme-studio/**, src/components/store/**, src/app/s/**, globals.css.
+
 ### 2026-10-15 13:xx Agent B: email verification + auth audit
 - Audit of signup/login/reset: scrypt hashes, hashed session + reset tokens, single-use 1h reset links, sessions revoked on reset, per-IP and per-email rate limits, no account enumeration. Security headers (HSTS, nosniff, frame, referrer, permissions, COOP, nonce CSP) verified live on /pricing.
 - Fixed: a new reset request now retires older outstanding links; reset/verify mails are in the account's language (ku/kmr/ar/en) via src/server/auth/mail-copy.ts; a completed reset also confirms the email.
