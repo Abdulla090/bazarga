@@ -89,7 +89,8 @@ export function LanguageDropdown({
   };
   const onMenuKey = (e: React.KeyboardEvent) => {
     const n = items.length;
-    if (e.key === "Escape") { e.preventDefault(); close(); }
+    // stopPropagation: Esc closes only this menu, not a sheet/dialog it sits in (e.g. the mobile nav sheet)
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
     else if (e.key === "Tab") setOpen(false);
     else if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => (a + 1) % n); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => (a - 1 + n) % n); }

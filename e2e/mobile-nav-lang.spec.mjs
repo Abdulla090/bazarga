@@ -39,7 +39,7 @@ for (const locale of ["ku", "ar", "en", "kmr"]) {
     const menu = demo.locator('[role="menu"]');
     await expect(menu.locator('[role="menuitemradio"]')).toHaveCount(4);
     await inViewport(menu, 360);
-    const h = await menu.locator('[role="menuitemradio"]').first().evaluate((e) => e.getBoundingClientRect().height);
+    const h = await menu.locator('[role="menuitemradio"]').first().evaluate((e) => e.offsetHeight); // layout height (the open animation scales briefly)
     expect(h).toBeGreaterThanOrEqual(44);
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Escape");
