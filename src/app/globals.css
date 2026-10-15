@@ -553,6 +553,25 @@ html:lang(ckb) .storefront[data-design="gallery"] .store-name, html:lang(ar) .st
 .storefront[data-design="boutique"] .store-header .store-page > a:nth-child(2) { grid-column: 1; grid-row: 1; justify-self: start; }
 .storefront[data-design="boutique"] .store-header .store-page > :nth-child(3) { grid-column: 3; grid-row: 1; justify-self: end; }
 
+/* ---- Mono: a ledger. Pure black on white, 2px rules, square everything, mono-spaced display type and labels. ---- */
+.storefront[data-design="mono"] { --sf-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", var(--font-vazirmatn), monospace; --section-gap: 3rem; }
+@media (min-width: 1024px) { .storefront[data-design="mono"] { --section-gap: 5rem; } }
+.storefront[data-design="mono"] :is(.rounded-2xl, .rounded-xl, .rounded-lg, .sf-frame) { border-radius: 0; }
+.storefront[data-design="mono"] .store-header { border-bottom: 2px solid var(--st-fg); }
+.storefront[data-design="mono"] .store-mark { display: none; }
+.storefront[data-design="mono"] .store-name { font-family: var(--sf-mono); text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.9375rem; font-weight: 700; }
+html:lang(ckb) .storefront[data-design="mono"] .store-name, html:lang(ar) .storefront[data-design="mono"] .store-name { text-transform: none; letter-spacing: 0; font-size: 1.0625rem; }
+.storefront[data-design="mono"] .btn, .storefront[data-design="mono"] .btn-gold, .storefront[data-design="mono"] .btn-ghost { border-radius: 0; border: 2px solid var(--st-fg); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; font-size: 0.8125rem; }
+html:lang(ckb) .storefront[data-design="mono"] :is(.btn, .btn-gold, .btn-ghost), html:lang(ar) .storefront[data-design="mono"] :is(.btn, .btn-gold, .btn-ghost) { text-transform: none; letter-spacing: 0; font-size: 0.9375rem; }
+.storefront[data-design="mono"] :is(.t-display, .t-headline, .t-title) { font-family: var(--sf-mono); font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+html:lang(ckb) .storefront[data-design="mono"] :is(.t-display, .t-headline, .t-title), html:lang(ar) .storefront[data-design="mono"] :is(.t-display, .t-headline, .t-title) { text-transform: none; letter-spacing: 0; }
+.mono-hero { font-family: var(--sf-mono); font-weight: 800; text-transform: uppercase; font-size: clamp(2.5rem, 13vw, 9rem); line-height: 0.95; letter-spacing: -0.06em; text-wrap: balance; }
+html:lang(ckb) .mono-hero, html:lang(ar) .mono-hero { text-transform: none; letter-spacing: 0; line-height: 1.25; font-size: clamp(2.5rem, 10vw, 6.5rem); font-weight: 800; }
+.mono-label { font-family: var(--sf-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+html:lang(ckb) .mono-label, html:lang(ar) .mono-label { text-transform: none; letter-spacing: 0; }
+.storefront[data-design="mono"] [data-testid="spotlight"] { background: transparent; border: 2px solid var(--st-fg); }
+.storefront[data-design="mono"] .store-footer { border-top: 2px solid var(--st-fg); }
+
 /* ---- Market: catalogue-first. White header with a wide search field, compact type, tight sections, dense grid. ---- */
 .storefront[data-design="market"] { --section-gap: 2.5rem; --page-max: 90rem; }
 @media (min-width: 1024px) { .storefront[data-design="market"] { --section-gap: 3.5rem; } }

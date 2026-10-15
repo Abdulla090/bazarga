@@ -122,6 +122,44 @@ export function ProductCard({
       </article>
     );
   }
+  if (variant === "row") {
+    const addCls = "flex h-11 w-11 items-center justify-center border-2 border-st-fg bg-st-surface text-st-fg transition-colors duration-150 hover:bg-st-fg hover:text-st-bg active:scale-95";
+    return (
+      <article className="reveal group relative grid min-w-0 grid-cols-[6rem_1fr_auto] items-center gap-x-4 border-t-2 border-st-fg py-4 md:grid-cols-[7rem_1fr_auto]" data-card="row">
+        <div className="sf-frame relative overflow-hidden border-2 border-st-fg bg-[#F4F4F5]">
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes="112px" index={index} aboveTheFold={4} className="sf-img aspect-square w-full object-cover" />
+            ) : (
+              <span className="block aspect-square w-full" />
+            )}
+          </Link>
+        </div>
+        <div className="grid min-w-0 gap-1">
+          {number && <span className="mono-label num" aria-hidden>{number}</span>}
+          <Link href={href} className="line-clamp-2 text-[15px] font-semibold leading-snug after:absolute after:inset-0 after:content-[''] md:text-base">{name}</Link>
+          <CardPrice p={p} locale={locale} from={labels.from} />
+          {p.soldOut && <span className="mono-label" data-testid="badge-soldout">{labels.soldOut}</span>}
+        </div>
+        <div className="relative z-10">
+          {p.hasVariants && !p.soldOut ? (
+            <Link href={href} aria-label={labels.chooseOptions} className={addCls}>
+              <Icon as={Plus} className="h-5 w-5" />
+            </Link>
+          ) : !p.soldOut ? (
+            <AddToCart
+              slug={slug}
+              productId={p.id}
+              labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+              item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+              icon={<Icon as={Plus} className="h-5 w-5" />}
+              className={addCls}
+            />
+          ) : null}
+        </div>
+      </article>
+    );
+  }
   if (variant === "tile") {
     return (
       <article className="reveal group relative min-w-0" data-card="tile">

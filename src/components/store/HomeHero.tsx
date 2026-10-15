@@ -166,3 +166,35 @@ export function HeroArch({ name, tagline, cover, shopNow }: HeroProps) {
     </section>
   );
 }
+
+/**
+ * Mono type hero: the store name set huge in the mono face between two heavy rules, tagline and a square full-width
+ * button under it, then the cover as a hard-bordered square (no radius). With no cover it is type only.
+ */
+export function HeroType({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="grid gap-6 border-y-2 border-st-fg py-6 md:gap-8 md:py-10" data-testid="store-hero" data-hero="type">
+      <h1 className="mono-hero break-words">{name}</h1>
+      <div className="grid items-end gap-6 md:grid-cols-[1fr_auto]">
+        {tagline && <p className="line-clamp-3 max-w-xl text-[17px] leading-snug md:text-xl">{tagline}</p>}
+        <a href="#products" className="btn-gold min-h-12 w-full px-8 md:w-auto">{shopNow}</a>
+      </div>
+      {cover && (
+        <div className="overflow-hidden border-2 border-st-fg bg-[#F4F4F5]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cover.url}
+            srcSet={buildSrcSet(cover.renditions)}
+            sizes={cover.renditions?.length ? "(min-width: 1280px) 1200px, 100vw" : undefined}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-[4/3] w-full object-cover grayscale md:aspect-[16/7]"
+            style={coverStyle(cover)}
+          />
+        </div>
+      )}
+    </section>
+  );
+}
