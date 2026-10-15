@@ -95,7 +95,7 @@ export default async function AdminPage() {
             {o.status === "pending" && (
               <form action={markPayoutPaidAction} className="flex gap-2">
                 <input type="hidden" name="id" value={o.id} />
-                <input name="reference" placeholder="Transfer ref" className="min-h-11 rounded-full border border-line px-4 text-sm" maxLength={120} />
+                <input name="reference" aria-label="Transfer ref" placeholder="Transfer ref" className="min-h-11 rounded-full border border-line px-4 text-sm" maxLength={120} />
                 <button className="min-h-11 rounded-full bg-ink px-5 text-sm text-white">Mark paid</button>
               </form>
             )}

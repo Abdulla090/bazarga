@@ -73,9 +73,9 @@ export function AiBuilder() {
               {urls[d.photoIndexes[0] ?? -1] ? <img src={urls[d.photoIndexes[0]!]} alt="" className="h-20 w-20 rounded-xl object-cover" /> : <span />}
               <div className="grid gap-2">
                 {(["ku", "ar", "en"] as const).map((l) => (
-                  <input key={l} className="input" dir={l === "en" ? "ltr" : "rtl"} value={d.name[l] ?? ""} placeholder={`${tp("name")} (${l})`} onChange={(e) => update(i, { name: { ...d.name, [l]: e.target.value } })} />
+                  <input key={l} aria-label={`${tp("name")} (${l})`} className="input" dir={l === "en" ? "ltr" : "rtl"} value={d.name[l] ?? ""} placeholder={`${tp("name")} (${l})`} onChange={(e) => update(i, { name: { ...d.name, [l]: e.target.value } })} />
                 ))}
-                <input className="input num" type="number" min={0} dir="ltr" value={d.price ?? ""} placeholder={tp("price")} onChange={(e) => update(i, { price: e.target.value ? Number(e.target.value) : null })} />
+                <input aria-label={tp("price")} className="input num" type="number" min={0} dir="ltr" value={d.price ?? ""} placeholder={tp("price")} onChange={(e) => update(i, { price: e.target.value ? Number(e.target.value) : null })} />
                 <button type="button" className="btn-ghost btn-sm justify-self-start" onClick={() => setDrafts((l) => l.filter((_, j) => j !== i))}>{tc("delete")}</button>
               </div>
             </div>
