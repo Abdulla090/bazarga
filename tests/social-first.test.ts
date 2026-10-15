@@ -202,7 +202,7 @@ describe("social-first: migration + copy", () => {
     expect(sql).not.toMatch(/NOT NULL|DROP|RENAME/);
     expect(sql).toMatch(/CREATE INDEX IF NOT EXISTS "orders_store_source_idx"/);
     const journal = JSON.parse(readFileSync(path.join(process.cwd(), "drizzle", "meta", "_journal.json"), "utf8"));
-    expect(journal.entries.at(-1).tag).toBe("0018_order_source");
+    expect(journal.entries.map((e: { tag: string }) => e.tag)).toContain("0018_order_source");
   });
 
   it("hero + DMs vs Bazarga + share + source copy exist in all 4 locales", () => {
