@@ -1,5 +1,6 @@
 "use client";
 import { Suspense, lazy, useActionState, useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { saveProductAction, deleteProductAction } from "@/server/actions/dashboard";
 import { Field, FormError } from "@/components/forms/Field";
@@ -32,6 +33,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const te = useTranslations("errors");
+  const tp = useTranslations("pricing");
   const [state, action, pending] = useActionState(saveProductAction, {});
   const [lang, setLang] = useState<Locale>(defaultLang);
   const fe = state.fieldErrors ?? {};
@@ -42,6 +44,9 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   return (
     <form action={action} className="grid gap-4">
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
+      {state.error?.startsWith("plan_limit_") && (
+        <Link href="/dashboard/upgrade" data-testid="limit-upgrade" className="btn-gold inline-flex min-h-11 w-fit items-center">{tp("upgradeCta")}</Link>
+      )}
       {initial.id && <input type="hidden" name="id" value={initial.id} />}
       <fieldset className="grid gap-3 border-t border-line pt-6">
         <legend className="sr-only">{t("translations")}</legend>
