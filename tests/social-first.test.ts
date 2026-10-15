@@ -214,9 +214,9 @@ describe("social-first: migration + copy", () => {
       expect(keysOf(m.productShare)).toEqual(keysOf(en.productShare));
       for (const k of ["sourceTitle", "sourceHint", "sourceTop", "sourceBestConv", "sourceEmpty", "sourceDirect", "sourceVisits"]) expect(m.analytics[k]).toBeTruthy();
       expect(m.orders.fromSource).toContain("{source}");
-      expect(m.landing.heroTitle1).toMatch(/TikTok|تیکتۆک|تيك توك/);
+      expect(m.landing.dvb.title).toBeTruthy();
     }
-    expect(msgs("ku").landing.heroTitle1).toBe("لە تیکتۆک بەردەوام بە.");
+    expect(msgs("ku").landing.heroTitle1).toBe("دوکانەکەت ئەمڕۆ بکەرەوە."); // Abdulla Oct 15: original hero title restored
     expect(msgs("ku").landing.dvb.dmBubble).toBe("بەچەندە؟");
   });
 });
