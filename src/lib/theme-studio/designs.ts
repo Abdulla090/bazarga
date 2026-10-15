@@ -7,13 +7,13 @@ export const DESIGN_IDS = ["classic", "editorial", "gallery", "boutique", "mono"
 export type DesignId = (typeof DESIGN_IDS)[number];
 
 /** Designs that have their own layout components today; the rest render as "classic" until their slice ships. */
-export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique"] as const satisfies readonly DesignId[];
+export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique", "mono"] as const satisfies readonly DesignId[];
 
-export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch";
-export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft";
-export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft";
+export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch" | "type";
+export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows";
+export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row";
 export type HomeSection = "offers" | "collections" | "best" | "spotlight" | "sale" | "rail";
-export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft";
+export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger";
 
 export type DesignSpec = {
   id: DesignId;
@@ -50,8 +50,12 @@ export const DESIGNS: Record<DesignId, DesignSpec> = {
     id: "boutique", hero: "arch", grid: "soft", card: "soft", footer: "soft", pageSize: 24, cardTitle: "sans",
     sections: ["offers", "collections", "best", "sale"],
   },
+  // Mono: a ledger. Giant type masthead, hard black rules, products as numbered rows (thumb, name, price, add).
+  mono: {
+    id: "mono", hero: "type", grid: "rows", card: "row", footer: "ledger", pageSize: 24, cardTitle: "sans",
+    sections: ["offers", "best", "collections", "sale"],
+  },
   // Not built yet: same composition as classic (see BUILT_DESIGNS).
-  mono: { id: "mono", hero: "split", grid: "auto", card: "classic", footer: "classic", pageSize: 24, cardTitle: "sans", sections: ["offers", "collections", "best", "spotlight", "sale"] },
   studio: { id: "studio", hero: "split", grid: "auto", card: "classic", footer: "classic", pageSize: 24, cardTitle: "sans", sections: ["offers", "collections", "best", "spotlight", "sale"] },
 };
 

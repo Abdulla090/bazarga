@@ -160,6 +160,27 @@ export async function StoreFooter({
     );
   }
 
+  if (design.footer === "ledger") {
+    return (
+      <footer className="store-footer mt-20 text-sm" data-footer="ledger">
+        <div className="store-page grid gap-8 py-10 md:grid-cols-3 md:gap-12">
+          <section className="grid content-start gap-3">
+            <p className="store-name text-lg">{store.name}</p>
+            {about && <p className="line-clamp-4 whitespace-pre-line leading-relaxed">{about}</p>}
+          </section>
+          {returns && (
+            <section id="returns" className="scroll-mt-24 border-t-2 border-st-fg pt-3 md:border-t-0 md:pt-0">
+              <h2 className="mono-label mb-2">{t("returnPolicy")}</h2>
+              <p className="line-clamp-6 whitespace-pre-line leading-relaxed">{returns}</p>
+            </section>
+          )}
+          <div className="border-t-2 border-st-fg pt-3 md:border-t-0 md:pt-0">{contact}</div>
+        </div>
+        {bar}
+      </footer>
+    );
+  }
+
   if (design.footer === "minimal") {
     return (
       <footer className="store-footer mt-16 border-t border-st-border text-sm" data-footer="minimal">

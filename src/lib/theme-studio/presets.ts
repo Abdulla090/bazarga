@@ -49,6 +49,7 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     background: { kind: "pattern" }, header: { layout: "centered" },
   }),
   mono: base("mono", {
+    design: "mono",
     colors: { accent: "#000000", bg: "#FFFFFF", surface: "#FFFFFF", text: "#000000" },
     type: { pair: "mono-bold", scale: "l" },
     buttons: { shape: "square", style: "solid", size: "l" },
