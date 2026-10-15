@@ -19,6 +19,7 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     background: { kind: "gradient" }, header: { layout: "split" },
   }),
   gallery: base("gallery", {
+    design: "gallery",
     colors: { accent: "#111111", bg: "#FFFFFF", surface: "#F5F5F4", text: "#111111" },
     type: { pair: "serif-editorial", scale: "l" },
     buttons: { shape: "square", style: "outline", size: "l" },

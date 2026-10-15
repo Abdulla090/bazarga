@@ -97,7 +97,7 @@ export function ProductCard({
               <span className="block aspect-[4/5] w-full" />
             )}
           </Link>
-          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 grid gap-0.5 bg-gradient-to-t from-black/70 via-black/30 to-transparent px-3 pb-3 pt-10 pe-14 text-white">
             <Link href={href} className="pointer-events-auto line-clamp-2 text-[13px] font-medium uppercase leading-snug tracking-[0.06em] after:absolute after:inset-0 after:content-[''] md:text-sm">{name}</Link>
             <span className="num text-sm font-medium">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
