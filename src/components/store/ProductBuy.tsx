@@ -248,7 +248,7 @@ export function ProductBuy({
           {title}
           <p className="num flex flex-wrap items-center gap-x-3 gap-y-1 text-xl" aria-live="polite" data-testid="price">
             <span className="font-medium">{priceText}</span>
-            {compareAt && compareAt > price && <s className="text-base text-faint">{formatIQD(compareAt, locale)}</s>}
+            {compareAt && compareAt > price && <s className="text-base text-muted">{formatIQD(compareAt, locale)}</s>}
             {pct !== null && (
               <span className="inline-flex min-h-6 items-center rounded-full bg-st-accent px-2.5 text-xs font-medium text-st-on-accent" data-testid="pct-off">
                 {fill(labels.percentOff, { pct })}
