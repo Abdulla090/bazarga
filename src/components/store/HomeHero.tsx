@@ -198,3 +198,40 @@ export function HeroType({ name, tagline, cover, shopNow }: HeroProps) {
     </section>
   );
 }
+
+/**
+ * Studio stage: one accent-coloured rounded stage. The store name is set large in the on-accent colour, a white pill
+ * button under the tagline, and the cover sits on the inline end as a rounded card tilted two degrees (flat on phones).
+ * Two crisp rings behind it stand in for a photo when the store has no cover.
+ */
+export function HeroStage({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="relative isolate overflow-hidden rounded-[2rem] bg-st-accent text-st-on-accent md:rounded-[2.5rem]" data-testid="store-hero" data-hero="stage">
+      <span aria-hidden className="pointer-events-none absolute -end-24 -top-24 -z-10 h-72 w-72 rounded-full border-[28px] border-st-on-accent/10 md:h-[28rem] md:w-[28rem] md:border-[44px]" />
+      <span aria-hidden className="pointer-events-none absolute -bottom-20 start-1/3 -z-10 h-40 w-40 rounded-full border-[18px] border-st-on-accent/10 md:h-64 md:w-64" />
+      <div className={`grid items-center gap-8 px-6 py-10 md:gap-12 md:px-14 md:py-16 ${cover ? "md:grid-cols-[1.15fr_0.85fr]" : ""}`}>
+        <div className="grid justify-items-start gap-5 md:gap-7">
+          <h1 className="t-hero break-words">{name}</h1>
+          {tagline && <p className="line-clamp-3 max-w-md text-[17px] leading-snug opacity-90 md:text-xl">{tagline}</p>}
+          <a href="#products" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-surface px-8 text-base font-semibold text-st-fg transition-transform duration-150 active:scale-[0.98] sm:w-auto">{shopNow}</a>
+        </div>
+        {cover && (
+          <div className="overflow-hidden rounded-3xl bg-[#F4F4F5] shadow-e3 ring-4 ring-st-on-accent/20 md:rotate-2 rtl:md:-rotate-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={cover.url}
+              srcSet={buildSrcSet(cover.renditions)}
+              sizes={cover.renditions?.length ? "(min-width: 768px) 40vw, 100vw" : undefined}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="aspect-[4/3] w-full object-cover md:aspect-[4/5]"
+              style={coverStyle(cover)}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

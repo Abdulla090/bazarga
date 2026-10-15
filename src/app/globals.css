@@ -967,3 +967,11 @@ html:lang(ckb) .mono-label, html:lang(ar) .mono-label { text-transform: none; le
   .ps-dialog[open] { animation: ps-in var(--duration-slow) var(--ease-out-expo); }
 }
 @keyframes ps-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---- Studio: a bold creator brand. Pill buttons, big radii, accent stage hero, floating cards in a masonry, accent footer band. ---- */
+.storefront[data-design="studio"] :is(.rounded-2xl, .rounded-xl) { border-radius: 1.25rem; }
+.storefront[data-design="studio"] .btn, .storefront[data-design="studio"] .btn-gold, .storefront[data-design="studio"] .btn-ghost { border-radius: 9999px; font-weight: 600; }
+.storefront[data-design="studio"] .store-name { font-weight: 700; letter-spacing: -0.02em; }
+.storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline) { font-weight: 700; letter-spacing: -0.03em; }
+html:lang(ckb) .storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline), html:lang(ar) .storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline) { letter-spacing: 0; }
+.storefront[data-design="studio"] [data-testid="spotlight"] { border-radius: 2rem; }
