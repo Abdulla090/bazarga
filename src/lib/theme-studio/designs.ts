@@ -6,14 +6,14 @@
 export const DESIGN_IDS = ["classic", "editorial", "gallery", "boutique", "mono", "studio", "market"] as const;
 export type DesignId = (typeof DESIGN_IDS)[number];
 
-/** Designs that have their own layout components today; the rest render as "classic" until their slice ships. */
-export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique", "mono"] as const satisfies readonly DesignId[];
+/** Designs that have their own layout components today; any added later render as "classic" until their slice ships. */
+export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique", "mono", "studio"] as const satisfies readonly DesignId[];
 
-export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch" | "type";
-export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows";
-export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row";
+export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch" | "type" | "stage";
+export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows" | "masonry";
+export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row" | "float";
 export type HomeSection = "offers" | "collections" | "best" | "spotlight" | "sale" | "rail";
-export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger";
+export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger" | "band";
 
 export type DesignSpec = {
   id: DesignId;
@@ -55,8 +55,12 @@ export const DESIGNS: Record<DesignId, DesignSpec> = {
     id: "mono", hero: "type", grid: "rows", card: "row", footer: "ledger", pageSize: 24, cardTitle: "sans",
     sections: ["offers", "best", "collections", "sale"],
   },
-  // Not built yet: same composition as classic (see BUILT_DESIGNS).
-  studio: { id: "studio", hero: "split", grid: "auto", card: "classic", footer: "classic", pageSize: 24, cardTitle: "sans", sections: ["offers", "collections", "best", "spotlight", "sale"] },
+  // Studio: a bold creator brand. Accent-coloured stage hero with a tilted cover, masonry of floating cards (varied photo
+  // ratios, round add button), pill category chips, an accent name band in the footer.
+  studio: {
+    id: "studio", hero: "stage", grid: "masonry", card: "float", footer: "band", pageSize: 24, cardTitle: "sans",
+    sections: ["offers", "best", "spotlight", "collections", "sale"],
+  },
 };
 
 export function isDesignId(v: unknown): v is DesignId {

@@ -15,7 +15,7 @@ import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, CollectionIndex, Spotlight } from "@/components/store/HomeSections";
-import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit, HeroType } from "@/components/store/HomeHero";
+import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit, HeroStage, HeroType } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -113,6 +113,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     soft: "grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 xl:grid-cols-4",
     // Rows: a ledger, one row per product (thumb, name, price, add); two columns of rows from lg.
     rows: "grid grid-cols-1 gap-x-12 border-b-2 border-st-fg lg:grid-cols-2",
+    // Masonry: CSS columns of floating cards with uneven photo ratios; 2 columns on phones up to 4 on wide desktops.
+    masonry: "columns-2 gap-3 sm:columns-3 sm:gap-5 xl:columns-4 [&>*]:mb-3 [&>*]:break-inside-avoid sm:[&>*]:mb-5",
     dense: "grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-x-4 md:gap-y-8 lg:grid-cols-5 xl:grid-cols-6",
   } as const;
   const catItems = [
@@ -125,12 +127,13 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     editorial: (on: boolean) => `sf-display inline-flex min-h-11 items-center border-b-2 text-xl transition-colors duration-150 ${on ? "border-st-fg" : "border-transparent text-muted hover:text-st-fg"}`,
     gallery: (on: boolean) => `inline-flex min-h-11 items-center border-b text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-150 ${on ? "border-st-fg" : "border-transparent text-muted hover:text-st-fg"}`,
     mono: (on: boolean) => `inline-flex min-h-11 shrink-0 items-center border-2 border-st-fg px-4 text-xs font-bold uppercase tracking-[0.08em] transition-colors duration-150 ${on ? "bg-st-fg text-st-bg" : "bg-transparent text-st-fg hover:bg-st-fg/10"}`,
+    studio: (on: boolean) => `inline-flex min-h-11 shrink-0 items-center rounded-full px-5 text-sm font-semibold transition-colors duration-150 ${on ? "bg-st-accent text-st-on-accent" : "bg-st-surface text-st-fg ring-1 ring-inset ring-st-border hover:ring-st-fg/40"}`,
     market: (on: boolean) => `inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-medium transition-colors duration-150 ${on ? "bg-st-fg text-st-bg" : "bg-st-surface text-st-fg ring-1 ring-inset ring-st-border hover:ring-st-fg/40"}`,
   } as const;
   const catNav =
     usedCats.length > 0 || onSale.length > 0
       ? catItems.map((it) => (
-          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.id === "editorial" ? "editorial" : design.id === "market" ? "market" : design.id === "gallery" ? "gallery" : design.id === "mono" ? "mono" : "classic"](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
+          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.id === "editorial" ? "editorial" : design.id === "market" ? "market" : design.id === "gallery" ? "gallery" : design.id === "mono" ? "mono" : design.id === "studio" ? "studio" : "classic"](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
             {it.label}
           </Link>
         ))
@@ -197,7 +200,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       <ViewPixel slug={store.slug} />
       {browsing && (
         <>
-          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : <HeroSplit {...heroProps} />}
+          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : design.hero === "stage" ? <HeroStage {...heroProps} /> : <HeroSplit {...heroProps} />}
           {design.sections.map((k) => (
             <Fragment key={k}>{blocks[k]}</Fragment>
           ))}
@@ -235,7 +238,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
                 placeholder={t("searchPlaceholder")}
                 enterKeyHint="search"
                 maxLength={80}
-                className={`h-12 w-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] ${design.id === "classic" ? "rounded-full" : design.id === "editorial" ? "rounded-none" : "rounded-lg"}`}
+                className={`h-12 w-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] ${design.id === "classic" || design.id === "studio" ? "rounded-full" : design.id === "editorial" ? "rounded-none" : "rounded-lg"}`}
               />
             </label>
             <button type="submit" className="sr-only">{t("search")}</button>

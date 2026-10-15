@@ -122,6 +122,47 @@ export function ProductCard({
       </article>
     );
   }
+  if (variant === "float") {
+    // Masonry: the photo ratio cycles with the card's position so columns never line up.
+    const ratio = ["aspect-[4/5]", "aspect-square", "aspect-[3/4]"][(Number(number) || 0) % 3];
+    const addCls = "flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-st-accent text-st-on-accent transition-transform duration-150 active:scale-95";
+    return (
+      <article className="reveal group relative grid min-w-0 content-start gap-3 rounded-3xl bg-st-surface p-2 shadow-e1 ring-1 ring-st-border" data-card="float">
+        <div className="sf-frame relative block overflow-hidden rounded-[1.25rem] bg-[#F4F4F5]">
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={`sf-img ${ratio} w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]`} />
+            ) : (
+              <span className={`block ${ratio} w-full`} />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
+        </div>
+        <div className="flex items-end justify-between gap-2 px-2 pb-1">
+          <div className="grid min-w-0 gap-0.5">
+            <Link href={href} className="line-clamp-2 text-[15px] font-semibold leading-snug after:absolute after:inset-0 after:content-[''] md:text-base">{name}</Link>
+            <CardPrice p={p} locale={locale} from={labels.from} />
+          </div>
+          <div className="relative z-10">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} aria-label={labels.chooseOptions} className={addCls}>
+                <Icon as={Plus} className="h-5 w-5" />
+              </Link>
+            ) : !p.soldOut ? (
+              <AddToCart
+                slug={slug}
+                productId={p.id}
+                labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+                icon={<Icon as={Plus} className="h-5 w-5" />}
+                className={addCls}
+              />
+            ) : null}
+          </div>
+        </div>
+      </article>
+    );
+  }
   if (variant === "row") {
     const addCls = "flex h-11 w-11 items-center justify-center border-2 border-st-fg bg-st-surface text-st-fg transition-colors duration-150 hover:bg-st-fg hover:text-st-bg active:scale-95";
     return (

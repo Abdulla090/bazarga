@@ -35,6 +35,7 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     background: { kind: "solid" }, header: { layout: "centered" },
   }),
   studio: base("studio", {
+    design: "studio",
     colors: { accent: "#2563EB", bg: "#F6F8FC", surface: "#FFFFFF", text: "#0B1220" },
     type: { pair: "sans-clean", scale: "m" },
     buttons: { shape: "rounded", style: "solid", size: "m" },
@@ -81,4 +82,5 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
   }),
 };
 
-export const DEFAULT_THEME = THEME_STUDIO_PRESETS.studio;
+/** The editor's starting point keeps the classic composition; "studio" is an opt-in design. */
+export const DEFAULT_THEME: StoreTheme = { ...THEME_STUDIO_PRESETS.studio!, design: "classic" };

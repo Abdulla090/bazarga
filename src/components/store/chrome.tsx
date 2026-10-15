@@ -160,6 +160,29 @@ export async function StoreFooter({
     );
   }
 
+  if (design.footer === "band") {
+    return (
+      <footer className="store-footer mt-20 text-sm" data-footer="band">
+        <div className="store-page">
+          <div className="rounded-[2rem] bg-st-accent px-6 py-10 text-st-on-accent md:px-12 md:py-14">
+            <p className="store-name text-3xl font-bold md:text-5xl">{store.name}</p>
+            {about && <p className="mt-4 line-clamp-4 max-w-xl whitespace-pre-line text-base leading-relaxed opacity-90">{about}</p>}
+          </div>
+        </div>
+        <div className="store-page grid gap-8 py-10 sm:grid-cols-2">
+          {returns && (
+            <section id="returns" className="scroll-mt-24">
+              <h2 className={colHead}>{t("returnPolicy")}</h2>
+              <p className="line-clamp-6 whitespace-pre-line leading-relaxed">{returns}</p>
+            </section>
+          )}
+          {contact}
+        </div>
+        {bar}
+      </footer>
+    );
+  }
+
   if (design.footer === "ledger") {
     return (
       <footer className="store-footer mt-20 text-sm" data-footer="ledger">

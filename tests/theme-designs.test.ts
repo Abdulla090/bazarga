@@ -13,13 +13,13 @@ describe("store designs", () => {
     expect(new Set(built.map((d) => d.card)).size).toBe(built.length);
     expect(new Set(built.map((d) => d.footer)).size).toBe(built.length);
   });
-  it("unknown and not-yet-built designs fall back to classic", () => {
+  it("unknown designs fall back to classic", () => {
     expect(designSpec("editorial").id).toBe("editorial");
     expect(designSpec("market").id).toBe("market");
     expect(designSpec("gallery").id).toBe("gallery");
     expect(designSpec("boutique").id).toBe("boutique");
     expect(designSpec("mono").id).toBe("mono");
-    expect(designSpec("studio").id).toBe("classic");
+    expect(designSpec("studio").id).toBe("studio");
     expect(designSpec("nope").id).toBe("classic");
     expect(designSpec(undefined).id).toBe("classic");
     expect(isDesignId("studio")).toBe(true);
@@ -37,6 +37,7 @@ describe("store designs", () => {
     expect(THEME_STUDIO_PRESETS.gallery!.design).toBe("gallery");
     expect(THEME_STUDIO_PRESETS.boutique!.design).toBe("boutique");
     expect(THEME_STUDIO_PRESETS.mono!.design).toBe("mono");
+    expect(THEME_STUDIO_PRESETS.studio!.design).toBe("studio");
     for (const p of Object.values(THEME_STUDIO_PRESETS)) expect(DESIGN_IDS).toContain(p.design);
   });
   it("numbers only the sections that are present, in the design's own order", () => {
