@@ -13,7 +13,7 @@ export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch"
 export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows";
 export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row";
 export type HomeSection = "offers" | "collections" | "best" | "spotlight" | "sale" | "rail";
-export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft";
+export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger";
 
 export type DesignSpec = {
   id: DesignId;
@@ -52,7 +52,7 @@ export const DESIGNS: Record<DesignId, DesignSpec> = {
   },
   // Mono: a ledger. Giant type masthead, hard black rules, products as numbered rows (thumb, name, price, add).
   mono: {
-    id: "mono", hero: "type", grid: "rows", card: "row", footer: "minimal", pageSize: 24, cardTitle: "sans",
+    id: "mono", hero: "type", grid: "rows", card: "row", footer: "ledger", pageSize: 24, cardTitle: "sans",
     sections: ["offers", "best", "collections", "sale"],
   },
   // Not built yet: same composition as classic (see BUILT_DESIGNS).
