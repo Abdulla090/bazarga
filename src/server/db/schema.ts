@@ -206,10 +206,15 @@ export const products = pgTable(
     badge: text("badge").$type<ProductBadge>(),
     isActive: boolean("is_active").notNull().default(true),
     sort: integer("sort").notNull().default(0),
+    /** Short link code for /p/<code> (migration 0019): 8 random hex chars, set by the database on insert. */
+    shortCode: text("short_code")
+      .notNull()
+      .default(sql`substr(md5(random()::text || clock_timestamp()::text), 1, 8)`),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [
+    uniqueIndex("products_short_code_unique").on(t.shortCode),
     index("products_store_idx").on(t.storeId, t.isActive),
     // Catalog + dashboard list: ORDER BY sort, created_at DESC within a store; category deletes null category_id.
     index("products_store_sort_idx").on(t.storeId, t.sort, t.createdAt),

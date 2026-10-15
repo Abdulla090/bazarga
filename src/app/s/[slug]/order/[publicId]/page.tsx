@@ -73,14 +73,17 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       {order.paymentMethod !== "cod" && <PaymentPanel labels={pickLabels((k) => t(k), PAYMENT_PANEL_KEYS)} slug={store.slug} publicId={order.publicId} method={order.paymentMethod} status={order.paymentStatus} fib={fib} />}
 
       <div className="grid gap-2">
-        <Link href={trackingPath(store.slug, order.number)} className="btn-gold min-h-12" data-testid="track-link">
+        {sellerPhone && (
+          <>
+            <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn-gold min-h-12" data-testid="wa-handoff">
+              <Icon as={MessageCircle} /> {t("sendOrderWa")}
+            </a>
+            <p className="text-center text-[13px] text-muted">{t("sendOrderWaHint")}</p>
+          </>
+        )}
+        <Link href={trackingPath(store.slug, order.number)} className={sellerPhone ? "btn btn-ghost min-h-12" : "btn-gold min-h-12"} data-testid="track-link">
           <Icon as={Truck} /> {t("trackOrder")}
         </Link>
-        {sellerPhone && (
-          <a href={waLink(sellerPhone, message)} target="_blank" rel="noopener noreferrer" className="btn btn-ghost min-h-12">
-            <Icon as={MessageCircle} /> {t("messageSeller")}
-          </a>
-        )}
       </div>
 
       <section className="rounded-2xl border border-st-border bg-st-surface p-5 sm:p-6">

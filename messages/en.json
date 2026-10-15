@@ -531,6 +531,8 @@
     "orderNumber": "Order #{number}",
     "orderThanks": "Thank you, {name}. The seller will contact you to confirm.",
     "messageSeller": "Message the seller on WhatsApp",
+    "sendOrderWa": "Send your order to the seller on WhatsApp",
+    "sendOrderWaHint": "One tap and the message is ready with your order number and items, so the seller confirms faster.",
     "backToStore": "Back to the store",
     "poweredBy": "Made with Bazarga",
     "fibTitle": "Pay with FIB",
