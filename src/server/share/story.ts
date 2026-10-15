@@ -29,10 +29,10 @@ export type StoryInput = {
   text: { cta: string; scan: string; poweredBy: string };
 };
 
-type TextOpts = { weight: keyof typeof FONT; px: number; color: string; width: number; maxHeight?: number; opacity?: number };
+export type TextOpts = { weight: keyof typeof FONT; px: number; color: string; width: number; maxHeight?: number; opacity?: number };
 
 /** Renders one block of centred, word-wrapped text; shrinks the size until it fits `maxHeight`. */
-async function textBlock(s: string, o: TextOpts): Promise<{ data: Buffer; width: number; height: number }> {
+export async function textBlock(s: string, o: TextOpts): Promise<{ data: Buffer; width: number; height: number }> {
   let px = o.px;
   for (;;) {
     const alpha = o.opacity !== undefined ? ` fgalpha="${Math.round(o.opacity * 100)}%"` : "";
