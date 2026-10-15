@@ -490,6 +490,12 @@
     "freeDeliveryThreshold": "Free delivery over (IQD)",
     "freeDeliveryHint": "Orders at or above this amount ship free. Leave empty to turn it off.",
     "storefrontTitle": "Store front",
+    "pixelsTitle": "Ad pixels",
+    "pixelsHint": "Add your own TikTok and Meta (Facebook/Instagram) pixel IDs to see which ads bring orders. Leave empty to turn off.",
+    "tiktokPixel": "TikTok Pixel ID",
+    "metaPixel": "Meta Pixel ID",
+    "pixelsPrivacy": "Loads only after the visitor's first interaction, and sends nothing when Do Not Track or GPC is on. No personal data (name, phone, address) is ever sent.",
+    "savePixels": "Save pixels",
     "saveStorefront": "Save"
   },
   "ai": {
@@ -701,6 +707,7 @@
     "discount_below_minimum": "Your order is below this code's minimum.",
     "invalid_area": "Choose an area from the list.",
     "invalid_threshold": "Enter a whole amount in IQD, e.g. 50000.",
+    "invalid_pixel": "That pixel ID looks wrong. Copy it from your Events Manager.",
     "invalid_image_url": "That image couldn't be used. Upload it again.",
     "phone_operator": "Use a Korek (075), Asiacell (077) or Zain (078/079) mobile number.",
     "address_required": "Add a landmark or your street address.",

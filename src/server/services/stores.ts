@@ -1,3 +1,4 @@
+import type { StorePixelsInput } from "@/lib/pixels";
 import { and, asc, eq, ne } from "drizzle-orm";
 import type { Db } from "../db";
 import { deliveryZones, storePaymentMethods, stores } from "../db/schema";
@@ -121,6 +122,17 @@ export async function updateStoreStorefront(database: Db, storeId: string, input
       freeDeliveryThreshold: input.freeDeliveryThreshold,
       updatedAt: new Date(),
     })
+    .where(eq(stores.id, storeId))
+    .returning();
+  if (!s) throw new AppError("NOT_FOUND");
+  return s;
+}
+
+/** Seller's own TikTok / Meta pixel IDs (null = off). IDs are validated by `storePixelsSchema` before they get here. */
+export async function updateStorePixels(database: Db, storeId: string, input: StorePixelsInput): Promise<Store> {
+  const [s] = await database
+    .update(stores)
+    .set({ tiktokPixelId: input.tiktokPixelId, metaPixelId: input.metaPixelId, updatedAt: new Date() })
     .where(eq(stores.id, storeId))
     .returning();
   if (!s) throw new AppError("NOT_FOUND");

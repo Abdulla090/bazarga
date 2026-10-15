@@ -132,6 +132,9 @@ export const stores = pgTable(
     /** Subscription plan (src/lib/plans.ts): free | pro | business | max. Limits enforced server-side. */
     plan: text("plan").notNull().default("free"),
     planPeriodEnd: timestamp("plan_period_end", { withTimezone: true }),
+    /** Seller's own ad pixels (migration 0020); null = off. Validated by src/lib/pixels.ts. */
+    tiktokPixelId: text("tiktok_pixel_id"),
+    metaPixelId: text("meta_pixel_id"),
     // ---- storefront theme (src/lib/theme.ts)
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */

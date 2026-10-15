@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PixelEvent } from "@/components/store/SellerPixels";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -63,6 +64,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 
   return (
     <div className="mx-auto grid max-w-xl gap-8">
+      <PixelEvent event="Purchase" dedupeKey={order.publicId} data={{ value: order.total, ids: order.items.map((i) => i.productId).filter((x): x is string => !!x) }} />
       <div className="grid justify-items-center gap-3 pt-4 text-center sm:pt-8">
         <span className="order-success-ring grid size-14 place-items-center rounded-full bg-st-fg text-st-bg"><Icon as={Check} className="h-7 w-7" /></span>
         <h1 className="display mt-2 text-[28px] sm:text-[40px]">{t("orderReceived")}</h1>

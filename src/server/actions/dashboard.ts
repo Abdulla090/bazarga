@@ -8,7 +8,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { recordAudit, auditDetail } from "../audit";
 import { requireStore, requireUser } from "../auth/session";
-import { createStore, getStoreForOwner, updateStore, updateStoreStorefront, updateStoreTheme } from "../services/stores";
+import { createStore, getStoreForOwner, updateStore, updateStorePixels, updateStoreStorefront, updateStoreTheme } from "../services/stores";
 import {
   createCategory,
   createProduct,
@@ -34,6 +34,7 @@ import { specsFromForm,
   storeThemeSchema,
   storeStorefrontSchema,
 } from "@/lib/validation";
+import { storePixelsSchema } from "@/lib/pixels";
 import { LOST_ORDER_STATUSES, RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
 
@@ -126,6 +127,20 @@ export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Pr
     });
     await updateStoreStorefront(db(), store.id, input);
     await recordAudit(store.id, user.id, "store.storefront", auditDetail(Object.keys(input)));
+    invalidateStore(store.id, [store.slug]);
+    revalidatePath("/dashboard/settings");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+export async function savePixelsAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store, user } = await requireStore();
+    const input = storePixelsSchema.parse({ tiktokPixelId: fd.get("tiktokPixelId") ?? null, metaPixelId: fd.get("metaPixelId") ?? null });
+    await updateStorePixels(db(), store.id, input);
+    await recordAudit(store.id, user.id, "store.pixels", auditDetail(Object.keys(input)));
     invalidateStore(store.id, [store.slug]);
     revalidatePath("/dashboard/settings");
     return { ok: true };
