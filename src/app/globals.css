@@ -541,6 +541,13 @@ html:lang(ckb) .storefront[data-design="gallery"] .store-name, html:lang(ar) .st
 .storefront[data-design="gallery"] .store-mark { display: none; }
 .storefront[data-design="gallery"] .btn, .storefront[data-design="gallery"] .btn-gold { border-radius: 0; letter-spacing: 0.08em; }
 
+/* Boutique: soft and centred. Big radii, pill buttons, the store name centred in the header, sentence-case wayfinding. */
+.storefront[data-design="boutique"] :is(.rounded-2xl, .rounded-xl) { border-radius: 1.5rem; }
+.storefront[data-design="boutique"] .store-header .store-page { display: grid; grid-template-columns: 1fr auto 1fr; }
+.storefront[data-design="boutique"] .store-header .store-page > a:first-child { grid-column: 2; grid-row: 1; margin: 0; justify-self: center; }
+.storefront[data-design="boutique"] .store-header .store-page > a:nth-child(2) { grid-column: 1; grid-row: 1; justify-self: start; }
+.storefront[data-design="boutique"] .store-header .store-page > :nth-child(3) { grid-column: 3; grid-row: 1; justify-self: end; }
+
 /* ---- Market: catalogue-first. White header with a wide search field, compact type, tight sections, dense grid. ---- */
 .storefront[data-design="market"] { --section-gap: 2.5rem; --page-max: 90rem; }
 @media (min-width: 1024px) { .storefront[data-design="market"] { --section-gap: 3.5rem; } }

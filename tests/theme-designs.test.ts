@@ -17,6 +17,7 @@ describe("store designs", () => {
     expect(designSpec("editorial").id).toBe("editorial");
     expect(designSpec("market").id).toBe("market");
     expect(designSpec("gallery").id).toBe("gallery");
+    expect(designSpec("boutique").id).toBe("boutique");
     expect(designSpec("mono").id).toBe("classic");
     expect(designSpec("nope").id).toBe("classic");
     expect(designSpec(undefined).id).toBe("classic");
@@ -33,6 +34,7 @@ describe("store designs", () => {
     expect(THEME_STUDIO_PRESETS.editorial!.design).toBe("editorial");
     expect(THEME_STUDIO_PRESETS.market!.design).toBe("market");
     expect(THEME_STUDIO_PRESETS.gallery!.design).toBe("gallery");
+    expect(THEME_STUDIO_PRESETS.boutique!.design).toBe("boutique");
     for (const p of Object.values(THEME_STUDIO_PRESETS)) expect(DESIGN_IDS).toContain(p.design);
   });
   it("numbers only the sections that are present, in the design's own order", () => {

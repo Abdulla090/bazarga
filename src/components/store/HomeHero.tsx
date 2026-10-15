@@ -136,3 +136,33 @@ export function HeroFullbleed({ name, tagline, cover, shopNow }: HeroProps) {
     </section>
   );
 }
+
+/**
+ * Boutique arch: everything centred. The store name and tagline sit above a tall arch-shaped window onto the cover
+ * (rounded top, soft bottom), with a pill button between them. With no cover the arch is a blush panel.
+ */
+export function HeroArch({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="grid justify-items-center gap-6 text-center md:gap-8" data-testid="store-hero" data-hero="arch">
+      <h1 className="t-hero max-w-3xl text-balance break-words">{name}</h1>
+      {tagline && <p className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl">{tagline}</p>}
+      <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{shopNow}</a>
+      {cover && (
+        <div className="w-full max-w-[22rem] overflow-hidden rounded-t-[999px] rounded-b-3xl bg-[#F4F4F5] md:max-w-[30rem]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cover.url}
+            srcSet={buildSrcSet(cover.renditions)}
+            sizes={cover.renditions?.length ? "(min-width: 768px) 480px, 352px" : undefined}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-[3/4] w-full object-cover"
+            style={coverStyle(cover)}
+          />
+        </div>
+      )}
+    </section>
+  );
+}

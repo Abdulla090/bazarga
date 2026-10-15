@@ -15,7 +15,7 @@ import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, CollectionIndex, Spotlight } from "@/components/store/HomeSections";
-import { HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit } from "@/components/store/HomeHero";
+import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -109,6 +109,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     // Dense: catalogue-first, 2 columns on phones up to 6 on wide desktops.
     // Tiles: edge-to-edge photo tiles separated by a hairline gap, 2 columns on phones up to 4 on desktops.
     tiles: "grid grid-cols-2 gap-0.5 sm:grid-cols-3 lg:grid-cols-4",
+    // Soft: roomy rounded cards, 2 columns on phones, 3 from sm, 4 on wide desktops.
+    soft: "grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 xl:grid-cols-4",
     dense: "grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-x-4 md:gap-y-8 lg:grid-cols-5 xl:grid-cols-6",
   } as const;
   const catItems = [
@@ -192,7 +194,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       <ViewPixel slug={store.slug} />
       {browsing && (
         <>
-          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : <HeroSplit {...heroProps} />}
+          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : <HeroSplit {...heroProps} />}
           {design.sections.map((k) => (
             <Fragment key={k}>{blocks[k]}</Fragment>
           ))}

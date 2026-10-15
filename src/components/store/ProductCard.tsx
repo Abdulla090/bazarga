@@ -86,6 +86,42 @@ export function ProductCard({
       </article>
     );
   }
+  if (variant === "soft") {
+    return (
+      <article className="reveal group relative grid min-w-0 content-start gap-3 text-center" data-card="soft">
+        <div className={`${cardFrame} !rounded-3xl`}>
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
+            ) : (
+              <span className="block aspect-[4/5] w-full" />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
+          <div className="absolute bottom-2 end-2 z-10">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} aria-label={labels.chooseOptions} className="flex h-11 w-11 items-center justify-center rounded-full bg-st-surface text-st-fg shadow-e1 transition-transform duration-150 active:scale-95">
+                <Icon as={Plus} className="h-5 w-5" />
+              </Link>
+            ) : !p.soldOut ? (
+              <AddToCart
+                slug={slug}
+                productId={p.id}
+                labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+                icon={<Icon as={Plus} className="h-5 w-5" />}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-st-surface text-st-fg shadow-e1 transition-transform duration-150 active:scale-95"
+              />
+            ) : null}
+          </div>
+        </div>
+        <div className="grid justify-items-center gap-1 px-1">
+          <Link href={href} className="line-clamp-2 text-[15px] leading-snug after:absolute after:inset-0 after:content-[''] md:text-base">{name}</Link>
+          <CardPrice p={p} locale={locale} from={labels.from} />
+        </div>
+      </article>
+    );
+  }
   if (variant === "tile") {
     return (
       <article className="reveal group relative min-w-0" data-card="tile">
