@@ -34,7 +34,7 @@ FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with selle
 - [x] S1–S6 all shipped and live; live e2e green Oct 15 22:2x on bazarga.vercel.app: social-first (share modal, ?src order → seller sees TikTok, OG card PNG), pixels, seller-journey, plan-gating
 
 ## Thu 22 freeze / Fri 23 launch
-- [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [ ] Thu 22: bug bash all routes x 4 locales x 360/390/1280
+- [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [x] Bug bash pass 1 Oct 16 (live crawl all public + dashboard routes x 4 locales x 3 widths: clean after tap-target fixes) · [ ] Thu 22: final bug bash after freeze (scripts/bugbash.mjs)
 
 ## Needs Abdulla
 - Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).
