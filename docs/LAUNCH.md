@@ -1,6 +1,6 @@
 # Bazarga — launch checklist
 
-Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). Tue 2026-10-20: production.
+FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with seller + shopper e2e. Fri 2026-10-23 production at super quality; Thu 2026-10-22 freeze and bug bash.
 
 ## Done
 - [x] K1 persistent uploads (Supabase Storage driver)
@@ -15,7 +15,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [x] K5 cron: /api/cron/daily (plan expiry + payments) + vercel.json daily; CRON_SECRET set on Vercel
 - [x] K6a audit log (migration 0013) for settings changes; rate limits already on auth, checkout, track, uploads
 - [x] Rasedi payment gateway architecture (migration 0014, docs/PAYMENTS.md) — merged OFF (`PAYMENTS_PROVIDER` unset)
-- [ ] K6b npm audit review: only 1 high (sharp libheif/librsvg, fix needs sharp 0.35 major bump); upgrade + gate pending
+- [x] K6b sharp 0.34 → 0.35.5, `npm audit --omit=dev` = 0 vulnerabilities (7dc22d1)
 - [x] Gallery design (Oct 15) · [x] Boutique (Oct 15) · [ ] Mono, Studio designs; theme thumbnails; one-click switch e2e
 
 ## Thu 15
@@ -28,10 +28,10 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
-- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [ ] axe pass · [x] skeletons (dashboard, 1f18d4b) · [ ] translation pass
+- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [~] axe pass (Oct 15: landing, pricing, login, signup, terms clean at 390 ku + 1280 en; open: store-home/product ghost wordmark contrast, flagged even with aria-hidden → move text to a CSS pseudo-element) · [x] skeletons (dashboard, 1f18d4b) · [ ] translation pass
 
-## Fri 16 freeze
-- [ ] Bug bash all routes x 4 locales x 360/390/1280 · [ ] full e2e green
+## Thu 22 freeze / Fri 23 launch
+- [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [ ] Thu 22: bug bash all routes x 4 locales x 360/390/1280
 
 ## Needs Abdulla
 - Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).
