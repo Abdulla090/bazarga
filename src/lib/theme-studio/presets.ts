@@ -26,6 +26,14 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     cards: { radius: "none", style: "flat", ratio: "portrait" },
     background: { kind: "solid" }, header: { layout: "minimal" },
   }),
+  boutique: base("boutique", {
+    design: "boutique",
+    colors: { accent: "#9D4A5E", bg: "#FBF6F3", surface: "#FFFFFF", text: "#2A1C20" },
+    type: { pair: "rounded-soft", scale: "m" },
+    buttons: { shape: "pill", style: "solid", size: "m" },
+    cards: { radius: "lg", style: "flat", ratio: "portrait" },
+    background: { kind: "solid" }, header: { layout: "centered" },
+  }),
   studio: base("studio", {
     colors: { accent: "#2563EB", bg: "#F6F8FC", surface: "#FFFFFF", text: "#0B1220" },
     type: { pair: "sans-clean", scale: "m" },
