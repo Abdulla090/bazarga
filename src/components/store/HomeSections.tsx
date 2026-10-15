@@ -131,7 +131,7 @@ export function Spotlight({
           </h2>
           <p className="num flex flex-wrap items-baseline gap-x-3 text-xl">
             <span className="font-medium">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
-            {isOnSale(p) && <s className="text-base text-faint">{formatIQD(p.compareAtPrice!, locale)}</s>}
+            {isOnSale(p) && <s className="text-base text-muted">{formatIQD(p.compareAtPrice!, locale)}</s>}
           </p>
           {description && <p className="line-clamp-3 max-w-md text-base leading-relaxed text-muted md:text-[17px]">{description}</p>}
           <div className="flex w-full flex-wrap gap-3 sm:w-auto">
