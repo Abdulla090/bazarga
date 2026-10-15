@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { readSource } from "@/lib/source-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { maskIraqiMobile } from "@/lib/phone";
@@ -116,6 +117,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         hp: String(fd.get("website") ?? ""),
         elapsedMs: openedAt.current ? Date.now() - openedAt.current : undefined,
         idempotencyKey: idemKey.current,
+        source: readSource(slug) ?? undefined,
       });
       if (!r.ok) {
         idemKey.current = "";

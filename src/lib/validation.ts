@@ -6,6 +6,7 @@ import { normalizeIraqiMobile, normalizePhone } from "./phone";
 import { isValidSlug } from "./slug";
 import { ORDER_STATUSES, PAYMENT_METHODS } from "./order-status";
 import { HEX_COLOR_RE, THEME_PRESETS } from "./theme";
+import { ORDER_SOURCES } from "./social";
 
 /** Shared Zod schemas. Every server action / route handler parses input through one of these. */
 
@@ -262,6 +263,9 @@ const optionalText = (max: number) =>
     .nullish()
     .transform((v) => v || null);
 
+/** Social attribution (`?src=` captured on the storefront, src/lib/social.ts): allowlist only. */
+export const orderSourceSchema = z.enum(ORDER_SOURCES);
+
 export const checkoutSchema = z.object({
   items: cartSchema,
   customerName: trimmed(80).min(2),
@@ -284,6 +288,8 @@ export const checkoutSchema = z.object({
   elapsedMs: z.number().int().nonnegative().max(2_147_483_647).optional().catch(undefined),
   /** Client-minted checkout attempt key (src/lib/idempotency.ts); a malformed one is dropped, never fails the order. */
   idempotencyKey: z.string().regex(IDEMPOTENCY_KEY_RE).optional().catch(undefined),
+  /** Platform the shopper came from (`?src=tiktok`); anything off the allowlist is dropped, never fails the order. */
+  source: orderSourceSchema.optional().catch(undefined),
 }).superRefine((v, ctx) => {
   if (!v.landmark && v.address.length < 3) ctx.addIssue({ code: "custom", path: ["landmark"], message: "address_required" });
 });

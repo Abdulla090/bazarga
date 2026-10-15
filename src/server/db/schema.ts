@@ -519,6 +519,8 @@ export const orders = pgTable(
     expiredAt: timestamp("expired_at", { withTimezone: true }),
     /** Client-minted checkout attempt key (src/lib/idempotency.ts); unique per store when set (migration 0015). */
     idempotencyKey: text("idempotency_key"),
+    /** Social platform the shopper arrived from (`?src=`, allowlist in src/lib/social.ts); null = direct (migration 0018). */
+    source: text("source"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -527,6 +529,7 @@ export const orders = pgTable(
     index("orders_store_phone_created_idx").on(t.storeId, t.customerPhone, t.createdAt),
     index("orders_store_created_idx").on(t.storeId, t.createdAt),
     index("orders_store_status_idx").on(t.storeId, t.status),
+    index("orders_store_source_idx").on(t.storeId, t.source),
     uniqueIndex("orders_store_idempotency_uq").on(t.storeId, t.idempotencyKey).where(sql`${t.idempotencyKey} IS NOT NULL`),
     // Abandoned online-order expiry (src/server/payments/reconcile.ts) scans only these rows.
     index("orders_unpaid_online_created_idx").on(t.createdAt).where(sql`${t.status} = 'pending' AND ${t.paymentMethod} <> 'cod' AND ${t.expiredAt} IS NULL`),

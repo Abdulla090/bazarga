@@ -938,3 +938,13 @@ html:lang(ckb) .storefront[data-design="gallery"] .store-name, html:lang(ar) .st
   .max-ring, .max-glow { display: none; }
   .max-card { border-color: CanvasText; }
 }
+
+/* Product share modal (docs/SOCIAL-FIRST.md S3): segmented language control; bottom sheet on phones. */
+.ps-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 9999px; background: rgb(10 10 11 / 0.06); }
+.ps-seg-btn { min-height: 2.25rem; padding-inline: 0.8rem; border-radius: 9999px; font-size: 0.8125rem; font-weight: 600; color: var(--color-ink-70); transition: background-color var(--duration-fast), color var(--duration-fast); }
+.ps-seg-btn[aria-checked="true"] { background: #fff; color: var(--color-ink); box-shadow: var(--shadow-e1); }
+.ps-seg-btn:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 1px; }
+@media (prefers-reduced-motion: no-preference) {
+  .ps-dialog[open] { animation: ps-in var(--duration-slow) var(--ease-out-expo); }
+}
+@keyframes ps-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }

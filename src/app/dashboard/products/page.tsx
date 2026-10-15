@@ -8,6 +8,8 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
 import { ActiveToggle } from "./ActiveToggle";
+import { ProductShareButton } from "@/components/dashboard/ProductShareButton";
+import { CAPTION_LOCALES, type CaptionLocale } from "@/lib/social";
 import { Icon, Sparkles } from "@/components/ui/icons";
 import { PlanUsage } from "@/components/dashboard/PlanUsage";
 
@@ -19,6 +21,8 @@ export default async function ProductsPage() {
   const tp = await getTranslations("pricing");
   const [products, usage] = await Promise.all([listProducts(db(), store.id), getProductUsage(db(), store.id)]);
   const atLimit = usage.used >= usage.cap;
+  const asCaption = (l: string): CaptionLocale | null => ((CAPTION_LOCALES as readonly string[]).includes(l) ? (l as CaptionLocale) : null);
+  const shareLocale: CaptionLocale = asCaption(locale) ?? asCaption(store.defaultLocale) ?? "ku";
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <div className="flex flex-wrap items-center gap-3">
@@ -52,6 +56,7 @@ export default async function ProductsPage() {
                   {formatIQD(p.price, locale)} · {p.stock === null ? t("untracked") : t("inStock", { count: p.stock })}
                 </span>
               </Link>
+              <ProductShareButton productId={p.id} slug={store.slug} storeName={store.name} names={p.name} price={p.price} defaultLocale={shareLocale} />
               <ActiveToggle id={p.id} active={p.isActive} />
             </li>
           ))}
