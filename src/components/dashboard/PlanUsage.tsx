@@ -13,7 +13,7 @@ export function PlanUsage({ label, used, shown, plan, hint, cta }: { label: stri
         <span className="font-medium">{label}</span>
         <span className="text-ink-70">· {plan}</span>
         {cta && (
-          <Link href="/dashboard/upgrade" className={`ms-auto inline-flex min-h-9 items-center rounded-full px-3 text-[13px] font-semibold ${near ? "bg-[#2563EB] text-white" : "text-[#2563EB] hover:underline"}`}>
+          <Link href="/dashboard/upgrade" className={`ms-auto inline-flex min-h-11 items-center rounded-full px-4 text-[13px] font-semibold ${near ? "bg-[#2563EB] text-white" : "text-[#2563EB] hover:underline"}`}>
             {cta}
           </Link>
         )}

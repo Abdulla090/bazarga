@@ -35,7 +35,7 @@ export default async function CourierSheetPage({ searchParams }: { searchParams:
         <p className="border-t border-line pt-4 text-ink-70" data-testid="courier-empty">{t("empty")}</p>
       ) : (
         <>
-          <a href={waLink(digits, courierSheetText(orders, locale))} target="_blank" rel="noopener noreferrer" className="btn-primary" data-testid="courier-send-all">
+          <a href={waLink(digits, courierSheetText(orders, locale))} target="_blank" rel="noopener noreferrer" className="btn-gold w-full text-center" data-testid="courier-send-all">
             {t("sendAll", { count: orders.length })} · {formatIQD(cash, locale)}
           </a>
           <ul className="grid gap-2">

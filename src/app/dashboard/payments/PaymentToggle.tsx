@@ -28,7 +28,7 @@ export function PaymentToggle({ method, enabled, available, stub }: { method: st
             await togglePaymentAction(method, !on);
           })
         }
-        className={`chip min-h-9 px-4 ${on ? "bg-ink text-white" : "bg-ink/10 text-ink-70"}`}
+        className={`chip min-h-11 min-w-16 justify-center px-4 ${on ? "bg-ink text-white" : "bg-ink/10 text-ink-70"}`}
       >
         {on ? t("on") : t("off")}
       </button>
