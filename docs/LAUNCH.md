@@ -16,7 +16,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [x] K6a audit log (migration 0013) for settings changes; rate limits already on auth, checkout, track, uploads
 - [x] Rasedi payment gateway architecture (migration 0014, docs/PAYMENTS.md) — merged OFF (`PAYMENTS_PROVIDER` unset)
 - [ ] K6b npm audit review: only 1 high (sharp libheif/librsvg, fix needs sharp 0.35 major bump); upgrade + gate pending
-- [x] Gallery design (Oct 15) · [ ] Boutique, Mono, Studio designs; theme thumbnails; one-click switch e2e
+- [x] Gallery design (Oct 15) · [x] Boutique (Oct 15) · [ ] Mono, Studio designs; theme thumbnails; one-click switch e2e
 
 ## Thu 15
 - [x] /api/health (DB ping + build sha), structured logging (src/server/logger.ts) — error boundaries: see error pages
