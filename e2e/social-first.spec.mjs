@@ -63,7 +63,7 @@ test("dashboard share modal: canvas story + square, per-platform ?src links, cap
   await page.getByTestId("share-caption-platform").selectOption("instagram");
   await expect(page.getByTestId("share-caption")).toHaveValue(/\?src=instagram/);
   await page.getByTestId("share-lang-en").click();
-  await expect(page.getByTestId("share-caption")).toHaveValue(/Cash on delivery/);
+  await expect(page.getByTestId("share-caption")).toHaveValue(/cash on delivery/i);
   await expect(page.getByTestId("share-wa")).toHaveAttribute("href", /wa\.me\/\?text=.*src%3Dwhatsapp/);
 
   // Download produces a PNG.

@@ -17,7 +17,10 @@ export function SourceCapture({ slug }: { slug: string }) {
       const flag = `${sourceStorageKey(slug)}:counted:${src}`;
       if (!sessionStorage.getItem(flag)) {
         sessionStorage.setItem(flag, "1");
-        void fetch(`/api/v/${slug}?s=${src}`, { keepalive: true, credentials: "omit", cache: "no-store" }).catch(() => {});
+        // Same 1×1 GIF beacon as ViewPixel (an image request: no CORS, no credentials needed, never blocks navigation).
+        const img = new Image();
+        img.referrerPolicy = "no-referrer";
+        img.src = `/api/v/${slug}?s=${src}`;
       }
     } catch {
       /* counting must never break the page */
