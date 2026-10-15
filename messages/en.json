@@ -90,9 +90,9 @@
     "thanksBody": "We'll message you on WhatsApp.",
     "formError": "Please fill in your name, WhatsApp number, what you sell and your city.",
     "madeIn": "Made in Erbil, Kurdistan",
-    "heroTitle1": "Open your store today.",
-    "heroTitle2": "Start free.",
-    "heroLead": "Send photos and prices in your language. We turn them into a beautiful store you can share in minutes.",
+    "heroTitle1": "Keep posting on TikTok.",
+    "heroTitle2": "Bazarga turns views into orders.",
+    "heroLead": "Put one link in your bio. Shoppers see the price, order with name, phone and address, pay cash on delivery, and you see which platform sold.",
     "hookLabel": "Try Pro",
     "mockStore": "Hawler Bazaar",
     "mockOrder": "Order now",
@@ -165,7 +165,31 @@
         "a": "Cash orders are collected by your courier as usual. FIB and ZainCash orders are paid online and marked paid automatically. Plans are month to month: cancel anytime and your store and products stay exactly as they are."
       }
     },
-    "whyLangPick": "Language"
+    "whyLangPick": "Language",
+    "dvb": {
+      "eyebrow": "DMs vs Bazarga",
+      "title": "Your posts bring the buyers. DMs lose them.",
+      "lead": "Don't stop posting on TikTok, Instagram and WhatsApp. Just stop taking orders in the chat.",
+      "dmTitle": "Selling in the DMs",
+      "dmBubble": "How much?",
+      "dmUnread": "unread",
+      "dm1": "Orders get buried under hundreds of messages",
+      "dm2": "Answering “how much?” all day, every day",
+      "dm3": "No record of who ordered what",
+      "dm4": "No tracking once it ships",
+      "bzTitle": "Selling with Bazarga",
+      "bz1": "One link in your bio for every product",
+      "bz2": "Prices are visible, nobody has to ask",
+      "bz3": "Structured orders: name, phone, city, address",
+      "bz4": "Cash on delivery, built in",
+      "bz5": "See which platform sold",
+      "orderLabel": "New order #1042",
+      "orderFrom": "from TikTok",
+      "orderName": "Aras Karim",
+      "orderCity": "Erbil · near Family Mall",
+      "cod": "Cash on delivery",
+      "cta": "Make your bio link"
+    }
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -428,7 +452,8 @@
     "slipScan": "Scan to track",
     "slipHint": "Pick A6 or A5 paper in the print dialog.",
     "emptyHelp": "Share your store link to get your first order.",
-    "emptyCta": "Share store"
+    "emptyCta": "Share store",
+    "fromSource": "From {source}"
   },
   "customers": {
     "title": "Customers",
@@ -867,7 +892,14 @@
     "calTitle": "Visitors, last 90 days",
     "calHint": "One square per day. Darker means more visitors.",
     "calLess": "Less",
-    "calMore": "More"
+    "calMore": "More",
+    "sourceTitle": "Orders by source",
+    "sourceHint": "Where buyers came from: links shared from the product Share button carry the platform.",
+    "sourceTop": "{source} brought {share}% of orders.",
+    "sourceBestConv": "{source} converts best.",
+    "sourceEmpty": "No orders yet. Share a product link to see which platform sells.",
+    "sourceDirect": "Direct",
+    "sourceVisits": "{count} visitors"
   },
   "payStatus": {
     "title": "Online payment",
@@ -1197,5 +1229,27 @@
     "dashTitle": "This page isn’t in your dashboard",
     "dashBody": "It may have been deleted or moved.",
     "dashHome": "Back to dashboard"
+  },
+  "productShare": {
+    "share": "Share",
+    "title": "Share this product",
+    "close": "Close",
+    "failed": "Couldn't prepare the share kit. Try again in a moment.",
+    "images": "Post images",
+    "language": "Language",
+    "storyLabel": "Story",
+    "squareLabel": "Post",
+    "storyAlt": "Story image for {name}",
+    "squareAlt": "Square post image for {name}",
+    "download": "Download",
+    "shareNative": "Share image…",
+    "links": "Link for each platform",
+    "linksHint": "Each link is tagged, so Analytics shows which platform sold.",
+    "copyLink": "Copy",
+    "copied": "Copied",
+    "caption": "Caption",
+    "captionFor": "Link for",
+    "copyCaption": "Copy caption",
+    "sendWhatsapp": "Send on WhatsApp"
   }
 }

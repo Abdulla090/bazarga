@@ -338,7 +338,7 @@ export type PlaceOrderOptions = {
   now?: Date;
 };
 
-type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode" | "hp" | "elapsedMs" | "idempotencyKey";
+type OptionalCheckoutFields = "areaId" | "areaOther" | "landmark" | "discountCode" | "hp" | "elapsedMs" | "idempotencyKey" | "source";
 /** Parsed checkout input; area, landmark and discount code are optional for callers that don't collect them. */
 export type PlaceOrderInput = Omit<CheckoutInput, OptionalCheckoutFields> & Partial<Pick<CheckoutInput, OptionalCheckoutFields>>;
 
@@ -586,6 +586,7 @@ export async function placeOrder(
         locale: input.locale,
         riskFlags,
         cartHash,
+        source: input.source ?? null,
       })
       .returning();
     if (!order) throw new Error("order insert failed");

@@ -7,7 +7,8 @@ import { currentLocale } from "@/server/locale";
 import { getAnalyticsExtras, getPreviousTotals, getStoreAnalytics } from "@/server/services/analytics";
 import { formatIQD } from "@/lib/money";
 import { AreaChart, Donut, Sparkline, donutColor } from "@/components/charts/charts";
-import { CalendarStrip, FunnelChart, Gauge, Heatmap, Legend, RankedBars, StackedColumns, type StackSeries } from "@/components/charts/viz";
+import { CalendarStrip, FunnelChart, Gauge, Heatmap, Legend, RankedBars, SourceBars, StackedColumns, type StackSeries } from "@/components/charts/viz";
+import { SOURCE_COLOR, SOURCE_LABEL } from "@/lib/social";
 import { bucketStacks, maxNice, pctChange } from "@/lib/chart-math";
 import { ANALYTICS_RANGES, conversionRate, parseRange } from "@/lib/analytics";
 
@@ -31,6 +32,19 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const topRevenue = Math.max(1, ...a.byCity.map((c) => c.revenue));
   const cityShare = (v: number) => Math.max(v > 0 ? 3 : 0, Math.round((v / topRevenue) * 100));
   const empty = a.totals.visitors === 0 && a.totals.orders === 0;
+  const sourceOrders = a.bySource.reduce((acc, r) => acc + r.orders, 0);
+  const sourceRows = a.bySource.map((r) => ({
+    key: r.source,
+    label: r.source === "direct" ? t("sourceDirect") : SOURCE_LABEL[r.source],
+    color: SOURCE_COLOR[r.source],
+    orders: r.orders,
+    ordersLabel: nf.format(r.orders),
+    share: sourceOrders > 0 ? `${nf.format(Math.round((r.orders / sourceOrders) * 100))}%` : "—",
+    convLabel: r.conversion === null ? "—" : `${nf.format(r.conversion)}%`,
+    visitsLabel: t("sourceVisits", { count: r.visits }),
+  }));
+  const topSource = a.bySource.find((r) => r.source !== "direct" && r.orders > 0);
+  const bestConv = [...a.bySource].filter((r) => r.source !== "direct" && r.conversion !== null && r.visits >= 20).sort((p, q) => (q.conversion ?? 0) - (p.conversion ?? 0))[0];
 
   const kpis: { key: string; value: string; hint?: string; series?: number[]; delta?: number | null }[] = [
     { key: "visitors", value: nf.format(a.totals.visitors), series: a.days.map((d) => d.visitors), delta: pctChange(a.totals.visitors, prev.visitors) },
@@ -145,6 +159,26 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             <p className="num text-center text-sm text-ink-70" dir="ltr">
               {prevConv === null ? t("gaugeNoPrev") : t("gaugePrev", { value: nf.format(prevConv) })}
             </p>
+          </section>
+
+          <section className="card grid min-w-0 grid-cols-1 content-start gap-4 lg:col-span-12" aria-labelledby="an-source" data-testid="by-source">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
+              <div className="min-w-0">
+                <h2 id="an-source" className="text-lg font-bold">{t("sourceTitle")}</h2>
+                <p className="text-xs text-ink-50">{t("sourceHint")}</p>
+              </div>
+              {topSource && (
+                <p className="text-sm text-ink-70" data-testid="source-top">
+                  {t("sourceTop", { source: SOURCE_LABEL[topSource.source as Exclude<typeof topSource.source, "direct">], share: sourceOrders > 0 ? Math.round((topSource.orders / sourceOrders) * 100) : 0 })}
+                  {bestConv && bestConv.source !== topSource.source ? ` ${t("sourceBestConv", { source: SOURCE_LABEL[bestConv.source as Exclude<typeof bestConv.source, "direct">] })}` : ""}
+                </p>
+              )}
+            </div>
+            {sourceRows.length === 0 ? (
+              <p className="text-sm text-ink-50">{t("sourceEmpty")}</p>
+            ) : (
+              <SourceBars rows={sourceRows} label={`${t("sourceTitle")}: ${sourceRows.map((r) => `${r.label} ${r.ordersLabel}`).join(", ")}`} ordersHeader={t("orders")} convHeader={t("conversion")} />
+            )}
           </section>
 
           <section className="card grid min-w-0 grid-cols-1 content-start gap-3 lg:col-span-5" aria-labelledby="an-funnel" data-testid="funnel">

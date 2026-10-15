@@ -11,6 +11,7 @@ import type { Db } from "../src/server/db";
 import { orderEvents, orderItems, orders, products, storePageViews, stores } from "../src/server/db/schema";
 import { CHECKOUT_PAGE, dayRange, HOME_PAGE, iraqDayStart, PRODUCT_VISITORS_PAGE, VISITORS_PAGE, WHATSAPP_PAGE } from "../src/lib/analytics";
 import type { OrderStatus } from "../src/lib/order-status";
+import { sourcePage, type OrderSource } from "../src/lib/social";
 
 export const DEMO_PHONE_PREFIX = "+96477099";
 
@@ -53,6 +54,19 @@ const CITIES = [
   ["basra", "بەسرە", 4],
   ["halabja", "هەڵەبجە", 3],
 ] as const;
+/**
+ * Where demo shoppers arrive from (share of daily visitors) — TikTok first, like real Iraqi social sellers — and how
+ * likely each arrival is to order relative to the store average (WhatsApp shares convert best: a friend sent it).
+ * Visitors not covered here are "direct". Kept on its own random stream so the older demo numbers never change.
+ */
+export const DEMO_SOURCES: readonly (readonly [OrderSource, number, number])[] = [
+  ["tiktok", 0.44, 0.92],
+  ["instagram", 0.24, 1.0],
+  ["whatsapp", 0.09, 1.55],
+  ["facebook", 0.07, 0.85],
+  ["telegram", 0.03, 1.1],
+  ["qr", 0.02, 1.3],
+];
 const HOUR_W = [1, 0.5, 0.3, 0.2, 0.2, 0.3, 0.6, 1.2, 2, 3, 3.5, 4, 5, 5, 4, 3.5, 3.5, 4, 5, 6.5, 7.5, 8, 6, 3];
 const NAMES = ["ئاڤان", "شیلان", "ڕێباز", "هێمن", "دلنیا", "بەرزان", "ژیان", "کاروان", "نیان", "سەربەست", "ڤیان", "هاوڕێ", "ڕێزان", "زانا", "دیلان", "ئارام", "ڕۆژین", "بیلال", "ساکار", "لانە"];
 const FAMILY = ["عومەر", "کەریم", "ئەحمەد", "عەلی", "حەسەن", "محەمەد", "ڕەسوڵ", "سلێمان", "ئیبراهیم", "قادر"];
@@ -108,6 +122,8 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
     viewValues.push({ storeId, day, page: PRODUCT_VISITORS_PAGE, views: Math.round(visitors * (0.52 + 0.1 * r())) });
     viewValues.push({ storeId, day, page: CHECKOUT_PAGE, views: Math.round(visitors * (0.17 + 0.05 * r())) });
     viewValues.push({ storeId, day, page: WHATSAPP_PAGE, views: Math.round(visitors * (0.09 + 0.05 * r())) });
+    const rs = rng(`bazarga-demo-src-${day}`);
+    for (const [src, share] of DEMO_SOURCES) viewValues.push({ storeId, day, page: sourcePage(src), views: Math.max(0, Math.round(visitors * share * (0.85 + 0.3 * rs()))) });
     const totalPv = visitors * 1.8;
     const wsum = weights.reduce((a, [, w]) => a + w, 0);
     for (const [p, w] of weights) viewValues.push({ storeId, day, page: p.id, views: Math.max(1, Math.round((totalPv * w) / wsum * (0.8 + 0.4 * r()))) });
@@ -196,5 +212,25 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
     }
     await db.update(stores).set({ orderSeq: seq + drafts.length }).where(eq(stores.id, storeId));
   }
+  await backfillDemoSources(db, storeId);
   return { viewRows, orders: drafts.length };
+}
+
+/**
+ * Gives demo orders (and only demo orders: +96477099… phones) a deterministic source, weighted by visitor share ×
+ * relative conversion, so "Orders by source" shows TikTok largest. Idempotent: only rows still NULL are touched, and the
+ * bucket comes from a hash of the order's public id, so a re-run never reshuffles. ~6% stay NULL ("direct").
+ */
+export async function backfillDemoSources(db: Db, storeId: string): Promise<void> {
+  const weights = DEMO_SOURCES.map(([s, share, conv]) => [s, share * conv] as const);
+  const total = weights.reduce((a, [, w]) => a + w, 0) / 0.94;
+  let edge = 0;
+  const cases = weights.map(([s, w]) => {
+    edge += Math.round((w / total) * 1000);
+    return sql`when (abs(hashtext(${orders.publicId})) % 1000) < ${edge} then ${s}`;
+  });
+  await db
+    .update(orders)
+    .set({ source: sql`case ${sql.join(cases, sql` `)} else null end` })
+    .where(and(eq(orders.storeId, storeId), like(orders.customerPhone, `${DEMO_PHONE_PREFIX}%`), sql`${orders.source} is null`));
 }

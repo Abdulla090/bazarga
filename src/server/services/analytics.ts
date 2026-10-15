@@ -19,6 +19,7 @@ import {
   type DayPoint,
   type FunnelStep,
 } from "@/lib/analytics";
+import { sourceFromPage, type OrderSource } from "@/lib/social";
 
 /**
  * Seller analytics (src/lib/analytics.ts explains the counting). Every query is scoped to the caller's store id,
@@ -51,6 +52,8 @@ export async function recordView(
 export type TopViewed = { productId: string; name: string; views: number };
 export type TopSold = { productId: string; name: string; units: number; revenue: number };
 export type CityRow = { cityKey: string; city: string; orders: number; revenue: number };
+/** One platform row of "Orders by source": live orders + revenue, social arrivals (visitors/day summed) and orders per 100 arrivals. */
+export type SourceRow = { source: OrderSource | "direct"; orders: number; revenue: number; visits: number; conversion: number | null };
 export type CustomerSplit = { total: number; returning: number; new: number };
 export type StoreAnalytics = {
   days: DayPoint[];
@@ -65,6 +68,8 @@ export type StoreAnalytics = {
   byCity: CityRow[];
   /** Distinct customers (by phone) who ordered in the range; "returning" = they have another live order at any time. */
   customers: CustomerSplit;
+  /** Orders by social source (docs/SOCIAL-FIRST.md S4), most orders first, "direct" (no `?src=`) last. */
+  bySource: SourceRow[];
 };
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -83,7 +88,7 @@ export async function getStoreAnalytics(
   // Orders that turned (or may still turn) into revenue: cancelled / refused / returned are left out.
   const live = and(eq(orders.storeId, storeId), gte(orders.createdAt, since), notInArray(orders.status, [...LOST_ORDER_STATUSES]));
 
-  const [viewRows, orderRows, soldRows, cityRows, customerRows] = await Promise.all([
+  const [viewRows, orderRows, soldRows, cityRows, customerRows, sourceRows] = await Promise.all([
     database
       .select({ day: storePageViews.day, page: storePageViews.page, views: storePageViews.views })
       .from(storePageViews)
@@ -125,6 +130,11 @@ export async function getStoreAnalytics(
       .where(and(eq(orders.storeId, storeId), notInArray(orders.status, [...LOST_ORDER_STATUSES])))
       .groupBy(orders.customerPhone)
       .having(sql`count(*) filter (where ${orders.createdAt} >= ${since.toISOString()}::timestamptz) > 0`),
+    database
+      .select({ source: orders.source, orders: sql<number>`count(*)`, revenue: sql<number>`coalesce(sum(${orders.total}), 0)` })
+      .from(orders)
+      .where(live)
+      .groupBy(orders.source),
   ]);
 
   const perDay: Partial<DayPoint>[] = [];
@@ -132,8 +142,11 @@ export async function getStoreAnalytics(
   let checkoutVisitors = 0;
   let whatsappTaps = 0;
   const productViews = new Map<string, number>();
+  const sourceVisits = new Map<OrderSource, number>();
   for (const r of viewRows) {
-    if (r.page === VISITORS_PAGE) perDay.push({ day: r.day, visitors: r.views });
+    const src = sourceFromPage(r.page);
+    if (src) sourceVisits.set(src, (sourceVisits.get(src) ?? 0) + r.views);
+    else if (r.page === VISITORS_PAGE) perDay.push({ day: r.day, visitors: r.views });
     else if (r.page === PRODUCT_VISITORS_PAGE) productVisitors += r.views;
     else if (r.page === CHECKOUT_PAGE) checkoutVisitors += r.views;
     else if (r.page === WHATSAPP_PAGE) whatsappTaps += r.views;
@@ -177,6 +190,7 @@ export async function getStoreAnalytics(
   const funnel = buildFunnel({ visitors: totals.visitors, product: productVisitors, checkout: checkoutVisitors, orders: totals.orders });
 
   return {
+    bySource: buildSourceRows(sourceRows, sourceVisits, totals.visitors),
     days: series,
     funnel,
     whatsappTaps,
@@ -186,6 +200,42 @@ export async function getStoreAnalytics(
     byCity: cityRows.map((r) => ({ cityKey: r.cityKey, city: r.city, orders: Number(r.orders), revenue: Number(r.revenue) })),
     customers,
   };
+}
+
+/**
+ * Rows for "Orders by source". Social arrivals come from the `src:<platform>` counters; "direct" visits are the rest
+ * of the store's visitors (an approximation: a visitor who came from TikTok and later returned typed-in counts once).
+ * Unknown sources in old rows fold into "direct".
+ */
+export function buildSourceRows(
+  orderRows: { source: string | null; orders: number | string; revenue: number | string }[],
+  visits: Map<OrderSource, number>,
+  totalVisitors: number,
+): SourceRow[] {
+  const acc = new Map<OrderSource | "direct", { orders: number; revenue: number; visits: number }>();
+  const get = (k: OrderSource | "direct") => {
+    let v = acc.get(k);
+    if (!v) acc.set(k, (v = { orders: 0, revenue: 0, visits: 0 }));
+    return v;
+  };
+  for (const r of orderRows) {
+    const k = (r.source && sourceFromPage(`src:${r.source}`)) || "direct";
+    const v = get(k);
+    v.orders += Number(r.orders);
+    v.revenue += Number(r.revenue);
+  }
+  let social = 0;
+  for (const [k, n] of visits) {
+    get(k).visits += n;
+    social += n;
+  }
+  const directVisits = Math.max(0, totalVisitors - social);
+  if (directVisits > 0 || acc.has("direct")) get("direct").visits = directVisits;
+  return [...acc.entries()]
+    .filter(([, v]) => v.orders > 0 || v.visits > 0)
+    // More orders than counted visits (e.g. cookie-less repeat buyers) would read as >100%: show no rate instead.
+    .map(([source, v]) => ({ source, ...v, conversion: v.orders > v.visits ? null : conversionRate(v.orders, v.visits) }))
+    .sort((a, b) => (a.source === "direct" ? 1 : 0) - (b.source === "direct" ? 1 : 0) || b.orders - a.orders || b.visits - a.visits);
 }
 
 /** Totals for the window of equal length right before the current one (for "vs previous period"). */

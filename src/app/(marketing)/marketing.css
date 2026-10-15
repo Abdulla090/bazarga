@@ -517,3 +517,43 @@
   .faq-panel, .faq-panel[data-open], .faq-a, .faq-panel[data-open] .faq-a, .faq-icon, .faq-item { transition: none; }
   .faq-a { filter: blur(0); transform: none; }
 }
+
+/* =====================================================================================================
+   DMs vs BAZARGA (docs/SOCIAL-FIRST.md S1): grey DM inbox vs ink Bazarga card. Blue + ink only.
+   ===================================================================================================== */
+.dvb-band { padding-block: 3.5rem; background: linear-gradient(180deg, #fff 0%, #f4f6fa 100%); }
+@media (min-width: 640px) { .dvb-band { padding-block: 5rem; } }
+.dvb-card { position: relative; min-width: 0; border-radius: 1.5rem; padding: 1.25rem; overflow: hidden; }
+@media (min-width: 640px) { .dvb-card { padding: 1.75rem; } }
+.dvb-dm { background: #fff; border: 1px solid var(--color-line); box-shadow: var(--shadow-e1); }
+.dvb-bz { background: #0a0a0b; color: #fff; box-shadow: 0 24px 48px -24px rgb(37 99 235 / 0.45); }
+.dvb-bz::before { content: ""; position: absolute; inset: -40% -30% auto auto; width: 70%; aspect-ratio: 1; background: radial-gradient(closest-side, rgb(37 99 235 / 0.35), transparent); pointer-events: none; }
+.dvb-bz > * { position: relative; }
+.dvb-unread { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 9999px; background: rgb(10 10 11 / 0.06); padding: 0.25rem 0.7rem; font-size: 0.8125rem; font-weight: 600; color: var(--color-ink-70); white-space: nowrap; }
+.dvb-unread b { color: var(--color-ink); }
+.dvb-chat { margin-top: 1rem; display: grid; gap: 0.55rem; padding: 0.9rem; border-radius: 1rem; background: #f4f6fa; }
+.dvb-msg { display: flex; align-items: center; gap: 0.55rem; min-width: 0; }
+.dvb-msg:nth-child(even) { padding-inline-start: 1.25rem; }
+.dvb-avatar { display: grid; place-content: center; flex: none; width: 1.75rem; height: 1.75rem; border-radius: 9999px; background: #dbe3ef; color: var(--color-ink-70); font: 700 0.75rem/1 var(--font-latin); }
+.dvb-bubble { border-radius: 1rem; border-end-start-radius: 0.3rem; background: #fff; padding: 0.4rem 0.8rem; font-weight: 600; box-shadow: var(--shadow-e1); white-space: nowrap; }
+.dvb-seen { color: var(--color-ink-50); font-weight: 700; letter-spacing: 0.1em; }
+.dvb-mark { display: grid; place-content: center; flex: none; width: 1.4rem; height: 1.4rem; margin-top: 0.1rem; border-radius: 9999px; }
+.dvb-mark-x { background: rgb(10 10 11 / 0.07); color: var(--color-ink-50); }
+.dvb-mark-ok { background: var(--mk-blue); color: #fff; }
+.dvb-live { display: inline-flex; align-items: center; gap: 0.45rem; border-radius: 9999px; background: rgb(255 255 255 / 0.08); padding: 0.25rem 0.7rem; font: 600 0.75rem/1.2 var(--font-latin); color: rgb(255 255 255 / 0.75); direction: ltr; white-space: nowrap; }
+.dvb-live-dot { width: 0.45rem; height: 0.45rem; border-radius: 9999px; background: #60a5fa; box-shadow: 0 0 0 3px rgb(96 165 250 / 0.25); }
+.dvb-order { margin-top: 1rem; border-radius: 1rem; background: #fff; padding: 1rem; color: var(--color-ink); box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.5); }
+.dvb-k { display: flex; align-items: center; min-height: 1.45em; color: var(--color-ink-50); }
+.dvb-src { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 9999px; background: #eef3ff; color: #1d4ed8; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+.dvb-src-dot { width: 0.45rem; height: 0.45rem; border-radius: 2px; background: #0a0a0b; }
+.dvb-cod { border-radius: 9999px; background: var(--mk-blue); color: #fff; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 700; }
+.dvb-cta { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 9999px; background: #fff; color: var(--color-ink); padding-inline: 1.4rem; font-weight: 700; transition: transform var(--duration-base) var(--mk-spring), box-shadow var(--duration-base); }
+.dvb-cta:hover { box-shadow: 0 0 0 4px rgb(37 99 235 / 0.35); }
+.dvb-cta:focus-visible { outline: 2px solid #60a5fa; outline-offset: 3px; }
+@media (max-width: 380px) { .dvb-cta { width: 100%; } }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .dvb-msg { animation: dvb-pop linear both; animation-timeline: view(); animation-range: entry 0% entry calc(40% + var(--i) * 12%); }
+  }
+}
+@keyframes dvb-pop { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }

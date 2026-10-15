@@ -5,6 +5,7 @@ import { clientIp } from "@/server/auth/session";
 import { getCatalog, getStorefrontStore } from "@/server/cache/storefront";
 import { firstSeen } from "@/server/analytics/dedupe";
 import { recordView } from "@/server/services/analytics";
+import { parseSource, sourcePage } from "@/lib/social";
 import { CHECKOUT_PAGE, HOME_PAGE, iraqDay, isBot, isPrefetch, PRODUCT_VISITORS_PAGE, VISITORS_PAGE, WHATSAPP_PAGE } from "@/lib/analytics";
 
 /** 1×1 transparent GIF (43 bytes). */
@@ -24,8 +25,9 @@ function pixel() {
 }
 
 /**
- * View pixel for seller analytics: GET /api/v/<slug>[?p=<productId> | ?c=1 | ?w=1], rendered as an <img> by the store home,
- * product pages and (when the cart has items) the checkout page (src/components/store/ViewPixel.tsx); `?w=1` is the WhatsApp-tap beacon fired by WaTap. Always answers the same GIF; the count happens after the
+ * View pixel for seller analytics: GET /api/v/<slug>[?p=<productId> | ?c=1 | ?w=1 | ?s=<source>], rendered as an <img> by the store home,
+ * product pages and (when the cart has items) the checkout page (src/components/store/ViewPixel.tsx); `?w=1` is the WhatsApp-tap beacon fired by WaTap;
+ * `?s=<source>` is the social-arrival beacon fired by SourceCapture (a visit that came from a `?src=tiktok` link; allowlist only). Always answers the same GIF; the count happens after the
  * response. Bots, prefetches, unknown stores and products that aren't in the store's catalog are ignored, and a
  * visitor counts once per page per day (src/server/analytics/dedupe.ts). See src/lib/analytics.ts.
  */
@@ -36,8 +38,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const p = q.get("p");
   const checkout = q.get("c") === "1";
   const whatsapp = q.get("w") === "1";
+  const rawSource = q.get("s");
+  const source = parseSource(rawSource);
   const h = req.headers;
   if (!SLUG_RE.test(slug) || (p !== null && !UUID_RE.test(p)) || (checkout && p !== null) || (whatsapp && (p !== null || checkout)) || isBot(h.get("user-agent")) || isPrefetch(h)) return pixel();
+  if (rawSource !== null && (!source || p !== null || checkout || whatsapp)) return pixel();
   const ip = await clientIp();
   const ua = h.get("user-agent") ?? "";
   after(async () => {
@@ -45,10 +50,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       const store = await getStorefrontStore(slug);
       if (!store) return;
       if (p && !(await getCatalog(store.id)).products.some((x) => x.id === p)) return;
-      const page = p ?? (checkout ? CHECKOUT_PAGE : whatsapp ? WHATSAPP_PAGE : HOME_PAGE);
+      const page = source ? sourcePage(source) : p ?? (checkout ? CHECKOUT_PAGE : whatsapp ? WHATSAPP_PAGE : HOME_PAGE);
       const today = iraqDay(new Date());
       if (!firstSeen(today, [ip, ua, store.id, page])) return;
-      const newVisitor = whatsapp ? false : firstSeen(today, [ip, ua, store.id, VISITORS_PAGE]);
+      const newVisitor = whatsapp || source ? false : firstSeen(today, [ip, ua, store.id, VISITORS_PAGE]);
       const productVisitor = p ? firstSeen(today, [ip, ua, store.id, PRODUCT_VISITORS_PAGE]) : false;
       await recordView(db(), store.id, page, { newVisitor, productVisitor });
     } catch (err) {

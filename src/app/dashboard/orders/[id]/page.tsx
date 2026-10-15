@@ -1,4 +1,5 @@
 import { mapsLink } from "@/lib/maps";
+import { parseSource, SOURCE_COLOR, SOURCE_LABEL } from "@/lib/social";
 import Link from "next/link";
 import { phoneDisplay } from "@/lib/phone";
 import { notFound } from "next/navigation";
@@ -37,6 +38,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const ts = await getTranslations("store");
   const tr = await getTranslations("risk");
   const flags = knownRiskFlags(order.riskFlags);
+  const sourceKey = parseSource(order.source);
   const online = order.paymentMethod !== "cod";
   const [blocked, attempts, tps] = await Promise.all([
     isPhoneBlocked(db(), store.id, order.customerPhone),
@@ -54,6 +56,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <h1 className="t-headline">{t("order", { number: order.number })}</h1>
         <StatusBadge status={order.status} />
         <PaymentBadge status={order.paymentStatus} />
+        {sourceKey && (
+          <span className="chip border border-line bg-white text-ink" data-testid="order-source" data-source={sourceKey}>
+            <span aria-hidden="true" className="size-2 rounded-full" style={{ background: SOURCE_COLOR[sourceKey] }} />
+            {t("fromSource", { source: SOURCE_LABEL[sourceKey] })}
+          </span>
+        )}
       </div>
       {(flags.length > 0 || blocked) && (
         <section className="grid gap-2 border-y border-ink py-5" aria-labelledby="risk-title" data-testid="order-risk">

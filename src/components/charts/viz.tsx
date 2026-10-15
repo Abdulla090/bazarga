@@ -246,3 +246,48 @@ export function RankedBars({ items, testId }: { items: RankItem[]; testId?: stri
     </ol>
   );
 }
+
+/* ───────── orders by source (docs/SOCIAL-FIRST.md S4) ───────── */
+
+export type SourceBarRow = { key: string; label: string; color: string; orders: number; ordersLabel: string; share: string; convLabel: string; visitsLabel: string };
+
+/**
+ * One SVG per platform row: an orders bar (blue/ink by platform) on a soft track, sized to the busiest platform.
+ * Labels live in HTML around the SVG so text never scales with the viewBox; the whole list has an aria-label and every
+ * row a native `title` tooltip. Bars grow from the reading start (right in RTL) via the flex direction.
+ */
+export function SourceBars({ rows, label, convHeader, ordersHeader }: { rows: SourceBarRow[]; label: string; convHeader: string; ordersHeader: string }) {
+  const max = Math.max(1, ...rows.map((r) => r.orders));
+  return (
+    <div className="grid gap-1" role="group" aria-label={label}>
+      <div className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_3.75rem] items-end gap-3 pb-1 text-xs font-semibold text-ink-50">
+        <span />
+        <span>{ordersHeader}</span>
+        <span className="text-end">{convHeader}</span>
+      </div>
+      <ol className="grid gap-2.5" data-testid="source-bars">
+        {rows.map((r) => {
+          const w = r.orders > 0 ? Math.max(2, (r.orders / max) * 100) : 0;
+          return (
+            <li key={r.key} className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_3.75rem] items-center gap-3" data-source={r.key} title={`${r.label} · ${r.ordersLabel} · ${r.share} · ${r.convLabel}`}>
+              <span className="flex min-w-0 items-center gap-2">
+                <span aria-hidden="true" className="size-2.5 shrink-0 rounded-[3px]" style={{ background: r.color }} />
+                <span className="truncate text-sm font-semibold">{r.label}</span>
+              </span>
+              <span className="flex min-w-0 items-center gap-2">
+                <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-3 min-w-0 flex-1 overflow-hidden rounded-full rtl:-scale-x-100" aria-hidden="true">
+                  <rect x="0" y="0" width="100" height="10" fill="#EEF1F6" />
+                  {w > 0 && <rect x="0" y="0" width={w} height="10" fill={r.color} />}
+                </svg>
+                <span className="num w-[4.5rem] shrink-0 text-sm text-ink-70" dir="ltr">
+                  <b className="font-extrabold text-ink">{r.ordersLabel}</b> <span className="text-ink-50">{r.share}</span>
+                </span>
+              </span>
+              <span className="num text-end text-sm font-semibold" dir="ltr" title={r.visitsLabel}>{r.convLabel}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
