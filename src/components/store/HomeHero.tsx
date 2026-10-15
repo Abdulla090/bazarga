@@ -105,3 +105,34 @@ export function HeroBanner({ name, tagline, cover, shopNow }: HeroProps) {
     </section>
   );
 }
+
+/**
+ * Gallery full-bleed: the cover runs edge to edge as a wide frame, the store name set in white along its lower edge on a
+ * dark scrim (so it reads on any photo). With no cover the frame is a flat ink panel.
+ */
+export function HeroFullbleed({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="bleed-x relative isolate -mt-6 overflow-hidden bg-[#0B0F1A] text-white sm:-mt-10 md:mt-0" data-testid="store-hero" data-hero="fullbleed">
+      {cover && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={cover.url}
+          srcSet={buildSrcSet(cover.renditions)}
+          sizes={cover.renditions?.length ? "100vw" : undefined}
+          alt=""
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+          style={coverStyle(cover)}
+        />
+      )}
+      <div className="absolute inset-0 -z-[5] bg-gradient-to-t from-black/70 via-black/15 to-transparent" aria-hidden />
+      <div className="grid min-h-[24rem] px-[var(--page-margin)] content-end justify-items-start gap-4 pb-8 pt-24 md:min-h-[34rem] md:pb-14">
+        <h1 className="t-hero break-words text-white">{name}</h1>
+        {tagline && <p className="line-clamp-2 max-w-md text-base leading-snug text-white/85 md:text-xl">{tagline}</p>}
+        <a href="#products" className="inline-flex min-h-12 items-center justify-center border border-white px-8 text-sm font-medium uppercase tracking-[0.14em] text-white transition-colors duration-150 hover:bg-white hover:text-black">{shopNow}</a>
+      </div>
+    </section>
+  );
+}

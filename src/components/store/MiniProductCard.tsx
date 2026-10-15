@@ -30,7 +30,7 @@ export function MiniProductCard({
 }) {
   const name = pickText(p.name, locale);
   if (look !== "classic" && variant === "default") {
-    const compact = look === "compact";
+    const compact = look === "compact" || look === "tile";
     return (
       <Link href={`/s/${slug}/p/${p.id}`} className="group grid h-full content-start gap-2" data-card={look}>
         <span className={`${cardFrame} ${compact ? "aspect-square" : ""}`}>

@@ -529,6 +529,18 @@ html:lang(ckb) .storefront[data-design="editorial"] .store-name, html:lang(ar) .
 .ed-link { transition: gap 150ms ease-out; }
 .ed-link:hover { gap: 0.75rem; }
 
+/* Gallery: photo-first, square edges, small uppercase wayfinding; the store name centred in the header. */
+.storefront[data-design="gallery"] .sf-frame { border-radius: 0; }
+.storefront[data-design="gallery"] :is(.rounded-2xl, .rounded-xl) { border-radius: var(--t-radius-card, 0); }
+.storefront[data-design="gallery"] .store-header .store-page { display: grid; grid-template-columns: 1fr auto 1fr; }
+.storefront[data-design="gallery"] .store-header .store-page > a:first-child { grid-column: 2; grid-row: 1; margin: 0; justify-self: center; }
+.storefront[data-design="gallery"] .store-header .store-page > a:nth-child(2) { grid-column: 1; grid-row: 1; justify-self: start; }
+.storefront[data-design="gallery"] .store-header .store-page > :nth-child(3) { grid-column: 3; grid-row: 1; justify-self: end; }
+.storefront[data-design="gallery"] .store-name { text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.8125rem; }
+html:lang(ckb) .storefront[data-design="gallery"] .store-name, html:lang(ar) .storefront[data-design="gallery"] .store-name { text-transform: none; letter-spacing: 0; font-size: 1rem; }
+.storefront[data-design="gallery"] .store-mark { display: none; }
+.storefront[data-design="gallery"] .btn, .storefront[data-design="gallery"] .btn-gold { border-radius: 0; letter-spacing: 0.08em; }
+
 /* ---- Market: catalogue-first. White header with a wide search field, compact type, tight sections, dense grid. ---- */
 .storefront[data-design="market"] { --section-gap: 2.5rem; --page-max: 90rem; }
 @media (min-width: 1024px) { .storefront[data-design="market"] { --section-gap: 3.5rem; } }
