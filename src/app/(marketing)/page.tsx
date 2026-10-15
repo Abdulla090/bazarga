@@ -17,6 +17,7 @@ import { WhoMarquee } from "@/components/marketing/WhoMarquee";
 import { FaqList } from "@/components/marketing/FaqList";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
+import { DmsVsBazarga } from "@/components/marketing/DmsVsBazarga";
 
 const DEMO_SLUG = "hawler-bazaar";
 const WHO_KEYS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c11", "c12"] as const;
@@ -58,8 +59,8 @@ export default async function LandingPage() {
       <a href="#main" className="sr-only focus:not-sr-only">{tc("skipToContent")}</a>
       <SiteHeader />
       <main id="main">
-        {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 with the blue
-            "Start free." hook, a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
+        {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 social-first
+            ("Keep posting on TikTok." + blue hook "Bazarga turns the views into orders."), a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
         <section className="hero-stage">
           <div className="container-page flex flex-col items-center pt-8 text-center sm:pt-14">
             <Link href="/pricing" data-hero-promo className="promo-eyebrow hero-rise group inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full ps-3.5 pe-3 text-start">
@@ -83,6 +84,17 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* Social-first (docs/SOCIAL-FIRST.md S1): keep posting on TikTok; take the order on Bazarga, not in the DMs. */}
+        <DmsVsBazarga
+          l={{
+            eyebrow: t("dvb.eyebrow"), title: t("dvb.title"), lead: t("dvb.lead"),
+            dmTitle: t("dvb.dmTitle"), dmBubble: t("dvb.dmBubble"), dmUnread: t("dvb.dmUnread"),
+            dms: [t("dvb.dm1"), t("dvb.dm2"), t("dvb.dm3"), t("dvb.dm4")],
+            bzTitle: t("dvb.bzTitle"), bzs: [t("dvb.bz1"), t("dvb.bz2"), t("dvb.bz3"), t("dvb.bz4"), t("dvb.bz5")],
+            orderLabel: t("dvb.orderLabel"), orderFrom: t("dvb.orderFrom"), orderName: t("dvb.orderName"), orderCity: t("dvb.orderCity"), cod: t("dvb.cod"), cta: t("dvb.cta"),
+          }}
+        />
 
         {/* How it works */}
         <section id="how" className="scroll-mt-20 bg-white py-14">

@@ -124,9 +124,9 @@
     "thanksTitle": "Spas, {name}!",
     "thanksBody": "Em ê li WhatsAppê ji te re binivîsin.",
     "formError": "Ji kerema xwe nav, hejmara WhatsAppê, tiştê ku difiroşî û bajarê xwe binivîse.",
-    "heroTitle1": "Dikana xwe îro veke.",
-    "heroTitle2": "Bi belaş dest pê bike.",
-    "heroLead": "Wêne û bihayan bi zimanê xwe bişîne. Em wan dikin firoşgeheke xweşik ku tu di çend deqeyan de parve bikî.",
+    "heroTitle1": "Li TikTokê parve bike.",
+    "heroTitle2": "Bazarga temaşevanan dike siparîş.",
+    "heroLead": "Lînkekê bixe bioya xwe. Kiriyar bihayê dibînin, bi nav, telefon û navnîşanê siparîş didin, dema gihandinê pere didin, û tu dibînî kîjan platformê firot.",
     "hookLabel": "Pro biceribîne",
     "mockStore": "Bazara Hewlêrê",
     "mockOrder": "Niha bixwaze",
@@ -199,7 +199,31 @@
         "a": "Fermanên kaş wek her car ji aliyê kuryerê te ve têne berhev kirin. Fermanên FIB û ZainCash online têne dayîn û bixweber wek dayî têne nîşankirin. Plan meh bi meh in: her dem betal bike û firoşgeh û berhemên te wek xwe dimînin."
       }
     },
-    "whyLangPick": "Ziman"
+    "whyLangPick": "Ziman",
+    "dvb": {
+      "eyebrow": "DM li hember Bazarga",
+      "title": "Postên te kiriyaran tînin. DM wan winda dikin.",
+      "lead": "Li TikTok, Instagram û WhatsAppê parvekirinê nesekinîne. Tenê siparîşan di çatê de negire.",
+      "dmTitle": "Firotin di DMan de",
+      "dmBubble": "Bi çiqasî ye?",
+      "dmUnread": "nexwendî",
+      "dm1": "Siparîş di nav sedan peyaman de winda dibin",
+      "dm2": "Tevahiya rojê bersiva «bi çiqasî ye?» didî",
+      "dm3": "Tomara kê çi siparîş kir tune",
+      "dm4": "Piştî şandinê şopandin tune",
+      "bzTitle": "Firotin bi Bazarga",
+      "bz1": "Lînkek di bioyê de ji bo hemû berheman",
+      "bz2": "Biha xuya ne, kes ne hewce ye bipirse",
+      "bz3": "Siparîşên rêkxistî: nav, telefon, bajar, navnîşan",
+      "bz4": "Dravdan dema gihandinê, amade ye",
+      "bz5": "Bibîne kîjan platformê firot",
+      "orderLabel": "Siparîşa nû #1042",
+      "orderFrom": "ji TikTokê",
+      "orderName": "Aras Kerîm",
+      "orderCity": "Hewlêr · nêzîkî Family Mall",
+      "cod": "Dravdan dema gihandinê",
+      "cta": "Lînka bioya xwe çêke"
+    }
   },
   "store": {
     "cart": "Selik",
@@ -490,7 +514,8 @@
     "pay_failed": "Dayîn neçû serî",
     "pay_refunded": "Hat vegerandin",
     "emptyHelp": "Girêdana firoşgehê parve bike da ferman bên.",
-    "emptyCta": "Firoşgehê parve bike"
+    "emptyCta": "Firoşgehê parve bike",
+    "fromSource": "Ji {source}"
   },
   "risk": {
     "title": "Berî şandinê kontrol bike",
@@ -625,7 +650,14 @@
     "calTitle": "Serdanker, 90 rojên dawî",
     "calHint": "Çargoşeyek ji bo her rojê. Reng tarîtir, serdanker zêdetir.",
     "calLess": "Kêmtir",
-    "calMore": "Zêdetir"
+    "calMore": "Zêdetir",
+    "sourceTitle": "Siparîş li gorî çavkaniyê",
+    "sourceHint": "Kiriyar ji ku hatin: lînkên ji bişkoka Parvekirinê ya berhemê navê platformê hildigirin.",
+    "sourceTop": "{source} {share}% ji siparîşan anî.",
+    "sourceBestConv": "{source} çêtirîn veguherîn heye.",
+    "sourceEmpty": "Hîn siparîş tune. Lînka berhemekê parve bike da ku bibînî kîjan platform difiroşe.",
+    "sourceDirect": "Rasterast / yên din",
+    "sourceVisits": "{count} serdan"
   },
   "payStatus": {
     "title": "Dayîna online",
@@ -1198,5 +1230,27 @@
     "dashTitle": "Ev rûpel di dashboarda te de tune ye",
     "dashBody": "Dibe ku hatibe jêbirin an veguhestin.",
     "dashHome": "Vegere dashboardê"
+  },
+  "productShare": {
+    "share": "Parve bike",
+    "title": "Vê berhemê parve bike",
+    "close": "Bigire",
+    "failed": "Kîta parvekirinê nehat amadekirin. Piştî demekê dîsa biceribîne.",
+    "images": "Wêneyên postê",
+    "language": "Ziman",
+    "storyLabel": "Çîrok · 1080×1920",
+    "squareLabel": "Weşan · 1080×1080",
+    "storyAlt": "Wêneya story ji bo {name}",
+    "squareAlt": "Wêneya postê ya çargoşe ji bo {name}",
+    "download": "Daxe",
+    "shareNative": "Wêneyê parve bike…",
+    "links": "Lînk ji bo her platformê",
+    "linksHint": "Her lînk nîşana platformê hildigire, ji ber vê yekê Analytics nîşan dide kîjan platformê firot.",
+    "copyLink": "Kopî",
+    "copied": "Hat kopîkirin",
+    "caption": "Nivîsa postê",
+    "captionFor": "Lînk ji bo",
+    "copyCaption": "Nivîsê kopî bike",
+    "sendWhatsapp": "Bi WhatsAppê bişîne"
   }
 }
