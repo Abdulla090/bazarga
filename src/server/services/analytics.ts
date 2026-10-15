@@ -233,7 +233,8 @@ export function buildSourceRows(
   if (directVisits > 0 || acc.has("direct")) get("direct").visits = directVisits;
   return [...acc.entries()]
     .filter(([, v]) => v.orders > 0 || v.visits > 0)
-    .map(([source, v]) => ({ source, ...v, conversion: conversionRate(v.orders, v.visits) }))
+    // More orders than counted visits (e.g. cookie-less repeat buyers) would read as >100%: show no rate instead.
+    .map(([source, v]) => ({ source, ...v, conversion: v.orders > v.visits ? null : conversionRate(v.orders, v.visits) }))
     .sort((a, b) => (a.source === "direct" ? 1 : 0) - (b.source === "direct" ? 1 : 0) || b.orders - a.orders || b.visits - a.visits);
 }
 
