@@ -138,3 +138,23 @@ test("source attribution: ?src=tiktok on a product → order → seller sees Tik
   await expect(bars.locator("li").first()).toHaveAttribute("data-source", "tiktok");
   await context.close();
 });
+
+test("link preview card: product og:image is a real 1200×630 PNG in every locale", async ({ request, baseURL }) => {
+  const html = await (await fetch(`${baseURL}/s/${SLUG}`)).text();
+  const ids = [...new Set([...html.matchAll(/productId\\?":\\?"([0-9a-f-]{36})/g)].map((m) => m[1]))];
+  expect(ids.length).toBeGreaterThan(0);
+  const page = await (await fetch(`${baseURL}/s/${SLUG}/p/${ids[0]}`)).text();
+  expect(page).toMatch(new RegExp(`<meta property="og:image" content="[^"]*/s/${SLUG}/p/${ids[0]}/og\\?lang=\\w+"`));
+  expect(page).toMatch(/<meta name="twitter:card" content="summary_large_image"/);
+  for (const lang of ["ku", "ar", "en", "kmr"]) {
+    const res = await request.get(`/s/${SLUG}/p/${ids[0]}/og?lang=${lang}`);
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("image/png");
+    const body = await res.body();
+    expect(body.subarray(1, 4).toString()).toBe("PNG");
+    expect(body.readUInt32BE(16)).toBe(1200);
+    expect(body.readUInt32BE(20)).toBe(630);
+    expect(body.length).toBeGreaterThan(8_000);
+  }
+  expect((await request.get(`/s/${SLUG}/p/00000000-0000-4000-8000-000000000000/og`)).status()).toBe(404);
+});
