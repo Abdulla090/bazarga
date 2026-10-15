@@ -130,6 +130,7 @@ let orderNumber = null;
 if (redirectTo) {
   const conf = await (await fetch(new URL(new URL(redirectTo).pathname, BASE))).text();
   ok(conf.includes("https://wa.me/9647501234567?text="), "confirmation page has a prefilled wa.me link to the seller");
+  ok(conf.includes('data-testid="wa-handoff"'), "WhatsApp hand-off is the primary action on the confirmation page");
   orderNumber = /\/s\/hawler-bazaar\/track\?n=(\d+)/.exec(conf)?.[1] ?? null;
   ok(!!orderNumber && conf.includes('data-testid="track-link"'), "confirmation page links to order tracking");
   ok(conf.includes(encodeURIComponent(`/s/hawler-bazaar/track?n=${orderNumber}`)), "WhatsApp summary carries the tracking link");

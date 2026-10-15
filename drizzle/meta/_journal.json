@@ -127,6 +127,13 @@
       "when": 1791496000000,
       "tag": "0017_email_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791499000000,
+      "tag": "0019_product_short_code",
+      "breakpoints": true
     }
   ]
 }

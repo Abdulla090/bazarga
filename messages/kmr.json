@@ -212,6 +212,8 @@
     "placeOrder": "Daxwaz bike",
     "orderReceived": "Daxwaza te gihîşt!",
     "messageSeller": "Li ser WhatsApp ji firoşkar re binivîse",
+    "sendOrderWa": "Daxwazê li ser WhatsApp ji firoşkar re bişîne",
+    "sendOrderWaHint": "Yek tikandin û peyam amade ye, bi hejmara daxwazê û berheman, da ku firoşkar zûtir piştrast bike.",
     "backToStore": "Vegere dikanê",
     "bestSeller": "Herî tê firotin",
     "bestSellers": "Yên herî tên firotin",
