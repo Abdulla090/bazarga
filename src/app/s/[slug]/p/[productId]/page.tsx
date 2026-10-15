@@ -52,17 +52,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const locale = await currentLocale();
   const title = `${pickText(p.name, locale)} · ${store.name}`;
   const description = pickText(p.description, locale).replace(/\s+/g, " ").slice(0, 160);
-  const cover = p.images[0];
   const url = `${base()}/s/${store.slug}/p/${p.id}`;
-  const og = cover
-    ? [{ url: absoluteUrl(base(), cover.url), width: cover.width ?? undefined, height: cover.height ?? undefined, alt: pickText(p.name, locale) }]
-    : undefined;
+  // Generated 1200×630 card (photo + name + price + store); the route falls back to a text card without a cover.
+  const og = [{ url: `${url}/og?lang=${locale}`, width: 1200, height: 630, alt: pickText(p.name, locale) }];
   return {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: { title, description, url, siteName: store.name, type: "website", images: og },
-    twitter: { card: cover ? "summary_large_image" : "summary", title, description, images: og?.map((i) => i.url) },
+    twitter: { card: "summary_large_image", title, description, images: og.map((i) => i.url) },
   };
 }
 
