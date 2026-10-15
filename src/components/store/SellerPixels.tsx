@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { CART_ADDED, type AddedItem } from "./cart";
-import { safePixelId, trackingAllowed, vendorEvent, type PixelData, type PixelEvent } from "@/lib/pixels";
+import { safePixelId, trackingAllowed, vendorEvent, type PixelData, type PixelEvent } from "@/lib/pixels-client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type W = Window & { ttq?: any; fbq?: any; TiktokAnalyticsObject?: string; _fbq?: unknown };
