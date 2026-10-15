@@ -59,8 +59,8 @@ export default async function LandingPage() {
       <a href="#main" className="sr-only focus:not-sr-only">{tc("skipToContent")}</a>
       <SiteHeader />
       <main id="main">
-        {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 social-first
-            ("Keep posting on TikTok." + blue hook "Bazarga turns the views into orders."), a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
+        {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 with the blue
+            "Start free." hook (social-first story lives in the DMs vs Bazarga section), a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
         <section className="hero-stage">
           <div className="container-page flex flex-col items-center pt-8 text-center sm:pt-14">
             <Link href="/pricing" data-hero-promo className="promo-eyebrow hero-rise group inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full ps-3.5 pe-3 text-start">
@@ -70,7 +70,7 @@ export default async function LandingPage() {
               <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-ink">{t("hookLabel")}</span>
               <ArrowForward className="text-base text-[#2563EB] transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>
-            <h1 className="mt-5 max-w-5xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-[3.25rem] lg:text-[3.75rem] lg:leading-[1.06]">
+            <h1 className="mt-5 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
               <span className="block">{t("heroTitle1")}</span>
               <span className="block"><HeroHook text={t("heroTitle2")} /></span>
             </h1>
