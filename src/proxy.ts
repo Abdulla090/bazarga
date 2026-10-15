@@ -92,7 +92,9 @@ export async function proxy(req: NextRequest) {
   let csp: string | undefined;
   if (!isApi) {
     const nonce = generateNonce();
-    csp = buildCsp({ nonce, isDev: IS_DEV, upgradeInsecureRequests: UPGRADE_INSECURE });
+    const sub = host.endsWith(`.${ROOT}`) ? host.slice(0, -(ROOT.length + 1)) : "";
+    const storefront = url.pathname.startsWith("/s/") || (!!sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub));
+    csp = buildCsp({ nonce, isDev: IS_DEV, upgradeInsecureRequests: UPGRADE_INSECURE, storefront });
     requestHeaders.set(NONCE_HEADER, nonce);
     requestHeaders.set("Content-Security-Policy", csp);
   }

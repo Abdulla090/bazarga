@@ -17,7 +17,15 @@ export function generateNonce(): string {
   return btoa(bin);
 }
 
-export function buildCsp(opts: { nonce: string; isDev: boolean; upgradeInsecureRequests?: boolean }): string {
+/** Hosts the seller's own TikTok / Meta pixels talk to (S5). Only storefront pages get them (see `storefront`). */
+export const PIXEL_CONNECT_HOSTS = [
+  "https://analytics.tiktok.com",
+  "https://analytics-ipv6.tiktokw.us",
+  "https://www.facebook.com",
+  "https://connect.facebook.net",
+] as const;
+
+export function buildCsp(opts: { nonce: string; isDev: boolean; upgradeInsecureRequests?: boolean; storefront?: boolean }): string {
   const directives = [
     "default-src 'self'",
     // 'self' is a fallback for browsers without 'strict-dynamic' (CSP2); CSP3 browsers ignore it.
@@ -26,7 +34,7 @@ export function buildCsp(opts: { nonce: string; isDev: boolean; upgradeInsecureR
     // https: — product images on R2/S3 public URLs; data:/blob: — upload previews.
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
-    "connect-src 'self'",
+    opts.storefront ? `connect-src 'self' ${PIXEL_CONNECT_HOSTS.join(" ")}` : "connect-src 'self'",
     "frame-ancestors 'self'",
     "base-uri 'self'",
     // https: — online payment providers (FIB / ZainCash) redirect flows.

@@ -4,6 +4,7 @@ import { env } from "@/server/env";
 import { updateStoreAction } from "@/server/actions/dashboard";
 import { currentLocale } from "@/server/locale";
 import { StoreForm } from "@/components/dashboard/StoreForm";
+import { PixelsForm } from "@/components/dashboard/PixelsForm";
 import { ThemeForm } from "@/components/dashboard/ThemeForm";
 import { StorefrontForm } from "@/components/dashboard/StorefrontForm";
 import { IRAQI_CITIES } from "@/lib/cities";
@@ -50,6 +51,7 @@ export default async function SettingsPage() {
           freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />
+      <PixelsForm initial={{ tiktokPixelId: store.tiktokPixelId, metaPixelId: store.metaPixelId }} />
       <Link href="/dashboard/payments" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-payments-link">
         <span className="grid gap-0.5">
           <span className="font-bold">{tg("settingsTitle")}</span>

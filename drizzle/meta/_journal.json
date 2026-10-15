@@ -134,6 +134,20 @@
       "when": 1791505000000,
       "tag": "0018_order_source",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791499000000,
+      "tag": "0019_product_short_code",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791502000000,
+      "tag": "0020_store_pixels",
+      "breakpoints": true
     }
   ]
 }

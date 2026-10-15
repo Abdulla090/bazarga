@@ -55,7 +55,12 @@ test("dashboard share modal: canvas story + square, per-platform ?src links, cap
   // One tagged link per platform.
   for (const p of ["tiktok", "instagram", "whatsapp", "telegram", "facebook"]) {
     const url = await page.getByTestId(`share-copy-${p}`).getAttribute("data-url");
-    expect(url).toMatch(new RegExp(`/s/${SLUG}/p/[0-9a-f-]{36}\\?src=${p}$`));
+    expect(url).toMatch(new RegExp(`/p/[a-z0-9]{8}\\?src=${p}$`));
+    // The short link redirects to this store's product page and keeps ?src.
+    const u = new URL(url);
+    const hop = await fetch(new URL(u.pathname + u.search, baseURL), { redirect: "manual" });
+    expect(hop.status).toBe(307);
+    expect(hop.headers.get("location")).toMatch(new RegExp(`^/s/${SLUG}/p/[0-9a-f-]{36}\\?src=${p}$`));
   }
   // Caption follows the chosen platform and language.
   await expect(page.getByTestId("share-caption")).toHaveValue(/\?src=tiktok/);
