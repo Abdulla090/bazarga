@@ -22,13 +22,16 @@ FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with selle
 - [x] /api/health (DB ping + build sha), structured logging (src/server/logger.ts) — error boundaries: see error pages
 - [x] Transactional email provider interface: console | resend | brevo, env-gated (needs Abdulla: free Resend/Brevo key + EMAIL_FROM domain)
 - [x] Idempotent orders (idempotency key, migration 0015), DB indexes (0015), docs/OPS.md backups + deploy runbook
-- [x] Lighthouse 90+ (local prod build, mobile emulation, Oct 14): landing 90, pricing 92, store home 95; a11y 100/100/96, SEO 100, best-practices 100. Re-run against live domain on launch day. [ ] product page not yet measured
+- [x] Lighthouse 90+ (local prod build, mobile emulation, Oct 14): landing 90, pricing 92, store home 95; a11y 100/100/96, SEO 100, best-practices 100. Re-run against live domain on launch day. product page measured Oct 15 (local prod build, mobile emulation, noisy sandbox): perf 87–90 (LCP ~3.5 s is main-thread render delay, not the image; store home measured 88 in the same run), a11y 100, SEO 100, best-practices 100. Perf 90+ still borderline: [ ] trim shared client JS / render-blocking CSS
 - [x] Plan gating UI + e2e (e2e/plan-gating.spec.mjs: Free cap 10 → add-product shows upgrade prompt → upgrade request filed)
 - [x] Auth audit: hashed tokens, single-use reset (older links retired), sessions revoked on reset, rate limits per IP+email, security headers verified live; email verification (migration 0017, /verify-email, dashboard banner, localized mails)
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
 - [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [x] axe pass (Oct 15, live: landing, pricing, login, signup, terms, store home, product clean at 390 ku + 1280 en; sign-off wordmark moved to a CSS pseudo-element, struck compare-at price uses text-muted) · [x] skeletons (dashboard, 1f18d4b) · [ ] translation pass
+
+## Social-first (Oct 15)
+- [x] S1–S6 all shipped and live; live e2e green Oct 15 22:2x on bazarga.vercel.app: social-first (share modal, ?src order → seller sees TikTok, OG card PNG), pixels, seller-journey, plan-gating
 
 ## Thu 22 freeze / Fri 23 launch
 - [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [ ] Thu 22: bug bash all routes x 4 locales x 360/390/1280
