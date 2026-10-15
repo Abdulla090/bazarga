@@ -15,7 +15,7 @@ import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, CollectionIndex, Spotlight } from "@/components/store/HomeSections";
-import { HeroBanner, HeroMasthead, HeroSplit } from "@/components/store/HomeHero";
+import { HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -107,6 +107,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     // Magazine: three columns with generous air; the middle column drops so rows never line up like a table.
     magazine: "grid grid-cols-2 gap-x-4 gap-y-14 sm:gap-x-8 md:grid-cols-3 md:gap-x-10 md:gap-y-20 [&>*:nth-child(even)]:mt-12 md:[&>*:nth-child(even)]:mt-0 md:[&>*:nth-child(3n+2)]:mt-24",
     // Dense: catalogue-first, 2 columns on phones up to 6 on wide desktops.
+    // Tiles: edge-to-edge photo tiles separated by a hairline gap, 2 columns on phones up to 4 on desktops.
+    tiles: "grid grid-cols-2 gap-0.5 sm:grid-cols-3 lg:grid-cols-4",
     dense: "grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-x-4 md:gap-y-8 lg:grid-cols-5 xl:grid-cols-6",
   } as const;
   const catItems = [
@@ -117,12 +119,13 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const catCls = {
     classic: (on: boolean) => `${chip} ${on ? chipOn : chipOff}`,
     editorial: (on: boolean) => `sf-display inline-flex min-h-11 items-center border-b-2 text-xl transition-colors duration-150 ${on ? "border-st-fg" : "border-transparent text-muted hover:text-st-fg"}`,
+    gallery: (on: boolean) => `inline-flex min-h-11 items-center border-b text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-150 ${on ? "border-st-fg" : "border-transparent text-muted hover:text-st-fg"}`,
     market: (on: boolean) => `inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-medium transition-colors duration-150 ${on ? "bg-st-fg text-st-bg" : "bg-st-surface text-st-fg ring-1 ring-inset ring-st-border hover:ring-st-fg/40"}`,
   } as const;
   const catNav =
     usedCats.length > 0 || onSale.length > 0
       ? catItems.map((it) => (
-          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.id === "editorial" ? "editorial" : design.id === "market" ? "market" : "classic"](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
+          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.id === "editorial" ? "editorial" : design.id === "market" ? "market" : design.id === "gallery" ? "gallery" : "classic"](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
             {it.label}
           </Link>
         ))
@@ -189,7 +192,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       <ViewPixel slug={store.slug} />
       {browsing && (
         <>
-          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : <HeroSplit {...heroProps} />}
+          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : <HeroSplit {...heroProps} />}
           {design.sections.map((k) => (
             <Fragment key={k}>{blocks[k]}</Fragment>
           ))}

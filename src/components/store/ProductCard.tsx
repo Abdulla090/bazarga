@@ -51,7 +51,7 @@ export function ProductCard({
   locale: Locale;
   index?: number;
   labels: ProductCardLabels;
-  /** Design family card: classic (photo + title + price), editorial (numbered, display-type title, price on a hairline), compact (square photo, always-on add button, dense text). */
+  /** Design family card: classic (photo + title + price), tile (gallery: photo-only tile, caption on a scrim), editorial (numbered, display-type title, price on a hairline), compact (square photo, always-on add button, dense text). */
   variant?: CardVariant;
   /** Editorial plate number ("01"). */
   number?: string;
@@ -82,6 +82,42 @@ export function ProductCard({
           {number && <span className="t-label section-index col-span-2" aria-hidden>{number}</span>}
           <Link href={href} className="sf-display line-clamp-2 text-xl leading-tight after:absolute after:inset-0 after:content-[''] md:text-2xl">{name}</Link>
           <CardPrice p={p} locale={locale} from={labels.from} />
+        </div>
+      </article>
+    );
+  }
+  if (variant === "tile") {
+    return (
+      <article className="reveal group relative min-w-0" data-card="tile">
+        <div className={`${cardFrame} aspect-[4/5]`}>
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw" index={index} aboveTheFold={4} className={`${cardImage} h-full`} />
+            ) : (
+              <span className="block aspect-[4/5] w-full" />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 grid gap-0.5 bg-gradient-to-t from-black/70 via-black/30 to-transparent px-3 pb-3 pt-10 pe-14 text-white">
+            <Link href={href} className="pointer-events-auto line-clamp-2 text-[13px] font-medium uppercase leading-snug tracking-[0.06em] after:absolute after:inset-0 after:content-[''] md:text-sm">{name}</Link>
+            <span className="num text-sm font-medium">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
+          </div>
+          <div className="absolute bottom-1.5 end-1.5 z-10">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} aria-label={labels.chooseOptions} className="flex h-11 w-11 items-center justify-center bg-st-surface text-st-fg transition-colors duration-150 hover:bg-st-bg">
+                <Icon as={Plus} className="h-5 w-5" />
+              </Link>
+            ) : !p.soldOut ? (
+              <AddToCart
+                slug={slug}
+                productId={p.id}
+                labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+                icon={<Icon as={Plus} className="h-5 w-5" />}
+                className="flex h-11 w-11 items-center justify-center bg-st-surface text-st-fg transition-[background-color,transform] duration-150 hover:bg-st-bg active:scale-95"
+              />
+            ) : null}
+          </div>
         </div>
       </article>
     );

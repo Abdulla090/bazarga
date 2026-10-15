@@ -16,6 +16,7 @@ describe("store designs", () => {
   it("unknown and not-yet-built designs fall back to classic", () => {
     expect(designSpec("editorial").id).toBe("editorial");
     expect(designSpec("market").id).toBe("market");
+    expect(designSpec("gallery").id).toBe("gallery");
     expect(designSpec("mono").id).toBe("classic");
     expect(designSpec("nope").id).toBe("classic");
     expect(designSpec(undefined).id).toBe("classic");
@@ -31,6 +32,7 @@ describe("store designs", () => {
   it("presets that name a built design use it", () => {
     expect(THEME_STUDIO_PRESETS.editorial!.design).toBe("editorial");
     expect(THEME_STUDIO_PRESETS.market!.design).toBe("market");
+    expect(THEME_STUDIO_PRESETS.gallery!.design).toBe("gallery");
     for (const p of Object.values(THEME_STUDIO_PRESETS)) expect(DESIGN_IDS).toContain(p.design);
   });
   it("numbers only the sections that are present, in the design's own order", () => {

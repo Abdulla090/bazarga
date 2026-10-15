@@ -139,6 +139,27 @@ export async function StoreFooter({
     );
   }
 
+  if (design.footer === "minimal") {
+    return (
+      <footer className="store-footer mt-16 border-t border-st-border text-sm" data-footer="minimal">
+        <div className="store-page grid justify-items-center gap-8 py-12 text-center">
+          <p className="store-name text-lg uppercase tracking-[0.18em]">{store.name}</p>
+          {about && <p className="line-clamp-4 max-w-xl whitespace-pre-line leading-relaxed text-muted">{about}</p>}
+          <div className="grid w-full max-w-3xl gap-8 sm:grid-cols-2 sm:text-start">
+            {returns && (
+              <section id="returns" className="scroll-mt-24">
+                <h2 className={colHead}>{t("returnPolicy")}</h2>
+                <p className="line-clamp-6 whitespace-pre-line leading-relaxed">{returns}</p>
+              </section>
+            )}
+            {contact}
+          </div>
+        </div>
+        {bar}
+      </footer>
+    );
+  }
+
   if (design.footer === "dense") {
     return (
       <footer className="store-footer mt-16 border-t border-st-border bg-st-surface text-sm" data-footer="dense">
