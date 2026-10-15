@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { PreviewBridge } from "@/components/store/PreviewBridge";
+import { SellerPixels } from "@/components/store/SellerPixels";
 import { StoreHeader, StoreFooter } from "@/components/store/chrome";
 import { resolveDesign } from "./design";
 import { currentLocale } from "@/server/locale";
@@ -36,6 +37,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} data-design={design.id} data-header={hdr?.layout ?? "split"} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
       <PreviewBridge />
+      <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       <StoreHeader store={store} design={design} />
       <main className="store-page flex-1 pt-6 sm:pt-10">{children}</main>

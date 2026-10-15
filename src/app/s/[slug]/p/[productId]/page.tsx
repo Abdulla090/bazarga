@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { ViewPixel } from "@/components/store/ViewPixel";
+import { PixelEvent } from "@/components/store/SellerPixels";
 import { cookies, headers } from "next/headers";
 import { pickDeliveryZone, shopperCityCookie } from "@/lib/shopper-city";
 import { notFound } from "next/navigation";
@@ -138,6 +139,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <div className="grid gap-6">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <ViewPixel slug={store.slug} productId={p.id} />
+      <PixelEvent event="ViewContent" dedupeKey={p.id} data={{ ids: [p.id], name: pickText(p.name, locale), value: p.price }} />
       <Link href={`/s/${store.slug}`} className="-mb-4 -mt-3 inline-flex min-h-11 w-fit items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-st-fg md:-mb-1">
         <ArrowBack /> {tc("back")}
       </Link>

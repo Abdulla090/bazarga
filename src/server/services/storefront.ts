@@ -53,6 +53,9 @@ export type StorefrontStore = {
   freeDeliveryThreshold: number | null;
   /** Subscription plan (drives the "Made with Bazarga" footer badge). */
   plan: string;
+  /** Seller's own ad pixels (S5); null = off. */
+  tiktokPixelId: string | null;
+  metaPixelId: string | null;
 };
 
 export async function loadStorefrontStore(database: Db, slug: string): Promise<StorefrontStore | null> {
@@ -79,6 +82,8 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       returnPolicy: true,
       freeDeliveryThreshold: true,
       plan: true,
+      tiktokPixelId: true,
+      metaPixelId: true,
     },
   });
   return s ?? null;
