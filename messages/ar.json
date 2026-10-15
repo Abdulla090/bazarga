@@ -898,7 +898,7 @@
     "sourceTop": "{source} جلب {share}% من الطلبات.",
     "sourceBestConv": "{source} الأعلى تحويلًا.",
     "sourceEmpty": "لا طلبات بعد. شارك رابط منتج لتعرف أي منصة تبيع.",
-    "sourceDirect": "مباشر / أخرى",
+    "sourceDirect": "مباشر",
     "sourceVisits": "{count} زائر"
   },
   "payStatus": {
@@ -1237,8 +1237,8 @@
     "failed": "تعذّر تجهيز أدوات المشاركة. حاول بعد قليل.",
     "images": "صور المنشور",
     "language": "اللغة",
-    "storyLabel": "ستوري · 1080×1920",
-    "squareLabel": "منشور · 1080×1080",
+    "storyLabel": "ستوري",
+    "squareLabel": "منشور",
     "storyAlt": "صورة ستوري لـ {name}",
     "squareAlt": "صورة منشور مربعة لـ {name}",
     "download": "تنزيل",

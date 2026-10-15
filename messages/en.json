@@ -91,7 +91,7 @@
     "formError": "Please fill in your name, WhatsApp number, what you sell and your city.",
     "madeIn": "Made in Erbil, Kurdistan",
     "heroTitle1": "Keep posting on TikTok.",
-    "heroTitle2": "Bazarga turns the views into orders.",
+    "heroTitle2": "Bazarga turns views into orders.",
     "heroLead": "Put one link in your bio. Shoppers see the price, order with name, phone and address, pay cash on delivery, and you see which platform sold.",
     "hookLabel": "Try Pro",
     "mockStore": "Hawler Bazaar",
@@ -898,7 +898,7 @@
     "sourceTop": "{source} brought {share}% of orders.",
     "sourceBestConv": "{source} converts best.",
     "sourceEmpty": "No orders yet. Share a product link to see which platform sells.",
-    "sourceDirect": "Direct / other",
+    "sourceDirect": "Direct",
     "sourceVisits": "{count} visitors"
   },
   "payStatus": {
@@ -1237,8 +1237,8 @@
     "failed": "Couldn't prepare the share kit. Try again in a moment.",
     "images": "Post images",
     "language": "Language",
-    "storyLabel": "Story · 1080×1920",
-    "squareLabel": "Post · 1080×1080",
+    "storyLabel": "Story",
+    "squareLabel": "Post",
     "storyAlt": "Story image for {name}",
     "squareAlt": "Square post image for {name}",
     "download": "Download",

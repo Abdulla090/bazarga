@@ -70,7 +70,7 @@ export default async function LandingPage() {
               <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-ink">{t("hookLabel")}</span>
               <ArrowForward className="text-base text-[#2563EB] transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>
-            <h1 className="mt-5 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
+            <h1 className="mt-5 max-w-5xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-[3.25rem] lg:text-[3.75rem] lg:leading-[1.06]">
               <span className="block">{t("heroTitle1")}</span>
               <span className="block"><HeroHook text={t("heroTitle2")} /></span>
             </h1>

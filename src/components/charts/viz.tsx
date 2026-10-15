@@ -260,7 +260,7 @@ export function SourceBars({ rows, label, convHeader, ordersHeader }: { rows: So
   const max = Math.max(1, ...rows.map((r) => r.orders));
   return (
     <div className="grid gap-1" role="group" aria-label={label}>
-      <div className="grid grid-cols-[minmax(0,6.5rem)_minmax(0,1fr)_3.75rem] items-end gap-3 pb-1 text-xs font-semibold text-ink-50">
+      <div className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_3.75rem] items-end gap-3 pb-1 text-xs font-semibold text-ink-50">
         <span />
         <span>{ordersHeader}</span>
         <span className="text-end">{convHeader}</span>
@@ -269,15 +269,15 @@ export function SourceBars({ rows, label, convHeader, ordersHeader }: { rows: So
         {rows.map((r) => {
           const w = r.orders > 0 ? Math.max(2, (r.orders / max) * 100) : 0;
           return (
-            <li key={r.key} className="grid grid-cols-[minmax(0,6.5rem)_minmax(0,1fr)_3.75rem] items-center gap-3" data-source={r.key} title={`${r.label} · ${r.ordersLabel} · ${r.share} · ${r.convLabel}`}>
+            <li key={r.key} className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_3.75rem] items-center gap-3" data-source={r.key} title={`${r.label} · ${r.ordersLabel} · ${r.share} · ${r.convLabel}`}>
               <span className="flex min-w-0 items-center gap-2">
                 <span aria-hidden="true" className="size-2.5 shrink-0 rounded-[3px]" style={{ background: r.color }} />
                 <span className="truncate text-sm font-semibold">{r.label}</span>
               </span>
               <span className="flex min-w-0 items-center gap-2">
-                <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-3 min-w-0 flex-1 rtl:-scale-x-100" aria-hidden="true">
-                  <rect x="0" y="0" width="100" height="10" rx="2" fill="#EEF1F6" />
-                  {w > 0 && <rect x="0" y="0" width={w} height="10" rx="2" fill={r.color} />}
+                <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-3 min-w-0 flex-1 overflow-hidden rounded-full rtl:-scale-x-100" aria-hidden="true">
+                  <rect x="0" y="0" width="100" height="10" fill="#EEF1F6" />
+                  {w > 0 && <rect x="0" y="0" width={w} height="10" fill={r.color} />}
                 </svg>
                 <span className="num w-[4.5rem] shrink-0 text-sm text-ink-70" dir="ltr">
                   <b className="font-extrabold text-ink">{r.ordersLabel}</b> <span className="text-ink-50">{r.share}</span>

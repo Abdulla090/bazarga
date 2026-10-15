@@ -898,7 +898,7 @@
     "sourceTop": "{source} {share}%ی داواکارییەکانی هێنا.",
     "sourceBestConv": "{source} باشترین ڕێژەی کڕینی هەیە.",
     "sourceEmpty": "هێشتا داواکاری نییە. لینکی کاڵایەک بڵاو بکەرەوە بۆ ئەوەی ببینیت کام پلاتفۆرم دەفرۆشێت.",
-    "sourceDirect": "ڕاستەوخۆ / تر",
+    "sourceDirect": "ڕاستەوخۆ",
     "sourceVisits": "{count} سەردانکەر"
   },
   "payStatus": {
@@ -1237,8 +1237,8 @@
     "failed": "نەتوانرا کیتی بڵاوکردنەوە ئامادە بکرێت. کەمێکی تر هەوڵ بدەرەوە.",
     "images": "وێنەی پۆست",
     "language": "زمان",
-    "storyLabel": "ستۆری · 1080×1920",
-    "squareLabel": "پۆست · 1080×1080",
+    "storyLabel": "ستۆری",
+    "squareLabel": "پۆست",
     "storyAlt": "وێنەی ستۆری بۆ {name}",
     "squareAlt": "وێنەی پۆستی چوارگۆشە بۆ {name}",
     "download": "داگرتن",

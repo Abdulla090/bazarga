@@ -60,7 +60,7 @@ export function DmsVsBazarga({ l }: { l: DvbLabels }) {
               </div>
               <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
                 <dt className="dvb-k"><Icon as={Users} size="0.95rem" /></dt><dd className="min-w-0 truncate font-semibold text-ink">{l.orderName}</dd>
-                <dt className="dvb-k"><Icon as={Smartphone} size="0.95rem" /></dt><dd className="num min-w-0 truncate text-ink-70 text-start" dir="ltr">0750 ••• 12 34</dd>
+                <dt className="dvb-k"><Icon as={Smartphone} size="0.95rem" /></dt><dd className="num min-w-0 truncate text-ink-70"><span dir="ltr">0750 ••• 12 34</span></dd>
                 <dt className="dvb-k"><Icon as={MapPin} size="0.95rem" /></dt><dd className="min-w-0 truncate text-ink-70">{l.orderCity}</dd>
               </dl>
               <div className="mt-3 flex items-center justify-between gap-2 border-t border-line pt-3">

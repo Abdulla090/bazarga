@@ -224,7 +224,7 @@ export function ProductShareModal({ productId, slug, storeName, names, price, de
                         {!kit && <div className="absolute inset-0 animate-pulse bg-ink/5 motion-reduce:animate-none" aria-hidden="true" />}
                       </div>
                       <figcaption className="grid gap-1.5">
-                        <span className="num text-xs text-ink-50" dir="ltr">{t(f === "story" ? "storyLabel" : "squareLabel")}</span>
+                        <span className="text-xs text-ink-50">{t(f === "story" ? "storyLabel" : "squareLabel")} · <span className="num" dir="ltr">{SHARE_FORMATS[f].w}×{SHARE_FORMATS[f].h}</span></span>
                         <button type="button" className="btn-ink btn-sm w-full" disabled={!drawn} onClick={() => download(f)} data-testid={`share-download-${f}`}>
                           <Icon as={Download} /> {t("download")}
                         </button>

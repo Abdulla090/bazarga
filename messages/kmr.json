@@ -656,7 +656,7 @@
     "sourceTop": "{source} {share}% ji siparîşan anî.",
     "sourceBestConv": "{source} çêtirîn veguherîn heye.",
     "sourceEmpty": "Hîn siparîş tune. Lînka berhemekê parve bike da ku bibînî kîjan platform difiroşe.",
-    "sourceDirect": "Rasterast / yên din",
+    "sourceDirect": "Rasterast",
     "sourceVisits": "{count} serdan"
   },
   "payStatus": {
@@ -1238,8 +1238,8 @@
     "failed": "Kîta parvekirinê nehat amadekirin. Piştî demekê dîsa biceribîne.",
     "images": "Wêneyên postê",
     "language": "Ziman",
-    "storyLabel": "Çîrok · 1080×1920",
-    "squareLabel": "Weşan · 1080×1080",
+    "storyLabel": "Çîrok",
+    "squareLabel": "Weşan",
     "storyAlt": "Wêneya story ji bo {name}",
     "squareAlt": "Wêneya postê ya çargoşe ji bo {name}",
     "download": "Daxe",
