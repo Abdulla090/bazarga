@@ -166,6 +166,11 @@ describe("social-first: checkout + analytics", () => {
     ]);
   });
 
+  it("buildSourceRows shows no conversion when orders outnumber counted visits", () => {
+    const rows = buildSourceRows([{ source: null, orders: 8, revenue: 80 }, { source: "tiktok", orders: 1, revenue: 10 }], new Map([["tiktok", 0]]), 3);
+    expect(rows.find((r) => r.source === "direct")).toMatchObject({ orders: 8, visits: 3, conversion: null });
+  });
+
   it("demo seed gives most demo orders a source, TikTok largest, and stays idempotent", async () => {
     const { store } = await seller(database, "srcseed");
     await product(database, store.id, 25_000);
