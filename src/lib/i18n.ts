@@ -19,6 +19,12 @@ export const LOCALE_LABEL: Record<Locale, string> = {
   kmr: "Kurmancî",
 };
 
+/** Language switcher: fixed order and names as each language calls itself (Sorani shown as سۆرانی, not the generic کوردی). */
+export const SWITCHER_ORDER: readonly Locale[] = ["ku", "kmr", "ar", "en"];
+export const SWITCHER_LABEL: Record<Locale, string> = { ku: "سۆرانی", kmr: "Kurmancî", ar: "العربية", en: "English" };
+export const switcherItems = (locales: readonly Locale[] = UI_LOCALES) =>
+  SWITCHER_ORDER.filter((l) => locales.includes(l)).map((l) => ({ value: l, label: SWITCHER_LABEL[l], lang: HTML_LANG[l], dir: dirOf(l) }));
+
 export function isLocale(v: unknown): v is Locale {
   return typeof v === "string" && (LOCALES as readonly string[]).includes(v);
 }

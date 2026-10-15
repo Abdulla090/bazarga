@@ -198,7 +198,8 @@
         "q": "Ez pereyê xwe çawa werdigirim, û ez dikarim her dem betal bikim?",
         "a": "Fermanên kaş wek her car ji aliyê kuryerê te ve têne berhev kirin. Fermanên FIB û ZainCash online têne dayîn û bixweber wek dayî têne nîşankirin. Plan meh bi meh in: her dem betal bike û firoşgeh û berhemên te wek xwe dimînin."
       }
-    }
+    },
+    "whyLangPick": "Ziman"
   },
   "store": {
     "cart": "Selik",

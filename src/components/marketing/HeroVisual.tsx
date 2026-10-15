@@ -106,7 +106,7 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
         </div>
 
         {/* Start side: the seller's chat message */}
-        <div className="hv-par-a absolute start-0 top-[7.5rem] z-20 sm:top-28 lg:top-14 lg:start-auto lg:end-[calc(50%+12.75rem)]">
+        <div data-hv-float className="hv-par-a absolute start-0 hidden md:block top-[7.5rem] z-20 sm:top-28 lg:top-14 lg:start-auto lg:end-[calc(50%+12.75rem)]">
           <div className="hv-reveal" data-reveal-card="chat">
           <div className="hv-card hv-float w-[9.75rem] p-2 text-start sm:w-60 sm:p-3">
             <p className="flex items-center gap-1.5 text-[10px] font-semibold text-ink-50 sm:text-xs">
@@ -133,7 +133,7 @@ export async function HeroVisual({ locale }: { locale: Locale }) {
         </div>
 
         {/* End side: the order that comes in, then how it gets paid */}
-        <div className="hv-par-b absolute end-0 top-[15.5rem] z-20 sm:top-64 lg:top-[8.5rem] lg:end-auto lg:start-[calc(50%+12.75rem)]">
+        <div data-hv-float className="hv-par-b absolute end-0 hidden md:block top-[15.5rem] z-20 sm:top-64 lg:top-[8.5rem] lg:end-auto lg:start-[calc(50%+12.75rem)]">
           <div className="hv-reveal hv-rv-1" data-reveal-card="order">
           <div className="hv-card hv-float hv-float-2 w-[10.25rem] p-2 text-start sm:w-64 sm:p-3">
             <p className="flex items-center gap-1.5 text-[10px] font-semibold text-ink-50 sm:text-xs">

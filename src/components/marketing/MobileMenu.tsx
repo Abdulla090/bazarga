@@ -7,10 +7,11 @@ import type { Locale } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
 
-/** Phones: the header shows logo + CTA + this button; the sheet holds the nav links, Log in and the language. */
-export function MobileMenu({ links, login, locale, locales, labels }: {
+/** Phones: the header shows logo + this button only; the sheet holds the nav links, Log in, the CTA and the language dropdown. */
+export function MobileMenu({ links, login, cta, locale, locales, labels }: {
   links: NavLink[];
   login?: NavLink;
+  cta?: NavLink;
   locale: Locale;
   locales: readonly Locale[];
   labels: { menu: string; close: string; language: string };
@@ -34,7 +35,7 @@ export function MobileMenu({ links, login, locale, locales, labels }: {
         aria-controls={id}
         aria-label={open ? labels.close : labels.menu}
         onClick={() => setOpen((o) => !o)}
-        className="-me-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/[0.04] md:hidden"
+        className="-me-2 ms-auto inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/[0.04] md:hidden"
         data-nav-menu-button
       >
         <Icon as={open ? X : Menu} size="1.35em" />
@@ -51,8 +52,13 @@ export function MobileMenu({ links, login, locale, locales, labels }: {
                 </li>
               ))}
             </ul>
+            {cta && (
+              <Link href={cta.href} onClick={() => setOpen(false)} data-menu-cta className="mt-6 flex min-h-12 items-center justify-center rounded-full bg-ink px-5 text-base font-semibold text-paper transition-colors hover:bg-[#2563EB]">
+                {cta.label}
+              </Link>
+            )}
             <p className="mt-6 mb-2 text-xs font-medium text-ink-50">{labels.language}</p>
-            <LocaleSwitcher current={locale} locales={locales} />
+            <LocaleSwitcher current={locale} locales={locales} label={labels.language} />
           </nav>
         </div>
       )}

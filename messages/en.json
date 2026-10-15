@@ -164,7 +164,8 @@
         "q": "How do I get paid, and can I cancel anytime?",
         "a": "Cash orders are collected by your courier as usual. FIB and ZainCash orders are paid online and marked paid automatically. Plans are month to month: cancel anytime and your store and products stay exactly as they are."
       }
-    }
+    },
+    "whyLangPick": "Language"
   },
   "auth": {
     "loginTitle": "Welcome back",

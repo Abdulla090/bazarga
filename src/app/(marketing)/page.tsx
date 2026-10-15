@@ -131,7 +131,7 @@ export default async function LandingPage() {
             w1Title: t("w1Title"), w1Body: t("w1Body"), w2Title: t("w2Title"), w2Body: t("w2Body"),
             w3Title: t("w3Title"), w3Body: t("w3Body"), w4Title: t("w4Title"), w4Body: t("w4Body"),
             chatName: t("whyChatName"), chatMsg: t("whyChatMsg"), cardBadge: t("whyCardBadge"), cardCta: t("whyCardCta"),
-            payLabel: t("whyPayLabel"), soon: t("whySoon"), deliveryLabel: t("whyDeliveryLabel"), mapLabel: t("whyMapLabel"),
+            payLabel: t("whyPayLabel"), soon: t("whySoon"), deliveryLabel: t("whyDeliveryLabel"), mapLabel: t("whyMapLabel"), langPick: t("whyLangPick"),
             berlin: t("cityBerlin"), stockholm: t("cityStockholm"), london: t("cityLondon"),
             productName: pickText(SHIRT.name, locale),
           }}

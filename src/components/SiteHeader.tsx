@@ -15,7 +15,8 @@ export type SiteHeaderLabels = {
 /**
  * Marketing header (/ and /pricing), one row, Linear/Vercel-style: 3-column grid: logo | truly centred links | language · Log in · one CTA (mirrors in RTL).
  * No promo top bar: the hero's "$1 | Try Pro" pill carries the offer, so the header never repeats it.
- * Phones: logo + CTA + menu button only (links, Log in and language live in the sheet). 8px rhythm, hairline bottom.
+ * Phones (<768px): logo + menu button only; links, Log in, the CTA and the language dropdown live in the sheet, and the
+ * landing's sticky bottom bar carries the signup CTA. 8px rhythm, hairline bottom.
  */
 export function SiteHeaderView({ labels, locale, signedIn }: { labels: SiteHeaderLabels; locale: Locale; signedIn: boolean }) {
   const links: NavLink[] = [
@@ -53,11 +54,11 @@ export function SiteHeaderView({ labels, locale, signedIn }: { labels: SiteHeade
           <Link
             href={cta.href}
             data-nav-cta
-            className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-ink px-4 text-sm font-semibold whitespace-nowrap text-paper transition-colors hover:bg-[#2563EB] md:min-h-9"
+            className="hidden min-h-9 shrink-0 items-center rounded-full bg-ink px-4 text-sm font-semibold whitespace-nowrap text-paper transition-colors hover:bg-[#2563EB] md:inline-flex"
           >
             {cta.label}
           </Link>
-          <MobileMenu links={links} login={login} locale={locale} locales={UI_LOCALES} labels={{ menu: labels.menu, close: labels.close, language: labels.language }} />
+          <MobileMenu links={links} login={login} cta={cta} locale={locale} locales={UI_LOCALES} labels={{ menu: labels.menu, close: labels.close, language: labels.language }} />
         </div>
       </header>
     </div>
