@@ -69,6 +69,7 @@ export const signUpSchema = z.object({
 });
 export const logInSchema = z.object({ email: emailSchema, password: z.string().min(1).max(200) });
 export const forgotPasswordSchema = z.object({ email: emailSchema });
+export const verifyEmailSchema = z.object({ token: z.string().min(20).max(200) });
 export const resetPasswordSchema = z.object({ token: z.string().min(20).max(200), password: passwordSchema });
 
 // ---------------------------------------------------------------- store

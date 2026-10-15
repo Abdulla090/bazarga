@@ -84,6 +84,22 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: createdAt(),
 });
 
+/** One-time email-verification links (sha256 of the token is stored, never the token). `email` pins the address that was verified. */
+export const emailVerificationTokens = pgTable(
+  "email_verification_tokens",
+  {
+    tokenHash: text("token_hash").primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("email_verification_tokens_user_idx").on(t.userId)],
+);
+
 /** Fixed-window rate limit counters, shared across app instances. */
 export const rateLimits = pgTable("rate_limits", {
   key: text("key").primaryKey(),

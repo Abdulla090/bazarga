@@ -187,7 +187,15 @@
     "resetTitle": "Choose a new password",
     "resetDone": "Password changed. Log in with your new password.",
     "resetCta": "Change password",
-    "phoneSoon": "Sign in with WhatsApp is coming soon."
+    "phoneSoon": "Sign in with WhatsApp is coming soon.",
+    "verifyTitle": "Confirm your email",
+    "verifySub": "One tap and your address is confirmed.",
+    "verifyCta": "Confirm email",
+    "verifyDone": "Email confirmed. You're all set.",
+    "verifyBanner": "Confirm your email so you can recover your account.",
+    "verifyResend": "Send link",
+    "verifySent": "Link sent. Check your inbox.",
+    "goDashboard": "Go to dashboard"
   },
   "onboarding": {
     "title": "Let's set up your store",

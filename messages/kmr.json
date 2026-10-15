@@ -694,7 +694,15 @@
     "resetTitle": "Şîfreyeke nû hilbijêre",
     "resetDone": "Şîfre hat guhertin. Bi şîfreya nû têkeve.",
     "resetCta": "Şîfreyê biguherîne",
-    "phoneSoon": "Têketina bi WhatsAppê zû tê."
+    "phoneSoon": "Têketina bi WhatsAppê zû tê.",
+    "verifyTitle": "E-nameya xwe erê bike",
+    "verifySub": "Yek tikandin û navnîşana te tê erêkirin.",
+    "verifyCta": "E-nameyê erê bike",
+    "verifyDone": "E-name hat erêkirin. Her tişt amade ye.",
+    "verifyBanner": "E-nameya xwe erê bike da ku hesabê xwe vegerînî.",
+    "verifyResend": "Girêdanê bişîne",
+    "verifySent": "Girêdan hat şandin. Qutiya xwe kontrol bike.",
+    "goDashboard": "Biçe panelê"
   },
   "onboarding": {
     "title": "Em firoşgeha te saz bikin",
