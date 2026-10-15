@@ -23,6 +23,7 @@ Fri 2026-10-16: full prototype working end to end live (seller + shopper e2e). T
 - [x] Transactional email provider interface: console | resend | brevo, env-gated (needs Abdulla: free Resend/Brevo key + EMAIL_FROM domain)
 - [x] Idempotent orders (idempotency key, migration 0015), DB indexes (0015), docs/OPS.md backups + deploy runbook
 - [x] Lighthouse 90+ (local prod build, mobile emulation, Oct 14): landing 90, pricing 92, store home 95; a11y 100/100/96, SEO 100, best-practices 100. Re-run against live domain on launch day. [ ] product page not yet measured
+- [x] Plan gating UI + e2e (e2e/plan-gating.spec.mjs: Free cap 10 → add-product shows upgrade prompt → upgrade request filed)
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
