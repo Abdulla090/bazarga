@@ -24,6 +24,8 @@ const SPECIFIC = new Set([
   "spec_label_required", "spec_value_required", "too_many_specs", "invalid_sku",
   "discount_code_taken", "invalid_discount_code", "invalid_percent", "invalid_date", "invalid_date_range",
   "order_rejected", "too_many_orders", "payment_check_unavailable", "plan_limit_products", "plan_limit_studio",
+  "option_name_required", "duplicate_option_value", "variant_combination_invalid", "duplicate_sku", "sku_taken",
+  "too_many_values", "too_many_options", "too_many_variants", "variants_all_off", "compare_at_must_exceed_price",
 ]);
 
 /** Convert any thrown error into a serialisable, translatable action result. Unexpected errors are logged, not leaked. */

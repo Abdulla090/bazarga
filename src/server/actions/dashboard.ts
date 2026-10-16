@@ -22,7 +22,7 @@ import { addArea, deleteArea, deleteZone, setPaymentMethod, updateArea, updateZo
 import { createDiscountCode, setDiscountCodeActive, updateDiscountCode } from "../services/discounts";
 import { updateOrderStatus } from "../services/orders";
 import { uploadProcessedImage } from "../storage";
-import { specsFromForm,
+import { specsFromForm, productVariantsInputSchema, variantsFromForm,
   categorySchema,
   deliveryAreaSchema,
   deliveryZoneSchema,
@@ -202,8 +202,11 @@ export async function saveProductAction(_prev: ActionState, fd: FormData): Promi
   try {
     const { store } = await requireStore();
     const input = productInputFromForm(fd);
+    const { variants } = z.object({ variants: productVariantsInputSchema.optional() }).parse({ variants: variantsFromForm(fd) });
     const id = emptyToNull(fd.get("id"));
-    const saved = id ? await updateProduct(db(), store.id, uuid.parse(id), input) : await createProduct(db(), store.id, input);
+    const saved = id
+      ? await updateProduct(db(), store.id, uuid.parse(id), input, variants)
+      : await createProduct(db(), store.id, input, variants);
     invalidateCatalog(store.id, [saved.id]);
     revalidatePath("/dashboard/products");
   } catch (e) {
