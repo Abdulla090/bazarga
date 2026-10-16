@@ -643,7 +643,8 @@
     "too_many_options": "Heta 3 komên vebijarkan.",
     "too_many_variants": "Heta 100 têkel.",
     "variants_all_off": "Herî kêm têkeliyekê veke, an vebijarkan jê bibe.",
-    "compare_at_must_exceed_price": "Bihayê berê divê ji bihayê niha bilindtir be."
+    "compare_at_must_exceed_price": "Bihayê berê divê ji bihayê niha bilindtir be.",
+    "network": "Girêdana înternetê tune. Selik û agahiyên te li vir in; dema ku girêdan vegere dîsa biceribîne."
   },
   "analytics": {
     "title": "Analîtîk",
