@@ -1,6 +1,6 @@
 # Bazarga — launch checklist
 
-FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with seller + shopper e2e. Fri 2026-10-23 production at super quality; Thu 2026-10-22 freeze and bug bash.
+FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with seller + shopper e2e. Fri 2026-10-30 production at super quality; Thu 2026-10-29 freeze and bug bash. Demand track: docs/DEMAND.md.
 
 ## Done
 - [x] K1 persistent uploads (Supabase Storage driver)
@@ -33,8 +33,8 @@ FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with selle
 ## Social-first (Oct 15)
 - [x] S1–S6 all shipped and live; live e2e green Oct 15 22:2x on bazarga.vercel.app: social-first (share modal, ?src order → seller sees TikTok, OG card PNG), pixels, seller-journey, plan-gating
 
-## Thu 22 freeze / Fri 23 launch
-- [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [x] Bug bash pass 1 Oct 16 (live crawl all public + dashboard routes x 4 locales x 3 widths: clean after tap-target fixes) · [ ] Thu 22: final bug bash after freeze (scripts/bugbash.mjs)
+## Thu 29 freeze / Fri 30 launch
+- [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [x] Bug bash pass 1 Oct 16 (live crawl all public + dashboard routes x 4 locales x 3 widths: clean after tap-target fixes) · [ ] Thu 29: final bug bash after freeze (scripts/bugbash.mjs)
 
 ## Needs Abdulla
 - Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).

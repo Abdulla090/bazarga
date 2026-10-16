@@ -1,12 +1,13 @@
 # Bazarga status
-Updated: 2026-10-16 02:50 Asia/Baghdad
+Updated: 2026-10-16 03:35 Asia/Baghdad
 Health: At risk — product page perf ~88, needs your keys
 Prototype confidence (Sun Oct 18): 94%
-Production confidence (Fri Oct 23): 76%
+Production confidence (Fri Oct 30): 78%
 Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
+- 2026-10-16 03:35 | prototype 94% | production 78% | At risk
 - 2026-10-16 02:50 | prototype 94% | production 76% | At risk
 - 2026-10-16 01:11 | prototype 94% | production 75% | At risk
 - 2026-10-15 23:38 | prototype 93% | production 74% | At risk

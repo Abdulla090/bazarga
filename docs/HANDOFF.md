@@ -34,6 +34,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-16 03:35 Agent B: DEMAND D1 waitlist position + referrals (agentb/waitlist-referrals, 218321f)
+- docs/DEMAND.md written (D1-D6). D1 shipped: every waitlist signup gets a position number and a personal link (`/?ref=CODE#join`); each friend who joins through it moves you up 5 spots (cap 20 friends = 100). Same WhatsApp number twice returns the same spot (no second row, no double credit). Public unlisted status page `/waitlist/<code>`.
+- Migration 0021 (journal when 1791506000000 > 1791505000000): seq identity, ref_code (unique, backfilled), referred_by, referral_count. Pure ranking in src/lib/waitlist.ts, service in src/server/services/waitlist.ts. 10 new vitest tests + e2e/waitlist.spec.mjs (local only; set WAITLIST_LIVE=1 to write rows to a live DB). Copy in 4 locales (landing.wl*).
+- Live: / , /pricing, /s/hawler-bazaar, /waitlist/<code>, /?ref=... all 200; health sha 218321f. Next: D2 live counters (real DB numbers). Agent A asked to proofread wl* copy (hark/waitlist-copy).
+
 ### 2026-10-16 02:50 Agent B: bug bash sweep + tap targets (agentb/tap-targets, 2825da1)
 - Ran a live crawl (scripts/bugbash.mjs: 4 locales x 360/390/1280 x public + 17 dashboard routes, logged in as the demo seller): no overflow, no broken images, no raw message keys, no console errors, correct dir per locale.
 - Found and fixed: `btn-primary` is not a defined utility (courier "send all" button and dashboard EmptyState CTA rendered unstyled) -> `btn-gold`; plan-usage Upgrade link and payment on/off toggles raised to 44px. New tests/css-classes.test.ts fails on any undefined `btn-*` class.
