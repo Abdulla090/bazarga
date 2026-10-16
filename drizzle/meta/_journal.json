@@ -155,6 +155,13 @@
       "when": 1791506000000,
       "tag": "0021_waitlist_referrals",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791507000000,
+      "tag": "0022_founding_seller",
+      "breakpoints": true
     }
   ]
 }

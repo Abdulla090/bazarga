@@ -4,12 +4,14 @@ import { getTranslations } from "next-intl/server";
 import { CartLink } from "@/components/store/CartLink";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Awning } from "@/components/Logo";
+import { FoundingBadge } from "@/components/FoundingBadge";
+import { isFoundingNumber } from "@/lib/founding";
 import { Icon, Search } from "@/components/ui/icons";
 import { waLink } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
 import type { DesignSpec } from "@/lib/theme-studio/designs";
 
-type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null; plan?: string | null };
+type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null; plan?: string | null; foundingNumber?: number | null };
 
 function Mark({ store, size = "h-7 w-7" }: { store: ChromeStore; size?: string }) {
   return store.logoUrl ? (
@@ -83,6 +85,7 @@ export async function StoreFooter({
   wa: string | null;
 }) {
   const t = await getTranslations("store");
+  const tf = await getTranslations("founding");
   const colHead = "t-label mb-3 text-muted";
   const link = "inline-flex min-h-11 items-center underline-offset-4 hover:underline";
   const contact =
@@ -110,6 +113,7 @@ export async function StoreFooter({
   const bar = (
     <div className="store-page flex flex-wrap items-center justify-between gap-3 border-t border-st-border py-4">
       <LocaleSwitcher current={locale} locales={["ku", "ar", "en", "kmr"]} />
+      {isFoundingNumber(store.foundingNumber) && <FoundingBadge label={tf("badge", { n: store.foundingNumber })} number={store.foundingNumber} />}
       {/* "Made with Bazarga" shows on Free only (src/lib/plans.ts showsBazargaBadge); Pro and up remove it. */}
       {showsBazargaBadge(normalizePlan(store.plan)) && (
         <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-st-fg" data-bazarga-badge>

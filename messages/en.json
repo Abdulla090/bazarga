@@ -1282,5 +1282,23 @@
     "captionFor": "Link for",
     "copyCaption": "Copy caption",
     "sendWhatsapp": "Send on WhatsApp"
+  },
+  "founding": {
+    "badge": "Founding seller #{n}",
+    "dashTitle": "You're founding seller #{n}",
+    "dashBody": "One of the first 100 stores on Bazarga. Your number is permanent.",
+    "eyebrow": "Founding sellers",
+    "title": "The first 100 stores get founding status",
+    "lead": "A permanent number, a badge on your store, and a seat at the table while we build.",
+    "spotsLeft": "{n} of 100 founding spots left",
+    "spotsGone": "All 100 founding spots are taken",
+    "cta": "Claim a founding spot",
+    "onboardingNote": "Among the first 100 stores? You'll get a founding-seller badge.",
+    "perk": {
+      "badge": "Founding badge on your dashboard and your public store",
+      "early": "First access to new themes and features",
+      "support": "Priority replies when you message the Bazarga team",
+      "voice": "A say in what we build next"
+    }
   }
 }

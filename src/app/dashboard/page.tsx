@@ -11,10 +11,13 @@ import { ShareLinkButtons } from "@/components/dashboard/ShareLinkButtons";
 import { SetupChecklist } from "@/components/dashboard/SetupChecklist";
 import { getSetupChecklist } from "@/server/services/setup";
 import { LazyInstallPrompt } from "@/components/pwa/lazy";
+import { FoundingBadge } from "@/components/FoundingBadge";
+import { isFoundingNumber } from "@/lib/founding";
 
 export default async function DashboardHome() {
   const { store, user } = await requireStore();
   const t = await getTranslations("dash");
+  const tf = await getTranslations("founding");
   const locale = await currentLocale();
   const [stats, recent, checklist] = await Promise.all([
     storeStats(db(), store.id),
@@ -30,6 +33,12 @@ export default async function DashboardHome() {
   return (
     <div className="grid gap-10">
       <h1 className="t-headline">{t("hello", { name: user.name })}</h1>
+      {isFoundingNumber(store.foundingNumber) && (
+        <section className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-[#2563EB]/25 bg-[#2563EB]/[0.05] p-4" data-testid="founding-card">
+          <FoundingBadge label={tf("dashTitle", { n: store.foundingNumber })} number={store.foundingNumber} />
+          <p className="min-w-0 flex-1 text-sm text-ink-70">{tf("dashBody")}</p>
+        </section>
+      )}
       <LazyInstallPrompt />
       <SetupChecklist checklist={checklist} storeUrl={link} storeName={store.name} />
       <dl className="grid grid-cols-1 border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-line rtl:sm:divide-x-reverse">
