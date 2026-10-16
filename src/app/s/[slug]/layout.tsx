@@ -42,7 +42,9 @@ export default async function StoreLayout({ children, params }: { children: Reac
       <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       <StoreHeader store={store} design={design} />
-      <main className="store-page flex-1 pt-6 sm:pt-10">{children}</main>
+      {/* min-height keeps the footer below the fold while a page streams in or the cart reads localStorage, so it
+          never jumps up into view (desktop CLS 0.06-0.11 on cart / search / offers before). */}
+      <main className="store-page min-h-svh flex-1 pt-6 sm:pt-10">{children}</main>
       <CartDrawer
         slug={store.slug}
         labels={{ added: t("addedToCart"), viewCart: t("viewCart"), checkout: t("checkout"), continue: t("continue"), close: t("closeViewer"), inCart: t.raw("inCart") as string }}
