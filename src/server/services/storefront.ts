@@ -56,6 +56,8 @@ export type StorefrontStore = {
   /** Seller's own ad pixels (S5); null = off. */
   tiktokPixelId: string | null;
   metaPixelId: string | null;
+  /** Founding seller number 1..100 (D3); null = not a founding store. */
+  foundingNumber: number | null;
 };
 
 export async function loadStorefrontStore(database: Db, slug: string): Promise<StorefrontStore | null> {
@@ -84,6 +86,7 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       plan: true,
       tiktokPixelId: true,
       metaPixelId: true,
+      foundingNumber: true,
     },
   });
   return s ?? null;

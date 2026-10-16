@@ -4,6 +4,7 @@ import type { Db } from "@/server/db";
 import { stores, users } from "@/server/db/schema";
 import { loadFoundingSpotsLeft } from "@/server/services/founding";
 import { createStore } from "@/server/services/stores";
+import { loadStorefrontStore } from "@/server/services/storefront";
 import { signUp } from "@/server/auth/service";
 import { FOUNDING_SPOTS, foundingSpotsLeft, isFoundingEligibleEmail, isFoundingNumber } from "@/lib/founding";
 import { seller, testDb } from "./support/db";
@@ -59,6 +60,12 @@ describe("founding numbers (db)", () => {
     const b = await realStore();
     expect(b.foundingNumber).toBe((a.foundingNumber ?? 0) + 1);
     expect(await loadFoundingSpotsLeft(db)).toBe(before - 2);
+  });
+  it("the storefront store carries the founding number for the footer badge", async () => {
+    const a = await realStore();
+    const sf = await loadStorefrontStore(db, a.slug);
+    expect(sf?.foundingNumber).toBe(a.foundingNumber);
+    expect(sf?.foundingNumber).not.toBeNull();
   });
   it("hands out numbers once and stops at 100", async () => {
     const owner = await signUp(db, { name: "Fill", email: `fill-${Date.now()}@gmail.com`, password: "correct horse battery", locale: "ku" });
