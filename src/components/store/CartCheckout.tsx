@@ -289,7 +289,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         )}
         <fieldset className="grid gap-3">
           <legend className="mb-1.5 block text-sm font-medium">{L.yourDetails}</legend>
-          <input ref={nameRef} name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} />
+          <input ref={nameRef} name="customerName" className="input" placeholder={L.name} aria-label={L.name} autoComplete="name" required minLength={2} maxLength={80} />
           {fe("customerName")}
           <div>
             <input
