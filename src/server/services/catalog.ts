@@ -1,10 +1,10 @@
 import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import type { Db } from "../db";
-import { categories, productImages, products, stores } from "../db/schema";
+import { categories, productImages, productOptionValues, productOptions, productVariants, products, stores } from "../db/schema";
 import { AppError } from "../errors";
 import { normalizePlan, productLimit, productsShown } from "@/lib/plans";
 import type { LocalizedText } from "@/lib/i18n";
-import type { ProductImageInput, ProductInput } from "@/lib/validation";
+import type { ProductImageInput, ProductInput, ProductVariantsInput } from "@/lib/validation";
 
 export type Product = typeof products.$inferSelect;
 type ProductImageRow = typeof productImages.$inferSelect;
@@ -129,7 +129,7 @@ async function replaceImages(database: Db, storeId: string, productId: string, i
   }
 }
 
-export async function createProduct(database: Db, storeId: string, input: ProductInput): Promise<Product> {
+export async function createProduct(database: Db, storeId: string, input: ProductInput, variants?: ProductVariantsInput): Promise<Product> {
   await assertCategoryInStore(database, storeId, input.categoryId);
   await assertWithinProductLimit(database, storeId);
   return database.transaction(async (tx) => {
@@ -150,11 +150,12 @@ export async function createProduct(database: Db, storeId: string, input: Produc
       })
       .returning();
     await replaceImages(tx as unknown as Db, storeId, p!.id, imagesFromInput(input));
+    if (variants) await syncVariants(tx as unknown as Db, storeId, p!.id, variants);
     return p!;
   });
 }
 
-export async function updateProduct(database: Db, storeId: string, id: string, input: ProductInput): Promise<Product> {
+export async function updateProduct(database: Db, storeId: string, id: string, input: ProductInput, variants?: ProductVariantsInput): Promise<Product> {
   await assertCategoryInStore(database, storeId, input.categoryId);
   return database.transaction(async (tx) => {
     const [p] = await tx
@@ -176,8 +177,133 @@ export async function updateProduct(database: Db, storeId: string, id: string, i
       .returning();
     if (!p) throw new AppError("NOT_FOUND");
     await replaceImages(tx as unknown as Db, storeId, id, imagesFromInput(input));
+    if (variants) await syncVariants(tx as unknown as Db, storeId, id, variants);
     return p;
   });
+}
+
+// ---------------------------------------------------------------- variants
+export type ProductVariantData = {
+  options: { id: string; name: LocalizedText }[];
+  values: { id: string; optionId: string; label: LocalizedText; swatch: string | null }[];
+  variants: (typeof productVariants.$inferSelect)[];
+};
+
+/** Every option, value and variant (inactive ones too) of one product, for the seller's editor. */
+export async function getProductVariants(database: Db, storeId: string, productId: string): Promise<ProductVariantData> {
+  const [options, values, variants] = await Promise.all([
+    database.query.productOptions.findMany({
+      where: and(eq(productOptions.productId, productId), eq(productOptions.storeId, storeId)),
+      orderBy: [asc(productOptions.sort), asc(productOptions.createdAt)],
+    }),
+    database.query.productOptionValues.findMany({
+      where: and(eq(productOptionValues.productId, productId), eq(productOptionValues.storeId, storeId)),
+      orderBy: asc(productOptionValues.sort),
+    }),
+    database.query.productVariants.findMany({
+      where: and(eq(productVariants.productId, productId), eq(productVariants.storeId, storeId)),
+      orderBy: asc(productVariants.sort),
+    }),
+  ]);
+  return {
+    options: options.map((o) => ({ id: o.id, name: o.name })),
+    values: values.map((v) => ({ id: v.id, optionId: v.optionId, label: v.label, swatch: v.swatch })),
+    variants,
+  };
+}
+
+const isUniqueViolation = (e: unknown) => {
+  for (let x: unknown = e, i = 0; x && typeof x === "object" && i < 4; x = (x as { cause?: unknown }).cause, i++) {
+    if ((x as { code?: unknown }).code === "23505") return true;
+  }
+  return false;
+};
+
+/**
+ * Make the product's options/values/variants match the editor. Rows are updated in place when their id still belongs
+ * to this product (so carts, order lines and variant photos keep pointing at them) and the rest are replaced.
+ * Variants are matched by their combination of values, not by the id the client sent.
+ */
+export async function syncVariants(database: Db, storeId: string, productId: string, input: ProductVariantsInput) {
+  const cur = await getProductVariants(database, storeId, productId);
+  const curOpt = new Set(cur.options.map((o) => o.id));
+  const curVal = new Map(cur.values.map((v) => [v.id, v.optionId]));
+  const keyToId = new Map<string, string>();
+  const keptOpts = new Set<string>();
+  const keptVals = new Set<string>();
+
+  for (const [oi, o] of input.options.entries()) {
+    let optionId = o.id && curOpt.has(o.id) && !keptOpts.has(o.id) ? o.id : null;
+    if (optionId) {
+      await database.update(productOptions).set({ name: o.name, sort: oi }).where(and(eq(productOptions.id, optionId), eq(productOptions.storeId, storeId)));
+    } else {
+      const [row] = await database.insert(productOptions).values({ productId, storeId, name: o.name, sort: oi }).returning({ id: productOptions.id });
+      optionId = row!.id;
+    }
+    keptOpts.add(optionId);
+    for (const [vi, v] of o.values.entries()) {
+      const swatch = o.swatches ? (v.swatch ?? null) : null;
+      let valueId = v.id && curVal.get(v.id) === optionId && !keptVals.has(v.id) ? v.id : null;
+      if (valueId) {
+        await database
+          .update(productOptionValues)
+          .set({ label: v.label, swatch, sort: vi })
+          .where(and(eq(productOptionValues.id, valueId), eq(productOptionValues.storeId, storeId)));
+      } else {
+        const [row] = await database
+          .insert(productOptionValues)
+          .values({ optionId, productId, storeId, label: v.label, swatch, sort: vi })
+          .returning({ id: productOptionValues.id });
+        valueId = row!.id;
+      }
+      keptVals.add(valueId);
+      keyToId.set(v.key, valueId);
+    }
+  }
+
+  const goneOpts = cur.options.map((o) => o.id).filter((id) => !keptOpts.has(id));
+  if (goneOpts.length) await database.delete(productOptions).where(and(eq(productOptions.storeId, storeId), inArray(productOptions.id, goneOpts)));
+  const goneVals = cur.values.map((v) => v.id).filter((id) => !keptVals.has(id) && !goneOpts.includes(curVal.get(id)!));
+  if (goneVals.length) await database.delete(productOptionValues).where(and(eq(productOptionValues.storeId, storeId), inArray(productOptionValues.id, goneVals)));
+
+  // Variants: same set of value ids → same row. Clear SKUs first so a SKU can move between rows without a clash.
+  const setKey = (ids: string[]) => [...ids].sort().join("|");
+  const curBySet = new Map(cur.variants.map((v) => [setKey(v.optionValueIds), v]));
+  const curById = new Map(cur.variants.map((v) => [v.id, v]));
+  const keptVariants = new Set<string>();
+  const planned = input.variants.map((v, i) => {
+    const ids = v.keys.map((k) => keyToId.get(k)!);
+    const sent = v.id ? curById.get(v.id) : undefined;
+    const match = curBySet.get(setKey(ids)) ?? (sent && !input.variants.some((w) => w !== v && w.id === sent.id) ? sent : undefined);
+    const existing = match && !keptVariants.has(match.id) ? match : undefined;
+    if (existing) keptVariants.add(existing.id);
+    return { v, i, ids, existing };
+  });
+  const goneVariants = cur.variants.map((v) => v.id).filter((id) => !keptVariants.has(id));
+  if (goneVariants.length) await database.delete(productVariants).where(and(eq(productVariants.storeId, storeId), inArray(productVariants.id, goneVariants)));
+  if (keptVariants.size)
+    await database.update(productVariants).set({ sku: null }).where(and(eq(productVariants.storeId, storeId), inArray(productVariants.id, [...keptVariants])));
+  try {
+    for (const { v, i, ids, existing } of planned) {
+      const data = {
+        optionValueIds: ids,
+        price: v.price,
+        compareAtPrice: v.compareAtPrice ?? null,
+        stock: v.stock,
+        sku: v.sku,
+        isActive: v.isActive,
+        sort: i,
+      };
+      if (existing) {
+        await database.update(productVariants).set({ ...data, updatedAt: new Date() }).where(and(eq(productVariants.id, existing.id), eq(productVariants.storeId, storeId)));
+      } else {
+        await database.insert(productVariants).values({ productId, storeId, ...data });
+      }
+    }
+  } catch (e) {
+    if (isUniqueViolation(e)) throw new AppError("VALIDATION", "sku_taken");
+    throw e;
+  }
 }
 
 export async function setProductActive(database: Db, storeId: string, id: string, isActive: boolean) {

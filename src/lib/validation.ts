@@ -431,3 +431,86 @@ export const deliveryAreaSchema = z.object({
   ),
 });
 export type DeliveryAreaInput = z.infer<typeof deliveryAreaSchema>;
+
+// ---------------------------------------------------------------- product variants (seller editor)
+/** Option / value names: ≤60 chars per locale, at least one language. */
+const shortName = z
+  .object({ ku: trimmed(60).optional(), ar: trimmed(60).optional(), en: trimmed(60).optional(), kmr: trimmed(60).optional() })
+  .transform((o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v && v.length > 0)) as Partial<Record<(typeof LOCALES)[number], string>>);
+const editorKey = z.string().min(1).max(64).regex(/^[A-Za-z0-9-]+$/);
+
+/**
+ * The variant editor's JSON (src/lib/variant-editor.ts). Options without values and blank values are dropped; every
+ * variant must name one value of each remaining option, combinations and SKUs must be unique. Ids are only hints
+ * for keeping rows (cart lines, order history) and are re-checked against the product server-side.
+ */
+export const productVariantsInputSchema = z
+  .object({
+    options: z
+      .array(
+        z.object({
+          key: editorKey,
+          id: uuid.optional(),
+          name: shortName,
+          swatches: z.boolean().optional(),
+          values: z
+            .array(z.object({ key: editorKey, id: uuid.optional(), label: shortName, swatch: z.string().regex(HEX_COLOR_RE).nullable().optional() }))
+            .max(20, { message: "too_many_values" }),
+        }),
+      )
+      .max(3, { message: "too_many_options" }),
+    variants: z
+      .array(
+        z.object({
+          id: uuid.optional(),
+          keys: z.array(editorKey).max(3),
+          price: iqd.nullable(),
+          compareAtPrice: iqd.nullable().optional(),
+          stock: z.coerce.number().int().min(0).max(1_000_000).nullable(),
+          sku: skuSchema.nullable(),
+          isActive: z.boolean().default(true),
+        }),
+      )
+      .max(100, { message: "too_many_variants" }),
+  })
+  .transform((s) => {
+    const options = s.options
+      .map((o) => ({ ...o, values: o.values.filter((v) => Object.keys(v.label).length > 0) }))
+      .filter((o) => o.values.length > 0);
+    return { options, variants: options.length ? s.variants : [] };
+  })
+  .superRefine((s, ctx) => {
+    s.options.forEach((o, i) => {
+      if (!Object.keys(o.name).length) ctx.addIssue({ code: "custom", message: "option_name_required", path: ["options", i, "name"] });
+      const labels = o.values.map((v) => Object.values(v.label)[0]!.toLowerCase());
+      if (new Set(labels).size !== labels.length) ctx.addIssue({ code: "custom", message: "duplicate_option_value", path: ["options", i, "values"] });
+    });
+    const combos = new Set<string>();
+    const skus = new Set<string>();
+    s.variants.forEach((v, i) => {
+      const ok = v.keys.length === s.options.length && s.options.every((o, j) => o.values.some((x) => x.key === v.keys[j]));
+      if (!ok) ctx.addIssue({ code: "custom", message: "variant_combination_invalid", path: ["variants", i] });
+      const ck = v.keys.join("|");
+      if (combos.has(ck)) ctx.addIssue({ code: "custom", message: "variant_combination_invalid", path: ["variants", i] });
+      combos.add(ck);
+      if (v.sku) {
+        if (skus.has(v.sku.toLowerCase())) ctx.addIssue({ code: "custom", message: "duplicate_sku", path: ["variants", i, "sku"] });
+        skus.add(v.sku.toLowerCase());
+      }
+      if (v.compareAtPrice != null && v.price != null && v.compareAtPrice <= v.price)
+        ctx.addIssue({ code: "custom", message: "compare_at_must_exceed_price", path: ["variants", i, "compareAtPrice"] });
+    });
+    if (s.options.length && !s.variants.some((v) => v.isActive)) ctx.addIssue({ code: "custom", message: "variants_all_off", path: ["variants"] });
+  });
+export type ProductVariantsInput = z.infer<typeof productVariantsInputSchema>;
+
+/** The hidden `variants` input: absent = leave variants untouched (old clients, CSV/AI imports); invalid JSON → error. */
+export function variantsFromForm(fd: FormData): unknown {
+  const raw = fd.get("variants");
+  if (typeof raw !== "string" || raw === "") return undefined;
+  try {
+    return JSON.parse(raw) as unknown;
+  } catch {
+    return { options: "invalid" };
+  }
+}

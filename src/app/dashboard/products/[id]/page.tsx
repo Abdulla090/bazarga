@@ -4,7 +4,8 @@ import { z } from "zod";
 import { requireStore } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { env } from "@/server/env";
-import { getProduct, listCategories } from "@/server/services/catalog";
+import { getProduct, getProductVariants, listCategories } from "@/server/services/catalog";
+import { editorFromDb } from "@/lib/variant-editor";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { ProductForm } from "@/components/dashboard/ProductForm";
@@ -17,7 +18,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   if (!product) notFound();
   const t = await getTranslations("products");
   const locale = await currentLocale();
-  const cats = await listCategories(db(), store.id);
+  const [cats, vd] = await Promise.all([listCategories(db(), store.id), getProductVariants(db(), store.id, product.id)]);
   return (
     <div className="grid gap-8">
       <h1 className="t-headline">{t("edit")}</h1>
@@ -37,6 +38,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           categoryId: product.categoryId,
           badge: product.badge ?? null,
           isActive: product.isActive,
+          variants: editorFromDb(vd.options, vd.values, vd.variants),
           images: product.images.map((i) => ({
             url: i.url,
             width: i.width,
