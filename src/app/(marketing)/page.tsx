@@ -19,6 +19,8 @@ import { FaqList } from "@/components/marketing/FaqList";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
 import { DmsVsBazarga } from "@/components/marketing/DmsVsBazarga";
+import { Testimonials } from "@/components/marketing/Testimonials";
+import { getTestimonials } from "@/server/cache/testimonials";
 import { LiveStats } from "@/components/marketing/LiveStats";
 import { getLiveStats } from "@/server/cache/live-stats";
 
@@ -58,6 +60,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
     mainEntity: faqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
   const stats = await getLiveStats();
+  const quotes = await getTestimonials();
   const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
 
   return (
@@ -111,6 +114,8 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
             labels: { sellers: t("stats.sellers"), stores: t("stats.stores"), orders: t("stats.orders"), waitlist: t("stats.waitlist") },
           }}
         />
+
+        <Testimonials items={quotes} eyebrow={t("quotesEyebrow")} title={t("quotesTitle")} />
 
         {/* How it works */}
         <section id="how" className="scroll-mt-20 bg-white py-14">

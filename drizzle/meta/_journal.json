@@ -169,6 +169,13 @@
       "when": 1791510600000,
       "tag": "0023_showcase_opt_in",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791514200000,
+      "tag": "0024_testimonials",
+      "breakpoints": true
     }
   ]
 }

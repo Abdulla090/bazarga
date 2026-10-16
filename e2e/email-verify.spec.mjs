@@ -35,7 +35,7 @@ test("new seller sees the verify banner, can resend, and a bogus link is rejecte
 
   await page.goto(`/verify-email?token=${"a".repeat(43)}`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /confirm email/i }).click();
-  await expect(page.getByRole("alert")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("p[role=alert]")).toBeVisible({ timeout: 15_000 });
   await page.goto("/verify-email", { waitUntil: "networkidle" });
   await expect(page.getByRole("button", { name: /confirm email/i })).toBeDisabled();
   await context.close();
