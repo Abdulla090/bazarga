@@ -34,6 +34,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- 2026-10-17 00:40 Agent B: **`/status` page** (`agentb/status-page`, db probe + build sha + 4 locales; gated, merging) and **rate-limit audit** (`agentb/trust-rate-limits`): `quoteAction` now has a per-IP cap (300 / 10 min, skipped when the IP is unknown), `requestUpgradeAction` 10 / h per store, and `tests/rate-limit-coverage.test.ts` fails when a new `src/app/api/**` POST route is neither rate limited nor allowlisted (payments + cron are allowlisted with the reason). Added `npm run test:live` (`playwright.live.config.mjs`, proxy-aware): **25 passed, 1 skipped against bazarga.vercel.app** (seller-journey, plan-gating, social-first incl. ?src, pixels, landing, legal, error pages). BACKLOG 2 ticked; 8 partly. Next: item 1 product-page perf measured on a fresh build (shared JS is 150 KiB gz: react-dom 71 + next client 34 + ~45 app/shared), then item 8 headers audit + cookie notice.
+
 - Oct 16 12:55 D5: store-is-live announcement caption (4 locales) + WhatsApp share on /dashboard/share; tests/smoke recorder counts 5. No migration.
 
 ### 2026-10-16 D6 testimonials (97e3280)
