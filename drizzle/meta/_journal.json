@@ -162,6 +162,13 @@
       "when": 1791507000000,
       "tag": "0022_founding_seller",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791510600000,
+      "tag": "0023_showcase_opt_in",
+      "breakpoints": true
     }
   ]
 }

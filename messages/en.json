@@ -1300,5 +1300,29 @@
       "support": "Priority replies when you message the Bazarga team",
       "voice": "A say in what we build next"
     }
+  },
+  "showcase": {
+    "nav": "Showcase",
+    "metaTitle": "Showcase: stores selling on Bazarga",
+    "eyebrow": "Showcase",
+    "title": "Stores selling on Bazarga",
+    "lead": "Storefronts from sellers who chose to be listed. Tap one to browse and order.",
+    "products": "{n} products",
+    "demo": "Demo store",
+    "visit": "Visit store",
+    "founding": "Founding seller",
+    "emptyTitle": "The showcase opens with its first stores",
+    "emptyBody": "Sellers add their store from Settings once it's ready. Yours could be the first.",
+    "emptyCta": "Open your store",
+    "ctaTitle": "Want your store here?",
+    "ctaBody": "Open your store free, then switch on the showcase in Settings.",
+    "ctaButton": "Start free",
+    "toggleTitle": "Show my store in the Bazarga showcase",
+    "toggleHint": "Your store's name, photo, city and product count appear on the public showcase page. Turn it off any time.",
+    "toggleOn": "Your store is listed in the showcase.",
+    "toggleOff": "Your store is not listed.",
+    "add": "Add my store",
+    "remove": "Remove from showcase",
+    "view": "See the showcase"
   }
 }

@@ -79,7 +79,7 @@ describe("SEO: robots, sitemap, metadata", () => {
   it("robots keeps private and per-shopper pages out and points at the sitemap", () => {
     for (const p of ["/dashboard", "/admin", "/api/", "/onboarding", "/payments/", "/s/*/order/", "/s/*/track", "/s/*/cart"]) expect(ROBOTS_DISALLOW).toContain(p);
     expect(read("src/app/robots.ts")).toContain("sitemap.xml");
-    expect(STATIC_PUBLIC_PATHS).toEqual(["/", "/pricing", "/terms", "/privacy", "/refund"]);
+    expect(STATIC_PUBLIC_PATHS).toEqual(["/", "/pricing", "/showcase", "/terms", "/privacy", "/refund"]);
   });
   it("sitemap lists only active stores and active products of active stores", async () => {
     const a = await seller(database, "sma");

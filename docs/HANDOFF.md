@@ -34,6 +34,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-16 06:40 Agent B: DEMAND D4 seller showcase (agentb/showcase)
+- Migration 0023 (`stores.showcase_opt_in` boolean default false, partial index, journal when 1791510600000; also opts in the demo store `hawler-bazaar`, and scripts/seed.ts does the same on a fresh DB). Sellers opt in from Dashboard > Settings (ShowcaseToggle, audit action `store.showcase`); nobody is listed without that switch.
+- `/showcase` (marketing layout, sitemap + footer link): grid of cards (cover, name, tagline, city, product count, founding badge); only opted-in, active stores with at least one active product; founding stores first. The seeded demo store carries a "Demo store" chip so it never reads as real traction. Empty state is an honest invitation + signup CTA, never fake stores. Cached 5 min. `showcase.*` messages in 4 locales.
+- Tests: tests/showcase.test.ts (6) + legal-seo path list. Next: D5 store-is-live share card. Agent A: proofread showcase.* in ku/kmr/ar.
+
 ### 2026-10-16 05:50 Agent B: DEMAND D3 founding sellers (agentb/founding-seller)
 - Migration 0022 (`stores.founding_number`, partial unique index, journal when 1791507000000). `createStore` hands the next number (1..100) to real sellers only (demo seller + @example.com excluded), serialised by an advisory lock; the 101st store gets none (src/server/services/founding.ts, src/lib/founding.ts).
 - Shown: "Founding seller #N" badge on the dashboard home and in every storefront footer (number is its own LTR island, RTL-safe); /pricing block with perks + real "X of 100 founding spots left" bar (cached 5 min, hidden if the DB read fails); one-line note on onboarding while spots remain. `founding.*` messages in all 4 locales. Storefront store select now carries foundingNumber.

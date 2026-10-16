@@ -189,6 +189,7 @@ async function main() {
         en: "Unused items can be returned within 3 days of delivery.",
       },
       freeDeliveryThreshold: 75_000,
+      showcaseOptIn: true,
       coverImageUrl: IMG.hero!.url,
       coverImagePlaceholder: IMG.hero!.placeholder ?? null,
       coverImageRenditions: IMG.hero!.renditions,
