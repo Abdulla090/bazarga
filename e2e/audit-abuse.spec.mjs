@@ -68,8 +68,10 @@ test("markup and SQL strings stay text; oversized input is refused politely; dou
   // absurd price is refused too
   await page.locator('input[name="name.en"]').fill(`Big price ${tag}`);
   await page.locator('input[name="price"]').evaluate((el) => el.removeAttribute("max"));
-  await page.locator('input[name="price"]').fill("99999999999999");
+  // a multiple of the field's 250 step, so the browser submits it and the server has to refuse it (max 1,000,000,000)
+  await page.locator('input[name="price"]').fill("99999999750");
   await page.locator("form button.btn-gold").click();
+  await expect(page.getByText("Add a name in at least one language.")).toHaveCount(0, { timeout: 15_000 }); // fresh server answer
   await expect(page.locator(".field-error").first()).toBeVisible({ timeout: 15_000 });
   expect(new URL(page.url()).pathname).toBe("/dashboard/products/new");
 
@@ -93,7 +95,7 @@ test("markup and SQL strings stay text; oversized input is refused politely; dou
   expect(await sp.locator("img[src='x']").count()).toBe(0);
   await sp.getByTestId("buy-add").click();
   await sp.goto(`/s/${slug}/cart`, { waitUntil: "networkidle" });
-  await sp.locator('input[name="customerName"]').fill(`Shopper ${XSS}`.slice(0, 100));
+  await sp.locator('input[name="customerName"]').fill(`Shopper ${XSS}`.slice(0, 80)); // the server caps names at 80
   await sp.locator('input[name="phone"]').fill("07701234568");
   const area = sp.locator('select[name="areaId"]');
   if (await area.count()) {
