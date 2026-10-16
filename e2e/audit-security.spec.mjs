@@ -174,10 +174,10 @@ test("auth: anon bounced, wrong password generic + keeps email, logout kills the
   expect(cookie).toBeTruthy();
   expect(cookie.sameSite).toBe("Lax");
   if (baseURL.startsWith("https")) expect(cookie.secure).toBe(true);
+  // Log out through the real button (a server-component form: its action id is in the HTML, not in client JS).
   await s.page.goto("/dashboard/more", { waitUntil: "networkidle" });
-  const ids = await actionIds(s.page);
-  expect(ids.logOutAction).toBeTruthy();
-  await callAction(s.page, ids.logOutAction, [], "/dashboard/more");
+  await s.page.locator("main form button.btn-ghost").last().click();
+  await s.page.waitForURL((u) => !u.pathname.startsWith("/dashboard"), { timeout: 30_000 });
   const replay = await browser.newContext();
   await replay.addCookies([{ name: cookie.name, value: cookie.value, domain: host, path: "/" }]);
   const rp = await replay.newPage();

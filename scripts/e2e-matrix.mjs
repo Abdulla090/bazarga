@@ -63,12 +63,19 @@ for (const locale of LOCALES) for (const width of WIDTHS) {
     }
     if (dash && !loggedIn) continue;
     if (ONLY && !ONLY.test(r)) continue;
+    // /login and /signup are checked logged out (a session redirects them to the dashboard, which the checker
+    // then mis-reported as /login problems).
+    if (/^\/(login|signup)/.test(r)) {
+      await ctx.clearCookies();
+      await ctx.addCookies([{ name: "mm_locale", value: locale, domain: host, path: "/" }]);
+    }
     const errs = [];
     const failed = [];
     page.removeAllListeners("console"); page.removeAllListeners("pageerror"); page.removeAllListeners("response"); page.removeAllListeners("requestfailed");
     page.on("console", (m) => { if (m.type() === "error" && !/status of 404/.test(m.text())) errs.push(m.text().slice(0, 160)); });
     page.on("pageerror", (e) => errs.push("pageerror: " + e.message.slice(0, 160)));
-    page.on("response", (res) => { if (res.status() >= 400 && !IGNORED_REQ.test(res.url()) && res.request().resourceType() !== "document") failed.push(`${res.status()} ${res.url().replace(BASE, "").slice(0, 100)}`); });
+    const own404 = (u) => /no-such|nope-404|MATRIXNOCODE/.test(r) && new URL(u).pathname === new URL(BASE + r).pathname; // the expected 404 itself (RSC/prefetch), not a broken asset
+    page.on("response", (res) => { if (res.status() >= 400 && !own404(res.url()) && !IGNORED_REQ.test(res.url()) && res.request().resourceType() !== "document") failed.push(`${res.status()} ${res.url().replace(BASE, "").slice(0, 100)}`); });
     page.on("requestfailed", (q) => { const t = q.failure()?.errorText ?? ""; if (!IGNORED_REQ.test(q.url()) && !/ERR_ABORTED/.test(t)) failed.push(`${t} ${q.url().replace(BASE, "").slice(0, 100)}`); });
     await page.addInitScript(() => {
       window.__cls = 0;
