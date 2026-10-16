@@ -1330,5 +1330,19 @@
     "add": "Dikana min lê zêde bike",
     "remove": "Ji pêşangehê rake",
     "view": "Pêşangehê bibîne"
+  },
+  "status": {
+    "title": "Rewşa pergalê",
+    "ok": "Hemû pergal dixebitin",
+    "degraded": "Xizmet pirsgirêk e",
+    "okLead": "Bazarga bi awayekî normal dixebite.",
+    "degLead": "Em pirsgirêkekê dibînin û li ser dixebitin.",
+    "db": "Danegeh",
+    "app": "Sepan",
+    "up": "Çalak",
+    "down": "Pirsgirêk",
+    "latency": "Dema bersivê",
+    "build": "Guhertoya avakirinê",
+    "checked": "Hate kontrolkirin"
   }
 }
