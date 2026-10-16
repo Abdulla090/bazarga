@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { getCatalog, getProductDetail, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
@@ -60,7 +61,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     getStorefrontSettings(store.id),
     getStoreOffers(store.id),
   ]);
-  const { items, total, hasMore, page } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: design.pageSize });
+  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: design.pageSize });
+  // ?page=N past the last page: a 404 (the store's own not-found page), never the whole catalogue under a bogus URL.
+  if (outOfRange) notFound();
   const badges = merchLabels(t);
   const from = t.raw("from") as string;
   const cardLabels = {
@@ -196,7 +199,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   };
 
   return (
-    <div className="grid">
+    // Room under the last block so the floating chat button (390/360) never sits on top of it at the end of the page.
+    <div className={wa ? "grid pb-20 sm:pb-0" : "grid"}>
       <ViewPixel slug={store.slug} />
       {browsing && (
         <>
@@ -287,11 +291,12 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       {wa && (
         <WaTap
           slug={slug}
+          revealOnScroll
           href={waLink(wa, t("waStoreIntro", { store: store.name }))}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t("chatWhatsApp")}
-          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] start-[calc(1rem+env(safe-area-inset-left))] z-30 flex h-12 min-w-12 items-center justify-center gap-2 rounded-full border border-st-fg bg-st-surface px-3.5 text-[15px] font-medium text-st-fg shadow-e3 transition-colors duration-150 hover:bg-st-bg sm:px-5 rtl:start-[calc(1rem+env(safe-area-inset-right))]"
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] start-[calc(1rem+env(safe-area-inset-left))] z-30 flex h-12 min-w-12 items-center justify-center gap-2 rounded-full border border-st-fg bg-st-surface px-3.5 text-[15px] font-medium text-st-fg shadow-e3 hover:bg-st-bg sm:px-5 rtl:start-[calc(1rem+env(safe-area-inset-right))]"
         >
           <Icon as={MessageCircle} className="h-5 w-5" />
           <span className="hidden sm:inline">{t("chatWhatsApp")}</span>

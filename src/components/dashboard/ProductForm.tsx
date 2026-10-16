@@ -8,6 +8,8 @@ import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
 import { Check, Icon } from "@/components/ui/icons";
 import { SpecsEditor, type SpecRow } from "./SpecsEditor";
+import { VariantsEditor } from "./VariantsEditor";
+import type { EditorState } from "@/lib/variant-editor";
 import { useKeepValues } from "@/lib/use-keep-values";
 
 // Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
@@ -26,6 +28,7 @@ type Values = {
   badge?: "new" | "featured" | null;
   isActive: boolean;
   images: ProductImageInput[];
+  variants?: EditorState;
 };
 
 const LANGS: Locale[] = ["ku", "ar", "en", "kmr"];
@@ -42,10 +45,13 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   const nameError = Object.keys(fe).find((k) => k.startsWith("name")) ? "name_required" : undefined;
   const specsKey = Object.keys(fe).find((k) => k.startsWith("specs"));
   const specsError = specsKey ? fe[specsKey] : undefined;
+  const variantsKey = Object.keys(fe).find((k) => k.startsWith("variants"));
+  const variantsError = state.error === "sku_taken" ? "sku_taken" : variantsKey ? fe[variantsKey] : undefined;
+  const [hasVariants, setHasVariants] = useState(() => (initial.variants?.variants.length ?? 0) > 0);
 
   return (
     <form action={action} onSubmit={keep} className="grid gap-4">
-      <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
+      <FormError error={state.error === "VALIDATION" || state.error === "sku_taken" ? undefined : state.error} />
       {state.error?.startsWith("plan_limit_") && (
         <Link href="/dashboard/upgrade" data-testid="limit-upgrade" className="btn-gold inline-flex min-h-11 w-fit items-center">{tp("upgradeCta")}</Link>
       )}
@@ -87,8 +93,14 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
       <div className="grid gap-4 border-t border-line pt-6 sm:grid-cols-2">
         <Field label={t("price")} name="price" type="number" inputMode="numeric" min={0} step={250} required ltr defaultValue={initial.price} error={fe.price} />
         <Field label={t("compareAt")} name="compareAtPrice" type="number" inputMode="numeric" min={0} step={250} ltr defaultValue={initial.compareAtPrice ?? ""} hint={t("compareAtHint")} error={fe.compareAtPrice ? "VALIDATION" : undefined} />
-        <Field label={t("stock")} name="stock" type="number" inputMode="numeric" min={0} ltr defaultValue={initial.stock ?? ""} hint={t("stockHint")} error={fe.stock} />
-        <Field label={t("sku")} name="sku" ltr maxLength={64} autoComplete="off" defaultValue={initial.sku ?? ""} hint={t("skuHint")} error={fe.sku} />
+        {hasVariants ? (
+          <p className="hint self-end sm:col-span-1" data-testid="variants-stock-note">{t("variantsStockNote")}</p>
+        ) : (
+          <>
+            <Field label={t("stock")} name="stock" type="number" inputMode="numeric" min={0} ltr defaultValue={initial.stock ?? ""} hint={t("stockHint")} error={fe.stock} />
+            <Field label={t("sku")} name="sku" ltr maxLength={64} autoComplete="off" defaultValue={initial.sku ?? ""} hint={t("skuHint")} error={fe.sku} />
+          </>
+        )}
         <div>
           <label className="label" htmlFor="f-cat">{t("category")}</label>
           <select id="f-cat" name="categoryId" className="select" defaultValue={initial.categoryId ?? ""}>
@@ -111,6 +123,10 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
           <input type="checkbox" name="isActive" defaultChecked={initial.isActive} className="h-5 w-5 accent-ink" />
           {t("active")}
         </label>
+      </div>
+
+      <div className="border-t border-line pt-6">
+        <VariantsEditor initial={initial.variants ?? { options: [], variants: [] }} lang={lang} error={variantsError} onHasVariants={setHasVariants} />
       </div>
 
       <div className="border-t border-line pt-6">

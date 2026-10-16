@@ -38,7 +38,8 @@ export type CatalogFilter = {
   offers?: boolean;
 };
 
-export type FilterResult<T> = { items: T[]; total: number; hasMore: boolean; page: number };
+/** `outOfRange`: the page asked for starts past the last match (?page=999); the page answers 404 instead of a full list. */
+export type FilterResult<T> = { items: T[]; total: number; hasMore: boolean; page: number; lastPage: number; outOfRange: boolean };
 
 export function parsePage(v: number | string | null | undefined): number {
   const n = typeof v === "number" ? v : Number.parseInt(String(v ?? ""), 10);
@@ -58,6 +59,9 @@ export function filterCatalog<T extends FilterableProduct>(products: readonly T[
     const hay = normalizeSearchText([pickText(p.name, f.locale), ...Object.values(p.name)].filter(Boolean).join(" "));
     return terms.every((t) => hay.includes(t));
   });
-  const limit = page * pageSize;
-  return { items: matches.slice(0, limit), total: matches.length, hasMore: matches.length > limit, page };
+  const lastPage = Math.max(1, Math.ceil(matches.length / pageSize));
+  const outOfRange = page > lastPage;
+  const shown = Math.min(page, lastPage);
+  const limit = shown * pageSize;
+  return { items: outOfRange ? [] : matches.slice(0, limit), total: matches.length, hasMore: matches.length > limit, page: shown, lastPage, outOfRange };
 }
