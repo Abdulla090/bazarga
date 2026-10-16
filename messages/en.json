@@ -849,7 +849,10 @@
     "storyAlt": "Story image preview",
     "storyDownload": "Download in:",
     "storyCta": "Order online now",
-    "storyScan": "Scan to open the store"
+    "storyScan": "Scan to open the store",
+    "liveTitle": "Announce your store is live",
+    "liveHint": "Post this the day you open: a caption ready to paste on TikTok, Instagram or WhatsApp.",
+    "liveCaption": "🎉 My store is open! Order online, pay cash on delivery 👇\n{url}"
   },
   "risk": {
     "title": "Check before shipping",
