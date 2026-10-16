@@ -18,6 +18,7 @@ export default async function ShareKitPage() {
   const t = await getTranslations("shareKit");
   const url = storeUrl(env().APP_URL, store.slug);
   const bio = t("bioLine", { url });
+  const liveCaption = t("liveCaption", { url });
   const qr = qrMatrix(url);
   const n = qr.size + 8;
   const storyLang = store.defaultLocale;
@@ -28,6 +29,18 @@ export default async function ShareKitPage() {
         <h1 className="t-headline">{t("title")}</h1>
         <p className="text-ink-70">{t("subtitle")}</p>
       </div>
+
+      <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="sk-live">
+        <h2 id="sk-live" className="text-lg font-bold">{t("liveTitle")}</h2>
+        <p className="text-sm text-ink-70">{t("liveHint")}</p>
+        <p className="whitespace-pre-line break-words rounded-lg border border-line bg-white p-3 text-sm" data-testid="share-live-caption">{liveCaption}</p>
+        <RecordShareClicks className="flex flex-wrap gap-2">
+          <CopyButton text={liveCaption} testId="share-copy-live" />
+          <a href={waShareLink(liveCaption)} target="_blank" rel="noopener noreferrer" className="btn-ghost btn-sm">
+            <Icon as={MessageCircle} /> {t("whatsapp")}
+          </a>
+        </RecordShareClicks>
+      </section>
 
       <section className="border-t border-line pt-5 grid gap-3" aria-labelledby="sk-link">
         <h2 id="sk-link" className="text-lg font-bold">{t("linkTitle")}</h2>

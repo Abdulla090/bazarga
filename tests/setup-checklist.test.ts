@@ -200,8 +200,8 @@ describe("share step follow-up", () => {
     const page = readFileSync("src/app/dashboard/share/page.tsx", "utf8");
     // Split into recorder blocks; every interactive control must be inside one.
     const inside = [...page.matchAll(/<RecordShareClicks[\s\S]*?<\/RecordShareClicks>/g)].map((m) => m[0]).join("\n");
-    expect(page.match(/<RecordShareClicks/g)?.length).toBe(4);
-    for (const needle of ["<CopyButton text={url}", "<CopyButton text={bio}", "waShareLink(bio)", "/api/share/qr?format=png&download=1", "/api/share/qr?format=svg&download=1", "/api/share/story?lang=${l}&download=1"]) {
+    expect(page.match(/<RecordShareClicks/g)?.length).toBe(5);
+    for (const needle of ["<CopyButton text={url}", "<CopyButton text={bio}", "waShareLink(bio)", "<CopyButton text={liveCaption}", "waShareLink(liveCaption)", "/api/share/qr?format=png&download=1", "/api/share/qr?format=svg&download=1", "/api/share/story?lang=${l}&download=1"]) {
       expect(inside, needle).toContain(needle);
     }
     const outside = page.slice(page.indexOf("return (")).replace(/<RecordShareClicks[\s\S]*?<\/RecordShareClicks>/g, "");

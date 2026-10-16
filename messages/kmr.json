@@ -465,7 +465,10 @@
     "storyAlt": "Pêşdîtina wêneya story",
     "storyDownload": "Daxistin bi zimanê:",
     "storyCta": "Niha bi înternetê siparîş bide",
-    "storyScan": "Skan bike da ku firoşgeh vebe"
+    "storyScan": "Skan bike da ku firoşgeh vebe",
+    "liveTitle": "Ragihîne ku firoşgeha te vebûye",
+    "liveHint": "Roja vekirinê parve bike: nivîsek amade ji bo TikTok, Instagram an WhatsAppê.",
+    "liveCaption": "🎉 Firoşgeha min vebû! Bi înternetê siparîş bide, pere di gihandinê de bide 👇\n{url}"
   },
   "orders": {
     "export": "CSV dakêşe",
