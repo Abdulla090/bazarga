@@ -8,6 +8,7 @@ import { LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import type { ProductImageInput } from "@/lib/validation";
 import { Check, Icon } from "@/components/ui/icons";
 import { SpecsEditor, type SpecRow } from "./SpecsEditor";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 // Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
 const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
@@ -35,6 +36,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   const te = useTranslations("errors");
   const tp = useTranslations("pricing");
   const [state, action, pending] = useActionState(saveProductAction, {});
+  const keep = useKeepValues(action);
   const [lang, setLang] = useState<Locale>(defaultLang);
   const fe = state.fieldErrors ?? {};
   const nameError = Object.keys(fe).find((k) => k.startsWith("name")) ? "name_required" : undefined;
@@ -42,7 +44,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
   const specsError = specsKey ? fe[specsKey] : undefined;
 
   return (
-    <form action={action} className="grid gap-4">
+    <form action={action} onSubmit={keep} className="grid gap-4">
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       {state.error?.startsWith("plan_limit_") && (
         <Link href="/dashboard/upgrade" data-testid="limit-upgrade" className="btn-gold inline-flex min-h-11 w-fit items-center">{tp("upgradeCta")}</Link>

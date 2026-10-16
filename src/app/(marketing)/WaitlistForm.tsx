@@ -4,11 +4,13 @@ import { useTranslations } from "next-intl";
 import { joinWaitlistAction } from "@/server/actions/marketing";
 import type { ActionState } from "@/server/actions/util";
 import { WaitlistSpot } from "@/components/marketing/WaitlistSpot";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export function WaitlistForm({ cities, refCode = "" }: { cities: { key: string; name: string }[]; refCode?: string }) {
   const t = useTranslations("landing");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState<ActionState, FormData>(joinWaitlistAction, {});
+  const keep = useKeepValues(action);
   if (state.ok && state.data) {
     const d = state.data;
     return (
@@ -24,7 +26,7 @@ export function WaitlistForm({ cities, refCode = "" }: { cities: { key: string; 
   }
   const err = (f: string) => state.fieldErrors?.[f] && <p className="field-error">{te(state.fieldErrors[f] as "generic")}</p>;
   return (
-    <form action={action} className="card grid gap-4 sm:grid-cols-2" noValidate>
+    <form action={action} onSubmit={keep} className="card grid gap-4 sm:grid-cols-2" noValidate>
       <input type="hidden" name="ref" value={refCode} />
       {refCode && <p className="rounded-xl bg-gold/10 px-4 py-3 text-sm font-medium text-ink sm:col-span-2" data-testid="waitlist-invited">{t("wlInvited")}</p>}
       <div>

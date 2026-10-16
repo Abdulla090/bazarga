@@ -4,12 +4,14 @@ import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { resetPasswordAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export function ResetForm({ token }: { token: string }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(resetPasswordAction, {});
+  const keep = useKeepValues(action);
   return (
-    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+    <form action={action} onSubmit={keep} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
       <h1 className="t-headline">{t("resetTitle")}</h1>
       {state.ok ? (
         <>

@@ -3,16 +3,18 @@ import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { savePixelsAction } from "@/server/actions/dashboard";
 import { Field, FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 /** Seller's own TikTok / Meta pixel IDs (S5). Both optional; empty turns the pixel off. */
 export function PixelsForm({ initial }: { initial: { tiktokPixelId: string | null; metaPixelId: string | null } }) {
   const t = useTranslations("settings");
   const tc = useTranslations("common");
   const [state, action, pending] = useActionState(savePixelsAction, {});
+  const keep = useKeepValues(action);
   const fe = state.fieldErrors ?? {};
   const err = (k: string) => (fe[k] ? "invalid_pixel" : undefined);
   return (
-    <form action={action} className="card grid gap-4" data-testid="pixels-form">
+    <form action={action} onSubmit={keep} className="card grid gap-4" data-testid="pixels-form">
       <div className="grid gap-1">
         <h2 className="text-lg font-bold">{t("pixelsTitle")}</h2>
         <p className="hint">{t("pixelsHint")}</p>

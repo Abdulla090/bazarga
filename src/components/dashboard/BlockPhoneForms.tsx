@@ -1,8 +1,9 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { blockPhoneAction, unblockPhoneAction } from "@/server/actions/blocklist";
 import { FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 /** Order page: block / unblock the order's phone for this store. Blocking asks first. */
 export function BlockToggle({ phone, phoneLabel, orderId, blocked }: { phone: string; phoneLabel: string; orderId: string; blocked: boolean }) {
@@ -30,8 +31,13 @@ export function BlockToggle({ phone, phoneLabel, orderId, blocked }: { phone: st
 export function AddBlockedPhoneForm() {
   const t = useTranslations("risk");
   const [state, action, pending] = useActionState(blockPhoneAction, {});
+  const keep = useKeepValues(action);
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state.ok) formRef.current?.reset();
+  }, [state]);
   return (
-    <form action={action} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end" data-testid="block-phone-form">
+    <form ref={formRef} action={action} onSubmit={keep} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end" data-testid="block-phone-form">
       <div>
         <label className="label" htmlFor="bp-phone">{t("phone")}</label>
         <input id="bp-phone" name="phone" type="tel" inputMode="tel" required className="input num" dir="ltr" placeholder="0750 123 4567" autoComplete="off" />
