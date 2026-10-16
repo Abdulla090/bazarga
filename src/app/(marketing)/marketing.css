@@ -557,3 +557,15 @@
   }
 }
 @keyframes dvb-pop { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* =====================================================================================================
+   LIVE STATS (D2): real DB counts, hidden until they clear a floor
+   ===================================================================================================== */
+.stats-band { padding-block: 4rem 3.5rem; background: var(--color-paper); border-block: 1px solid var(--color-line); }
+@media (min-width: 640px) { .stats-band { padding-block: 5rem 4.5rem; } }
+.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin: 1.75rem 0 0; }
+@media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 1rem; } }
+.stat { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 0.25rem; padding: 1.125rem 1.25rem; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: #fff; min-height: 6rem; }
+.stat-num { margin: 0; font-size: 2.25rem; line-height: 1.1; font-weight: 300; letter-spacing: -0.02em; color: #2563EB; font-variant-numeric: tabular-nums; }
+@media (min-width: 640px) { .stat-num { font-size: 3rem; } }
+.stat-label { font-size: 0.9375rem; color: var(--color-ink-70, #4b5563); }

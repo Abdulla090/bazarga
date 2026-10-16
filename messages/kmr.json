@@ -127,12 +127,12 @@
     "wlBack": "Bi xêr hatî, {name}. Cihê te parastî ye.",
     "wlSpot": "Cihê te",
     "wlOf": "ji {total} kesên li bendê",
-    "wlBoost": "Her hevalê ku bi lînka te tev li lîsteyê dibe, te {n} cihan ber bi pêş ve dibe.",
+    "wlBoost": "Her hevalê ku bi lînka te tev li lîsteyê bibe, te {n} cihan ber bi pêş ve dibe.",
     "wlLink": "Lînka te ya taybet",
     "wlFriends": "Hevalên ku bi lînka te tev bûn: {n}",
     "wlWa": "Di WhatsAppê de parve bike",
     "wlShare": "Ez di lîsteya hêviyê ya Bazargayê de me. Dikana xwe ya serhêl ji Instagram, TikTok û WhatsAppê veke. Bi lînka min tev li me bibe:",
-    "wlInvited": "Hevalekî te vexwendiye. Hûn herdu jî ber bi pêş ve diçin.",
+    "wlInvited": "Hevalekî te vexwendiye. Hûn her du jî ber bi pêş ve diçin.",
     "wlStatusTitle": "Cihê te di lîsteya hêviyê de",
     "wlStatusMissing": "Me ev cih nedît. Lînkê kontrol bike, an tev li lîsteyê bibe.",
     "wlStatusJoin": "Tev li lîsteya hêviyê bibe",
@@ -236,6 +236,15 @@
       "orderCity": "Hewlêr · nêzîkî Family Mall",
       "cod": "Dravdan dema gihandinê",
       "cta": "Lînka bioya xwe çêke"
+    },
+    "stats": {
+      "eyebrow": "Hejmarên zindî",
+      "title": "Firoşkarên rastîn, fermanên rastîn",
+      "sellers": "Firoşkar",
+      "stores": "Dikanên çalak",
+      "orders": "Fermanên hatine tomarkirin",
+      "waitlist": "Di lîsteya bendê de",
+      "note": "Rasterast ji databaseya me tên jimartin û her çend deqeyan carekê nû dibin."
     }
   },
   "store": {
