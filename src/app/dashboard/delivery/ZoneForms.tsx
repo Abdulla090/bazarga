@@ -4,14 +4,16 @@ import { useTranslations } from "next-intl";
 import { addZoneAction, deleteAreaAction, deleteZoneAction, saveAreaAction, updateZoneAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Check, Icon, Trash2 } from "@/components/ui/icons";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string; fee: number; isActive: boolean }) {
   const t = useTranslations("delivery");
   const tc = useTranslations("common");
   const [state, action, pending] = useActionState(updateZoneAction, {});
+  const keep = useKeepValues(action);
   const [delPending, start] = useTransition();
   return (
-    <form action={action} className="card flex flex-wrap items-center gap-3 p-3">
+    <form action={action} onSubmit={keep} className="card flex flex-wrap items-center gap-3 p-3">
       <input type="hidden" name="id" value={id} />
       <span className="min-w-28 flex-1 font-bold">{name}</span>
       <label className="flex items-center gap-2 text-sm">
@@ -34,8 +36,13 @@ export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string;
 export function AddZoneForm() {
   const t = useTranslations("delivery");
   const [state, action, pending] = useActionState(addZoneAction, {});
+  const keep = useKeepValues(action);
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state.ok) formRef.current?.reset();
+  }, [state]);
   return (
-    <form action={action} className="card grid gap-3 sm:grid-cols-4 sm:items-end">
+    <form ref={formRef} action={action} onSubmit={keep} className="card grid gap-3 sm:grid-cols-4 sm:items-end">
       <div>
         <label className="label" htmlFor="z-key">{t("cityKey")}</label>
         <input id="z-key" name="cityKey" required className="input num" dir="ltr" placeholder="ranya" pattern="[a-z0-9-]{2,40}" />
@@ -65,6 +72,7 @@ export function AreaForm({ zoneId, cityFee, area }: { zoneId: string; cityFee: n
   const t = useTranslations("delivery");
   const tc = useTranslations("common");
   const [state, action, pending] = useActionState(saveAreaAction, {});
+  const keep = useKeepValues(action);
   const [delPending, start] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const p = area?.id ?? `new-${zoneId}`;
@@ -72,7 +80,7 @@ export function AreaForm({ zoneId, cityFee, area }: { zoneId: string; cityFee: n
     if (state.ok && !area) formRef.current?.reset();
   }, [state, area]);
   return (
-    <form ref={formRef} action={action} className="grid gap-2 rounded-xl border border-line p-2 sm:grid-cols-[1fr_1fr_1fr_8rem_auto] sm:items-end" data-testid={area ? "area-row" : "area-add"}>
+    <form ref={formRef} action={action} onSubmit={keep} className="grid gap-2 rounded-xl border border-line p-2 sm:grid-cols-[1fr_1fr_1fr_8rem_auto] sm:items-end" data-testid={area ? "area-row" : "area-add"}>
       <input type="hidden" name={area ? "id" : "zoneId"} value={area?.id ?? zoneId} />
       <div className="min-w-0">
         <label className="label text-xs" htmlFor={`${p}-ku`}>{t("areaName")} · کوردی</label>

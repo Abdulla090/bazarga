@@ -5,6 +5,7 @@ import { saveStorefrontAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Icon, Plus, X } from "@/components/ui/icons";
 import { compressForUpload } from "@/lib/client-image-compress";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 type Rendition = { width: number; height: number; url: string; key: string; bytes: number };
 type Values = { coverImageUrl: string | null; coverImagePlaceholder: string | null; coverImageRenditions: Rendition[]; freeDeliveryThreshold: number | null };
@@ -19,6 +20,7 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
   const tc = useTranslations("common");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState(saveStorefrontAction, {});
+  const keep = useKeepValues(action);
   const [cover, setCover] = useState<{ url: string; placeholder: string | null; renditions: Rendition[] } | null>(
     initial.coverImageUrl ? { url: initial.coverImageUrl, placeholder: initial.coverImagePlaceholder, renditions: initial.coverImageRenditions } : null,
   );
@@ -49,7 +51,7 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
   }
 
   return (
-    <form action={action} className="card grid gap-4">
+    <form action={action} onSubmit={keep} className="card grid gap-4">
       <h2 className="text-lg font-bold">{t("storefrontTitle")}</h2>
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       {state.ok && <p role="status" className="rounded-xl bg-green/10 px-3 py-2 font-semibold text-green">{tc("saved")}</p>}

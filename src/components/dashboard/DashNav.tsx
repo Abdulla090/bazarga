@@ -40,7 +40,7 @@ export function DashNav({ variant, newOrders = 0 }: { variant: "side" | "bottom"
 
   if (variant === "bottom") {
     const tab = (on: boolean) =>
-      `relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors duration-150 ${on ? "text-ink" : "text-ink/50 hover:text-ink"}`;
+      `relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors duration-150 ${on ? "text-ink" : "text-ink/70 hover:text-ink"}`;
     return (
       <nav aria-label="Dashboard" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden print:hidden">
         <ul className="grid grid-cols-4">

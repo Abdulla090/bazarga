@@ -5,6 +5,7 @@ import { Field, FormError } from "@/components/forms/Field";
 import { slugify } from "@/lib/slug";
 import { LOCALE_LABEL, UI_LOCALES } from "@/lib/i18n";
 import type { ActionState } from "@/server/actions/util";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 type StoreValues = {
   name: string;
@@ -35,12 +36,13 @@ export function StoreForm({
   const ts = useTranslations("settings");
   const tc = useTranslations("common");
   const [state, formAction, pending] = useActionState(action, {});
+  const keep = useKeepValues(formAction);
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   const fe = state.fieldErrors ?? {};
 
   return (
-    <form action={formAction} className="card grid min-w-0 grid-cols-1 gap-4">
+    <form action={formAction} onSubmit={keep} className="card grid min-w-0 grid-cols-1 gap-4">
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       {state.ok && <p role="status" className="rounded-xl bg-green/10 px-3 py-2 font-semibold text-green">{tc("saved")}</p>}
       <Field

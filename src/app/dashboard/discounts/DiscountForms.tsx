@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { saveDiscountAction, toggleDiscountAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { Check, Icon } from "@/components/ui/icons";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export type DiscountFormValues = {
   id?: string;
@@ -25,6 +26,7 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
   const tc = useTranslations("common");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState(saveDiscountAction, {});
+  const keep = useKeepValues(action);
   const [type, setType] = useState<DiscountFormValues["type"]>(initial?.type ?? "percentage");
   const formRef = useRef<HTMLFormElement>(null);
   const p = initial?.id ?? "new";
@@ -37,7 +39,7 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
     return e ? <p id={`${p}-${k}-err`} className="field-error">{te(e as "generic")}</p> : null;
   };
   return (
-    <form ref={formRef} action={action} onReset={() => setType(initial?.type ?? "percentage")} className="grid gap-3 sm:grid-cols-2" noValidate>
+    <form ref={formRef} action={action} onSubmit={keep} onReset={() => setType(initial?.type ?? "percentage")} className="grid gap-3 sm:grid-cols-2" noValidate>
       {initial?.id && <input type="hidden" name="id" value={initial.id} />}
       <div>
         <label className="label" htmlFor={`${p}-code`}>{t("code")}</label>

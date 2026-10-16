@@ -124,7 +124,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                 {k.delta >= 0 ? "▲" : "▼"} {nf.format(Math.abs(k.delta))}%
               </dd>
             )}
-            {k.series && <Sparkline values={k.series} rtl={rtl} label={t(k.key)} />}
+            {k.series && <dd><Sparkline values={k.series} rtl={rtl} label={t(k.key)} /></dd>}
           </div>
         ))}
       </dl>

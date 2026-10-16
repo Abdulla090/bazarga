@@ -445,7 +445,17 @@
     "shareSub": "Wê têxe bioya Instagramê û statûya WhatsAppê.",
     "seeAll": "Hemûyan bibîne",
     "discounts": "Daxistin",
-    "theme": "Tema"
+    "theme": "Tema",
+    "search": "Lêgerîn",
+    "searchOrders": "Hejmara siparîşê, telefon an nav",
+    "searchProducts": "Berheman bi nav an SKU bigere",
+    "clearSearch": "Paqij bike",
+    "newer": "Nûtir",
+    "older": "Kevintir",
+    "prevPage": "Berê",
+    "nextPage": "Paşê",
+    "showing": "{from}–{to} ji {total}",
+    "noMatches": "Tiştek li gorî “{q}” tune."
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
@@ -575,7 +585,7 @@
     "FORBIDDEN": "Destûra te ji bo vê tune ye.",
     "NOT_FOUND": "Nayê dîtin.",
     "CONFLICT": "Ev jixwe heye.",
-    "RATE_LIMITED": "Gelek caran hat ceribandin. Deqeyekê bisekine û dîsa biceribîne.",
+    "RATE_LIMITED": "Gelek caran hat ceribandin. Hinekî bisekine û paşê dîsa biceribîne.",
     "OUT_OF_STOCK": "Bibore, tiştek di selika te de hema qediya.",
     "UNAVAILABLE": "Ev niha nayê dîtin.",
     "PAYMENT_ERROR": "Me nekarî bigihîjin pêşkêşkerê dayînê.",

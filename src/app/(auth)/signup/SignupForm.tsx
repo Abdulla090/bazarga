@@ -4,13 +4,15 @@ import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { signUpAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export function SignupForm({ legal }: { legal?: React.ReactNode }) {
   const t = useTranslations("auth");
   const locale = useLocale();
   const [state, action, pending] = useActionState(signUpAction, {});
+  const keep = useKeepValues(action);
   return (
-    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+    <form action={action} onSubmit={keep} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
       <div>
         <h1 className="t-headline">{t("signupTitle")}</h1>
         <p className="text-ink-70">{t("signupSub")}</p>

@@ -1,9 +1,10 @@
 "use client";
-import { useActionState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { deleteCategoryAction, saveCategoryAction } from "@/server/actions/dashboard";
 import { FormError } from "@/components/forms/Field";
 import { LOCALE_LABEL } from "@/lib/i18n";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 type Cat = { id?: string; name: Record<string, string | undefined>; sort: number };
 
@@ -11,9 +12,14 @@ export function CategoryForm({ cat }: { cat?: Cat }) {
   const t = useTranslations("categories");
   const tc = useTranslations("common");
   const [state, action, pending] = useActionState(saveCategoryAction, {});
+  const keep = useKeepValues(action);
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state.ok && !cat?.id) formRef.current?.reset(); // the "new category" row clears after a successful add
+  }, [state, cat?.id]);
   const [delPending, start] = useTransition();
   return (
-    <form action={action} className="card grid gap-2 sm:grid-cols-[1fr_1fr_1fr_5rem_auto] sm:items-end">
+    <form ref={formRef} action={action} onSubmit={keep} className="card grid gap-2 sm:grid-cols-[1fr_1fr_1fr_5rem_auto] sm:items-end">
       {cat?.id && <input type="hidden" name="id" value={cat.id} />}
       {(["ku", "ar", "en"] as const).map((l) => (
         <div key={l}>

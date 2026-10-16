@@ -289,7 +289,17 @@
     "seeAll": "See all",
     "discounts": "Discounts",
     "analytics": "Analytics",
-    "theme": "Theme"
+    "theme": "Theme",
+    "search": "Search",
+    "searchOrders": "Order #, phone or name",
+    "searchProducts": "Search products by name or SKU",
+    "clearSearch": "Clear",
+    "newer": "Newer",
+    "older": "Older",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "showing": "{from}–{to} of {total}",
+    "noMatches": "Nothing matches “{q}”."
   },
   "setup": {
     "title": "Set up your store",
@@ -697,7 +707,7 @@
     "FORBIDDEN": "You can't do that.",
     "NOT_FOUND": "Not found.",
     "CONFLICT": "That already exists.",
-    "RATE_LIMITED": "Too many tries. Wait a minute and try again.",
+    "RATE_LIMITED": "Too many tries. Please wait a while and try again.",
     "OUT_OF_STOCK": "Sorry, something in your cart just sold out.",
     "UNAVAILABLE": "This isn't available right now.",
     "PAYMENT_ERROR": "We couldn't reach the payment provider.",

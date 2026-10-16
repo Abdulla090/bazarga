@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { NONCE_HEADER, buildCsp, generateNonce } from "@/server/csp";
 import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn } from "@/lib/not-found";
+import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
 const ROOT = (process.env.ROOT_DOMAIN ?? "mymarket.app").toLowerCase();
@@ -109,7 +110,7 @@ export async function proxy(req: NextRequest) {
       rewritten.pathname = `/s/${sub}${url.pathname === "/" ? "" : url.pathname}`;
       res = NextResponse.rewrite(rewritten, { request: { headers: requestHeaders } });
       if (csp) res.headers.set("Content-Security-Policy", csp);
-      return res;
+      return withSourceCookie(res, req, sub);
     }
   }
 
@@ -118,6 +119,18 @@ export async function proxy(req: NextRequest) {
 
   res = NextResponse.next({ request: { headers: requestHeaders } });
   if (csp) res.headers.set("Content-Security-Policy", csp);
+  return m ? withSourceCookie(res, req, m[1]!) : res;
+}
+
+/**
+ * `?src=<platform>` on a storefront page also sets the per-store attribution cookie on the response, so the source
+ * survives a shopper who taps on before the page has hydrated (SourceCapture only runs after hydration; on a slow
+ * phone the first tap could beat it and the order then showed as direct). Same name, value and lifetime as
+ * src/lib/source-client.ts; not HttpOnly because checkout reads it in the browser.
+ */
+function withSourceCookie(res: NextResponse, req: NextRequest, slug: string): NextResponse {
+  const src = parseSource(req.nextUrl.searchParams.get("src"));
+  if (src && isDocumentRequest(req)) res.cookies.set(sourceCookieName(slug), src, { path: "/", maxAge: SOURCE_COOKIE_MAX_AGE, sameSite: "lax" });
   return res;
 }
 

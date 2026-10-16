@@ -6,6 +6,7 @@ import { FormError } from "@/components/forms/Field";
 import { Check, Icon } from "@/components/ui/icons";
 import { PRESET_TOKENS, THEME_PRESETS, HEX_COLOR_RE, resolveTheme, type ThemePreset } from "@/lib/theme";
 import { LOCALE_LABEL } from "@/lib/i18n";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 type Values = {
   themePreset: ThemePreset;
@@ -22,13 +23,14 @@ export function ThemeForm({ initial }: { initial: Values }) {
   const tc = useTranslations("common");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState(saveThemeAction, {});
+  const keep = useKeepValues(action);
   const [preset, setPreset] = useState<ThemePreset>(initial.themePreset);
   const [accent, setAccent] = useState(initial.accentColor ?? "");
   const preview = resolveTheme(preset, HEX_COLOR_RE.test(accent) ? accent : null);
   const fe = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="card grid gap-4">
+    <form action={action} onSubmit={keep} className="card grid gap-4">
       <div>
         <h2 className="text-lg font-bold">{t("theme")}</h2>
         <p className="hint">{t("themeHint")}</p>

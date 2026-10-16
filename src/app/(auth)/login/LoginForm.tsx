@@ -4,12 +4,14 @@ import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { logInAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 export function LoginForm() {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(logInAction, {});
+  const keep = useKeepValues(action);
   return (
-    <form action={action} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+    <form action={action} onSubmit={keep} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
       <h1 className="t-headline">{t("loginTitle")}</h1>
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />

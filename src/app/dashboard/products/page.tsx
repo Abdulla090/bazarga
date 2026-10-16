@@ -12,14 +12,22 @@ import { ProductShareButton } from "@/components/dashboard/ProductShareButton";
 import { CAPTION_LOCALES, type CaptionLocale } from "@/lib/social";
 import { Icon, Sparkles } from "@/components/ui/icons";
 import { PlanUsage } from "@/components/dashboard/PlanUsage";
+import { ListPager, ListSearch } from "@/components/dashboard/ListControls";
+import { DASH_PAGE_SIZE, matchesProduct, pageWindow, parseDashPage, parseDashQuery } from "@/lib/dash-list";
 
-export default async function ProductsPage() {
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { store } = await requireStore();
   const t = await getTranslations("products");
   const td = await getTranslations("dash");
   const locale = await currentLocale();
   const tp = await getTranslations("pricing");
-  const [products, usage] = await Promise.all([listProducts(db(), store.id), getProductUsage(db(), store.id)]);
+  const [all, usage] = await Promise.all([listProducts(db(), store.id), getProductUsage(db(), store.id)]);
+  const sp = await searchParams;
+  const q = parseDashQuery(sp.q);
+  const matched = q ? all.filter((p) => matchesProduct(p, q)) : all;
+  const win = pageWindow(parseDashPage(sp.page), matched.length);
+  const products = matched.slice(win.offset, win.offset + DASH_PAGE_SIZE);
+  const labels = { search: td("search"), placeholder: td("searchProducts"), clear: td("clearSearch"), newer: td("prevPage"), older: td("nextPage"), showing: td("showing", { from: String(win.from), to: String(win.to), total: String(matched.length) }) };
   const atLimit = usage.used >= usage.cap;
   const asCaption = (l: string): CaptionLocale | null => ((CAPTION_LOCALES as readonly string[]).includes(l) ? (l as CaptionLocale) : null);
   const shareLocale: CaptionLocale = asCaption(locale) ?? asCaption(store.defaultLocale) ?? "ku";
@@ -38,7 +46,10 @@ export default async function ProductsPage() {
         hint={atLimit ? tp("limitHint") : null}
         cta={usage.plan === "max" ? null : tp("upgradeCta")}
       />
-      {products.length === 0 ? (
+      {all.length > 0 && <ListSearch base="/dashboard/products" q={q} labels={labels} testId="products-search" />}
+      {all.length > 0 && products.length === 0 ? (
+        <p className="rounded-xl border border-line p-6 text-center text-ink-70" data-testid="products-no-match">{td("noMatches", { q })}</p>
+      ) : products.length === 0 ? (
         <EmptyState title={t("empty")} help={t("emptyHelp")} href="/dashboard/products/new" cta={t("emptyCta")} testId="products-empty" />
       ) : (
         <ul className="divide-y divide-line border-y border-line lg:grid lg:grid-cols-2 lg:divide-y-0 lg:gap-x-12">
@@ -62,6 +73,7 @@ export default async function ProductsPage() {
           ))}
         </ul>
       )}
+      {matched.length > 0 && <ListPager base="/dashboard/products" page={win.page} pages={win.pages} q={q} labels={labels} testId="products-pager" />}
     </div>
   );
 }
