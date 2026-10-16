@@ -60,3 +60,16 @@ test("platform 404 has a working home link and no console CSP errors", async ({ 
   await page.waitForURL((u) => u.pathname === "/");
   await context.close();
 });
+
+test("store ?page past the last page shows the store 404, not the whole catalogue", async ({ browser, baseURL }) => {
+  // Cache Components send the status line before the page knows the catalogue size, so this is the store's own
+  // not-found page (noindex) rather than a 404 status; what matters is that no product grid renders.
+  const context = await ctx(browser, baseURL, "en", 390);
+  const page = await context.newPage();
+  await page.goto("/s/hawler-bazaar?page=1", { waitUntil: "networkidle" });
+  expect(await page.locator('a[href*="/s/hawler-bazaar/p/"]').count()).toBeGreaterThan(0);
+  await page.goto("/s/hawler-bazaar?page=999", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("store-not-found")).toBeVisible();
+  expect(await page.locator('main a[href*="/s/hawler-bazaar/p/"]').count()).toBe(0);
+  await context.close();
+});
