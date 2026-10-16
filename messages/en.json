@@ -1329,5 +1329,19 @@
     "add": "Add my store",
     "remove": "Remove from showcase",
     "view": "See the showcase"
+  },
+  "status": {
+    "title": "System status",
+    "ok": "All systems operational",
+    "degraded": "Service degraded",
+    "okLead": "Bazarga is running normally.",
+    "degLead": "We're seeing a problem and are on it.",
+    "db": "Database",
+    "app": "Application",
+    "up": "Operational",
+    "down": "Problem",
+    "latency": "Response time",
+    "build": "Build",
+    "checked": "Checked"
   }
 }
