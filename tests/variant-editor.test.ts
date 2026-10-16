@@ -78,9 +78,9 @@ describe("variant editor helpers", () => {
 
 describe("variant input validation", () => {
   const base = () => ({
-    options: [{ key: "o1", name: { en: "Size" }, values: [{ key: "a", label: { en: "S" } }, { key: "b", label: { en: "M" } }] }],
+    options: [{ key: "o1", name: { en: "Size" } as Record<string, string>, values: [{ key: "a", label: { en: "S" } as Record<string, string> }, { key: "b", label: { en: "M" } as Record<string, string> }] }],
     variants: [
-      { keys: ["a"], price: null, stock: 3, sku: "X-S", isActive: true },
+      { keys: ["a"], price: null as number | null, stock: 3 as number | null, sku: "X-S" as string | null, isActive: true },
       { keys: ["b"], price: 9000, stock: null, sku: null, isActive: true },
     ],
   });
