@@ -1,6 +1,6 @@
 # Bazarga status
 Updated: 2026-10-17 00:40 Asia/Baghdad
-Health: On track — live e2e 25/25 green, main green
+Health: On track — live e2e 25 passed, main green
 Prototype confidence (Sun Oct 18): 95%
 Production confidence (Fri Oct 30): 82%
 Gate on main: green
