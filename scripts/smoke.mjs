@@ -216,7 +216,7 @@ ok(dash.status === 200 && !dashHtml.includes("Shilan Smoke"), "new seller cannot
 // Dashboard → Share kit: bio link, QR (SVG/PNG) and the story image, all for the session's own store.
 const sharePage = await (await fetch(`${BASE}/dashboard/share`, { headers: { Cookie: cookie } })).text();
 ok(sharePage.includes(`/s/${slug}`) && sharePage.includes('data-testid="share-qr"') && sharePage.includes("https://wa.me/?text="), "share kit shows the store link, QR and WhatsApp share");
-ok((sharePage.match(/data-record-share=""/g) ?? []).length === 4, "share kit: copy, download and WhatsApp controls record the share step");
+ok((sharePage.match(/data-record-share=""/g) ?? []).length === 5, "share kit: copy, download and WhatsApp controls record the share step");
 const qrSvgRes = await fetch(`${BASE}/api/share/qr?format=svg`, { headers: { Cookie: cookie } });
 ok(qrSvgRes.status === 200 && (qrSvgRes.headers.get("content-type") ?? "").startsWith("image/svg+xml") && (await qrSvgRes.text()).includes("<path"), "QR code downloads as SVG");
 const qrPngRes = await fetch(`${BASE}/api/share/qr?format=png&download=1`, { headers: { Cookie: cookie } });
