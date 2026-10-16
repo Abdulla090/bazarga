@@ -6,6 +6,7 @@ import { StickyFreeCta } from "@/components/pricing/StickyFreeCta";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WaitlistForm } from "./WaitlistForm";
 import { IRAQI_CITIES } from "@/lib/cities";
+import { normalizeRefCode } from "@/lib/waitlist";
 import { formatIQD } from "@/lib/money";
 import { isLocale, pickText, DEFAULT_LOCALE } from "@/lib/i18n";
 import { ArrowForward } from "@/components/ui/icons";
@@ -34,7 +35,9 @@ const DEMO = [
   { img: "product-skincare", price: 40000, name: { ku: "سێتی پێستی سروشتی", ar: "مجموعة عناية طبيعية بالبشرة", en: "Natural skincare set" } },
 ];
 
-export default async function LandingPage() {
+export default async function LandingPage({ searchParams }: { searchParams: Promise<{ ref?: string | string[] }> }) {
+  const sp = await searchParams;
+  const refCode = normalizeRefCode(Array.isArray(sp.ref) ? sp.ref[0] : sp.ref) ?? "";
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
   const tp = await getTranslations("pricing");
@@ -180,7 +183,7 @@ export default async function LandingPage() {
           <div className="container-page max-w-2xl">
             <p className="mk-eyebrow">{t("joinEyebrow")}</p>
             <h2 className="mt-2 mb-6 text-3xl font-extrabold">{t("joinTitle")}</h2>
-            <WaitlistForm cities={IRAQI_CITIES.map((c) => ({ key: c.key, name: pickText(c.name, locale) }))} />
+            <WaitlistForm refCode={refCode} cities={IRAQI_CITIES.map((c) => ({ key: c.key, name: pickText(c.name, locale) }))} />
           </div>
         </section>
       </main>

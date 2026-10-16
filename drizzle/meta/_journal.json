@@ -148,6 +148,13 @@
       "when": 1791502000000,
       "tag": "0020_store_pixels",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791506000000,
+      "tag": "0021_waitlist_referrals",
+      "breakpoints": true
     }
   ]
 }

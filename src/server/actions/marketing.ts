@@ -12,9 +12,9 @@ export async function joinWaitlistAction(_prev: ActionState, fd: FormData): Prom
     const ip = ((await headers()).get("x-forwarded-for") ?? "unknown").split(",")[0]!.trim();
     await enforceRateLimit(db(), `waitlist:${ip}`, 10, 3600);
     const input = waitlistSchema.parse(formObject(fd));
-    await joinWaitlist(db(), input);
-    logger.info("waitlist.joined", { city: input.city, sells: input.sells });
-    return { ok: true, message: input.name };
+    const r = await joinWaitlist(db(), input, formObject(fd).ref);
+    logger.info("waitlist.joined", { city: input.city, sells: input.sells, existing: r.existing, referred: Boolean(formObject(fd).ref) });
+    return { ok: true, message: input.name.split(/\s+/)[0] ?? input.name, data: { code: r.refCode, position: r.position, total: r.total, referrals: r.referrals, existing: r.existing } };
   } catch (e) {
     return toActionState(e);
   }

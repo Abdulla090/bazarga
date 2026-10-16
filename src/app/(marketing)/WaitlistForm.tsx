@@ -3,22 +3,30 @@ import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { joinWaitlistAction } from "@/server/actions/marketing";
 import type { ActionState } from "@/server/actions/util";
+import { WaitlistSpot } from "@/components/marketing/WaitlistSpot";
 
-export function WaitlistForm({ cities }: { cities: { key: string; name: string }[] }) {
+export function WaitlistForm({ cities, refCode = "" }: { cities: { key: string; name: string }[]; refCode?: string }) {
   const t = useTranslations("landing");
   const te = useTranslations("errors");
   const [state, action, pending] = useActionState<ActionState, FormData>(joinWaitlistAction, {});
-  if (state.ok) {
+  if (state.ok && state.data) {
+    const d = state.data;
     return (
-      <div className="card text-center" role="status">
-        <p className="text-2xl font-bold">{t("thanksTitle", { name: state.message ?? "" })}</p>
-        <p className="mt-2 text-ink-70">{t("thanksBody")}</p>
-      </div>
+      <WaitlistSpot
+        name={state.message ?? ""}
+        code={String(d.code)}
+        position={Number(d.position)}
+        total={Number(d.total)}
+        referrals={Number(d.referrals)}
+        returning={d.existing === true}
+      />
     );
   }
   const err = (f: string) => state.fieldErrors?.[f] && <p className="field-error">{te(state.fieldErrors[f] as "generic")}</p>;
   return (
     <form action={action} className="card grid gap-4 sm:grid-cols-2" noValidate>
+      <input type="hidden" name="ref" value={refCode} />
+      {refCode && <p className="rounded-xl bg-gold/10 px-4 py-3 text-sm font-medium text-ink sm:col-span-2" data-testid="waitlist-invited">{t("wlInvited")}</p>}
       <div>
         <label className="label" htmlFor="w-name">{t("fName")}</label>
         <input id="w-name" name="name" required className="input" autoComplete="name" />
