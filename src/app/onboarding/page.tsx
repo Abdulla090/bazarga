@@ -13,6 +13,7 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { DEFAULT_LOCALE, isLocale, pickText } from "@/lib/i18n";
 import { currentLocale } from "@/server/locale";
+import { getFoundingSpotsLeft } from "@/server/cache/founding";
 
 export const metadata = { title: "Set up your store" };
 
@@ -54,6 +55,8 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
       </div>
     );
   }
+  const spotsLeft = await getFoundingSpotsLeft();
+  const tf = await getTranslations("founding");
   return (
     <div className="min-h-dvh">
       <header className="container-page flex items-center justify-between py-4">
@@ -63,6 +66,11 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
       <main className="container-page max-w-xl py-6">
         <h1 className="text-3xl font-extrabold">{t("title")}</h1>
         <p className="mb-6 text-ink-70">{t("sub")}</p>
+        {spotsLeft !== null && spotsLeft > 0 && (
+          <p className="mb-6 rounded-2xl border border-[#2563EB]/25 bg-[#2563EB]/[0.05] px-4 py-3 text-sm" data-testid="founding-onboarding">
+            <span className="font-semibold text-[#2563EB]">{tf("spotsLeft", { n: spotsLeft })}</span> · {tf("onboardingNote")}
+          </p>
+        )}
         <StoreForm
           action={createStoreAction}
           mode="create"

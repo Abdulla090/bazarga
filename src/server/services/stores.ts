@@ -1,7 +1,8 @@
 import type { StorePixelsInput } from "@/lib/pixels";
 import { and, asc, eq, ne } from "drizzle-orm";
 import type { Db } from "../db";
-import { deliveryZones, storePaymentMethods, stores } from "../db/schema";
+import { deliveryZones, storePaymentMethods, stores, users } from "../db/schema";
+import { assignFoundingNumber } from "./founding";
 import { AppError } from "../errors";
 import { IRAQI_CITIES } from "@/lib/cities";
 import { PAYMENT_METHODS } from "@/lib/order-status";
@@ -50,6 +51,10 @@ export async function createStore(database: Db, ownerId: string, input: StoreInp
       .onConflictDoNothing()
       .returning();
     if (!store) throw new AppError("CONFLICT", "slug_taken");
+    // The first 100 real stores become founding sellers (docs/DEMAND.md D3).
+    const owner = await tx.query.users.findFirst({ where: eq(users.id, ownerId), columns: { email: true } });
+    const foundingNumber = owner ? await assignFoundingNumber(tx, store.id, owner.email) : null;
+    if (foundingNumber) store.foundingNumber = foundingNumber;
     await tx.insert(deliveryZones).values(
       IRAQI_CITIES.map((c, i) => ({
         storeId: store.id,

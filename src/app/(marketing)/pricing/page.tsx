@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PricingPlans } from "@/components/pricing/PricingPlans";
 import { CompareTable } from "@/components/pricing/CompareTable";
+import { FoundingSpots } from "@/components/marketing/FoundingSpots";
+import { getFoundingSpotsLeft } from "@/server/cache/founding";
 
 export async function generateMetadata() {
   const t = await getTranslations("pricing");
@@ -12,6 +14,7 @@ export async function generateMetadata() {
 
 export default async function PricingPage() {
   const t = await getTranslations("pricing");
+  const spotsLeft = await getFoundingSpotsLeft();
   return (
     <>
       <SiteHeader />
@@ -22,6 +25,7 @@ export default async function PricingPage() {
           <p className="mx-auto mt-4 max-w-xl text-lg text-ink-70">{t("lead")}</p>
         </section>
         <section className="container-page pb-16 xl:max-w-7xl"><PricingPlans /></section>
+        <FoundingSpots spotsLeft={spotsLeft} />
         <section className="container-page max-w-5xl pb-16">
           <h2 className="mb-6 text-2xl font-light">{t("compare")}</h2>
           <CompareTable />

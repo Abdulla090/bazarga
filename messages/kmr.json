@@ -1283,5 +1283,23 @@
     "captionFor": "Lînk ji bo",
     "copyCaption": "Nivîsê kopî bike",
     "sendWhatsapp": "Bi WhatsAppê bişîne"
+  },
+  "founding": {
+    "badge": "Firoşkarê damezrîner",
+    "dashTitle": "Firoşkarê damezrîner",
+    "dashBody": "Yek ji 100 dikanên yekem ên Bazargayê. Hejmara te herdem dimîne.",
+    "eyebrow": "Firoşkarên damezrîner",
+    "title": "100 dikanên yekem rewşa damezrîner distînin",
+    "lead": "Hejmareke herdemî, nîşanek li ser dikana te, û dengek dema em çêdikin.",
+    "spotsLeft": "{n} ji 100 cihên damezrîner mane",
+    "spotsGone": "Hemû 100 cihên damezrîner hatin girtin",
+    "cta": "Cihekî damezrîner bigire",
+    "onboardingNote": "Heke tu di 100 dikanên yekem de bî, tu nîşana firoşkarê damezrîner distînî.",
+    "perk": {
+      "badge": "Nîşana damezrîner di panela te û li dikana te ya giştî de",
+      "early": "Gihiştina pêşîn bi şêwaz û taybetmendiyên nû",
+      "support": "Bersiva pêşîn gava tu ji tîmê Bazargayê re dinivîsî",
+      "voice": "Dengê te heye li ser tiştê em paşê çêdikin"
+    }
   }
 }

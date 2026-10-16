@@ -136,6 +136,8 @@ export const stores = pgTable(
     /** Seller's own ad pixels (migration 0020); null = off. Validated by src/lib/pixels.ts. */
     tiktokPixelId: text("tiktok_pixel_id"),
     metaPixelId: text("meta_pixel_id"),
+    /** Founding seller number 1..100 (migration 0022, src/lib/founding.ts); null = not a founding store. Unique when set. */
+    foundingNumber: integer("founding_number"),
     // ---- storefront theme (src/lib/theme.ts)
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */
@@ -166,6 +168,7 @@ export const stores = pgTable(
     uniqueIndex("stores_slug_uq").on(t.slug),
     uniqueIndex("stores_custom_domain_uq").on(t.customDomain),
     index("stores_owner_idx").on(t.ownerId),
+    uniqueIndex("stores_founding_number_uq").on(t.foundingNumber).where(sql`${t.foundingNumber} IS NOT NULL`),
     // Daily plan-expiry cron: paid stores whose period ended.
     index("stores_paid_period_end_idx").on(t.planPeriodEnd).where(sql`${t.plan} <> 'free'`),
     check("stores_accent_color_hex", sql`${t.accentColor} IS NULL OR ${t.accentColor} ~ '^#[0-9A-Fa-f]{6}$'`),
