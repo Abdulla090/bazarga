@@ -9,7 +9,7 @@ export function siteUrl(appUrl: string | undefined = process.env.APP_URL): strin
 }
 
 /** Marketing + legal pages that belong in the sitemap. */
-export const STATIC_PUBLIC_PATHS = ["/", "/pricing", "/terms", "/privacy", "/refund"] as const;
+export const STATIC_PUBLIC_PATHS = ["/", "/pricing", "/showcase", "/terms", "/privacy", "/refund"] as const;
 
 /** Never indexed: private, transactional or per-shopper pages. Mirrored in robots.txt and page-level noindex. */
 export const ROBOTS_DISALLOW = ["/dashboard", "/admin", "/api/", "/onboarding", "/payments/", "/e404", "/s/*/cart", "/s/*/order/", "/s/*/track"] as const;

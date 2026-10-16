@@ -1301,5 +1301,29 @@
       "support": "Bersiva pêşîn gava tu ji tîmê Bazargayê re dinivîsî",
       "voice": "Dengê te heye li ser tiştê em paşê çêdikin"
     }
+  },
+  "showcase": {
+    "nav": "Pêşangeh",
+    "metaTitle": "Pêşangeh: dikanên ku li Bazargayê difroşin",
+    "eyebrow": "Pêşangeh",
+    "title": "Dikanên ku li Bazargayê difroşin",
+    "lead": "Dikanên firoşkarên ku xwestin li vir bên dîtin. Li yekê bitikîne, bigere û ferman bide.",
+    "products": "{n} berhem",
+    "demo": "Dikana nîşandanê",
+    "visit": "Biçe dikanê",
+    "founding": "Firoşkarê damezrîner",
+    "emptyTitle": "Pêşangeh bi dikanên yekem vedibe",
+    "emptyBody": "Firoşkar dema dikana wan amade be ji Mîhengan lê zêde dikin. Dibe ku ya te be ya yekem.",
+    "emptyCta": "Dikana xwe veke",
+    "ctaTitle": "Tu dixwazî dikana te li vir be?",
+    "ctaBody": "Dikana xwe belaş veke, paşê ji Mîhengan pêşangehê çalak bike.",
+    "ctaButton": "Belaş dest pê bike",
+    "toggleTitle": "Dikana min di pêşangeha Bazargayê de nîşan bide",
+    "toggleHint": "Nav, wêne, bajar û hejmara berhemên dikana te di rûpela giştî ya pêşangehê de xuya dibin. Her kêlî dikarî vemirînî.",
+    "toggleOn": "Dikana te di pêşangehê de ye.",
+    "toggleOff": "Dikana te di pêşangehê de nîne.",
+    "add": "Dikana min lê zêde bike",
+    "remove": "Ji pêşangehê rake",
+    "view": "Pêşangehê bibîne"
   }
 }

@@ -35,6 +35,8 @@ import { specsFromForm,
   storeStorefrontSchema,
 } from "@/lib/validation";
 import { storePixelsSchema } from "@/lib/pixels";
+import { showcaseOptInSchema } from "@/lib/showcase";
+import { setShowcaseOptIn } from "../services/showcase";
 import { LOST_ORDER_STATUSES, RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
 
@@ -143,6 +145,22 @@ export async function savePixelsAction(_prev: ActionState, fd: FormData): Promis
     await recordAudit(store.id, user.id, "store.pixels", auditDetail(Object.keys(input)));
     invalidateStore(store.id, [store.slug]);
     revalidatePath("/dashboard/settings");
+    return { ok: true };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+/** Seller opts their store in or out of the public /showcase (docs/DEMAND.md D4). */
+export async function saveShowcaseAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  try {
+    const { store, user } = await requireStore();
+    const { optIn } = showcaseOptInSchema.parse({ optIn: fd.get("optIn") });
+    await setShowcaseOptIn(db(), store.id, optIn);
+    await recordAudit(store.id, user.id, "store.showcase", auditDetail(["showcaseOptIn"]));
+    invalidateStore(store.id, [store.slug]);
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/showcase");
     return { ok: true };
   } catch (e) {
     return toActionState(e);

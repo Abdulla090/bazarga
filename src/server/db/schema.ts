@@ -138,6 +138,8 @@ export const stores = pgTable(
     metaPixelId: text("meta_pixel_id"),
     /** Founding seller number 1..100 (migration 0022, src/lib/founding.ts); null = not a founding store. Unique when set. */
     foundingNumber: integer("founding_number"),
+    /** Seller chose to appear on the public /showcase (migration 0023, docs/DEMAND.md D4); default off. */
+    showcaseOptIn: boolean("showcase_opt_in").notNull().default(false),
     // ---- storefront theme (src/lib/theme.ts)
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */

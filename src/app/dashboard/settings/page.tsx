@@ -4,6 +4,7 @@ import { env } from "@/server/env";
 import { updateStoreAction } from "@/server/actions/dashboard";
 import { currentLocale } from "@/server/locale";
 import { StoreForm } from "@/components/dashboard/StoreForm";
+import { ShowcaseToggle } from "@/components/dashboard/ShowcaseToggle";
 import { PixelsForm } from "@/components/dashboard/PixelsForm";
 import { ThemeForm } from "@/components/dashboard/ThemeForm";
 import { StorefrontForm } from "@/components/dashboard/StorefrontForm";
@@ -51,6 +52,7 @@ export default async function SettingsPage() {
           freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />
+      <ShowcaseToggle optedIn={store.showcaseOptIn} />
       <PixelsForm initial={{ tiktokPixelId: store.tiktokPixelId, metaPixelId: store.metaPixelId }} />
       <Link href="/dashboard/payments" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-payments-link">
         <span className="grid gap-0.5">
