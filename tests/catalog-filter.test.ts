@@ -62,3 +62,23 @@ describe("filterCatalog", () => {
     expect(parsePage("999999")).toBe(1000);
   });
 });
+
+describe("filterCatalog paging past the end", () => {
+  const many = Array.from({ length: 50 }, (_, i) => ({ id: String(i), name: { en: `P${i}` }, categoryId: null }));
+  it("in range: cumulative pages, last page is reachable", () => {
+    expect(filterCatalog(many, { locale: "en", pageSize: 24, page: 2 })).toMatchObject({ page: 2, lastPage: 3, outOfRange: false, hasMore: true });
+    const last = filterCatalog(many, { locale: "en", pageSize: 24, page: 3 });
+    expect(last).toMatchObject({ page: 3, outOfRange: false, hasMore: false });
+    expect(last.items).toHaveLength(50);
+  });
+  it("past the last page is flagged and renders nothing (the route answers 404)", () => {
+    const r = filterCatalog(many, { locale: "en", pageSize: 24, page: 999 });
+    expect(r).toMatchObject({ outOfRange: true, lastPage: 3, page: 3 });
+    expect(r.items).toEqual([]);
+    expect(filterCatalog(many, { locale: "en", pageSize: 24, page: 4 }).outOfRange).toBe(true);
+  });
+  it("a search with no results is page 1, not out of range", () => {
+    expect(filterCatalog(many, { locale: "en", q: "zzz", page: 1 })).toMatchObject({ outOfRange: false, total: 0 });
+    expect(filterCatalog(many, { locale: "en", q: "zzz", page: 2 }).outOfRange).toBe(true);
+  });
+});

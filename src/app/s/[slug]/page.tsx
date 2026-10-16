@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { getCatalog, getProductDetail, getStoreOffers, getStorefrontSettings } from "@/server/cache/storefront";
@@ -60,7 +61,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     getStorefrontSettings(store.id),
     getStoreOffers(store.id),
   ]);
-  const { items, total, hasMore, page } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: design.pageSize });
+  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: design.pageSize });
+  // ?page=N past the last page: a 404 (the store's own not-found page), never the whole catalogue under a bogus URL.
+  if (outOfRange) notFound();
   const badges = merchLabels(t);
   const from = t.raw("from") as string;
   const cardLabels = {
