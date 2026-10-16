@@ -236,6 +236,15 @@
       "orderCity": "Hewlêr · nêzîkî Family Mall",
       "cod": "Dravdan dema gihandinê",
       "cta": "Lînka bioya xwe çêke"
+    },
+    "stats": {
+      "eyebrow": "Hejmarên zindî",
+      "title": "Firoşkarên rastîn, fermanên rastîn",
+      "sellers": "Firoşkar",
+      "stores": "Dikanên çalak",
+      "orders": "Fermanên hatine tomarkirin",
+      "waitlist": "Di lîsteya bendê de",
+      "note": "Rasterast ji databaseya me tên jimartin û her çend deqeyan carekê nû dibin."
     }
   },
   "store": {

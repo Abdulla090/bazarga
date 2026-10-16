@@ -19,6 +19,8 @@ import { FaqList } from "@/components/marketing/FaqList";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { HeroCta, HeroHook } from "@/components/marketing/HeroCta";
 import { DmsVsBazarga } from "@/components/marketing/DmsVsBazarga";
+import { LiveStats } from "@/components/marketing/LiveStats";
+import { getLiveStats } from "@/server/cache/live-stats";
 
 const DEMO_SLUG = "hawler-bazaar";
 const WHO_KEYS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c11", "c12"] as const;
@@ -55,6 +57,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
     inLanguage: locale === "ku" ? "ckb" : locale,
     mainEntity: faqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
+  const stats = await getLiveStats();
   const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
 
   return (
@@ -96,6 +99,16 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
             dms: [t("dvb.dm1"), t("dvb.dm2"), t("dvb.dm3"), t("dvb.dm4")],
             bzTitle: t("dvb.bzTitle"), bzs: [t("dvb.bz1"), t("dvb.bz2"), t("dvb.bz3"), t("dvb.bz4"), t("dvb.bz5")],
             orderLabel: t("dvb.orderLabel"), orderFrom: t("dvb.orderFrom"), orderName: t("dvb.orderName"), orderCity: t("dvb.orderCity"), cod: t("dvb.cod"), cta: t("dvb.cta"),
+          }}
+        />
+
+        {/* Real numbers only (D2): hidden until at least two counters clear their floor. */}
+        <LiveStats
+          stats={stats}
+          locale={locale}
+          l={{
+            eyebrow: t("stats.eyebrow"), title: t("stats.title"), note: t("stats.note"),
+            labels: { sellers: t("stats.sellers"), stores: t("stats.stores"), orders: t("stats.orders"), waitlist: t("stats.waitlist") },
           }}
         />
 

@@ -202,6 +202,15 @@
       "orderCity": "Erbil · near Family Mall",
       "cod": "Cash on delivery",
       "cta": "Make your bio link"
+    },
+    "stats": {
+      "eyebrow": "Live numbers",
+      "title": "Real sellers, real orders",
+      "sellers": "Sellers",
+      "stores": "Live stores",
+      "orders": "Orders placed",
+      "waitlist": "On the waitlist",
+      "note": "Counted straight from our database. Updated every few minutes."
     }
   },
   "auth": {
