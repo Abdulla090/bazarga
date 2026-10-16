@@ -445,7 +445,17 @@
     "shareSub": "Wê têxe bioya Instagramê û statûya WhatsAppê.",
     "seeAll": "Hemûyan bibîne",
     "discounts": "Daxistin",
-    "theme": "Tema"
+    "theme": "Tema",
+    "search": "Lêgerîn",
+    "searchOrders": "Hejmara siparîşê, telefon an nav",
+    "searchProducts": "Berheman bi nav an SKU bigere",
+    "clearSearch": "Paqij bike",
+    "newer": "Nûtir",
+    "older": "Kevintir",
+    "prevPage": "Berê",
+    "nextPage": "Paşê",
+    "showing": "{from}–{to} ji {total}",
+    "noMatches": "Tiştek li gorî “{q}” tune."
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",

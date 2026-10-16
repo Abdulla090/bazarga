@@ -289,7 +289,17 @@
     "seeAll": "هەمووی ببینە",
     "discounts": "داشکاندنەکان",
     "analytics": "شیکاری",
-    "theme": "ڕووکار"
+    "theme": "ڕووکار",
+    "search": "گەڕان",
+    "searchOrders": "ژمارەی داواکاری، مۆبایل یان ناو",
+    "searchProducts": "بەدوای بەرهەمدا بگەڕێ بە ناو یان SKU",
+    "clearSearch": "سڕینەوە",
+    "newer": "نوێتر",
+    "older": "کۆنتر",
+    "prevPage": "پێشوو",
+    "nextPage": "دواتر",
+    "showing": "{from}–{to} لە {total}",
+    "noMatches": "هیچ شتێک لەگەڵ «{q}» ناگونجێت."
   },
   "setup": {
     "title": "دوکانەکەت ئامادە بکە",

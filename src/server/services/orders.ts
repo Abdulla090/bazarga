@@ -29,6 +29,7 @@ import {
   type PaymentMethod,
 } from "@/lib/order-status";
 import { governorateForCityKey } from "@/lib/governorates";
+import { orderQuery } from "@/lib/dash-list";
 import type { CheckoutInput } from "@/lib/validation";
 import { applyDiscount, DISCOUNT_CODE_RE, normalizeDiscountCode, type DiscountRejection, type DiscountRule } from "@/lib/discounts";
 import type { Store } from "./stores";
@@ -624,6 +625,28 @@ export async function listOrders(
     orderBy: desc(orders.createdAt),
     limit: Math.min(opts.limit ?? 100, 500),
   });
+}
+
+/** One page of the seller's order list, newest first, with optional status + search (number, phone, name). */
+export async function listOrdersPage(
+  database: Db,
+  storeId: string,
+  opts: { status?: OrderStatus; q?: string; offset?: number; limit?: number } = {},
+): Promise<{ orders: Order[]; total: number }> {
+  const conds = [eq(orders.storeId, storeId)];
+  if (opts.status) conds.push(eq(orders.status, opts.status));
+  const q = orderQuery(opts.q ?? "");
+  const any = [];
+  if (q.number !== null) any.push(eq(orders.number, q.number));
+  if (q.phoneDigits) any.push(sql`${orders.customerPhone} LIKE ${"%" + q.phoneDigits + "%"}`);
+  if (q.text) any.push(sql`${orders.customerName} ILIKE ${"%" + q.text.replace(/[\\%_]/g, (c) => "\\" + c) + "%"}`);
+  if (any.length) conds.push(or(...any)!);
+  const where = and(...conds);
+  const [rows, counted] = await Promise.all([
+    database.query.orders.findMany({ where, orderBy: [desc(orders.createdAt), desc(orders.number)], limit: Math.min(opts.limit ?? 50, 200), offset: Math.max(0, opts.offset ?? 0) }),
+    database.select({ n: sql<number>`count(*)::int` }).from(orders).where(where),
+  ]);
+  return { orders: rows, total: Number(counted[0]?.n ?? 0) };
 }
 
 export async function getOrder(database: Db, storeId: string, orderId: string) {

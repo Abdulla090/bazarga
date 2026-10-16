@@ -289,7 +289,17 @@
     "seeAll": "عرض الكل",
     "discounts": "الخصومات",
     "analytics": "التحليلات",
-    "theme": "المظهر"
+    "theme": "المظهر",
+    "search": "بحث",
+    "searchOrders": "رقم الطلب أو الهاتف أو الاسم",
+    "searchProducts": "ابحث عن منتج بالاسم أو SKU",
+    "clearSearch": "مسح",
+    "newer": "الأحدث",
+    "older": "الأقدم",
+    "prevPage": "السابق",
+    "nextPage": "التالي",
+    "showing": "{from}–{to} من {total}",
+    "noMatches": "لا توجد نتائج لـ «{q}»."
   },
   "setup": {
     "title": "جهّز متجرك",
