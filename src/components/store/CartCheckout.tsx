@@ -43,6 +43,13 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   const [error, setError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [placing, startPlacing] = useTransition();
+  // Bumped when the browser comes back online, to re-price the cart after a dropped connection.
+  const [netRetry, setNetRetry] = useState(0);
+  useEffect(() => {
+    const on = () => setNetRetry((n) => n + 1);
+    window.addEventListener("online", on);
+    return () => window.removeEventListener("online", on);
+  }, []);
 
   // Fake-order protection: when the checkout form first appeared (bots submit instantly) — see src/lib/order-risk.ts.
   const openedAt = useRef(0);
@@ -71,12 +78,19 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
   useEffect(() => {
     let live = true;
     if (!lines.length) return;
-    quoteAction(slug, lines, city || null, locale, { areaId, discountCode: code }).then((q) => live && setQuote(q));
+    quoteAction(slug, lines, city || null, locale, { areaId, discountCode: code }).then(
+      (q) => {
+        if (!live) return;
+        setQuote(q);
+        setError((e) => (e === "network" ? undefined : e));
+      },
+      () => live && setError("network"), // offline / dropped: say so instead of an endless "…"; retried when back online
+    );
     return () => {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linesKey, city, areaId, code, slug, locale]);
+  }, [linesKey, city, areaId, code, slug, locale, netRetry]);
 
   if (!lines.length) {
     return (
@@ -101,24 +115,32 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
     } catch {}
     if (!idemKey.current) idemKey.current = newIdempotencyKey();
     startPlacing(async () => {
-      const r = await placeOrderAction(slug, {
-        items: available.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
-        customerName: fd.get("customerName"),
-        phone: fd.get("phone"),
-        cityKey: city,
-        areaId,
-        areaOther: area === OTHER ? fd.get("areaOther") : null,
-        landmark: fd.get("landmark"),
-        discountCode: quote?.discountCode ?? null,
-        address: fd.get("address") ?? "",
-        notes: fd.get("notes") || undefined,
-        paymentMethod: method,
-        locale,
-        hp: String(fd.get("website") ?? ""),
-        elapsedMs: openedAt.current ? Date.now() - openedAt.current : undefined,
-        idempotencyKey: idemKey.current,
-        source: readSource(slug) ?? undefined,
-      });
+      let r: Awaited<ReturnType<typeof placeOrderAction>>;
+      try {
+        r = await placeOrderAction(slug, {
+          items: available.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
+          customerName: fd.get("customerName"),
+          phone: fd.get("phone"),
+          cityKey: city,
+          areaId,
+          areaOther: area === OTHER ? fd.get("areaOther") : null,
+          landmark: fd.get("landmark"),
+          discountCode: quote?.discountCode ?? null,
+          address: fd.get("address") ?? "",
+          notes: fd.get("notes") || undefined,
+          paymentMethod: method,
+          locale,
+          hp: String(fd.get("website") ?? ""),
+          elapsedMs: openedAt.current ? Date.now() - openedAt.current : undefined,
+          idempotencyKey: idemKey.current,
+          source: readSource(slug) ?? undefined,
+        });
+      } catch {
+        // Network dropped (offline, tunnel, timeout). Keep the idempotency key: if the order did reach the server, the
+        // retry returns that same order instead of placing a second one. Cart and typed details stay as they are.
+        setError("network");
+        return;
+      }
       if (!r.ok) {
         idemKey.current = "";
         setError(r.error === "VALIDATION" ? undefined : r.error);
@@ -207,7 +229,16 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
         <Link href={`/s/${slug}`} className="mt-4 inline-flex min-h-11 w-fit items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{L.continue}</Link>
       </section>
 
-      <form action={submit} id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl lg:gap-4 border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
+      <form
+        action={submit}
+        // React 19 resets a form after its action runs, so a rejected or offline submit wiped the shopper's name,
+        // phone and landmark. Handle the submit here instead; nothing typed is lost.
+        onSubmit={(e) => {
+          e.preventDefault();
+          const submitter = (e.nativeEvent as SubmitEvent).submitter;
+          submit(submitter ? new FormData(e.currentTarget, submitter) : new FormData(e.currentTarget));
+        }}
+        id="checkout" className="scroll-mt-24 grid h-fit gap-5 rounded-2xl lg:gap-4 border border-st-border bg-st-surface p-5 sm:p-6 lg:sticky lg:top-24 lg:col-span-5 lg:col-start-8" data-testid="checkout-form">
         <h2 className="display text-[22px] sm:text-[28px]">{L.checkout}</h2>
         {/* Honeypot: hidden from people and screen readers; form-filling bots fill it and the order is refused. */}
         <div className="sr-only" aria-hidden="true">

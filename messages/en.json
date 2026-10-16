@@ -796,7 +796,8 @@
     "too_many_options": "Up to 3 option groups.",
     "too_many_variants": "Up to 100 combinations.",
     "variants_all_off": "Turn on at least one combination, or remove the options.",
-    "compare_at_must_exceed_price": "The old price must be higher than the price."
+    "compare_at_must_exceed_price": "The old price must be higher than the price.",
+    "network": "No connection. Your cart and details are still here; try again when you're back online."
   },
   "pwa": {
     "installTitle": "Install Bazarga",
