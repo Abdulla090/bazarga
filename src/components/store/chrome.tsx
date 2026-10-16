@@ -113,7 +113,7 @@ export async function StoreFooter({
   const bar = (
     <div className="store-page flex flex-wrap items-center justify-between gap-3 border-t border-st-border py-4">
       <LocaleSwitcher current={locale} locales={["ku", "ar", "en", "kmr"]} />
-      {isFoundingNumber(store.foundingNumber) && <FoundingBadge label={tf("badge", { n: store.foundingNumber })} number={store.foundingNumber} />}
+      {isFoundingNumber(store.foundingNumber) && <FoundingBadge label={tf("badge")} number={store.foundingNumber} />}
       {/* "Made with Bazarga" shows on Free only (src/lib/plans.ts showsBazargaBadge); Pro and up remove it. */}
       {showsBazargaBadge(normalizePlan(store.plan)) && (
         <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-st-fg" data-bazarga-badge>

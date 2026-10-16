@@ -35,7 +35,7 @@ export default async function DashboardHome() {
       <h1 className="t-headline">{t("hello", { name: user.name })}</h1>
       {isFoundingNumber(store.foundingNumber) && (
         <section className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-[#2563EB]/25 bg-[#2563EB]/[0.05] p-4" data-testid="founding-card">
-          <FoundingBadge label={tf("dashTitle", { n: store.foundingNumber })} number={store.foundingNumber} />
+          <FoundingBadge label={tf("dashTitle")} number={store.foundingNumber} />
           <p className="min-w-0 flex-1 text-sm text-ink-70">{tf("dashBody")}</p>
         </section>
       )}

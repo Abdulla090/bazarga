@@ -1284,8 +1284,8 @@
     "sendWhatsapp": "Send on WhatsApp"
   },
   "founding": {
-    "badge": "Founding seller #{n}",
-    "dashTitle": "You're founding seller #{n}",
+    "badge": "Founding seller",
+    "dashTitle": "You're founding seller",
     "dashBody": "One of the first 100 stores on Bazarga. Your number is permanent.",
     "eyebrow": "Founding sellers",
     "title": "The first 100 stores get founding status",
