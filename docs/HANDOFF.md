@@ -34,6 +34,8 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+- Oct 16 12:55 D5: store-is-live announcement caption (4 locales) + WhatsApp share on /dashboard/share; tests/smoke recorder counts 5. No migration.
+
 ### 2026-10-16 D6 testimonials (97e3280)
 Migration 0024 (journal 1791514200000), testimonials table, landing section hidden until an approved row exists (set approved=true via SQL). Fixed email-verify e2e alert locator.
 
