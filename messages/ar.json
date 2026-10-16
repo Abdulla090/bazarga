@@ -726,7 +726,8 @@
     "addedToCart": "أُضيف إلى السلة",
     "viewCart": "عرض السلة",
     "inCart": "في سلتك: {count}",
-    "addNote": "أضف ملاحظة للبائع"
+    "addNote": "أضف ملاحظة للبائع",
+    "metaProductFallback": "{product} من {store}. اطلبه أونلاين مع التوصيل."
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مجدداً.",

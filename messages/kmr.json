@@ -403,7 +403,8 @@
     "addedToCart": "Li selikê hate zêdekirin",
     "viewCart": "Selikê bibîne",
     "inCart": "Di selika te de: {count}",
-    "addNote": "Notekê ji firoşkar re zêde bike"
+    "addNote": "Notekê ji firoşkar re zêde bike",
+    "metaProductFallback": "{product} ji {store}. Serhêl bixwaze, bi gihandinê."
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

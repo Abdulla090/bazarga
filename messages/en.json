@@ -726,7 +726,8 @@
     "addedToCart": "Added to cart",
     "viewCart": "View cart",
     "inCart": "In your cart: {count}",
-    "addNote": "Add a note for the seller"
+    "addNote": "Add a note for the seller",
+    "metaProductFallback": "{product} from {store}. Order online with delivery."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
