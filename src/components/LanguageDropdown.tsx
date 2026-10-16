@@ -115,8 +115,9 @@ export function LanguageDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={id}
-        // The visible code (EN/KU…) must be part of the accessible name (WCAG 2.5.3 label-in-name).
-        aria-label={showCode ? `${label}: ${current?.label ?? ""} (${current?.value ?? ""})` : `${label}: ${current?.label ?? ""}`}
+        // The visible code (EN/KU…) must be part of the accessible name (WCAG 2.5.3 label-in-name), as plain text:
+        // axe rejects it inside parentheses, so "Language: English, EN", never "Language: English (en)".
+        aria-label={showCode ? `${label}: ${current?.label ?? ""}, ${(current?.value ?? "").toUpperCase()}` : `${label}: ${current?.label ?? ""}`}
         disabled={disabled}
         onClick={() => (open ? close(false) : openMenu())}
         onKeyDown={onTriggerKey}
