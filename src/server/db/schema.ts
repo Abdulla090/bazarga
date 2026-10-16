@@ -690,6 +690,17 @@ export const waitlist = pgTable("waitlist", {
   createdAt: createdAt(),
 });
 
+/** Real, approved customer quotes (docs/DEMAND.md D6). The landing section stays hidden until one is approved. */
+export const testimonials = pgTable("testimonials", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  quote: text("quote").notNull(),
+  author: text("author").notNull(),
+  role: text("role"),
+  city: text("city"),
+  storeSlug: text("store_slug"),
+  approved: boolean("approved").notNull().default(false),
+  createdAt: createdAt(),
+});
 
 // ---------------------------------------------------------------- web push
 /** Web Push subscriptions: sellers (new-order alerts) and shoppers (order tracking updates). */

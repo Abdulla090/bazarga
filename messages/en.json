@@ -211,7 +211,9 @@
       "orders": "Orders placed",
       "waitlist": "On the waitlist",
       "note": "Counted straight from our database. Updated every few minutes."
-    }
+    },
+    "quotesEyebrow": "Sellers say",
+    "quotesTitle": "What sellers say about Bazarga"
   },
   "auth": {
     "loginTitle": "Welcome back",

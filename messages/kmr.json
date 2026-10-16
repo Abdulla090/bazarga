@@ -245,7 +245,9 @@
       "orders": "Fermanên hatine tomarkirin",
       "waitlist": "Di lîsteya bendê de",
       "note": "Rasterast ji databaseya me tên jimartin û her çend deqeyan carekê nû dibin."
-    }
+    },
+    "quotesEyebrow": "Gotinên firoşkaran",
+    "quotesTitle": "Firoşkar der barê Bazargayê de çi dibêjin"
   },
   "store": {
     "cart": "Selik",
