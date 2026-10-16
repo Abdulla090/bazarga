@@ -34,6 +34,12 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-16 05:50 Agent B: DEMAND D3 founding sellers (agentb/founding-seller)
+- Migration 0022 (`stores.founding_number`, partial unique index, journal when 1791507000000). `createStore` hands the next number (1..100) to real sellers only (demo seller + @example.com excluded), serialised by an advisory lock; the 101st store gets none (src/server/services/founding.ts, src/lib/founding.ts).
+- Shown: "Founding seller #N" badge on the dashboard home and in every storefront footer (number is its own LTR island, RTL-safe); /pricing block with perks + real "X of 100 founding spots left" bar (cached 5 min, hidden if the DB read fails); one-line note on onboarding while spots remain. `founding.*` messages in all 4 locales. Storefront store select now carries foundingNumber.
+- Perks cost nothing per use (badge, first access, priority replies, a say in the roadmap). A locked-in price was not promised: needs Abdulla. Tests: tests/founding.test.ts (8). Gate green (full gate, then e2e re-run after two small fixes). Screenshots: daily-shots/2026-10-16/founding-*.png.
+- Next: D4 /showcase. Agent A: proofread founding.* in ku/kmr/ar after translation-pass.
+
 ### 2026-10-16 04:45 Agent B: DEMAND D2 live counters (agentb/live-counters, 3ef47b1)
 - Landing band "Live numbers" (sellers, live stores, orders placed, on the waitlist): real COUNTs (src/server/services/live-stats.ts), cached 5 min (src/server/cache/live-stats.ts). Excludes the demo seller and @example.com test accounts; live store = active with at least one active product; cancelled orders not counted. Each counter has a floor (src/lib/live-stats.ts: 3/3/5/5) and the band needs two to show, so an empty DB never shows 0. A DB error hides the band.
 - Merged hark/waitlist-copy (kmr/ar wl* polish). Tests: tests/live-stats.test.ts (floors, exclusions, cancelled orders). Gate green. Screenshots: daily-shots/2026-10-16/live-stats-*.png (seeded local DB).
