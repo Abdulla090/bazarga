@@ -29,7 +29,7 @@ export function SiteHeaderView({ labels, locale, signedIn }: { labels: SiteHeade
   return (
     <div data-site-top className="sticky top-0 z-40 border-b border-ink/[0.08] bg-paper/85 pt-[env(safe-area-inset-top)] backdrop-blur-md backdrop-saturate-150">
       <header className="container-page flex h-14 items-center gap-2 md:grid md:h-16 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4">
-        <Link href="/" className="me-auto shrink-0 md:me-0 md:justify-self-start" data-nav-logo>
+        <Link href="/" className="me-auto inline-flex min-h-11 shrink-0 items-center md:me-0 md:justify-self-start" data-nav-logo>
           <Logo showKu="sm" />
         </Link>
         <nav aria-label={labels.main} className="hidden items-center gap-1 md:flex md:justify-self-center" data-nav-links>

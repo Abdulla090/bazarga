@@ -182,6 +182,8 @@ export function auditInPage(expectedWidth) {
     if (!visible(el)) continue;
     if (el.closest("p, li > span") && el.tagName === "A" && getComputedStyle(el).display === "inline") continue; // inline text links are exempt (WCAG 2.5.8)
     if (el.matches("input[type=checkbox], input[type=radio]") && el.closest("label")?.getBoundingClientRect().height >= 44) continue; // the label is the target
+    const after = getComputedStyle(el, "::after");
+    if (el.tagName === "A" && after.position === "absolute" && after.content !== "none") continue; // stretched link: the whole card is the target
     const r = el.getBoundingClientRect();
     if (r.height < 44 || r.width < 24) smallTargets.push(`${describe(el)} ${Math.round(r.width)}×${Math.round(r.height)}`);
   }
