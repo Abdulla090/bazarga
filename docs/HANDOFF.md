@@ -34,6 +34,9 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-16 D6 testimonials (97e3280)
+Migration 0024 (journal 1791514200000), testimonials table, landing section hidden until an approved row exists (set approved=true via SQL). Fixed email-verify e2e alert locator.
+
 ### 2026-10-16 06:40 Agent B: DEMAND D4 seller showcase (agentb/showcase)
 - Migration 0023 (`stores.showcase_opt_in` boolean default false, partial index, journal when 1791510600000; also opts in the demo store `hawler-bazaar`, and scripts/seed.ts does the same on a fresh DB). Sellers opt in from Dashboard > Settings (ShowcaseToggle, audit action `store.showcase`); nobody is listed without that switch.
 - `/showcase` (marketing layout, sitemap + footer link): grid of cards (cover, name, tagline, city, product count, founding badge); only opted-in, active stores with at least one active product; founding stores first. The seeded demo store carries a "Demo store" chip so it never reads as real traction. Empty state is an honest invitation + signup CTA, never fake stores. Cached 5 min. `showcase.*` messages in 4 locales.
