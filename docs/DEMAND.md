@@ -1,0 +1,16 @@
+# Bazarga — demand plan ("people beg for access")
+
+Abdulla, Oct 16: "Prove everyone that people beg for access to this app." Everything here is free to run (no paid services) and every number shown is real, read from the DB. Nothing is faked; sections with no real content stay hidden.
+
+## Slices (one per D run, in order)
+- [ ] **D1 Waitlist with position + referrals** — each signup gets a position number and a personal link; every friend who joins through it moves you up 5 spots (capped at 20 friends = 100 spots). Same WhatsApp number twice returns the same spot. Public status page `/waitlist/<code>`. Migration 0021. (branch agentb/waitlist-referrals)
+- [ ] **D2 Live counters on the landing** — real counts of sellers, live stores, orders placed, people on the waitlist. Each counter appears only once it passes a small floor (so an empty DB never shows "0"); demo store is excluded from seller/order totals.
+- [ ] **D3 Founding-seller badge + perks for the first 100 stores** — badge in the dashboard and on the public store footer, perks listed on /pricing and in onboarding (e.g. locked-in price). Counter "X of 100 founding spots left" from the DB.
+- [ ] **D4 Seller showcase** — `/showcase`: best demo/real stores that opted in, with 390/1280 cards, order-through links.
+- [ ] **D5 Store-is-live share card** — after publishing, a 9:16 / 1:1 "my store is live" image + captions in all 4 locales (reuses the share kit).
+- [ ] **D6 Testimonials / case studies** — section component ready for real quotes; hidden until at least one approved quote exists in the DB (no placeholder text ever).
+
+## Rules
+- All 4 locales in sync; blue + ink; tap targets ≥ 44px; no paid dependencies.
+- Migration journal timestamps must exceed 1791505000000 (see HANDOFF).
+- Never show a number the DB can't back up.

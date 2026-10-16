@@ -3,6 +3,7 @@ import {
   boolean,
   check,
   index,
+  bigint,
   integer,
   jsonb,
   pgEnum,
@@ -674,6 +675,13 @@ export const waitlist = pgTable("waitlist", {
   sells: text("sells").notNull(),
   city: text("city").notNull(),
   locale: localeEnum("locale").notNull().default("ku"),
+  /** Join order (identity); position = seq minus the referral boost. */
+  seq: bigint("seq", { mode: "number" }).generatedAlwaysAsIdentity(),
+  /** Personal referral code (shared as /?ref=CODE). */
+  refCode: text("ref_code").notNull(),
+  /** Waitlist row of the person whose link this signup used. */
+  referredBy: uuid("referred_by"),
+  referralCount: integer("referral_count").notNull().default(0),
   createdAt: createdAt(),
 });
 

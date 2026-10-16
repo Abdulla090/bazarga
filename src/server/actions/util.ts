@@ -10,6 +10,8 @@ export type ActionState = {
   /** field name → i18n key under `errors.*` */
   fieldErrors?: Record<string, string>;
   message?: string;
+  /** Small serialisable payload for the success view (e.g. waitlist position). */
+  data?: Record<string, string | number | boolean>;
 };
 
 const SPECIFIC = new Set([
