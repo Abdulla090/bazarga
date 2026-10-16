@@ -28,7 +28,7 @@ FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with selle
 - [ ] K7 multi-tenant domains (env-gated; needs Abdulla: root domain)
 
 ## Agent A queue
-- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [x] axe pass (Oct 15, live: landing, pricing, login, signup, terms, store home, product clean at 390 ku + 1280 en; sign-off wordmark moved to a CSS pseudo-element, struck compare-at price uses text-muted) · [x] skeletons (dashboard, 1f18d4b) · [ ] translation pass
+- [x] Legal pages (terms, privacy, refund live 200) · [x] 404/500/error pages · [x] Seller journey e2e (e2e/seller-journey.spec.mjs, browser, runs vs live via BASE_URL) · [x] SEO (sitemap, robots, OG image + metadata verified live Oct 14) · [x] axe pass (Oct 15, live: landing, pricing, login, signup, terms, store home, product clean at 390 ku + 1280 en; sign-off wordmark moved to a CSS pseudo-element, struck compare-at price uses text-muted) · [x] skeletons (dashboard, 1f18d4b) · [x] translation pass (Agent A, merged e6e7a59)
 
 ## Social-first (Oct 15)
 - [x] S1–S6 all shipped and live; live e2e green Oct 15 22:2x on bazarga.vercel.app: social-first (share modal, ?src order → seller sees TikTok, OG card PNG), pixels, seller-journey, plan-gating
