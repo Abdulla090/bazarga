@@ -1,12 +1,13 @@
 # Bazarga status
-Updated: 2026-10-16 06:25 Asia/Baghdad
-Health: On track — gate green, D1-D3 shipped
-Prototype confidence (Sun Oct 18): 94%
-Production confidence (Fri Oct 30): 80%
+Updated: 2026-10-16 06:50 Asia/Baghdad
+Health: On track — gate green, D1-D4 shipped
+Prototype confidence (Sun Oct 18): 95%
+Production confidence (Fri Oct 30): 81%
 Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
+- 2026-10-16 06:50 | prototype 95% | production 81% | On track
 - 2026-10-16 06:25 | prototype 94% | production 80% | On track
 - 2026-10-16 04:45 | prototype 94% | production 79% | On track
 - 2026-10-16 03:35 | prototype 94% | production 78% | On track
