@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
 import { requireStore } from "../auth/session";
+import { enforceRateLimit } from "../auth/rate-limit";
 import { requireAdmin } from "../auth/admin";
 import { activateRequest, createUpgradeRequest, rejectRequest } from "../services/upgrades";
 import { toActionState, type ActionState } from "./util";
@@ -12,6 +13,7 @@ import { invalidateStore } from "../cache/tags";
 export async function requestUpgradeAction(raw: unknown): Promise<ActionState> {
   try {
     const { store } = await requireStore();
+    await enforceRateLimit(db(), `upgrade-request:${store.id}`, 10, 3600);
     await createUpgradeRequest(db(), store.id, raw);
     revalidatePath("/dashboard/upgrade");
     return { ok: true };

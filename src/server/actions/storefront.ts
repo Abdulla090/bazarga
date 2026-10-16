@@ -52,7 +52,10 @@ export async function quoteAction(slug: string, items: unknown, cityKey: string 
     const store = await cachedStoreOr404(slug);
     const parsed = z.array(cartItemSchema).max(50).parse(items);
     const opts = quoteExtraSchema.parse(extra ?? {});
-    if (opts.discountCode) await enforceRateLimit(db(), `discount:${await clientIp()}`, 60, 600);
+    const ip = await clientIp();
+    // Cart quotes are DB reads on every cart change; a generous per-IP cap stops scripted hammering without touching real shoppers.
+    if (ip !== "unknown") await enforceRateLimit(db(), `quote:${ip}`, 300, 600);
+    if (opts.discountCode) await enforceRateLimit(db(), `discount:${ip}`, 60, 600);
     return await quoteCart(db(), store.id, parsed, cityKey ? z.string().max(40).parse(cityKey) : null, localeSchema.parse(locale), opts);
   } catch {
     return null;

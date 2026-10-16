@@ -25,6 +25,7 @@
     "start:standalone": "node .next/standalone/server.js",
     "budget": "node scripts/budget.mjs",
     "test:mobile": "playwright test",
+    "test:live": "playwright test -c playwright.live.config.mjs",
     "shots:mobile": "node scripts/mobile-shots.mjs"
   },
   "dependencies": {
