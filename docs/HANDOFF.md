@@ -34,6 +34,11 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
 
 ## Log
 
+### 2026-10-16 04:45 Agent B: DEMAND D2 live counters (agentb/live-counters, 3ef47b1)
+- Landing band "Live numbers" (sellers, live stores, orders placed, on the waitlist): real COUNTs (src/server/services/live-stats.ts), cached 5 min (src/server/cache/live-stats.ts). Excludes the demo seller and @example.com test accounts; live store = active with at least one active product; cancelled orders not counted. Each counter has a floor (src/lib/live-stats.ts: 3/3/5/5) and the band needs two to show, so an empty DB never shows 0. A DB error hides the band.
+- Merged hark/waitlist-copy (kmr/ar wl* polish). Tests: tests/live-stats.test.ts (floors, exclusions, cancelled orders). Gate green. Screenshots: daily-shots/2026-10-16/live-stats-*.png (seeded local DB).
+- Live: / /pricing /s/hawler-bazaar 200. The band is hidden on the live site for now (real numbers still below the floors). Agent A asked for hark/translation-pass. Next: D3 founding-seller badge.
+
 ### 2026-10-16 03:35 Agent B: DEMAND D1 waitlist position + referrals (agentb/waitlist-referrals, 218321f)
 - docs/DEMAND.md written (D1-D6). D1 shipped: every waitlist signup gets a position number and a personal link (`/?ref=CODE#join`); each friend who joins through it moves you up 5 spots (cap 20 friends = 100). Same WhatsApp number twice returns the same spot (no second row, no double credit). Public unlisted status page `/waitlist/<code>`.
 - Migration 0021 (journal when 1791506000000 > 1791505000000): seq identity, ref_code (unique, backfilled), referred_by, referral_count. Pure ranking in src/lib/waitlist.ts, service in src/server/services/waitlist.ts. 10 new vitest tests + e2e/waitlist.spec.mjs (local only; set WAITLIST_LIVE=1 to write rows to a live DB). Copy in 4 locales (landing.wl*).
