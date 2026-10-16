@@ -45,20 +45,24 @@ Checker false alarms in the before run: 48 (24 failed-requests + 24 tap-targets 
 | A3 | High | Dashboard orders hard-capped at the newest 200 (order 201+ unreachable); products rendered all 1,000 at once | **Fixed, live**: 50/page + search; verified live "1–50 of 335" → Older → "51–100 of 335", `?page=99` clamps to "301–335 of 335" | 922b63f (in 25979d4) |
 | A4 | Medium | `?src=` (TikTok/Instagram attribution) lost when the shopper tapped before hydration | **Fixed, live**: the server also sets the store's source cookie | 9c6a178 (in 25979d4) |
 | A5 | Low (tooling) | Checker false alarms: expected 404s counted as failed requests; /login + /signup audited while logged in; stretched card links flagged as small tap targets | **Fixed** | 81e3ba8, 586e628 (`e2e/support.mjs`), 7d96060 |
-| B1 | High | Sellers could not create sizes/colours (variants) | In progress, `hark-audit/variants` | 075f2e4 |
-| B2 | Medium | Storefront `?page=` past the last page rendered the whole catalogue | In progress, `hark-audit/variants` | 5ac8c13 |
-| B3 | Medium | CLS on cart / search / offers (footer jumps up while `<main>` streams) | In progress, `hark-audit/variants` | 54529fa |
-| B4 | High | Checkout offline/flaky network: no localized error, retry could double-submit, typed details lost | In progress, `hark-audit/variants` | 69ae57b |
-| B5 | Low (tooling) | Abuse spec: markup/SQL stays text, oversized input refused politely, double submits count once | In progress, `hark-audit/variants` | b9f1af0 |
+| B1 | High | Sellers could not create sizes/colours (variants) | **Fixed, live** (`e2e/variants-editor.spec.mjs` passes, incl. 360 px ku) | e010814, merged in be5c816 |
+| B2 | Medium | Storefront `?page=` past the last page rendered the whole catalogue | **Fixed, live**: shows the store 404 (`e2e/error-pages.spec.mjs`) | 10098d4, merged in be5c816 |
+| B3 | Medium | CLS on cart / search / offers (footer jumps up while `<main>` streams) | **Fixed, live**: CLS 0 on all three at 1280 and 390 (section 9) | 8a2473a, merged in be5c816 |
+| B4 | High | Checkout offline/flaky network: no localized error, retry could double-submit, typed details lost | **Fixed, live** (+ name field capped at 80 like the server, 39923fb) | 2f97a40, 39923fb, merged in be5c816 |
+| B5 | Low (tooling) | Abuse spec: markup/SQL stays text, oversized input refused politely, double submits count once | **Fixed** (`e2e/audit-abuse.spec.mjs` passes) | 90b1960, merged in be5c816 |
+| B6 | Medium | O1: language trigger name `Language: English (en)` failed axe label-in-name (all 108 remaining axe failures) | **Fixed, live**: name is `Language: English, EN`; axe serious/critical 0 on /login and /dashboard (section 9) | 9cbd66f, merged in be5c816 |
+| B7 | Low | O3: product page meta description (own description trimmed to ~155 chars on a word, else store + product name, 4 locales) | **Fixed, live** in the HTML; Lighthouse SEO still 92, see O5 | 9488c77, merged in be5c816 |
+| B8 | Low | O4: floating chat button covered the coupon/delivery line on store home at 390 | **Fixed, live**: below `sm` it appears after a little scroll; page has bottom room for it | 4eb0e5a, merged in be5c816 |
 
 ## 3. Open items (remaining failures and findings)
 
 | # | Severity | Item | Where | Evidence / suggested fix |
 |---|---|---|---|---|
-| O1 | Medium | axe `label-content-name-mismatch` on the language dropdown trigger (`LanguageDropdown.tsx`, `showCode` variant): **all 108 remaining axe failures** | 5 auth routes (/login, /signup, /forgot-password, /reset-password, /verify-email) at 390 + 1280, and all 17 dashboard routes at 1280, in all 4 locales (27 per locale) | Visible text is the code (`EN`); the name is `Language: English (en)`. axe 4.14 rejects the code **inside parentheses**. Tested on live by swapping the attribute: `Language: English (en)` FAIL; `Language: English, EN`, `Language: English en` and `EN Language: English` pass. Fix: drop the parentheses, e.g. `${label}: ${current.label}, ${code.toUpperCase()}` |
-| O2 | Medium | CLS > 0.1 on storefront list pages (12 matrix checks) | `/s/hawler-bazaar/cart` (1280: 0.95–1.11, en 360: 6.97), `?offers=1` (390: 3.1, 1280: 1.03), `?q=` (ku 1280: 0.82, kmr 360: 2.18), 404 pages at 1280 (0.18–0.20) | Shift sources: `div.store-page section` + `footer.store-footer` move 170–185px when content streams in. B3 (54529fa, `<main>` min-height) targets exactly this. Re-measure after it merges |
-| O3 | Low | Product page has no `<meta name="description">` (Lighthouse SEO 92 on product, 100 everywhere else) | `/s/[slug]/p/[productId]` | Generate it from the product name + price + store name in `generateMetadata` |
-| O4 | Low | Floating chat button covers part of the coupon/delivery line on the store home at 390 (first viewport) | `/s/hawler-bazaar`, ku 390 | Screenshot `store-home-390-ku.png`; add bottom padding/safe-area under the last block or offset the FAB |
+| ~~O1~~ | Done (B6) | axe `label-content-name-mismatch` on the language dropdown trigger (`LanguageDropdown.tsx`, `showCode` variant): **all 108 remaining axe failures** | 5 auth routes (/login, /signup, /forgot-password, /reset-password, /verify-email) at 390 + 1280, and all 17 dashboard routes at 1280, in all 4 locales (27 per locale) | Visible text is the code (`EN`); the name is `Language: English (en)`. axe 4.14 rejects the code **inside parentheses**. Tested on live by swapping the attribute: `Language: English (en)` FAIL; `Language: English, EN`, `Language: English en` and `EN Language: English` pass. Fix: drop the parentheses, e.g. `${label}: ${current.label}, ${code.toUpperCase()}` |
+| ~~O2~~ | Done (B3) | CLS > 0.1 on storefront list pages (12 matrix checks) | `/s/hawler-bazaar/cart` (1280: 0.95–1.11, en 360: 6.97), `?offers=1` (390: 3.1, 1280: 1.03), `?q=` (ku 1280: 0.82, kmr 360: 2.18), 404 pages at 1280 (0.18–0.20) | Shift sources: `div.store-page section` + `footer.store-footer` move 170–185px when content streams in. B3 (54529fa, `<main>` min-height) targets exactly this. Re-measure after it merges |
+| ~~O3~~ | Done (B7) | Product page has no `<meta name="description">` (Lighthouse SEO 92 on product, 100 everywhere else) | `/s/[slug]/p/[productId]` | Generate it from the product name + price + store name in `generateMetadata` |
+| ~~O4~~ | Done (B8) | Floating chat button covers part of the coupon/delivery line on the store home at 390 (first viewport) | `/s/hawler-bazaar`, ku 390 | Screenshot `store-home-390-ku.png`; add bottom padding/safe-area under the last block or offset the FAB |
+| O5 | Low | Lighthouse SEO 92 on product even with the meta description: Next 16 streams `generateMetadata` output into `<body>` for normal browsers (Lighthouse 13 sends a plain Chrome UA), and the audit only reads `<head>`. Real crawlers (Googlebot, Bing, WhatsApp, Facebook, X…) are on Next's html-limited bot list and get it in `<head>` | `/s/[slug]/p/[productId]` | Optional: `htmlLimitedBots: /.*/` in next.config blocks streaming for everyone (SEO 100, small TTFB cost on dynamic-metadata pages). Not done; decide with Abdulla |
 
 ## 4. Lighthouse (mobile, 2 runs each, Lighthouse 13.5.0)
 
@@ -108,6 +112,20 @@ Kept in the audit workspace as `daily-shots/2026-10-17/`:
 - `dashboard-orders-paging-1280-en.png`: orders page 2, "51–100 of 335" with Newer / Older
 - `login-error-keeps-values-390-ku.png`: Sorani "wrong email or password" error with email and password still filled
 - `store-home-390-ku.png`: store home, Sorani, 390 (shows O4)
+
+## 9. Re-check after batch 2 (production at be5c816, 2026-10-17 ~02:25 Asia/Baghdad)
+
+Vercel `dpl_FneLV58cJ75TFCws9UMDnQhUy2EJ` READY at be5c816; `/`, `/pricing`, `/s/hawler-bazaar` all 200.
+
+| Check | Before batch 2 | After (be5c816) |
+|---|---|---|
+| axe serious/critical, `/login` 1280 en | 1 (label-content-name-mismatch) | **0** (name `Language: English, EN`) |
+| axe serious/critical, `/dashboard` 1280 en (demo seller) | 1 (same) | **0** |
+| CLS `cart` / `?q=` / `?offers=1`, 1280 en, cls.mjs 2 runs | 0.062 / 0.113 / 0.089 | **0 / 0 / 0** |
+| CLS same pages, 390 en | (matrix worst 6.97 / 2.18 / 3.1) | **0 / 0 / 0** |
+| Lighthouse mobile, product `36c61466…`, 1 run | 92/100/100/92, LCP 2.87 | 93/100/100/92, LCP 2.87, CLS 0, TBT 148 ms (SEO: O5) |
+
+Gate for the merge: typecheck, lint, vitest 742/742, build, budget, seed, Playwright 45/45 (incl. variants-editor, audit-abuse, error-pages), smoke OK (GATE_OK at 9488c77).
 
 ## 8. Needs Abdulla
 
