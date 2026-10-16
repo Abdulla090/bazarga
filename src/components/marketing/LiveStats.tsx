@@ -12,11 +12,11 @@ export function LiveStats({ stats, l, locale }: { stats: Stats | null; l: LiveSt
       <div className="container-page">
         <p className="mk-eyebrow">{l.eyebrow}</p>
         <h2 id="stats-title" className="mt-3 text-[1.75rem] font-light leading-[1.15] tracking-tight text-balance sm:text-[2.25rem]">{l.title}</h2>
-        <dl className="stats-grid mt-7">
+        <dl className="stats-grid">
           {items.map((s) => (
             <div key={s.key} className="stat">
               <dt className="stat-label">{l.labels[s.key]}</dt>
-              <dd className="stat-num num" dir="ltr">{fmt.format(s.value)}</dd>
+              <dd className="stat-num num"><bdi dir="ltr">{fmt.format(s.value)}</bdi></dd>
             </div>
           ))}
         </dl>
