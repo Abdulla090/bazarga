@@ -1063,7 +1063,7 @@
     "popular": "باوترین",
     "free": "بێبەرامبەر",
     "pro": "Pro",
-    "business": "Business",
+    "business": "بازرگانی",
     "freeDesc": "هەرچی بۆ کردنەوەی فرۆشگا پێویستە.",
     "proDesc": "زیاتر بفرۆشە، جوانتر دەرکەوە، پارە بە ئۆنلاین وەربگرە.",
     "businessDesc": "بۆ براندی گەشەکردوو کە تیم و بەرهەمی زۆریان هەیە.",
@@ -1144,7 +1144,7 @@
       "codOnline": "گەیاندن + ئۆنلاین",
       "shown": "دیارە",
       "removed": "لابراوە",
-      "whiteLabel": "White-label",
+      "whiteLabel": "بێ ناوی Bazarga",
       "community": "ناوەندی یارمەتی",
       "email": "ئیمەیڵ",
       "priority": "لە پێشینە"
@@ -1207,7 +1207,7 @@
     "name": {
       "free": "بەخۆڕایی",
       "pro": "Pro",
-      "business": "Business",
+      "business": "بازرگانی",
       "max": "Max"
     }
   },

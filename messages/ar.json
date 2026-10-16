@@ -1063,7 +1063,7 @@
     "popular": "الأكثر طلبًا",
     "free": "مجاني",
     "pro": "Pro",
-    "business": "Business",
+    "business": "أعمال",
     "freeDesc": "كل ما تحتاجه لفتح متجرك.",
     "proDesc": "بِع أكثر، وتألّق أكثر، واستلم الدفع إلكترونيًا.",
     "businessDesc": "للعلامات النامية التي لديها فريق وكتالوج حقيقي.",
@@ -1207,7 +1207,7 @@
     "name": {
       "free": "مجانية",
       "pro": "Pro",
-      "business": "Business",
+      "business": "أعمال",
       "max": "Max"
     }
   },
