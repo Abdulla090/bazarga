@@ -404,7 +404,13 @@
     "viewCart": "Selikê bibîne",
     "inCart": "Di selika te de: {count}",
     "addNote": "Notekê ji firoşkar re zêde bike",
-    "metaProductFallback": "{product} ji {store}. Serhêl bixwaze, bi gihandinê."
+    "metaProductFallback": "{product} ji {store}. Serhêl bixwaze, bi gihandinê.",
+    "cookie": {
+      "title": "Cookie û şopandin",
+      "body": "Ev dikan pixelên reklamê bi kar tîne da ku bizanibe kîjan vîdyo ferman tînin. Tiştekî din nayê şopandin.",
+      "accept": "Baş e",
+      "decline": "Red bike"
+    }
   },
   "pwa": {
     "installTitle": "Bazarga saz bike",

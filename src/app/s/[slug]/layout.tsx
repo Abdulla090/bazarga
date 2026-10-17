@@ -4,6 +4,7 @@ import { loadStore } from "./data";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { PreviewBridge } from "@/components/store/PreviewBridge";
 import { SourceCapture } from "@/components/store/SourceCapture";
+import { CookieNotice } from "@/components/store/CookieNotice";
 import { SellerPixels } from "@/components/store/SellerPixels";
 import { StoreHeader, StoreFooter } from "@/components/store/chrome";
 import { resolveDesign } from "./design";
@@ -40,6 +41,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       <PreviewBridge />
       <SourceCapture slug={store.slug} />
       <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
+      <CookieNotice tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       <StoreHeader store={store} design={design} />
       {/* min-height keeps the footer below the fold while a page streams in or the cart reads localStorage, so it
