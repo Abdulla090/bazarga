@@ -1,6 +1,8 @@
 "use client";
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { Check, ChevronDown, Globe, Icon } from "@/components/ui/icons";
+
+const noSubscribe = () => () => {};
 
 export type DropdownItem = { value: string; label: string; lang?: string; dir?: "rtl" | "ltr" };
 
@@ -49,7 +51,7 @@ export function LanguageDropdown({
   const [open, setOpen] = useState(false);
   // false on the server and the first client render (so hydration matches): the menu markup ships in the HTML,
   // closed inside <details>, for taps that land before JS. After hydration it is only mounted while open.
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
   const [align, setAlign] = useState<"start" | "end">("start");
   const [active, setActive] = useState(0);
   const box = useRef<HTMLDetailsElement>(null);
@@ -71,9 +73,9 @@ export function LanguageDropdown({
   };
 
   useEffect(() => {
-    setHydrated(true);
     // Opened natively before hydration: keep it open and take over.
-    if (box.current?.open) openMenu();
+    const raf = requestAnimationFrame(() => { if (box.current?.open) openMenu(); });
+    return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
