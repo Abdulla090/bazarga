@@ -1,3 +1,4 @@
+import { InstantSearch } from "@/components/store/InstantSearch";
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -229,7 +230,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             </nav>
           )}
           {/* Plain GET form: works without JS, keeps the category. */}
-          <form action={`/s/${slug}#products`} method="get" role="search" className={`col-span-4 flex items-center md:col-span-4 md:col-start-9 ${design.id === "market" ? "md:hidden" : ""}`}>
+          <form id="store-search" action={`/s/${slug}#products`} method="get" role="search" className={`col-span-4 flex items-center md:col-span-4 md:col-start-9 ${design.id === "market" ? "md:hidden" : ""}`}>
             {c && <input type="hidden" name="c" value={c} />}
             {offers && <input type="hidden" name="offers" value="1" />}
             <label className="relative flex-1">
@@ -246,6 +247,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
               />
             </label>
             <button type="submit" className="sr-only">{t("search")}</button>
+            <InstantSearch formId="store-search" />
           </form>
         </div>
 
