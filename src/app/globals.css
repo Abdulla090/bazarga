@@ -247,7 +247,7 @@ body {
 }
 
 @utility badge {
-  @apply inline-flex min-h-6 items-center gap-1 rounded-full border border-line bg-paper px-2.5 text-xs font-semibold leading-none text-ink-70;
+  @apply inline-flex min-h-6 items-center gap-1 rounded-full border border-line bg-paper px-2.5 py-0.5 text-xs font-semibold leading-[1.5] text-ink-70;
 }
 @utility badge-gold {
   @apply badge border-gold bg-gold text-on-gold;

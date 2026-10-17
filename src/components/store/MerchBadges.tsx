@@ -35,7 +35,9 @@ export function MerchBadges({
   const kind = soldOut && soldOutLabel ? "out" : pct !== null ? "sale" : bestSeller ? "best" : badge;
   if (!kind) return null;
   const text = size === "md" ? "text-xs sm:text-[13px]" : "text-xs";
-  const pill = `inline-flex min-h-6 max-w-full items-center rounded-full px-2.5 font-medium leading-none ${text}`;
+  // leading-[1.5] + py-0.5, never leading-none: the label sits in a `truncate` (overflow hidden) span, and a 1.0 line box
+  // clipped Kurdish/Arabic marks below the line (the ێ of "نوێ") whenever the phone drew it in its own Arabic font.
+  const pill = `inline-flex min-h-6 max-w-full items-center rounded-full px-2.5 py-0.5 font-medium leading-[1.5] ${text}`;
   const quiet = `${pill} bg-st-surface text-st-fg shadow-e1`;
   return (
     <span className={`pointer-events-none absolute z-[1] flex ${corner === "gallery" ? "left-3 top-3 md:left-4 md:top-4 md:rtl:left-auto md:rtl:right-4" : corner === "gallery-rail" ? "left-3 top-3 md:left-[5.75rem] md:top-4 md:rtl:left-auto md:rtl:right-[5.75rem]" : corner === "top" ? "top-2 start-2" : "bottom-3 start-3"} max-w-[calc(100%-1.5rem)]`}>
