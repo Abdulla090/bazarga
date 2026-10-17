@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import { safePixelId } from "@/lib/pixels-client";
 
 export const CONSENT_KEY = "bz-pixel-consent";
@@ -14,9 +13,15 @@ export function pixelsConsented(): boolean {
   }
 }
 
-/** Small notice shown only on stores that run a TikTok / Meta pixel. Declining stops the pixels for good. */
-export function CookieNotice({ tiktokId, metaId }: { tiktokId: string | null; metaId: string | null }) {
-  const t = useTranslations("store.cookie");
+export type CookieNoticeLabels = { title: string; body: string; accept: string; decline: string };
+
+/**
+ * Small notice shown only on stores that run a TikTok / Meta pixel. Declining stops the pixels for good.
+ * Labels come from the server: storefronts ship no client i18n provider, so useTranslations here would throw and
+ * take the whole store down to its error page.
+ */
+export function CookieNotice({ tiktokId, metaId, labels }: { tiktokId: string | null; metaId: string | null; labels: CookieNoticeLabels }) {
+  const t = (k: keyof CookieNoticeLabels) => labels[k];
   const [open, setOpen] = useState(false);
   const has = Boolean(safePixelId("tiktok", tiktokId) || safePixelId("meta", metaId));
 

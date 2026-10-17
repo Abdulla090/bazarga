@@ -41,7 +41,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       <PreviewBridge />
       <SourceCapture slug={store.slug} />
       <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
-      <CookieNotice tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
+      <CookieNotice tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} labels={{ title: t("cookie.title"), body: t("cookie.body"), accept: t("cookie.accept"), decline: t("cookie.decline") }} />
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       <StoreHeader store={store} design={design} />
       {/* min-height keeps the footer below the fold while a page streams in or the cart reads localStorage, so it
