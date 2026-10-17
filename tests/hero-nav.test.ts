@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }) }));
-vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {} }));
+vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {}, setLocaleFormAction: async () => {} }));
 vi.mock("next-intl/server", () => ({
   getTranslations: async () => (k: string, v?: Record<string, unknown>) => (v ? `${k}:${JSON.stringify(v)}` : k),
 }));

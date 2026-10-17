@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }) }));
-vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {} }));
+vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {}, setLocaleFormAction: async () => {} }));
 
 const { LocaleSwitcher } = await import("@/components/LocaleSwitcher");
 const { switcherItems, SWITCHER_LABEL } = await import("@/lib/i18n");
@@ -21,7 +21,11 @@ describe("language dropdown (everywhere)", () => {
   it("LocaleSwitcher renders one trigger (globe + current name), closed, 44px, no pill row", () => {
     for (const [l, name] of [["ku", "سۆرانی"], ["en", "English"], ["ar", "العربية"], ["kmr", "Kurmancî"]] as const) {
       const html = renderToStaticMarkup(createElement(LocaleSwitcher, { current: l }));
-      expect(html.match(/<button/g)?.length).toBe(1);
+      // one trigger; the 4 picks ship closed inside <details> (+ a server-action form) so taps work before hydration
+      expect(html.match(/data-lang-trigger/g)?.length).toBe(1);
+      expect(html).toMatch(/<details(?![^>]*\bopen\b)[^>]*data-lang-dropdown/);
+      expect(html.match(/role="menuitemradio"/g)?.length).toBe(4);
+      expect(html).toContain('name="locale"');
       expect(html).toContain('aria-haspopup="menu"');
       expect(html).toContain('aria-expanded="false"');
       expect(html).toContain(name);
