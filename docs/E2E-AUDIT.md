@@ -127,6 +127,54 @@ Vercel `dpl_FneLV58cJ75TFCws9UMDnQhUy2EJ` READY at be5c816; `/`, `/pricing`, `/s
 
 Gate for the merge: typecheck, lint, vitest 742/742, build, budget, seed, Playwright 45/45 (incl. variants-editor, audit-abuse, error-pages), smoke OK (GATE_OK at 9488c77).
 
+## 10. Click latency (live, 2026-10-17 ~18:00–18:30 Asia/Baghdad)
+
+Playwright + Chromium against https://bazarga.vercel.app from a US-west sandbox behind an egress proxy, so every
+server round trip carries ~250 ms of extra network that a shopper in Iraq does not pay; compare before vs after, not
+the absolute values. "Done" = pointerdown → the new content is on screen (route changed, skeleton gone, heading
+swapped / buttons moved / cart count changed). Two runs each (first visit / second). "First DOM response" was under
+30 ms for every click before and after (loading.tsx skeletons were already in place, no hydration blocking seen).
+Before = 8a3154d (functions already in fra1). After = d15ed94 + 4afeddf. "Hover" = the pointer rests 250 ms on the
+link before pressing, as a real mouse does (touchstart triggers the same prefetch on phones).
+
+| Click | Before (ms) | After, plain click (ms) | After, with hover (ms) |
+|---|---|---|---|
+| Login submit | 1683 | 1013 | 959 |
+| Dashboard nav → products (1st / revisit) | 719 / 387 | 865 / 34 | 637 / 30 |
+| Dashboard nav → orders | 745 / 410 | 765 / 48 | 471 / 46 |
+| Dashboard nav → settings | 1094 / 406 | 1125 / 43 | 432 / 49 |
+| Dashboard nav → overview | 664 / 401 | 35 / 31 | 39 / 33 |
+| Open a product (list → editor) | 62 / 277 | 57 / 433 | 57 / 388 |
+| Save a product (→ back on list) | 1367 / 1170 | 771 / 712 | 991 / 990 |
+| Change order status | 772 / 609 | **39 / 36** | 37 / 59 |
+| Storefront card → product page | 710 / 288 | 787 / 507 | **73 / 61** |
+| Add to cart | 10 / 11 | 19 / 10 | 11 / 12 |
+| Cart link → cart/checkout | 1028 / 328 | 923 / 479 | 430 / 441 |
+| Language switch (storefront) | 756 / 809 | 546 / 427 | 393 / 282 |
+| Storefront LCP (mobile) | 1772 / 788 | 1800 / 852 | — |
+
+Storefront JS ~159 KB transferred (compressed). DB ping from the fra1 function: ~4 ms warm, ~24 ms on a fresh pool
+connection (pool idles out after 5 s).
+
+Causes found: (1) every dashboard/store page is per-request dynamic (root layout → connection() for the CSP nonce), and
+links only prefetched up to the loading boundary, so each click waited a full server render; (2) dynamic pages were
+never reused by the client router (staleTimes.dynamic 0), so tabbing back re-rendered; (3) order status waited for
+the action + revalidated re-render before the buttons moved; (4) the language switch was two round trips (server
+action, then router.refresh); (5) many submit buttons only went disabled with no busy indicator, and server-rendered
+forms (logout, upgrade, track order, onboarding preset, checklist confirm) had no pending state at all; (6) no
+touch-action: manipulation; (7) login hit its two rate-limit buckets one after the other.
+Also found while re-measuring: e39c35a's CookieNotice called useTranslations on the storefront (no client intl
+provider), which crashed every store to its error page on hydration; fixed in 4afeddf (labels from the server).
+
+Changes (merge d15ed94): experimental.dynamicOnHover + staleTimes.dynamic 30 s; useOptimistic in StatusActions
+(confirm-first moves still wait); LocaleSwitcher writes mm_locale client-side + one refresh, trigger shows the pick at
+once; aria-busy on pending submit buttons + PendingButton (useFormStatus) for server forms, CSS spinner after 150 ms
+(static ring under reduced motion); html { touch-action: manipulation }; login rate limits in parallel.
+
+Left: first visits to a dashboard tab without hover still cost one server render (~400–800 ms from the US sandbox,
+far less from Iraq); a single session+user+store query for requireStore would save one DB round trip per request;
+a longer pool idle timeout would save ~20 ms after pauses but risks stale sockets on frozen serverless instances.
+
 ## 8. Needs Abdulla
 
 Vercel production env checked 2026-10-17. None of these is set:
