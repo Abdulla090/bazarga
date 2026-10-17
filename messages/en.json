@@ -1399,5 +1399,99 @@
     "latency": "Response time",
     "build": "Build",
     "checked": "Checked"
+  },
+  "compare": {
+    "title": "Bazarga vs DMs vs Shopify",
+    "colFeature": "What you get",
+    "colBazarga": "Bazarga",
+    "colDms": "Instagram/WhatsApp DMs",
+    "colShopify": "Shopify",
+    "rows": {
+      "r1": {
+        "label": "Setup time",
+        "bazarga": "Minutes",
+        "dms": "Instant, but messy",
+        "shopify": "Hours to days"
+      },
+      "r2": {
+        "label": "Kurdish language",
+        "bazarga": "Built in",
+        "dms": "Typed by hand",
+        "shopify": "Limited"
+      },
+      "r3": {
+        "label": "Right-to-left design",
+        "bazarga": "From day one",
+        "dms": "Depends on the app",
+        "shopify": "Partial"
+      },
+      "r4": {
+        "label": "Cash on delivery",
+        "bazarga": "Yes",
+        "dms": "Yes, by chat",
+        "shopify": "Needs setup"
+      },
+      "r5": {
+        "label": "Local payments (FIB, ZainCash, FastPay, Qi)",
+        "bazarga": "Built for Iraq",
+        "dms": "Manual transfers",
+        "shopify": "Mostly unavailable"
+      },
+      "r6": {
+        "label": "Orders in one place",
+        "bazarga": "One dashboard",
+        "dms": "Scattered chats",
+        "shopify": "Yes"
+      },
+      "r7": {
+        "label": "Delivery fee per city",
+        "bazarga": "Yes",
+        "dms": "By hand each time",
+        "shopify": "Complex rules"
+      },
+      "r8": {
+        "label": "Monthly cost",
+        "bazarga": "Simple plans",
+        "dms": "Free",
+        "shopify": "Higher, plus apps"
+      }
+    }
+  },
+  "landingFaq": {
+    "title": "Questions, answered",
+    "items": {
+      "q1": {
+        "q": "What is Bazarga?",
+        "a": "A ready-made store for Instagram and WhatsApp sellers, in your own language."
+      },
+      "q2": {
+        "q": "Do I need technical skills?",
+        "a": "No. Add your products and share your link."
+      },
+      "q3": {
+        "q": "Which languages does it support?",
+        "a": "Sorani, Kurmanji, Arabic and English."
+      },
+      "q4": {
+        "q": "Can customers pay on delivery?",
+        "a": "Yes. Cash on delivery is built in."
+      },
+      "q5": {
+        "q": "Which payments are supported?",
+        "a": "FIB, ZainCash, FastPay and Qi, as each becomes available."
+      },
+      "q6": {
+        "q": "Can I set delivery fees per city?",
+        "a": "Yes, a separate fee for each city."
+      },
+      "q7": {
+        "q": "Can I cancel anytime?",
+        "a": "Yes. Pro stays active until your paid period ends. Payments are final."
+      },
+      "q8": {
+        "q": "Where do I get help?",
+        "a": "Message us on WhatsApp or email founder@kurdistanai.app."
+      }
+    }
   }
 }

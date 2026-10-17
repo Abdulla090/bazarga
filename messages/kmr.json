@@ -1400,5 +1400,99 @@
     "latency": "Dema bersivê",
     "build": "Guhertoya avakirinê",
     "checked": "Hate kontrolkirin"
+  },
+  "compare": {
+    "title": "Bazarga li hember DM û Shopify",
+    "colFeature": "Tu çi digirî",
+    "colBazarga": "Bazarga",
+    "colDms": "DMên Instagram/WhatsApp",
+    "colShopify": "Shopify",
+    "rows": {
+      "r1": {
+        "label": "Dema avakirinê",
+        "bazarga": "Çend deqe",
+        "dms": "Zû ye lê tevlihev",
+        "shopify": "Çend saet heta çend roj"
+      },
+      "r2": {
+        "label": "Zimanê Kurdî",
+        "bazarga": "Di nav de ye",
+        "dms": "Bi destan tê nivîsîn",
+        "shopify": "Sînordar"
+      },
+      "r3": {
+        "label": "Sêwirana rast-bi-çep",
+        "bazarga": "Ji roja yekem",
+        "dms": "Girêdayî sepanê ye",
+        "shopify": "Beşek"
+      },
+      "r4": {
+        "label": "Dayîna li dema radestkirinê",
+        "bazarga": "Erê",
+        "dms": "Erê, bi çatê",
+        "shopify": "Sazkirin dixwaze"
+      },
+      "r5": {
+        "label": "Dayînên herêmî (FIB, ZainCash, FastPay, Qi)",
+        "bazarga": "Ji bo Iraqê hatiye çêkirin",
+        "dms": "Veguhastina destî",
+        "shopify": "Pir caran tune ye"
+      },
+      "r6": {
+        "label": "Hemû ferman li yek cih",
+        "bazarga": "Yek panel",
+        "dms": "Çatên belav",
+        "shopify": "Erê"
+      },
+      "r7": {
+        "label": "Heqê radestkirinê ji bo her bajarî",
+        "bazarga": "Erê",
+        "dms": "Her car bi destan",
+        "shopify": "Rêgezên tevlihev"
+      },
+      "r8": {
+        "label": "Lêçûna mehane",
+        "bazarga": "Plansaziyên sade",
+        "dms": "Belaş",
+        "shopify": "Bihatir, bi sepanan re"
+      }
+    }
+  },
+  "landingFaq": {
+    "title": "Pirs û bersiv",
+    "items": {
+      "q1": {
+        "q": "Bazarga çi ye?",
+        "a": "Dikanek amade ye ji bo firoşkarên Instagram û WhatsApp, bi zimanê te."
+      },
+      "q2": {
+        "q": "Gelo divê min zanîna teknîkî hebe?",
+        "a": "Na. Berhemên xwe zêde bike û lînka xwe parve bike."
+      },
+      "q3": {
+        "q": "Kîjan ziman têne piştgirîkirin?",
+        "a": "Soranî, Kurmancî, Erebî û Îngilîzî."
+      },
+      "q4": {
+        "q": "Gelo kiriyar dikare li dema radestkirinê bide?",
+        "a": "Erê. Dayîna li dema radestkirinê di nav de ye."
+      },
+      "q5": {
+        "q": "Kîjan awayên dayînê hene?",
+        "a": "FIB, ZainCash, FastPay û Qi, çi dem ku amade bin."
+      },
+      "q6": {
+        "q": "Ez dikarim heqê radestkirinê ji bo her bajarî diyar bikim?",
+        "a": "Erê, heqekî cuda ji bo her bajarî."
+      },
+      "q7": {
+        "q": "Ez dikarim her gav betal bikim?",
+        "a": "Erê. Pro heta dawiya dema dayî çalak dimîne. Dayîn nayên vegerandin."
+      },
+      "q8": {
+        "q": "Ez ji ku alîkariyê bistînim?",
+        "a": "Li WhatsApp'ê peyamekê bişîne an e-name bişîne founder@kurdistanai.app."
+      }
+    }
   }
 }
