@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { ViewPixel } from "@/components/store/ViewPixel";
+import { Wishlist } from "@/components/store/Wishlist";
 import { RecentlyViewed } from "@/components/store/RecentlyViewed";
 import { PixelEvent } from "@/components/store/SellerPixels";
 import { cookies, headers } from "next/headers";
@@ -307,6 +308,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         from={t.raw("from") as string}
         view={t("view")}
         testId="related"
+      />
+      <Wishlist
+        slug={store.slug}
+        item={{ id: p.id, name, img: p.images[0]?.url ?? null, price: formatIQD(self?.price ?? p.price, locale) }}
+        labels={{
+          save: { en: "Save", ku: "هەڵیبگرە", kmr: "Hilbigire", ar: "حفظ" }[locale] ?? "Save",
+          saved: { en: "Saved", ku: "هەڵگیرا", kmr: "Hat hilanîn", ar: "تم الحفظ" }[locale] ?? "Saved",
+          heading: { en: "Your saved items", ku: "هەڵگیراوەکانت", kmr: "Tiştên te yên hilanî", ar: "العناصر المحفوظة" }[locale] ?? "Saved",
+        }}
       />
       <RecentlyViewed
         slug={store.slug}
