@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { PALETTE_ITEMS, filterPalette } from "@/lib/dash-nav-items";
+import { PALETTE_ITEMS, filterPalette, goShortcutTarget } from "@/lib/dash-nav-items";
 
 export function CommandPalette() {
   const t = useTranslations("dash");
@@ -13,6 +13,22 @@ export function CommandPalette() {
   const input = useRef<HTMLInputElement>(null);
   const items = useMemo(() => filterPalette(PALETTE_ITEMS.map((i) => ({ href: i.href, label: t(i.key) })), q), [q, t]);
 
+  useEffect(() => {
+    let armed = 0;
+    const onGo = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+      if (e.key.toLowerCase() === "g") { armed = Date.now(); return; }
+      if (armed && Date.now() - armed < 1200) {
+        const to = goShortcutTarget(e.key);
+        armed = 0;
+        if (to) router.push(to);
+      }
+    };
+    window.addEventListener("keydown", onGo);
+    return () => window.removeEventListener("keydown", onGo);
+  }, [router]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
