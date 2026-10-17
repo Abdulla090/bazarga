@@ -7,6 +7,6 @@
 - [ ] 5. Dashboard wow: Cmd-K, shortcuts, first-run checklist, first-order moment, optimistic edits
 - [ ] 6. Shopper delight: instant search, quick-view, wishlist, recently viewed, related, share cards
 - [ ] 7. Landing $3M pass: tour, comparison table, FAQ x4, footer, real counters
-- [ ] 8. Trust/ops: [x] /status (agentb/status-page), [x] rate limits on every public POST (tests/rate-limit-coverage.test.ts), [x] backups doc (OPS.md), [ ] headers audit, [ ] admin audit log review, [ ] legal review, [ ] cookie notice
+- [ ] 8. Trust/ops: [x] /status (agentb/status-page), [x] rate limits on every public POST (tests/rate-limit-coverage.test.ts), [x] backups doc (OPS.md), [x] headers audit, [ ] admin audit log review, [ ] legal review, [ ] cookie notice
 - [ ] 9. Seller tools: CSV import/export, bulk edit, discount codes, low stock, order notes/WhatsApp templates
 - [ ] 10. Polish 390 ku / 1280 en + bug bash
