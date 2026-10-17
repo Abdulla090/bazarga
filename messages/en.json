@@ -299,7 +299,10 @@
     "prevPage": "Previous",
     "nextPage": "Next",
     "showing": "{from}–{to} of {total}",
-    "noMatches": "Nothing matches “{q}”."
+    "noMatches": "Nothing matches “{q}”.",
+    "cmdkPlaceholder": "Go to… (Ctrl/Cmd K)",
+    "cmdkEmpty": "No matches",
+    "cmdkTitle": "Quick navigation"
   },
   "setup": {
     "title": "Set up your store",

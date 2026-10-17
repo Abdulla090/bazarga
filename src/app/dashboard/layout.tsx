@@ -8,6 +8,7 @@ import { IntlProvider } from "@/components/IntlProvider";
 import { db } from "@/server/db";
 import { countNewOrders } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
+import { CommandPalette } from "@/components/dashboard/CommandPalette";
 import { DashNav } from "@/components/dashboard/DashNav";
 import { ExternalLink, Icon } from "@/components/ui/icons";
 import { normalizePlan } from "@/lib/plans";
@@ -66,6 +67,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <main className="mx-auto w-full min-w-0 max-w-[72rem] px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>
       </div>
       <DashNav variant="bottom" newOrders={newOrders} />
+      <CommandPalette />
     </div>
     </IntlProvider>
   );
