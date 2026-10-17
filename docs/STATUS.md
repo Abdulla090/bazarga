@@ -7,7 +7,7 @@ Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
-- 2026-10-17 21:30 | prototype 85% | production 70% | At risk
+- 2026-10-17 21:30 | prototype 95% | production 82% | On track
 - 2026-10-17 17:45 | prototype 95% | production 82% | On track
 - 2026-10-17 00:40 | prototype 95% | production 82% | On track
 - 2026-10-16 19:10 | prototype 95% | production 82% | On track (verification only, no new slice)
