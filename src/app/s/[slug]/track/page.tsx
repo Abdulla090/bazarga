@@ -13,6 +13,7 @@ import { buildTrackingTimeline, parseOrderNumber, TRACK_COOKIE, type TimelineSte
 import { waLink } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
 import { Check, Icon, MessageCircle, Package, Truck, X, Clock } from "@/components/ui/icons";
+import { PendingButton } from "@/components/ui/PendingButton";
 
 // Always fresh and never indexed: reads the order directly (not through the storefront cache).
 export const metadata: Metadata = { robots: { index: false } };
@@ -90,7 +91,7 @@ export default async function TrackOrderPage({ params, searchParams }: { params:
           />
           <p id="trk-phone-hint" className="hint">{t("phoneHint")}</p>
         </div>
-        <button type="submit" className="btn-gold min-h-12 w-full">{t("submit")}</button>
+        <PendingButton className="btn-gold min-h-12 w-full">{t("submit")}</PendingButton>
       </form>
 
       <Link href={`/s/${store.slug}`} className="mx-auto inline-flex min-h-11 items-center text-[15px] font-medium underline underline-offset-4 hover:text-st-accent">{ts("backToStore")}</Link>

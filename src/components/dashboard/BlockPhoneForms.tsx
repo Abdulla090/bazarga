@@ -19,7 +19,7 @@ export function BlockToggle({ phone, phoneLabel, orderId, blocked }: { phone: st
     >
       <input type="hidden" name="phone" value={phone} />
       <input type="hidden" name="orderId" value={orderId} />
-      <button className={blocked ? "btn-ghost btn-sm w-fit" : "btn-ghost btn-sm w-fit text-danger"} disabled={pending} data-testid={blocked ? "unblock-phone" : "block-phone"}>
+      <button className={blocked ? "btn-ghost btn-sm w-fit" : "btn-ghost btn-sm w-fit text-danger"} disabled={pending} aria-busy={pending || undefined} data-testid={blocked ? "unblock-phone" : "block-phone"}>
         {blocked ? t("unblock") : t("block")}
       </button>
       <FormError error={state.error} />
@@ -46,7 +46,7 @@ export function AddBlockedPhoneForm() {
         <label className="label" htmlFor="bp-note">{t("note")}</label>
         <input id="bp-note" name="note" maxLength={200} className="input" />
       </div>
-      <button className="btn-ink" disabled={pending}>{t("add")}</button>
+      <button className="btn-ink" disabled={pending} aria-busy={pending || undefined}>{t("add")}</button>
       <div className="sm:col-span-3"><FormError error={state.error} /></div>
     </form>
   );
@@ -58,7 +58,7 @@ export function UnblockButton({ phone }: { phone: string }) {
   return (
     <form action={action}>
       <input type="hidden" name="phone" value={phone} />
-      <button className="btn-ghost btn-sm" disabled={pending}>{t("unblock")}</button>
+      <button className="btn-ghost btn-sm" disabled={pending} aria-busy={pending || undefined}>{t("unblock")}</button>
       <FormError error={state.error} />
     </form>
   );

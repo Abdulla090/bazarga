@@ -21,7 +21,7 @@ export function ShowcaseToggle({ optedIn }: { optedIn: boolean }) {
       <p className="font-semibold" aria-live="polite">{optedIn ? t("toggleOn") : t("toggleOff")}</p>
       <input type="hidden" name="optIn" value={optedIn ? "off" : "on"} />
       <div className="flex flex-wrap items-center gap-3">
-        <button className={optedIn ? "btn-ghost" : "btn-gold"} disabled={pending}>{optedIn ? t("remove") : t("add")}</button>
+        <button className={optedIn ? "btn-ghost" : "btn-gold"} disabled={pending} aria-busy={pending || undefined}>{optedIn ? t("remove") : t("add")}</button>
         <Link href="/showcase" className="inline-flex min-h-11 items-center text-sm font-semibold text-[#2563EB]">{t("view")}</Link>
       </div>
     </form>

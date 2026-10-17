@@ -140,7 +140,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button className="btn-gold" disabled={pending}>{tc("save")}</button>
+        <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{tc("save")}</button>
         {initial.id && (
           <button
             type="button"

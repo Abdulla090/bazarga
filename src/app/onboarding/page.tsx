@@ -14,6 +14,7 @@ import { IRAQI_CITIES } from "@/lib/cities";
 import { DEFAULT_LOCALE, isLocale, pickText } from "@/lib/i18n";
 import { currentLocale } from "@/server/locale";
 import { getFoundingSpotsLeft } from "@/server/cache/founding";
+import { PendingButton } from "@/components/ui/PendingButton";
 
 export const metadata = { title: "Set up your store" };
 
@@ -43,9 +44,9 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
                 <p className="mb-2 font-bold">{ts(`preset.${p.preset}`)}</p>
                 <form action={applyPresetAction}>
                   <input type="hidden" name="preset" value={p.preset} />
-                  <button type="submit" className="min-h-11 w-full rounded-full px-3 text-sm font-bold" style={{ background: p.colors.accent, color: p.colors.bg }}>
+                  <PendingButton className="min-h-11 w-full rounded-full px-3 text-sm font-bold" style={{ background: p.colors.accent, color: p.colors.bg }}>
                     {t("themeUse")}
-                  </button>
+                  </PendingButton>
                 </form>
               </li>
             ))}

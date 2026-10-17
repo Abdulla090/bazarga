@@ -61,7 +61,7 @@ export function AiBuilder() {
         <input id="ai-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple className="text-sm" />
         <label className="label" htmlFor="ai-msg">{t("message")}</label>
         <textarea id="ai-msg" name="message" className="input min-h-28" placeholder={t("messagePlaceholder")} maxLength={4000} />
-        <button className="btn-gold" disabled={busy}>{busy ? tc("loading") : <><Icon as={Sparkles} /> {t("generate")}</>}</button>
+        <button className="btn-gold" disabled={busy} aria-busy={busy || undefined}>{busy ? tc("loading") : <><Icon as={Sparkles} /> {t("generate")}</>}</button>
       </form>
       <FormError error={error} />
       {drafts.length > 0 && (

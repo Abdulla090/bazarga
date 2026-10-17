@@ -24,7 +24,7 @@ export function PixelsForm({ initial }: { initial: { tiktokPixelId: string | nul
       <Field label={t("tiktokPixel")} name="tiktokPixelId" ltr defaultValue={initial.tiktokPixelId ?? ""} placeholder="CABCDEF1234567890ABC" maxLength={32} autoComplete="off" error={err("tiktokPixelId")} />
       <Field label={t("metaPixel")} name="metaPixelId" ltr inputMode="numeric" defaultValue={initial.metaPixelId ?? ""} placeholder="123456789012345" maxLength={20} autoComplete="off" error={err("metaPixelId")} />
       <p className="hint">{t("pixelsPrivacy")}</p>
-      <button className="btn-gold" disabled={pending}>{t("savePixels")}</button>
+      <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{t("savePixels")}</button>
     </form>
   );
 }

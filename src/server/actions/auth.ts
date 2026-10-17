@@ -31,8 +31,11 @@ export async function logInAction(_prev: ActionState, fd: FormData): Promise<Act
   try {
     const ip = await clientIp();
     const input = logInSchema.parse(formObject(fd));
-    await enforceRateLimit(db(), `login:ip:${ip}`, ...LIMITS.login);
-    await enforceRateLimit(db(), `login:email:${input.email}`, ...LIMITS.login);
+    // Both buckets are independent: hit them in one round trip (either one over its limit still throws).
+    await Promise.all([
+      enforceRateLimit(db(), `login:ip:${ip}`, ...LIMITS.login),
+      enforceRateLimit(db(), `login:email:${input.email}`, ...LIMITS.login),
+    ]);
     const user = await authenticate(db(), input.email, input.password);
     await startSession(user.id);
   } catch (e) {

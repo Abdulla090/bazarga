@@ -16,7 +16,7 @@ export function LoginForm() {
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
       <Field label={t("password")} name="password" type="password" autoComplete="current-password" required ltr error={state.fieldErrors?.password} />
-      <button className="btn-gold w-full" disabled={pending}>{t("login")}</button>
+      <button className="btn-gold w-full" disabled={pending} aria-busy={pending || undefined}>{t("login")}</button>
       <div className="flex flex-wrap justify-between gap-2 text-sm">
         <Link href="/forgot-password" className="inline-flex min-h-11 items-center text-ink-70 underline">{t("forgot")}</Link>
         <span>{t("noAccount")} <Link href="/signup" className="inline-flex min-h-11 items-center font-bold underline">{t("signup")}</Link></span>

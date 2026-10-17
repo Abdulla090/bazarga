@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
   // Story-image fonts are read from disk at runtime (src/server/share/story.ts); make sure the standalone output has them.
   outputFileTracingIncludes: { "/api/share/story": ["./src/server/share/fonts/*.ttf"] },
   experimental: {
+    // Snappy clicks: hovering (or touching) a link upgrades its prefetch to the full page data, so the click usually
+    // renders from the client cache instead of waiting on the server; a visited dynamic page is reused for 30 s when
+    // the seller tabs back to it. Server actions that revalidate still clear this cache, so edits show at once.
+    dynamicOnHover: true,
+    staleTimes: { dynamic: 30 },
     serverActions: {
       bodySizeLimit: "2mb",
       // Storefront subdomains ({slug}.mymarket.app) post server actions to themselves; add custom domains here or

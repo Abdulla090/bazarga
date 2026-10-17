@@ -114,7 +114,7 @@ export function ThemeForm({ initial }: { initial: Values }) {
         </fieldset>
       ))}
 
-      <button className="btn-gold" disabled={pending}>{t("saveTheme")}</button>
+      <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{t("saveTheme")}</button>
     </form>
   );
 }

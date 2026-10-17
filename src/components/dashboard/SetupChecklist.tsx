@@ -4,6 +4,7 @@ import type { SetupChecklist as Checklist } from "@/lib/setup-checklist";
 import { confirmDeliveryFeesAction } from "@/server/actions/setup";
 import { ShareLinkButtons } from "./ShareLinkButtons";
 import { Check, ChevronForward, Icon } from "@/components/ui/icons";
+import { PendingButton } from "@/components/ui/PendingButton";
 
 /** Dashboard-home setup checklist. Server-rendered; hidden once every step is done. */
 export async function SetupChecklist({ checklist, storeUrl, storeName }: { checklist: Checklist; storeUrl: string; storeName: string }) {
@@ -64,7 +65,7 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
                       )}
                       {s.key === "delivery" && (
                         <form action={confirmDeliveryFeesAction}>
-                          <button className="btn-ghost btn-sm">{t("delivery.confirm")}</button>
+                          <PendingButton className="btn-ghost btn-sm">{t("delivery.confirm")}</PendingButton>
                         </form>
                       )}
                     </div>

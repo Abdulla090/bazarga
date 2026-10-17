@@ -386,7 +386,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
             <span className="text-muted">{L.total}</span>
             <span className="num text-base font-medium">{quote ? formatIQD(quote.total, locale) : "…"}</span>
           </p>
-          <button className="btn-gold min-h-12 w-full" disabled={placing || !available.length || !city} data-testid="place-order">
+          <button className="btn-gold min-h-12 w-full" disabled={placing || !available.length || !city} aria-busy={placing || undefined} data-testid="place-order">
             {placing ? L.placing : L.placeOrder}
           </button>
         </div>

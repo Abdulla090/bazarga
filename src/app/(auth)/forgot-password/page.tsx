@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
         <>
           <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
           <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
-          <button className="btn-gold" disabled={pending}>{t("sendLink")}</button>
+          <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{t("sendLink")}</button>
         </>
       )}
       <Link href="/login" className="inline-flex min-h-11 items-center text-sm underline">{t("login")}</Link>

@@ -9,6 +9,7 @@ import { quoteSubscription } from "@/server/payments/gateway/service";
 import { formatIQD } from "@/lib/money";
 import { currentLocale } from "@/server/locale";
 import { PLANS, usd, normalizePlan, isPaidPlan } from "@/lib/plans";
+import { PendingButton } from "@/components/ui/PendingButton";
 
 export default async function UpgradePage({ searchParams }: { searchParams: Promise<{ plan?: string; pay?: string }> }) {
   const { store } = await requireStore();
@@ -73,11 +74,11 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
               {tg("payOnlineLead", { amount: formatIQD(quote.iqd, locale) })}
             </p>
             {sp.pay === "error" && <p className="text-sm text-danger" role="alert">{tg("error")}</p>}
-            <button formAction={payOnlineForm} className="min-h-12 rounded-full bg-gold px-6 font-medium text-white">{tg("payOnline")}</button>
+            <PendingButton formAction={payOnlineForm} className="min-h-12 rounded-full bg-gold px-6 font-medium text-white">{tg("payOnline")}</PendingButton>
             <p className="text-xs text-ink-70">{tg("orManual")}</p>
           </div>
         )}
-        <button className={online ? "min-h-12 rounded-full border border-ink px-6" : "min-h-12 rounded-full bg-ink px-6 text-white"}>{t("submit")}</button>
+        <PendingButton className={online ? "min-h-12 rounded-full border border-ink px-6" : "min-h-12 rounded-full bg-ink px-6 text-white"}>{t("submit")}</PendingButton>
       </form>
       <p className="text-sm text-ink-70">{t("steps")}</p>
       <p className="text-sm text-ink-70">{t("current", { plan: t(`name.${current}`) })}</p>
