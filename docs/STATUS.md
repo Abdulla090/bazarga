@@ -1,12 +1,13 @@
 # Bazarga status
-Updated: 2026-10-17 23:20 Asia/Baghdad
-Health: On track — main green, mobile smoke unverified
+Updated: 2026-10-18 00:25 Asia/Baghdad
+Health: On track — main green, browser smoke blocked in sandbox
 Prototype confidence (Sun Oct 18): 92%
 Production confidence (Fri Oct 30): 80%
 Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
+- 2026-10-18 00:25 | prototype 92% | production 80% | On track
 - 2026-10-17 23:20 | prototype 92% | production 80% | On track
 - 2026-10-17 21:30 | prototype 95% | production 82% | On track
 - 2026-10-17 17:45 | prototype 95% | production 82% | On track
