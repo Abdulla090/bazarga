@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { CART_ADDED, type AddedItem } from "./cart";
+import { pixelsConsented } from "./CookieNotice";
 import { safePixelId, trackingAllowed, vendorEvent, type PixelData, type PixelEvent } from "@/lib/pixels-client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -94,7 +95,7 @@ export function SellerPixels({ tiktokId, metaId }: { tiktokId: string | null; me
     const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
     if (!trackingAllowed({ doNotTrack: nav.doNotTrack, globalPrivacyControl: nav.globalPrivacyControl })) return;
     const start = () => {
-      if (started) return;
+      if (started || !pixelsConsented()) return;
       started = true;
       ids.tiktok = tt;
       ids.meta = mt;

@@ -727,7 +727,13 @@
     "viewCart": "View cart",
     "inCart": "In your cart: {count}",
     "addNote": "Add a note for the seller",
-    "metaProductFallback": "{product} from {store}. Order online with delivery."
+    "metaProductFallback": "{product} from {store}. Order online with delivery.",
+    "cookie": {
+      "title": "Cookies & tracking",
+      "body": "This store uses ad pixels to measure which videos bring orders. Nothing else is tracked.",
+      "accept": "OK",
+      "decline": "Decline"
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
