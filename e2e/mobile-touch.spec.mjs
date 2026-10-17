@@ -13,9 +13,13 @@ const SLUG = process.env.STORE_SLUG ?? "hawler-bazaar";
 const HTML_LANG = { ku: "ckb", ar: "ar", en: "en", kmr: "kmr" };
 const LABEL = { ku: "سۆرانی", ar: "العربية", en: "English", kmr: "Kurmancî" };
 
+// Hand-made contexts don't inherit `use`, so pass the live config's egress proxy through (none against localhost).
+const px = process.env.HTTPS_PROXY ? new URL(process.env.HTTPS_PROXY) : null;
+const proxy = px ? { server: `${px.protocol}//${px.host}`, username: decodeURIComponent(px.username), password: decodeURIComponent(px.password) } : undefined;
+
 async function phone(browser, baseURL, { width, locale, js = true, fonts = true }) {
   const host = new URL(baseURL).hostname;
-  const context = await browser.newContext({ viewport: { width, height: 860 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, javaScriptEnabled: js });
+  const context = await browser.newContext({ ...(proxy && !/localhost|127\.0\.0\.1/.test(host) ? { proxy } : {}), viewport: { width, height: 860 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, javaScriptEnabled: js, reducedMotion: js ? "no-preference" : "reduce" });
   await context.addCookies([{ name: "mm_locale", value: locale, domain: host, path: "/" }]);
   if (!fonts) await context.route(/\.woff2(\?|$)/, (r) => r.abort()); // draw Kurdish in the system Arabic font, as a phone does while fonts load
   const page = await context.newPage();
