@@ -80,6 +80,15 @@ export function VariantsEditor({
       },
     ]);
 
+  const NAMED: Record<string, string> = {
+    black: "#111827", white: "#F9FAFB", red: "#DC2626", blue: "#2563EB", green: "#16A34A", yellow: "#EAB308",
+    pink: "#EC4899", purple: "#7C3AED", gray: "#6B7280", grey: "#6B7280", brown: "#92400E", beige: "#D6C3A3",
+    navy: "#1E3A8A", orange: "#EA580C", gold: "#CA8A04", silver: "#9CA3AF",
+    "ڕەش": "#111827", "سپی": "#F9FAFB", "سور": "#DC2626", "شین": "#2563EB", "سەوز": "#16A34A", "زەرد": "#EAB308",
+    "أسود": "#111827", "أبيض": "#F9FAFB", "أحمر": "#DC2626", "أزرق": "#2563EB", "أخضر": "#16A34A", "أصفر": "#EAB308",
+  };
+  const swatchFor = (l: string) => NAMED[l.trim().toLowerCase()] ?? "#2563EB";
+
   const addValues = (opt: EditorOption) => {
     const raw = drafts[opt.key] ?? "";
     const labels = splitValues(raw, opt.values.map((v) => pick(v.label))).slice(0, MAX_VALUES - opt.values.length);
@@ -87,7 +96,7 @@ export function VariantsEditor({
     setOptions((os) =>
       os.map((o) =>
         o.key === opt.key
-          ? { ...o, values: [...o.values, ...labels.map((l) => ({ key: newKey("v"), label: { [lang]: l } as LText, swatch: o.swatches ? "#2563EB" : null }))] }
+          ? { ...o, values: [...o.values, ...labels.map((l) => ({ key: newKey("v"), label: { [lang]: l } as LText, swatch: o.swatches ? swatchFor(l) : null }))] }
           : o,
       ),
     );
@@ -156,7 +165,7 @@ export function VariantsEditor({
                 setState((s) => ({
                   ...s,
                   options: s.options.map((x) =>
-                    x.key === o.key ? { ...x, swatches: on, values: x.values.map((v) => ({ ...v, swatch: on ? (v.swatch ?? "#2563EB") : v.swatch })) } : x,
+                    x.key === o.key ? { ...x, swatches: on, values: x.values.map((v) => ({ ...v, swatch: on ? (v.swatch ?? swatchFor(pick(v.label))) : v.swatch })) } : x,
                   ),
                 }));
               }}
