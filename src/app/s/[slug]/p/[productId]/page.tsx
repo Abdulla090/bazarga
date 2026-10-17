@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { ViewPixel } from "@/components/store/ViewPixel";
+import { RecentlyViewed } from "@/components/store/RecentlyViewed";
 import { PixelEvent } from "@/components/store/SellerPixels";
 import { cookies, headers } from "next/headers";
 import { pickDeliveryZone, shopperCityCookie } from "@/lib/shopper-city";
@@ -306,6 +307,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         from={t.raw("from") as string}
         view={t("view")}
         testId="related"
+      />
+      <RecentlyViewed
+        slug={store.slug}
+        item={{ id: p.id, name, img: p.images[0]?.url ?? null, price: formatIQD(self?.price ?? p.price, locale) }}
+        heading={{ en: "Recently viewed", ku: "تازە بینراو", kmr: "Nû hatine dîtin", ar: "شوهد مؤخراً" }[locale] ?? "Recently viewed"}
       />
     </div>
   );
