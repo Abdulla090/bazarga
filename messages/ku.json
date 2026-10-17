@@ -299,7 +299,10 @@
     "prevPage": "پێشوو",
     "nextPage": "دواتر",
     "showing": "{from}–{to} لە {total}",
-    "noMatches": "هیچ شتێک لەگەڵ «{q}» ناگونجێت."
+    "noMatches": "هیچ شتێک لەگەڵ «{q}» ناگونجێت.",
+    "cmdkPlaceholder": "بڕۆ بۆ… (Ctrl/Cmd K)",
+    "cmdkEmpty": "هیچ ئەنجامێک نییە",
+    "cmdkTitle": "گەڕانی خێرا"
   },
   "setup": {
     "title": "دوکانەکەت ئامادە بکە",

@@ -299,7 +299,10 @@
     "prevPage": "السابق",
     "nextPage": "التالي",
     "showing": "{from}–{to} من {total}",
-    "noMatches": "لا توجد نتائج لـ «{q}»."
+    "noMatches": "لا توجد نتائج لـ «{q}».",
+    "cmdkPlaceholder": "انتقل إلى… (Ctrl/Cmd K)",
+    "cmdkEmpty": "لا توجد نتائج",
+    "cmdkTitle": "تنقل سريع"
   },
   "setup": {
     "title": "جهّز متجرك",

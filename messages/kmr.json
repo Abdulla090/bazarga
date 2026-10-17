@@ -462,7 +462,10 @@
     "prevPage": "Berê",
     "nextPage": "Paşê",
     "showing": "{from}–{to} ji {total}",
-    "noMatches": "Tiştek li gorî “{q}” tune."
+    "noMatches": "Tiştek li gorî “{q}” tune.",
+    "cmdkPlaceholder": "Biçe… (Ctrl/Cmd K)",
+    "cmdkEmpty": "Tiştek nehat dîtin",
+    "cmdkTitle": "Navîgasyona bilez"
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
