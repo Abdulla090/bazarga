@@ -1,12 +1,25 @@
 # Bazarga status
-Updated: 2026-10-18 00:25 Asia/Baghdad
-Health: On track — main green, browser smoke blocked in sandbox
-Prototype confidence (Sun Oct 18): 92%
+Updated: 2026-10-18 02:35 Asia/Baghdad
+Health: **Prototype LANDED (Sun Oct 18)** — full live browser walkthrough green, no blockers
+Prototype confidence (Sun Oct 18): 100% — landed
 Production confidence (Fri Oct 30): 80%
 Gate on main: green
-Live site: up
+Live site: up — https://bazarga.vercel.app (main 2ed1fdf + this docs merge, Vercel READY)
+
+## Prototype landed — 2026-10-18 02:35 (Hark live audit, hark-audit/land)
+Live Playwright walkthrough on https://bazarga.vercel.app at 412x915 (mostly ku/ckb RTL) and 1440x900, spot checks en/ar/kmr.
+All flows pass: landing, /pricing, mobile menu, language switch (ku→en flips lang/dir), demo store home, instant search
+(debounced auto-submit), product page (gallery, size picker, nudge when no size), wishlist toggle, recently viewed, cart
+drawer + cart, COD checkout → order placed (#1336), signup → onboarding (store + theme step), dashboard overview,
+analytics charts (trend/funnel/heatmap), product create + edit (reflected on storefront), order status change
+(new→confirmed), Theme Studio preset preview + publish (storefront restyled), settings, share kit + QR PNG, /status,
+terms/privacy/refund/showcase, 404 (platform + unknown store). 0 console errors, 0 page errors, 0 CSP violations,
+0 horizontal overflow, 0 clipped text across ~60 page checks. No code fixes needed. Screenshots:
+daily-shots/2026-10-18/prototype-*.png. Left for production (Oct 30): domain/hosting, Rasedi KYC + keys, email
+provider key, R2/object storage, external cron pinger, final bug bash Thu 29.
 
 ## Confidence history (newest first)
+- 2026-10-18 02:35 | prototype 100% (landed) | production 80% | On track
 - 2026-10-18 00:25 | prototype 92% | production 80% | On track
 - 2026-10-17 23:20 | prototype 92% | production 80% | On track
 - 2026-10-17 21:30 | prototype 95% | production 82% | On track
