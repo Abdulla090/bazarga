@@ -32,7 +32,7 @@ export function CategoryForm({ cat }: { cat?: Cat }) {
         <input id={`c-${cat?.id ?? "new"}-sort`} name="sort" type="number" defaultValue={cat?.sort ?? 0} className="input num" />
       </div>
       <div className="flex gap-2">
-        <button className="btn-gold btn-sm" disabled={pending}>{cat?.id ? tc("save") : tc("add")}</button>
+        <button className="btn-gold btn-sm" disabled={pending} aria-busy={pending || undefined}>{cat?.id ? tc("save") : tc("add")}</button>
         {cat?.id && (
           <button type="button" className="btn-danger btn-sm" disabled={delPending} onClick={() => confirm(tc("confirmDelete")) && start(() => deleteCategoryAction(cat.id!))}>
             {tc("delete")}

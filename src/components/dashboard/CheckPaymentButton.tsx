@@ -10,7 +10,7 @@ export function CheckPaymentButton({ orderId }: { orderId: string }) {
   return (
     <form action={action} className="grid gap-2">
       <input type="hidden" name="orderId" value={orderId} />
-      <button className="btn-ghost btn-sm w-fit" disabled={pending} data-testid="check-payment">{t("checkNow")}</button>
+      <button className="btn-ghost btn-sm w-fit" disabled={pending} aria-busy={pending || undefined} data-testid="check-payment">{t("checkNow")}</button>
       <FormError error={state.error} />
     </form>
   );

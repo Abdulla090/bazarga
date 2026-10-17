@@ -24,7 +24,7 @@ export function ZoneRow({ id, name, fee, isActive }: { id: string; name: string;
         <input type="checkbox" name="isActive" defaultChecked={isActive} className="h-5 w-5 accent-green" />
         {t("active")}
       </label>
-      <button className="btn-gold btn-sm" disabled={pending}>{state.ok && !pending ? <Icon as={Check} label={tc("save")} /> : tc("save")}</button>
+      <button className="btn-gold btn-sm" disabled={pending} aria-busy={pending || undefined}>{state.ok && !pending ? <Icon as={Check} label={tc("save")} /> : tc("save")}</button>
       <button type="button" className="btn-ghost btn-sm" disabled={delPending} onClick={() => confirm(tc("confirmDelete")) && start(() => deleteZoneAction(id))} aria-label={tc("delete")}>
         <Icon as={Trash2} />
       </button>
@@ -59,7 +59,7 @@ export function AddZoneForm() {
         <label className="label" htmlFor="z-fee">{t("fee")}</label>
         <input id="z-fee" name="fee" type="number" min={0} step={250} required className="input num" dir="ltr" />
       </div>
-      <button className="btn-gold sm:col-span-4" disabled={pending}>+ {t("add")}</button>
+      <button className="btn-gold sm:col-span-4" disabled={pending} aria-busy={pending || undefined}>+ {t("add")}</button>
       <div className="sm:col-span-4"><FormError error={state.fieldErrors?.name ? "name_required" : state.error} /></div>
     </form>
   );
@@ -99,7 +99,7 @@ export function AreaForm({ zoneId, cityFee, area }: { zoneId: string; cityFee: n
         <input id={`${p}-fee`} name="fee" type="number" inputMode="numeric" min={0} step={250} defaultValue={area?.fee ?? ""} placeholder={String(cityFee)} className="input num" dir="ltr" />
       </div>
       <div className="flex gap-2">
-        <button className={`${area ? "btn-ink" : "btn-gold"} btn-sm flex-1`} disabled={pending}>
+        <button className={`${area ? "btn-ink" : "btn-gold"} btn-sm flex-1`} disabled={pending} aria-busy={pending || undefined}>
           {state.ok && !pending && area ? <Icon as={Check} label={tc("saved")} /> : area ? tc("save") : `+ ${t("addArea")}`}
         </button>
         {area && (

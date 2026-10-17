@@ -65,7 +65,7 @@ export function WaitlistForm({ cities, refCode = "" }: { cities: { key: string; 
         {err("city")}
       </div>
       {state.error && <p className="field-error sm:col-span-2" role="alert">{state.error === "VALIDATION" ? t("formError") : te(state.error as "generic")}</p>}
-      <button className="btn-gold sm:col-span-2" disabled={pending}>{t("submit")}</button>
+      <button className="btn-gold sm:col-span-2" disabled={pending} aria-busy={pending || undefined}>{t("submit")}</button>
     </form>
   );
 }

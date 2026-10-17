@@ -18,7 +18,7 @@ export function VerifyEmailBanner() {
         {state.ok ? <span role="status">{t("verifySent")}</span> : state.error ? <span role="alert">{te(state.error as "generic")}</span> : t("verifyBanner")}
       </p>
       {!state.ok && (
-        <button disabled={pending} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-[#2563EB] hover:bg-[#2563EB]/[0.06]">
+        <button disabled={pending} aria-busy={pending || undefined} className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-[#2563EB] hover:bg-[#2563EB]/[0.06]">
           {t("verifyResend")}
         </button>
       )}

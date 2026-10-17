@@ -23,7 +23,7 @@ export function ResetForm({ token }: { token: string }) {
           <FormError error={state.fieldErrors?.token ? "invalid_or_expired_token" : state.error === "VALIDATION" ? undefined : state.error} />
           <input type="hidden" name="token" value={token} />
           <Field label={t("newPassword")} name="password" type="password" autoComplete="new-password" minLength={8} required ltr hint={t("passwordHint")} error={state.fieldErrors?.password} />
-          <button className="btn-gold" disabled={pending}>{t("resetCta")}</button>
+          <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{t("resetCta")}</button>
         </>
       )}
     </form>

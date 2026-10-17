@@ -95,7 +95,7 @@ export function DiscountForm({ initial }: { initial?: DiscountFormValues }) {
           <span id={`${p}-banner-hint`} className="hint block">{t("showOnStorefrontHint")}</span>
         </span>
       </label>
-      <button className="btn-gold sm:col-span-2" disabled={pending}>
+      <button className="btn-gold sm:col-span-2" disabled={pending} aria-busy={pending || undefined}>
         {state.ok && !pending ? <><Icon as={Check} /> {tc("saved")}</> : initial ? tc("save") : `+ ${tc("create")}`}
       </button>
       {state.error && state.error !== "VALIDATION" && <div className="sm:col-span-2"><FormError error={state.error} /></div>}

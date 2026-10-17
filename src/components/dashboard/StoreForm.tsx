@@ -119,7 +119,7 @@ export function StoreForm({
           </div>
         </>
       )}
-      <button className="btn-gold" disabled={pending}>{mode === "create" ? t("create") : tc("save")}</button>
+      <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{mode === "create" ? t("create") : tc("save")}</button>
     </form>
   );
 }

@@ -13,6 +13,7 @@ import { ExternalLink, Icon } from "@/components/ui/icons";
 import { normalizePlan } from "@/lib/plans";
 import { isEmailVerified } from "@/server/auth/service";
 import { VerifyEmailBanner } from "@/components/dashboard/VerifyEmailBanner";
+import { PendingButton } from "@/components/ui/PendingButton";
 
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
@@ -59,7 +60,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <DashNav variant="side" newOrders={newOrders} />
           </div>
           <form action={logOutAction} className="border-t border-line pt-3">
-            <button className="flex min-h-11 w-full items-center rounded-lg px-3 text-[14px] text-ink/60 transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink">{tc("logout")}</button>
+            <PendingButton className="flex min-h-11 w-full items-center rounded-lg px-3 text-[14px] text-ink/60 transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink">{tc("logout")}</PendingButton>
           </form>
         </aside>
         <main className="mx-auto w-full min-w-0 max-w-[72rem] px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>

@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useTransition } from "react";
+import { useOptimistic, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateOrderStatusAction } from "@/server/actions/dashboard";
@@ -10,6 +10,8 @@ import { CONFIRM_FIRST, ORDER_TRANSITIONS, PRIMARY_NEXT, type OrderStatus } from
  * tracking number fields when it is "out for delivery"), the other legal moves as secondary buttons, and a
  * confirm dialog before anything that takes the order off the delivery path (refused / returned / cancelled).
  * Every button is ≥44 px; the server re-checks the transition, so this list is only a convenience.
+ * Optimistic: the buttons move to the next step the moment one is pressed (and fall back if the server refuses);
+ * the confirm-first moves wait for the server.
  */
 export function StatusActions({
   orderId,
@@ -32,15 +34,18 @@ export function StatusActions({
   const [confirming, setConfirming] = useState<OrderStatus | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const router = useRouter();
-  const next = ORDER_TRANSITIONS[status];
+  const [shown, setShown] = useOptimistic(status);
+  const next = ORDER_TRANSITIONS[shown];
   if (!next.length) return null;
 
-  const primary = PRIMARY_NEXT[status] && next.includes(PRIMARY_NEXT[status]) ? PRIMARY_NEXT[status] : undefined;
+  const primary = PRIMARY_NEXT[shown] && next.includes(PRIMARY_NEXT[shown]) ? PRIMARY_NEXT[shown] : undefined;
   const secondary = next.filter((s) => s !== primary && !CONFIRM_FIRST.includes(s));
   const destructive = next.filter((s) => CONFIRM_FIRST.includes(s));
 
   const run = (to: OrderStatus, extra: { note?: string; courierName?: string; trackingNumber?: string } = {}) =>
     start(async () => {
+      // Destructive moves keep their dialog open (and its error) until the server answers.
+      if (!CONFIRM_FIRST.includes(to)) setShown(to);
       const r = await updateOrderStatusAction(orderId, to, extra);
       setError(r.ok ? undefined : r.error);
       if (r.ok) dialog.current?.close();
@@ -76,7 +81,7 @@ export function StatusActions({
               <input name="trackingNumber" className="input num" dir="ltr" maxLength={80} defaultValue={trackingNumber ?? ""} autoComplete="off" />
             </label>
           </fieldset>
-          <button type="submit" disabled={pending} className="btn-ink min-h-12 w-full text-lg sm:w-auto" data-status="shipped">
+          <button type="submit" disabled={pending} aria-busy={pending || undefined} className="btn-ink min-h-12 w-full text-lg sm:w-auto" data-status="shipped">
             {t("action_shipped")}
           </button>
         </form>
@@ -129,7 +134,7 @@ export function StatusActions({
             {error && <p role="alert" className="field-error">{te(error as "generic")}</p>}
             <div className="flex flex-wrap justify-end gap-2">
               <button type="button" className="btn-ghost" onClick={() => dialog.current?.close()}>{t("confirmKeep")}</button>
-              <button type="submit" disabled={pending} className="btn bg-danger text-white hover:bg-danger/90" data-testid="status-confirm-yes">
+              <button type="submit" disabled={pending} aria-busy={pending || undefined} className="btn bg-danger text-white hover:bg-danger/90" data-testid="status-confirm-yes">
                 {pending ? tc("loading") : t(`action_${confirming}`)}
               </button>
             </div>

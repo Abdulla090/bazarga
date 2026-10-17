@@ -101,6 +101,27 @@ html {
   background: var(--color-paper);
   color: var(--color-ink);
   -webkit-text-size-adjust: 100%;
+  /* No 300 ms double-tap-zoom wait on taps (pinch zoom still works). */
+  touch-action: manipulation;
+}
+/* Pending buttons (aria-busy while a form/action is in flight): a small spinner that only appears after 150 ms, so
+   fast answers never flash it. The press itself already shows (active scale + disabled). Static ring under reduced motion. */
+@keyframes bz-spin { to { transform: rotate(360deg); } }
+@keyframes bz-spin-in { from { width: 0; margin-inline-start: -0.5rem; opacity: 0; } to { width: 1em; margin-inline-start: 0; opacity: 1; } }
+button[aria-busy="true"] { cursor: progress; }
+button[aria-busy="true"]::after {
+  content: "";
+  flex: none;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  animation: bz-spin-in 0s 150ms both, bz-spin 700ms linear 150ms infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  button[aria-busy="true"]::after { animation: bz-spin-in 0s 150ms both; }
 }
 body {
   min-height: 100dvh;
