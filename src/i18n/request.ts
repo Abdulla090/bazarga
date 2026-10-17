@@ -2,6 +2,7 @@ import { getRequestConfig } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { cache } from "react";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, type Locale } from "@/lib/i18n";
+import { GEO_LOCALE_HEADER } from "@/lib/geo-locale";
 import { loadMessages } from "./messages";
 
 export const STORE_SLUG_HEADER = "x-mm-store-slug";
@@ -11,18 +12,22 @@ export const STORE_SLUG_HEADER = "x-mm-store-slug";
  *   1. explicit locale (getTranslations({ locale }))
  *   2. the visitor's choice (cookie)
  *   3. on a storefront: the seller's store language
- *   4. Kurdish (Sorani)
+ *   4. the visitor's location (IP country/region, set by the proxy) or browser language
+ *   5. Kurdish (Sorani)
  */
 const resolveLocale = cache(async (): Promise<Locale> => {
   const jar = await cookies();
   const fromCookie = jar.get(LOCALE_COOKIE)?.value;
   if (isLocale(fromCookie)) return fromCookie;
-  const slug = (await headers()).get(STORE_SLUG_HEADER);
+  const h = await headers();
+  const slug = h.get(STORE_SLUG_HEADER);
   if (slug) {
     const { storeDefaultLocale } = await import("./store-locale");
     const l = await storeDefaultLocale(slug);
     if (l) return l;
   }
+  const geo = h.get(GEO_LOCALE_HEADER);
+  if (isLocale(geo)) return geo;
   return DEFAULT_LOCALE;
 });
 

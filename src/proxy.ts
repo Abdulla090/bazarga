@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { NONCE_HEADER, buildCsp, generateNonce } from "@/server/csp";
 import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn } from "@/lib/not-found";
+import { GEO_LOCALE_HEADER, guessLocale } from "@/lib/geo-locale";
 import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
@@ -74,6 +75,10 @@ export async function proxy(req: NextRequest) {
   // Never trust client-sent values for headers we own.
   requestHeaders.delete(STORE_SLUG_HEADER);
   requestHeaders.delete(NONCE_HEADER);
+  requestHeaders.delete(GEO_LOCALE_HEADER);
+  // Language from IP location (Vercel edge geo headers; no browser permission prompt). Used only when the visitor has no saved choice.
+  const geoLocale = guessLocale(req.headers.get("x-vercel-ip-country"), req.headers.get("x-vercel-ip-country-region"), req.headers.get("accept-language"));
+  if (geoLocale) requestHeaders.set(GEO_LOCALE_HEADER, geoLocale);
 
   // Real 404 status for unknown stores, /payments/return while payments are off, and /e404 itself.
   if (!isApi && !req.headers.get(INTERNAL_404_HEADER) && isDocumentRequest(req)) {
