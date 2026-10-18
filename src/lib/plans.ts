@@ -119,8 +119,8 @@ export const PLANS: Plan[] = [
       { key: "exclusiveDesigns", soon: true },
       { key: "templatesPremium", soon: true },
       { key: "designRefresh", soon: true },
-      { key: "seoAdvanced", soon: true },
-      { key: "whiteLabel", soon: true },
+      { key: "seoAdvanced" },
+      { key: "whiteLabel" },
       { key: "stores5", soon: true },
       { key: "team10", soon: true },
       { key: "earlyAccess" },
@@ -168,14 +168,14 @@ export const COMPARE: FeatureRow[] = [
   { key: "analytics", free: "d7", pro: "d90", business: "advanced", max: "advanced" },
   { key: "payments", free: "codWa", pro: soon("codOnline"), business: soon("codOnline"), max: soon("codOnline") },
   { key: "discounts", free: false, pro: true, business: true, max: true },
-  { key: "badge", free: "shown", pro: "removed", business: "removed", max: soon("whiteLabel") },
+  { key: "badge", free: "shown", pro: "removed", business: "removed", max: "whiteLabel" },
   { key: "domain", free: false, pro: false, business: soon(true), max: soon(true) },
   { key: "bulkCsv", free: false, pro: false, business: true, max: true },
   { key: "aiDescriptions", free: false, pro: false, business: soon(true), max: soon(true) },
   { key: "lowStock", free: true, pro: true, business: true, max: true },
   { key: "aiDesigner", free: false, pro: false, business: false, max: soon(true) },
   { key: "priorityStudio", free: false, pro: false, business: false, max: soon(true) },
-  { key: "seoAdvanced", free: false, pro: false, business: false, max: soon(true) },
+  { key: "seoAdvanced", free: false, pro: false, business: false, max: true },
   { key: "designRefresh", free: false, pro: false, business: false, max: soon(true) },
   { key: "support", free: "community", pro: "email", business: "priority", max: "priority" },
 ];
@@ -208,8 +208,12 @@ export function isPaidPlan(v: string): v is PaidPlanId {
   return (PAID_PLAN_IDS as readonly string[]).includes(v);
 }
 
-/** Pro and up remove the "Made with Bazarga" store footer badge. */
-export function showsBazargaBadge(plan: PlanId): boolean {
+/**
+ * "Made with Reelcart" store footer badge: shown on Free, removed on Pro and up. The Max white-label switch
+ * (`whiteLabel`) removes it too, together with every other platform mark (src/lib/seo.ts whiteLabelOn).
+ */
+export function showsBazargaBadge(plan: PlanId, whiteLabel?: boolean | null): boolean {
+  if (whiteLabel && hasFeature(plan, "whiteLabel")) return false;
   return plan === "free";
 }
 

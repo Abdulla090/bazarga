@@ -26,6 +26,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Order tracking page `/track` (order number + phone), status timeline in Baghdad time
 - Short product links `/p/<code>`, per-product 1200×630 link-preview cards for WhatsApp/Telegram/Instagram
 - Floating WhatsApp button; "Made with Reelcart" badge on the Free plan
+- Advanced SEO (Max): own Google title/description for the store and each product, share image, per-store sitemap, schema.org Store + Product JSON-LD; white-label switch hides every Reelcart mark (badge, founding badge, browser icon/app name)
 - Installable PWA with Kurdish offline page; responsive images (WebP renditions + blur placeholders)
 - Seller TikTok Pixel and Meta Pixel events (PageView, ViewContent, AddToCart, Purchase), respecting Do-Not-Track/GPC
 

@@ -21,6 +21,7 @@ export default async function SettingsPage() {
   const locale = await currentLocale();
   const push = pushConfig();
   const tg = await getTranslations("gatewayPay");
+  const tseo = await getTranslations("seo");
   return (
     <div className="grid max-w-2xl gap-4">
       <h1 className="t-headline">{t("title")}</h1>
@@ -52,6 +53,13 @@ export default async function SettingsPage() {
           freeDeliveryThreshold: store.freeDeliveryThreshold,
         }}
       />
+      <Link href="/dashboard/settings/seo" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-seo-link">
+        <span className="grid gap-0.5">
+          <span className="font-bold">{tseo("title")}</span>
+          <span className="hint">{tseo("linkHint")}</span>
+        </span>
+        <span aria-hidden className="text-xl text-ink-70 rtl:rotate-180">›</span>
+      </Link>
       <ShowcaseToggle optedIn={store.showcaseOptIn} />
       <PixelsForm initial={{ tiktokPixelId: store.tiktokPixelId, metaPixelId: store.metaPixelId }} />
       <Link href="/dashboard/payments" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-payments-link">

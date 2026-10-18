@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, gte, inArray, notInArray, sql } from "drizzle-orm";
+import type { ProductSeo, StoreSeo } from "../db/schema";
 import type { Db } from "../db";
 import {
   categories,
@@ -58,6 +59,9 @@ export type StorefrontStore = {
   metaPixelId: string | null;
   /** Founding seller number 1..100 (D3); null = not a founding store. */
   foundingNumber: number | null;
+  /** Advanced SEO overrides + white-label switch (Max; apply via effectiveSeo / whiteLabelOn in src/lib/seo.ts). */
+  seo: StoreSeo;
+  whiteLabel: boolean;
 };
 
 export async function loadStorefrontStore(database: Db, slug: string): Promise<StorefrontStore | null> {
@@ -87,6 +91,8 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       tiktokPixelId: true,
       metaPixelId: true,
       foundingNumber: true,
+      seo: true,
+      whiteLabel: true,
     },
   });
   return s ?? null;
@@ -334,6 +340,8 @@ export type ProductDetail = {
   images: ProductImage[];
   options: DetailOption[];
   variants: DetailVariant[];
+  /** Product-level meta overrides (Max). */
+  seo: ProductSeo;
 };
 
 export async function loadProductDetail(database: Db, storeId: string, productId: string): Promise<ProductDetail | null> {
@@ -350,6 +358,7 @@ export async function loadProductDetail(database: Db, storeId: string, productId
       stock: true,
       sku: true,
       specs: true,
+      seo: true,
     },
   });
   if (!p) return null;

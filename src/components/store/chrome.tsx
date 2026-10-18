@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { normalizePlan, showsBazargaBadge } from "@/lib/plans";
+import { whiteLabelOn } from "@/lib/seo";
 import { getTranslations } from "next-intl/server";
 import { CartLink } from "@/components/store/CartLink";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -12,7 +13,7 @@ import { smallRenditionUrl } from "@/lib/responsive-image";
 import type { Locale } from "@/lib/i18n";
 import type { DesignSpec } from "@/lib/theme-studio/designs";
 
-type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null; plan?: string | null; foundingNumber?: number | null };
+type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagram: string | null; plan?: string | null; foundingNumber?: number | null; whiteLabel?: boolean | null };
 
 function Mark({ store, size = "h-7 w-7" }: { store: ChromeStore; size?: string }) {
   return store.logoUrl ? (
@@ -115,9 +116,10 @@ export async function StoreFooter({
   const bar = (
     <div className="store-page flex flex-wrap items-center justify-between gap-3 border-t border-st-border py-4">
       <LocaleSwitcher current={locale} locales={["ku", "ar", "en", "kmr"]} />
-      {isFoundingNumber(store.foundingNumber) && <FoundingBadge label={tf("badge")} number={store.foundingNumber} />}
-      {/* "Made with Bazarga" shows on Free only (src/lib/plans.ts showsBazargaBadge); Pro and up remove it. */}
-      {showsBazargaBadge(normalizePlan(store.plan)) && (
+      {isFoundingNumber(store.foundingNumber) && !whiteLabelOn(normalizePlan(store.plan), store.whiteLabel) && <FoundingBadge label={tf("badge")} number={store.foundingNumber} />}
+      {/* "Made with Reelcart" shows on Free only (src/lib/plans.ts showsBazargaBadge); Pro and up remove it.
+          Max white-label (src/lib/seo.ts whiteLabelOn) also drops the founding badge, the last platform mark. */}
+      {showsBazargaBadge(normalizePlan(store.plan), store.whiteLabel) && (
         <Link href="/" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-st-fg" data-bazarga-badge>
           <Awning className="h-3 w-7" /> {t("poweredBy")}
         </Link>
