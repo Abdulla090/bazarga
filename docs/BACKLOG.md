@@ -53,7 +53,7 @@ Goal: a buyer who barely codes can understand, run and launch Reelcart with thei
 - [x] 2. (live run Oct 17 00:30 Baghdad: 25 passed, 1 skipped; `npm run test:live`) Seller-journey e2e on live site (signup → onboarding → product → share → shopper order ?src → orders by source) + plan-gating UI. Due Sun Oct 18
 - [ ] 3. Market theme (6th)
 - [ ] 4. (loading.tsx added for stores, team, admin, onboarding) axe clean on all top screens + CLS + empty/error/loading states ([x] marketing+auth loading skeletons; landing renders inline for no-JS)
-- [ ] 5. Dashboard wow ([x] Cmd-K palette, [x] g-then-key shortcuts): Cmd-K, shortcuts, first-run checklist, first-order moment, optimistic edits
+- [ ] 5. Dashboard wow ([x] first-order celebration card, [x] Cmd-K palette, [x] g-then-key shortcuts): Cmd-K, shortcuts, first-run checklist, first-order moment, optimistic edits
 - [ ] 6. Shopper delight ([x] instant search, [x] recently viewed, [x] related, [x] wishlist): instant search, quick-view, wishlist, recently viewed, related, share cards
 - [ ] 7. Landing $3M pass: tour, comparison table, FAQ x4, footer, real counters
 - [ ] 8. Trust/ops: [x] /status (agentb/status-page), [x] rate limits on every public POST (tests/rate-limit-coverage.test.ts), [x] backups doc (OPS.md), [x] headers audit, [x] admin audit log view (/admin), [ ] legal review, [x] cookie notice (diacritic-safe line-height)

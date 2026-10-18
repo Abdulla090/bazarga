@@ -43,6 +43,16 @@ export default async function DashboardHome() {
         </section>
       )}
       <LazyInstallPrompt />
+      {recent.length === 1 && (
+        <section className="first-order-card flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-[#2563EB]/25 bg-[#2563EB]/[0.05] p-5" data-testid="first-order">
+          <span aria-hidden className="text-3xl">🎉</span>
+          <div className="min-w-0 flex-1">
+            <h2 className="t-title" style={{ lineHeight: 1.5 }}>{t("firstOrderTitle")}</h2>
+            <p className="mt-1 text-sm text-ink-70">{t("firstOrderBody", { name: recent[0]!.customerName })}</p>
+          </div>
+          <Link href={`/dashboard/orders/${recent[0]!.id}`} className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-white">{t("firstOrderCta")}</Link>
+        </section>
+      )}
       <SetupChecklist checklist={checklist} storeUrl={link} storeName={store.name} />
       <dl className="grid grid-cols-1 border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-line rtl:sm:divide-x-reverse">
         {cards.map((c, i) => (
