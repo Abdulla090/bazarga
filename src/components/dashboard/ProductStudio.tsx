@@ -149,7 +149,7 @@ export function ProductStudio({ image, info, maxMb, onSaved, onClose, onUsage }:
             {([["before", before], ["after", after]] as const).map(([k, ref]) => (
               <figure key={k} className="grid gap-1">
                 <div className="grid aspect-square place-items-center overflow-hidden rounded-xl border border-line bg-[repeating-conic-gradient(#f4f4f5_0_25%,#fff_0_50%)] bg-[length:16px_16px]">
-                  <canvas ref={ref} className="max-h-full max-w-full object-contain" data-testid={`studio-${k}`} />
+                  <canvas ref={ref} className="h-full w-full object-contain" data-testid={`studio-${k}`} />
                 </div>
                 <figcaption className="text-center text-sm text-ink-70">{t(k)}</figcaption>
               </figure>
