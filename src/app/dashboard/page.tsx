@@ -15,6 +15,7 @@ import { getSetupChecklist } from "@/server/services/setup";
 import { LazyInstallPrompt } from "@/components/pwa/lazy";
 import { FoundingBadge } from "@/components/FoundingBadge";
 import { isFoundingNumber } from "@/lib/founding";
+import { Icon, Sparkles } from "@/components/ui/icons";
 
 export default async function DashboardHome() {
   const { store, user } = await requireStore();
@@ -45,7 +46,7 @@ export default async function DashboardHome() {
       <LazyInstallPrompt />
       {recent.length === 1 && (
         <section className="first-order-card flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-[#2563EB]/25 bg-[#2563EB]/[0.05] p-5" data-testid="first-order">
-          <span aria-hidden className="text-3xl">🎉</span>
+          <Icon as={Sparkles} className="text-[32px] text-[#2563EB]" />
           <div className="min-w-0 flex-1">
             <h2 className="t-title" style={{ lineHeight: 1.5 }}>{t("firstOrderTitle")}</h2>
             <p className="mt-1 text-sm text-ink-70">{t("firstOrderBody", { name: recent[0]!.customerName })}</p>
