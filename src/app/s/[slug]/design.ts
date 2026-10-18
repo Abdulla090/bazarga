@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { composeDesign, decodeComposition, type DesignSpec } from "@/lib/theme-studio/designs";
 import { parseTheme } from "@/lib/theme-studio/resolve";
 import { FLAGSHIPS, isFlagshipId } from "@/lib/theme-studio/themes";
+import { decodePreviewTheme } from "@/lib/theme-studio/preview-token";
 import type { StoreTheme } from "@/lib/theme-studio/schema";
 import { hasFeature, normalizePlan } from "@/lib/plans";
 import { PREVIEW_HEADER, PREVIEW_THEME_HEADER } from "@/lib/preview";
@@ -15,6 +16,7 @@ import { PREVIEW_HEADER, PREVIEW_THEME_HEADER } from "@/lib/preview";
  * Published: the store's published theme, composed for its plan (premium designs and variants need Max).
  * Theme Studio preview (Sec-Fetch-Dest: iframe, or the proxy-set preview header for /s/<slug>?pv=1):
  *   - ?pvt=<flagship id> → that flagship, complete (thumbnails in the theme gallery);
+ *   - ?pvt=t.<token> → an AI Website Designer option (colours, type, composition; never text);
  *   - else the editor's unsaved composition in the cookie `bz_pv_<slug>` (v2 encoding or a bare design id).
  * Premium designs preview for everyone in the editor; the cookie only picks a presentation of public data.
  */
@@ -26,6 +28,9 @@ export const resolveStoreDesign = cache(async (slug: string, themePublished: unk
       const theme = FLAGSHIPS[pvt].theme;
       return { spec: composeDesign(theme), previewTheme: theme };
     }
+    // AI Website Designer option thumbnails: a whole text-free theme in the token (re-validated).
+    const aiTheme = decodePreviewTheme(pvt);
+    if (aiTheme) return { spec: composeDesign(aiTheme), previewTheme: aiTheme };
     const pv = decodeComposition((await cookies()).get(`bz_pv_${slug}`)?.value);
     if (pv) return { spec: pv, previewTheme: null };
   }

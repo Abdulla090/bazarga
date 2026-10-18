@@ -1,16 +1,16 @@
 "use server";
 import { flagOn } from "../services/platform-settings";
 import { db } from "../db";
-import { eq } from "drizzle-orm";
-import { stores } from "../db/schema";
+import { and, asc, count, desc, eq, isNull, sql } from "drizzle-orm";
+import { categories, productImages, products } from "../db/schema";
 import { requireOwner, requireStore } from "../auth/session";
 import { assertFeature } from "../plan-gate";
 import { AppError } from "../errors";
 import { enforceRateLimit } from "../auth/rate-limit";
 import { textProviderFor } from "../ai/access";
 import { generateProductCopy, productCopyInputSchema, type ProductCopy } from "../ai/product-copy";
-import { generateSiteDesign, siteDesignInputSchema } from "../ai/site-design";
-import type { StoreTheme } from "@/lib/theme-studio/schema";
+import { composeDesigns, composeInputSchema, type CatalogContext, type DesignOption } from "../ai/design-composer";
+import { pickText, type Locale } from "@/lib/i18n";
 import { consumeAiCredit, refundAiCredit } from "../services/ai-quota";
 import { toActionState, type ActionState } from "./util";
 
@@ -42,30 +42,54 @@ export async function writeProductCopyAction(input: { lang: string; hint: string
   }
 }
 
-export type SiteDesignResult = ActionState & { theme?: StoreTheme; remaining?: number };
+export type ComposeDesignsResult = ActionState & { options?: DesignOption[]; remaining?: number };
+
+/** The store's real catalogue, summarised for the composer (names in the store language, capped samples). */
+async function catalogContext(storeId: string, lang: Locale, hasCover: boolean): Promise<CatalogContext> {
+  const live = and(eq(products.storeId, storeId), eq(products.isActive, true), isNull(products.hiddenByAdminAt));
+  const [cats, rows, [total]] = await Promise.all([
+    db().select({ name: categories.name }).from(categories).where(eq(categories.storeId, storeId)).orderBy(asc(categories.sort)).limit(12),
+    db()
+      .select({
+        name: products.name, price: products.price, compareAt: products.compareAtPrice,
+        hasImage: sql<boolean>`exists (select 1 from ${productImages} where ${productImages.productId} = ${products.id})`,
+      })
+      .from(products).where(live).orderBy(asc(products.sort), desc(products.createdAt)).limit(24),
+    db().select({ n: count() }).from(products).where(live),
+  ]);
+  const clip = (t: string) => t.replace(/\s+/g, " ").trim().slice(0, 60);
+  return {
+    categories: cats.map((c) => clip(pickText(c.name, lang))).filter(Boolean),
+    products: rows.map((r) => ({ title: clip(pickText(r.name, lang)), price: r.price, onSale: r.compareAt != null && r.compareAt > r.price, hasImage: !!r.hasImage })).filter((p) => p.title),
+    productCount: Number(total?.n ?? 0),
+    hasCover,
+  };
+}
 
 /**
- * SF10 AI Website Designer: a brand brief (+ optional vibe) → a Theme Studio *draft* (design, palette, fonts, header
- * line, hero tagline in the store language). Owner only, Max only (server gate), monthly credits
- * (AI_MONTHLY_LIMIT.aiDesigner) and 4 calls/minute + 20/hour per store. A failed provider call gives the credit back.
- * Publishing stays a separate, explicit step (publishThemeAction).
+ * SF10 AI Website Designer v2: a brand brief (+ optional vibe) + the store's real catalogue → THREE complete designs
+ * (base, every section variant, section order, type pair, contrast-checked palette, copy in the store language), each
+ * with a live preview token. Owner only, Max only (server gate), aiDesigner admin flag, 1 credit per generation of
+ * three (AI_MONTHLY_LIMIT.aiDesigner), 4 calls/minute + 20/hour per store; a failed provider call gives the credit
+ * back. Nothing is saved here: the seller picks an option into the draft (the normal autosave) and publishes or
+ * discards it in Theme Studio (publishThemeAction keeps the premium gate).
  */
-export async function designStoreWithAiAction(input: { brief: string; vibe?: string | null }): Promise<SiteDesignResult> {
+export async function composeStoreDesignsAction(input: { brief: string; vibe?: string | null }): Promise<ComposeDesignsResult> {
   try {
     const { store, user } = await requireOwner();
     assertFeature(store, "aiDesigner");
     if (!(await flagOn(db(), "aiDesigner"))) throw new AppError("UNAVAILABLE", "ai_disabled");
     const provider = textProviderFor(user.email);
     if (!provider) throw new AppError("UNAVAILABLE", "ai_disabled");
-    const parsed = siteDesignInputSchema.parse({ brief: input.brief, vibe: input.vibe || null });
+    const parsed = composeInputSchema.parse({ brief: input.brief, vibe: input.vibe || null });
     await enforceRateLimit(db(), `ai:design:${store.id}`, 4, 60);
     await enforceRateLimit(db(), `ai:design:h:${store.id}`, 20, 3600);
+    const lang = (["ku", "kmr", "ar", "en"] as const).find((l) => l === store.defaultLocale) ?? "ku";
+    const catalog = await catalogContext(store.id, lang, !!store.coverImageUrl);
     const usage = await consumeAiCredit(db(), store.id, "aiDesigner");
     try {
-      const lang = (["ku", "kmr", "ar", "en"] as const).find((l) => l === store.defaultLocale) ?? "ku";
-      const theme = await generateSiteDesign(provider, { ...parsed, lang, storeName: store.name || "Shop" });
-      await db().update(stores).set({ themeDraft: theme }).where(eq(stores.id, store.id));
-      return { ok: true, theme, remaining: usage.remaining };
+      const options = await composeDesigns(provider, { ...parsed, lang, storeName: store.name || "Shop", catalog });
+      return { ok: true, options, remaining: usage.remaining };
     } catch (e) {
       await refundAiCredit(db(), store.id, "aiDesigner");
       throw e;

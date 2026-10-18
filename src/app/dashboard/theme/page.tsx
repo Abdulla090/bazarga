@@ -48,6 +48,7 @@ export default async function ThemePage() {
           vibes: Object.fromEntries(vibes.map((v) => [v, ta(`vibes.${v}`)])), generate: ta("generate"), generating: ta("generating"),
           again: ta("again"), left: ta.raw("left") as string, ready: ta("ready"), discard: ta("discard"), lockedNote: ta("lockedNote"),
           upgrade: ta("upgrade"), connect: ta("connect"), maxBadge: ta("maxBadge"),
+          options: ta("options"), optionsNote: ta("optionsNote"), use: ta("use"), picked: ta("picked"), optionName: ta.raw("optionName") as string,
           errors: Object.fromEntries(errKeys.map((k) => [k, te.has(k) ? te(k) : te("generic")])),
         },
       }}

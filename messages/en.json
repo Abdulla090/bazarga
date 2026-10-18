@@ -2222,7 +2222,7 @@
   },
   "aiDesigner": {
     "title": "AI Website Designer",
-    "intro": "Describe your brand in a few words. AI picks a design, colours, fonts and writes your headline and tagline. You preview it first.",
+    "intro": "Describe your brand in a few words. AI reads your products and composes three complete designs (layout, sections, fonts, colours and your headline and tagline). Pick one to preview it, then publish or discard.",
     "brief": "Your brand",
     "briefPh": "e.g. handmade perfumes from Erbil, elegant and warm",
     "vibe": "Vibe (optional)",
@@ -2234,15 +2234,20 @@
       "natural": "Natural",
       "classic": "Classic"
     },
-    "generate": "Design my store",
+    "generate": "Design 3 options",
     "generating": "Designing…",
-    "again": "Try another design",
-    "left": "{count} AI designs left this month",
-    "ready": "Your AI draft is in the preview. Publish to go live, or discard it to get your previous theme back.",
+    "again": "Design 3 new options",
+    "left": "{count} AI credits left this month",
+    "ready": "Your AI pick is in the preview. Publish to go live, or discard it to get your previous theme back.",
     "discard": "Discard AI draft",
     "lockedNote": "AI Website Designer is part of the Max plan.",
     "upgrade": "Upgrade to Max",
     "connect": "Connect an AI key (GEMINI_API_KEY or OPENAI_API_KEY) to switch this on for sellers.",
-    "maxBadge": "Max"
+    "maxBadge": "Max",
+    "options": "Pick a design",
+    "optionsNote": "1 credit = 3 designs",
+    "use": "Use this",
+    "picked": "In preview",
+    "optionName": "{name}, AI mix"
   }
 }
