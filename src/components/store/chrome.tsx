@@ -8,6 +8,7 @@ import { FoundingBadge } from "@/components/FoundingBadge";
 import { isFoundingNumber } from "@/lib/founding";
 import { Icon, Search } from "@/components/ui/icons";
 import { waLink } from "@/lib/whatsapp";
+import { smallRenditionUrl } from "@/lib/responsive-image";
 import type { Locale } from "@/lib/i18n";
 import type { DesignSpec } from "@/lib/theme-studio/designs";
 
@@ -15,8 +16,9 @@ type ChromeStore = { slug: string; name: string; logoUrl: string | null; instagr
 
 function Mark({ store, size = "h-7 w-7" }: { store: ChromeStore; size?: string }) {
   return store.logoUrl ? (
+    // Smallest rendition + low priority: never preloaded ahead of the hero/product photo (the LCP), never 1024 px.
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={store.logoUrl} alt="" className={`store-mark ${size} shrink-0 rounded-full object-cover`} />
+    <img src={smallRenditionUrl(store.logoUrl)} alt="" width={40} height={40} decoding="async" fetchPriority="low" className={`store-mark ${size} shrink-0 rounded-full object-cover`} />
   ) : (
     <span className={`store-mark flex ${size} shrink-0 items-center justify-center rounded-full bg-st-fg text-xs font-medium text-st-bg`}>{store.name.slice(0, 1)}</span>
   );
