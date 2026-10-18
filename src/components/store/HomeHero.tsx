@@ -304,7 +304,7 @@ export function HeroPulse({ name, tagline, cover, shopNow }: HeroProps) {
         <div className="pulse-track flex w-max gap-8 whitespace-nowrap text-lg font-bold md:text-2xl">
           {Array.from({ length: 8 }, (_, i) => (
             <span key={i} className="flex items-center gap-8">
-              {words}
+              <span data-hero-tagline>{words}</span>
               <TickerStar className="h-4 w-4 shrink-0" />
             </span>
           ))}

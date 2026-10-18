@@ -120,4 +120,14 @@ describe("AI Website Designer (SF10)", () => {
     const theme = readFileSync("src/server/actions/theme.ts", "utf8");
     expect(theme).toContain("theme.copy?.tagline");
   });
+
+  it("every hero (incl. the Pulse ticker) marks its tagline so the preview can show the AI draft", () => {
+    const hero = readFileSync("src/components/store/HomeHero.tsx", "utf8");
+    const heroes = hero.match(/export function Hero\w+/g) ?? [];
+    expect(heroes.length).toBeGreaterThan(5);
+    for (const name of heroes) {
+      const body = hero.slice(hero.indexOf(name), hero.indexOf("\nexport function", hero.indexOf(name) + 10) >>> 0 || undefined);
+      expect(body, name).toContain("data-hero-tagline");
+    }
+  });
 });
