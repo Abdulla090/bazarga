@@ -16,6 +16,7 @@ import { PaymentBadge, StatusBadge } from "@/components/dashboard/Badges";
 import { StatusActions } from "./StatusActions";
 import { ArrowBack, Icon, Printer } from "@/components/ui/icons";
 import { CopyButton } from "@/components/CopyButton";
+import { waTemplateLink, WA_TEMPLATE_KINDS } from "@/lib/wa-templates";
 import { trackingPath } from "@/lib/order-tracking";
 import { env } from "@/server/env";
 import { isPhoneBlocked } from "@/server/services/blocklist";
@@ -126,6 +127,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               const href = quickReplyLink(k, { storeName: store.name, orderNumber: order.number, total: order.total, customerPhone: order.customerPhone }, locale);
               const label = { confirmed: t("qrConfirmed"), onTheWay: t("qrOnTheWay"), needLandmark: t("qrNeedLandmark") }[k];
               return href ? <a key={k} className="btn-ghost btn-sm" href={href} target="_blank" rel="noopener noreferrer" data-testid={`quick-reply-${k}`}>{label}</a> : null;
+            })}
+          </div>
+        </section>
+      )}
+      {order.status !== "cancelled" && order.customerPhone.replace(/\D/g, "") && (
+        <section className="grid gap-3 border-t border-line pt-6" aria-label={t("waTemplates.title")} data-testid="wa-templates">
+          <h2 className="text-sm font-semibold">{t("waTemplates.title")}</h2>
+          <div className="flex flex-wrap gap-2">
+            {WA_TEMPLATE_KINDS.map((k) => {
+              const href = waTemplateLink(k, { storeName: store.name, orderNumber: order.number, total: order.total, customerPhone: order.customerPhone, trackingNumber: order.trackingNumber, trackUrl }, locale);
+              return href ? <a key={k} className="btn-ghost btn-sm min-h-11" href={href} target="_blank" rel="noopener noreferrer" data-testid={`wa-template-${k}`}>{t(`waTemplates.${k}`)}</a> : null;
             })}
           </div>
         </section>

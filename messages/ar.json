@@ -519,7 +519,13 @@
     "slipHint": "اختر حجم الورق A6 أو A5 في نافذة الطباعة.",
     "emptyHelp": "شارك رابط متجرك لتحصل على أول طلب.",
     "emptyCta": "مشاركة المتجر",
-    "fromSource": "من {source}"
+    "fromSource": "من {source}",
+    "waTemplates": {
+      "title": "رسائل واتساب",
+      "confirmed": "تأكيد الطلب",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم"
+    }
   },
   "customers": {
     "title": "الزبائن",
