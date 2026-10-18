@@ -2223,7 +2223,7 @@
   },
   "aiDesigner": {
     "title": "Dîzaynerê malperê bi AI",
-    "intro": "Bi çend peyvan marqeya xwe rave bike. AI sêwiran, reng û fontan hildibijêre û sernivîs û dirûşma te dinivîse. Pêşî tu pêşdîtinê dibînî.",
+    "intro": "Bi çend peyvan marqeya xwe rave bike. AI berhemên te dixwîne û sê sêwiranên temam amade dike (rêzkirin, beş, font, reng û sernivîs û dirûşma te). Yekê hilbijêre da ku pêşdîtinê bibînî, paşê biweşîne an betal bike.",
     "brief": "Marqeya te",
     "briefPh": "mînak: bîhnên destçêkirî ji Hewlêrê, xweşik û germ",
     "vibe": "Hest û şêwaz (bijarte)",
@@ -2235,15 +2235,20 @@
       "natural": "Xwezayî",
       "classic": "Klasîk"
     },
-    "generate": "Firoşgeha min sêwirîne",
+    "generate": "3 sêwiranan amade bike",
     "generating": "Tê sêwirandin…",
-    "again": "Sêwiranek din biceribîne",
-    "left": "{count} sêwiranên AI ji bo vê mehê mane",
-    "ready": "Pêşnivîsa AI di pêşdîtinê de ye. Biweşîne da ku zindî be, an jê betal bike da ku rûkara te ya berê vegere.",
+    "again": "3 sêwiranên nû amade bike",
+    "left": "{count} krediyên AI ji bo vê mehê mane",
+    "ready": "Hilbijartina AI di pêşdîtinê de ye. Biweşîne da ku zindî be, an betal bike da ku rûkara te ya berê vegere.",
     "discard": "Pêşnivîsa AI betal bike",
     "lockedNote": "Dîzaynerê malperê bi AI beşek ji plana Max e.",
     "upgrade": "Bilind bike bo Max",
     "connect": "Mifteyek AI (GEMINI_API_KEY an OPENAI_API_KEY) girê bide da ku ji bo firoşkaran çalak bibe.",
-    "maxBadge": "Max"
+    "maxBadge": "Max",
+    "options": "Sêwiranekê hilbijêre",
+    "optionsNote": "1 kredî = 3 sêwiran",
+    "use": "Vê bi kar bîne",
+    "picked": "Di pêşdîtinê de",
+    "optionName": "{name}, tevliheviya AI"
   }
 }

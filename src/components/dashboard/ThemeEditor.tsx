@@ -143,6 +143,9 @@ export function ThemeEditor({ slug, presets, flagships, initial, published, labe
             remaining={ai.remaining}
             labels={ai.labels}
             hasDraft={!!aiBase}
+            slug={slug}
+            names={Object.fromEntries(Object.entries(v2.flagship).map(([k, x]) => [k, x.name]))}
+            vopt={v2.vopt}
             onDesign={(t) => { setAiBase((b) => b ?? theme); commit(t); }}
             onDiscard={() => { if (aiBase) commit(aiBase); setAiBase(null); }}
           />
@@ -365,6 +368,7 @@ export function ThemeEditor({ slug, presets, flagships, initial, published, labe
             </button>
           ))}
         </div>
+        <div id="ai-options-slot" className="empty:hidden" data-testid="ai-options-slot" />
         <div className="flex min-h-0 flex-1 justify-center overflow-hidden p-0 md:p-4">
           <iframe
             ref={frame}

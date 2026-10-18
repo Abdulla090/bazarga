@@ -106,17 +106,19 @@ describe("AI Website Designer (SF10)", () => {
     expect((await getAiUsage(database, store.id, "aiDescriptions", now)).used).toBe(0);
   });
 
-  it("server action: owner + Max gate, rate limit, credits, refund; publish copies the tagline", () => {
+  it("server action: owner + Max gate, admin flag, rate limit, 1 credit per 3 options, refund; nothing saved or published; publish copies the tagline", () => {
     const src = readFileSync("src/server/actions/ai.ts", "utf8");
-    const fn = src.slice(src.indexOf("export async function designStoreWithAiAction"));
+    const fn = src.slice(src.indexOf("export async function composeStoreDesignsAction"));
     expect(fn).toContain("requireOwner()");
     expect(fn).toContain('assertFeature(store, "aiDesigner")');
     expect(fn).toContain('flagOn(db(), "aiDesigner")');
     expect(fn).toMatch(/enforceRateLimit\(db\(\), `ai:design:/);
+    expect(fn.match(/consumeAiCredit\(/g)?.length).toBe(1);
     expect(fn).toContain('consumeAiCredit(db(), store.id, "aiDesigner")');
     expect(fn).toContain('refundAiCredit(db(), store.id, "aiDesigner")');
-    expect(fn).toContain("themeDraft: theme");
+    expect(fn).toContain("catalogContext(store.id");
     expect(fn).not.toContain("themePublished");
+    expect(fn).not.toContain("themeDraft");
     const theme = readFileSync("src/server/actions/theme.ts", "utf8");
     expect(theme).toContain("theme.copy?.tagline");
   });
