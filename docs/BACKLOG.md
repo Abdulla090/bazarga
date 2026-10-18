@@ -8,10 +8,10 @@ Hourly loop: do NOT take these items; a dedicated subagent ships them easiest fi
 - [x] SF4. Team members (Pro 2 / Business 5 / Max 10): store_members migration, owner/staff roles, email/copy-link invites, accept, remove, permission checks, seat limits
 - [x] SF5. AI product descriptions (Business+): title/description/tags in store language, env-gated provider, monthly quota + rate limit
 - [x] SF6. Premium templates / exclusive designs (Max): 2-3 premium Theme Studio presets with upgrade preview
-- [ ] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md
-- [ ] SF8. Sign in with WhatsApp (phone OTP): env-gated OtpProvider + mock provider
-- [ ] SF9. Product Studio (photo cleanup, quota 10/100/100): env-gated provider + local fallback, product_studio_usage
-- [ ] SF10. AI Website Designer (Max): brand brief -> Theme Studio draft, preview, publish
+- [ ] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md (owned by subagent)
+- [ ] SF8. Sign in with WhatsApp (phone OTP): env-gated OtpProvider + mock provider (owned by subagent)
+- [ ] SF9. Product Studio (photo cleanup, quota 10/100/100): env-gated provider + local fallback, product_studio_usage (owned by subagent)
+- [ ] SF10. AI Website Designer (Max): brand brief -> Theme Studio draft, preview, publish (owned by subagent)
 Out of scope: online payments (src/server/payments/**, migration 0014, Rasedi env).
 
 ## SALE-READY (Abdulla Oct 18 — top priority)
