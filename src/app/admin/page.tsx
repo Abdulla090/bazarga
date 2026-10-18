@@ -5,6 +5,8 @@ import { activateUpgradeAction, rejectUpgradeAction } from "@/server/actions/upg
 import { createPayoutAction, markPayoutPaidAction, reviewPayoutProfileAction } from "@/server/actions/gateway-payments";
 import { adminListPayments, adminListPayoutProfiles, adminListPayouts, sellerBalance } from "@/server/payments/gateway/service";
 import { gateway } from "@/server/payments/gateway/registry";
+import { desc } from "drizzle-orm";
+import { auditLog } from "@/server/db/schema";
 import { getPlan, isPaidPlan, usd } from "@/lib/plans";
 
 export const metadata = { title: "Admin", robots: { index: false } };
@@ -14,6 +16,7 @@ export default async function AdminPage() {
   await requireAdmin();
   const rows = await listRequests(db(), "all");
   const [pays, outs, profiles] = await Promise.all([adminListPayments(db(), 100), adminListPayouts(db(), 100), adminListPayoutProfiles(db())]);
+  const audit = await db().select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(100);
   const balances = new Map(await Promise.all(profiles.map(async (p) => [p.storeId, await sellerBalance(db(), p.storeId)] as const)));
   const day = (d: Date | null) => (d ? d.toISOString().slice(0, 16).replace("T", " ") : "—");
   const n = (v: number) => v.toLocaleString("en-US");
@@ -99,6 +102,17 @@ export default async function AdminPage() {
                 <button className="min-h-11 rounded-full bg-ink px-5 text-sm text-white">Mark paid</button>
               </form>
             )}
+          </li>
+        ))}
+      </ul>
+
+      <h2 className="mt-14 text-2xl font-light tracking-tight">Audit log</h2>
+      <ul className="mt-4 divide-y divide-line border-y border-line">
+        {audit.length === 0 && <li className="py-6 text-sm text-ink-70">No settings changes recorded yet.</li>}
+        {audit.map((a) => (
+          <li key={a.id} className="py-3 text-sm">
+            <p className="font-medium">{a.action}{a.detail ? <span className="font-mono text-ink-70"> · {a.detail}</span> : null}</p>
+            <p className="text-ink-70">store {a.storeId.slice(0, 8)} · {day(a.createdAt)}{a.ip ? ` · ${a.ip}` : ""}</p>
           </li>
         ))}
       </ul>
