@@ -46,7 +46,7 @@ export function webhookPayload(url: string, event: { level: string; msg: string 
   })();
   const err = (event.err as { message?: string } | undefined)?.message;
   const where = [event.route, event.path].find((v) => typeof v === "string");
-  const summary = `Bazarga ${event.level}: ${event.msg}${err ? ` — ${err}` : ""}${where ? ` (${String(where)})` : ""}${event.digest ? ` [${String(event.digest)}]` : ""}`.slice(0, 1800);
+  const summary = `Reelcart ${event.level}: ${event.msg}${err ? ` — ${err}` : ""}${where ? ` (${String(where)})` : ""}${event.digest ? ` [${String(event.digest)}]` : ""}`.slice(0, 1800);
   if (/(^|\.)discord(app)?\.com$/.test(host)) return { content: summary };
   if (host === "hooks.slack.com") return { text: summary };
   return event;

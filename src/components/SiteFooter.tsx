@@ -20,7 +20,7 @@ export async function SiteFooter() {
             <Link key={d} href={LEGAL_PATH[d]} className="min-h-11 content-center hover:text-ink">{ui.nav[d]}</Link>
           ))}
         </nav>
-        <p>{t("madeIn")} · © {new Date().getFullYear()} Bazarga</p>
+        <p>{t("madeIn")} · © {new Date().getFullYear()} Reelcart</p>
       </div>
     </footer>
   );

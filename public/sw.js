@@ -1,5 +1,5 @@
 /*
- * Bazarga service worker — hand-written, no Workbox.
+ * Reelcart service worker — hand-written, no Workbox.
  *   precache:                /offline.html + its font and icon
  *   stale-while-revalidate:  /_next/static/* (hashed, immutable) and product image renditions (/api/files/*)
  *   network-first:           HTML navigations, falling back to the cached page, then the Kurdish offline page

@@ -1,7 +1,7 @@
 /**
  * Per-product share images (docs/SOCIAL-FIRST.md S3), drawn client-side on a <canvas>: 9:16 story (1080×1920) and
  * 1:1 post (1080×1080) with the product photo, name, price in IQD, store name, a QR code to the product link
- * (`?src=qr`) and a small Bazarga mark. No server rendering, no paid or heavy deps: the QR path comes precomputed
+ * (`?src=qr`) and a small Reelcart mark. No server rendering, no paid or heavy deps: the QR path comes precomputed
  * from the server (uqr, MIT) and is filled with Path2D.
  *
  * Kurdish / Arabic: text is drawn with `ctx.direction = "rtl"` so the browser's shaper joins letters and orders
@@ -130,7 +130,7 @@ function drawQr(ctx: CanvasRenderingContext2D, qr: ShareImageInput["qr"], x: num
   ctx.restore();
 }
 
-/** Small Bazarga mark: blue rounded tile with a "b" and the word, Latin, always LTR. */
+/** Small Reelcart mark: blue rounded tile with an "r" and the word, Latin, always LTR. */
 function drawMark(ctx: CanvasRenderingContext2D, cx: number, y: number, size: number, font: string, made: string, dir: "rtl" | "ltr", color = INK50) {
   ctx.save();
   ctx.textBaseline = "middle";
@@ -139,11 +139,11 @@ function drawMark(ctx: CanvasRenderingContext2D, cx: number, y: number, size: nu
   const madeW = ctx.measureText(made).width;
   ctx.direction = "ltr";
   ctx.font = `700 ${size}px ${font}`;
-  const wordW = ctx.measureText("Bazarga").width;
+  const wordW = ctx.measureText("Reelcart").width;
   const tile = size * 1.25;
   const gap = size * 0.4;
   const total = madeW + gap + tile + gap * 0.6 + wordW;
-  // Reading order: "Made with [b] Bazarga" (LTR) / "[b] Bazarga  دروستکراوە بە" (RTL, phrase on the right).
+  // Reading order: "Made with [r] Reelcart" (LTR) / "[r] Reelcart  دروستکراوە بە" (RTL, phrase on the right).
   let x = cx - total / 2;
   const drawBrand = (bx: number) => {
     ctx.fillStyle = BLUE;
@@ -153,11 +153,11 @@ function drawMark(ctx: CanvasRenderingContext2D, cx: number, y: number, size: nu
     ctx.font = `800 ${size * 0.95}px ${font}`;
     ctx.textAlign = "center";
     ctx.direction = "ltr";
-    ctx.fillText("b", bx + tile / 2, y + size * 0.04);
+    ctx.fillText("r", bx + tile / 2, y + size * 0.04);
     ctx.fillStyle = color;
     ctx.font = `700 ${size}px ${font}`;
     ctx.textAlign = "left";
-    ctx.fillText("Bazarga", bx + tile + gap * 0.6, y);
+    ctx.fillText("Reelcart", bx + tile + gap * 0.6, y);
   };
   ctx.fillStyle = color;
   if (dir === "ltr") {

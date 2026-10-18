@@ -1,15 +1,15 @@
 /** showKu="sm": the Kurdish word only from the sm breakpoint (keeps the phone header to one tight row). */
 type Props = { className?: string; showKu?: boolean | "sm"; tone?: "ink" | "paper" };
 
-/** "BAZARGA" wordmark + gold scalloped shop awning, paired with the Kurdish بازارگە. */
+/** "REELCART" wordmark + gold scalloped shop awning, paired with the Kurdish بازارگە. */
 export function Logo({ className = "", showKu = true, tone = "ink" }: Props) {
   const color = tone === "ink" ? "text-ink" : "text-paper";
   return (
-    <span className={`inline-flex items-end gap-2 ${color} ${className}`} aria-label="Bazarga · بازارگە">
+    <span className={`inline-flex items-end gap-2 ${color} ${className}`} aria-label="Reelcart · بازارگە">
       <span className="relative inline-flex flex-col items-start" dir="ltr">
         <Awning className="mb-0.5 h-3.5 w-9" />
         <span className="font-latin text-xl font-extrabold leading-none tracking-wide">
-          BAZARGA
+          REELCART
         </span>
       </span>
       {showKu && <span className={`pb-px text-sm font-bold opacity-80${showKu === "sm" ? " hidden sm:inline" : ""}`} lang="ckb">بازارگە</span>}

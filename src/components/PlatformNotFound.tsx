@@ -11,7 +11,7 @@ export async function PlatformNotFound({ kind = "page" }: { kind?: "page" | "sto
     <div className="flex min-h-dvh flex-col bg-paper">
       <header className="border-b border-line">
         <div className="container-page flex h-16 items-center">
-          <Link href="/" aria-label="Bazarga" className="inline-flex min-h-11 items-center"><Logo /></Link>
+          <Link href="/" aria-label="Reelcart" className="inline-flex min-h-11 items-center"><Logo /></Link>
         </div>
       </header>
       <main className="flex flex-1 items-center">

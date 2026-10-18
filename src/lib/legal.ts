@@ -19,16 +19,16 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
   terms: {
     en: {
       title: "Terms of Service",
-      description: "The rules for using Bazarga to run an online store.",
-      intro: "Bazarga is an online store builder operated by Kurdistan AI in Erbil, Kurdistan Region of Iraq. These terms apply to everyone who creates a store (sellers) and everyone who shops in one (shoppers). By using Bazarga you accept them.",
+      description: "The rules for using Reelcart to run an online store.",
+      intro: "Reelcart is an online store builder operated by Kurdistan AI in Erbil, Kurdistan Region of Iraq. These terms apply to everyone who creates a store (sellers) and everyone who shops in one (shoppers). By using Reelcart you accept them.",
       sections: [
         { h: "Your account", p: ["You must be at least 18, or the legal age where you live, to open a store. Keep your password private; you are responsible for what happens in your account.", "Give us a real email address so we can reach you about your store."] },
         { h: "Your store and your sales", p: ["You own your store, your products and your customers. Each sale is between you and your shopper: you set prices, deliver orders, collect cash on delivery and handle returns under your own return policy.", "You are responsible for following the laws that apply to your business, including taxes, consumer rules and product safety."] },
         { h: "What you may not sell or do", p: ["No illegal, stolen or counterfeit goods, weapons, drugs, adult content, or anything that infringes someone else's rights. No fake orders, spam, scraping, or attempts to break or overload the service.", "We may hide a product or suspend a store that breaks these rules, and we will tell you why."] },
         { h: "Plans and payments", p: ["The Free plan costs nothing. Paid plans (Pro, Business and Max) are month to month or yearly, shown on our pricing page, and you can cancel any time; your store and products stay as they are on the Free plan.", "Online payment methods, when available, are provided by licensed payment companies under their own terms."] },
         { h: "Your content", p: ["You keep the rights to the photos and text you upload. You let us host, resize and show them so your store works, including in previews and share images you create."] },
-        { h: "Availability and changes", p: ["We work hard to keep Bazarga online and your data safe, but the service is provided as is, without guarantees of uninterrupted operation. We may improve or change features; we will announce important changes to these terms before they apply."] },
-        { h: "Liability", p: ["To the extent the law allows, Bazarga is not liable for lost profits or indirect losses, and our total liability for a claim is limited to what you paid us in the 3 months before it."] },
+        { h: "Availability and changes", p: ["We work hard to keep Reelcart online and your data safe, but the service is provided as is, without guarantees of uninterrupted operation. We may improve or change features; we will announce important changes to these terms before they apply."] },
+        { h: "Liability", p: ["To the extent the law allows, Reelcart is not liable for lost profits or indirect losses, and our total liability for a claim is limited to what you paid us in the 3 months before it."] },
         { h: "Ending", p: ["You can close your store at any time. We may close accounts that seriously or repeatedly break these terms. These terms are governed by the laws applicable in the Kurdistan Region of Iraq, and disputes go to the courts of Erbil."] },
       ],
     },
@@ -64,16 +64,16 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
     },
     kmr: {
       title: "Mercên Karûbarê",
-      description: "Rêzikên bikaranîna Bazarga ji bo birêvebirina firoşgeheke online.",
-      intro: "Bazarga avakerê firoşgehên online ye û ji aliyê Kurdistan AI ve li Hewlêrê, Herêma Kurdistanê ya Iraqê tê birêvebirin. Ev merc ji bo hemû kesên ku firoşgehê ava dikin (firoşkar) û kesên ku tê de dikirin (kirrîyar) derbas dibin. Bi bikaranîna Bazarga tu wan qebûl dikî.",
+      description: "Rêzikên bikaranîna Reelcart ji bo birêvebirina firoşgeheke online.",
+      intro: "Reelcart avakerê firoşgehên online ye û ji aliyê Kurdistan AI ve li Hewlêrê, Herêma Kurdistanê ya Iraqê tê birêvebirin. Ev merc ji bo hemû kesên ku firoşgehê ava dikin (firoşkar) û kesên ku tê de dikirin (kirrîyar) derbas dibin. Bi bikaranîna Reelcart tu wan qebûl dikî.",
       sections: [
         { h: "Hesabê te", p: ["Ji bo vekirina firoşgehê divê tu herî kêm 18 salî bî, an jî temenê qanûnî yê li cihê ku tu lê dijî. Şîfreya xwe veşartî bihêle; tu berpirsiyarê tiştên di hesabê xwe de yî.", "E-nameyeke rast bide da ku em karibin derbarê firoşgeha te de bi te re têkilî daynin."] },
         { h: "Firoşgeha te û firotinên te", p: ["Firoşgeh, berhem û kirrîyarên te yên te ne. Her firotin di navbera te û kirrîyar de ye: tu bihayan datînî, siparîşan digihînî, pereyê dema gihandinê berhev dikî û vegerandinan li gorî siyaseta xwe birê ve dibî.", "Tu berpirsiyar î ku qanûnên li ser karê xwe bişopînî, di nav de bac, mafên xerîdaran û ewlehiya berheman."] },
         { h: "Tiştên ku nabe bifiroşî an bikî", p: ["Tiştên neqanûnî, dizî an sexte, çek, madeyên hişbir, naveroka mezinan, an her tiştê ku mafên kesên din binpê dike qedexe ne. Siparîşên sexte, spam, berhevkirina daneyan a otomatîk, an hewldana xerakirin an girankirina karûbarê qedexe ne.", "Dibe ku em berhemekê veşêrin an firoşgehekê rawestînin ku van rêzikan dişkîne, û em ê sedemê ji te re bibêjin."] },
         { h: "Plan û dayîn", p: ["Plana belaş bê pere ye. Planên bi pere (Pro, Business û Max) mehane an salane ne, li ser rûpela bihayan têne nîşandan, û tu dikarî her dem betal bikî; firoşgeh û berhemên te li ser plana belaş wekî xwe dimînin.", "Rêbazên dayîna online, dema hebin, ji aliyê pargîdaniyên dayînê yên destûrdar ve li gorî mercên wan têne pêşkêşkirin."] },
         { h: "Naveroka te", p: ["Mafên wêne û nivîsên ku tu bar dikî yên te dimînin. Tu destûrê didî me ku em wan bihewînin, mezinahiya wan biguherînin û nîşan bidin da ku firoşgeha te bixebite, di nav de di pêşdîtin û wêneyên parvekirinê de."] },
-        { h: "Berdestbûn û guhertin", p: ["Em gelek hewl didin ku Bazarga online bimîne û daneyên te ewle bin, lê karûbar wekî xwe tê pêşkêşkirin, bê garantiya xebata bê navber. Dibe ku em taybetmendiyan baştir bikin an biguherînin; em ê guhertinên girîng ên van mercan berî ku derbas bibin ragihînin."] },
-        { h: "Berpirsiyarî", p: ["Heta ku qanûn destûrê dide, Bazarga ne berpirsiyarê qezenca winda an zirarên neyekser e, û berpirsiyariya me ya giştî ji bo her daxwazekê bi pereyê ku te di 3 mehên berê de daye me sînordar e."] },
+        { h: "Berdestbûn û guhertin", p: ["Em gelek hewl didin ku Reelcart online bimîne û daneyên te ewle bin, lê karûbar wekî xwe tê pêşkêşkirin, bê garantiya xebata bê navber. Dibe ku em taybetmendiyan baştir bikin an biguherînin; em ê guhertinên girîng ên van mercan berî ku derbas bibin ragihînin."] },
+        { h: "Berpirsiyarî", p: ["Heta ku qanûn destûrê dide, Reelcart ne berpirsiyarê qezenca winda an zirarên neyekser e, û berpirsiyariya me ya giştî ji bo her daxwazekê bi pereyê ku te di 3 mehên berê de daye me sînordar e."] },
         { h: "Dawîanîn", p: ["Tu dikarî her dem firoşgeha xwe bigirî. Dibe ku em hesabên ku van mercan bi giranî an dubare dişkînin bigirin. Ev merc bi qanûnên ku li Herêma Kurdistanê ya Iraqê derbas dibin ve girêdayî ne, û nakokî diçin dadgehên Hewlêrê."] },
       ],
     },
@@ -81,11 +81,11 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
   privacy: {
     en: {
       title: "Privacy Policy",
-      description: "What data Bazarga keeps, why, and the choices you have.",
+      description: "What data Reelcart keeps, why, and the choices you have.",
       intro: "We collect only what we need to run your store and deliver your orders. We do not sell personal data and we do not show ads.",
       sections: [
         { h: "Sellers", p: ["When you sign up we keep your name, email, a scrambled (hashed) password, and the store details you enter: name, link, logo, WhatsApp number, delivery cities and fees, products and photos."] },
-        { h: "Shoppers", p: ["When you order, the store receives your name, phone number, city, area, address or landmark, order notes and what you bought. This data belongs to the store you ordered from; Bazarga stores it on the store's behalf so the seller can deliver your order and you can track it.", "Your browser may remember your cart and your delivery details on your own device so the next checkout is faster. You can clear them by clearing your browser data."] },
+        { h: "Shoppers", p: ["When you order, the store receives your name, phone number, city, area, address or landmark, order notes and what you bought. This data belongs to the store you ordered from; Reelcart stores it on the store's behalf so the seller can deliver your order and you can track it.", "Your browser may remember your cart and your delivery details on your own device so the next checkout is faster. You can clear them by clearing your browser data."] },
         { h: "Visit statistics", p: ["Stores see visitor counts, product views and orders. We count visits without cookies and without storing IP addresses or device details; only daily totals are saved."] },
         { h: "Cookies", p: ["We use a few necessary cookies: your login session, your language, and a short-lived cookie that shows an order you just tracked. No advertising or third-party tracking cookies."] },
         { h: "Security", p: ["Data travels over encrypted connections and is stored with our hosting and database providers (Vercel and Supabase). Each store can only ever see its own orders and customers. To stop abuse we keep short-lived counters of requests per IP address, deleted within a day."] },
@@ -126,11 +126,11 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
     },
     kmr: {
       title: "Siyaseta Nihêniyê",
-      description: "Bazarga kîjan daneyan diparêze, çima, û bijardeyên te çi ne.",
+      description: "Reelcart kîjan daneyan diparêze, çima, û bijardeyên te çi ne.",
       intro: "Em tenê tiştên ku ji bo birêvebirina firoşgeha te û gihandina siparîşên te pêwîst in berhev dikin. Em daneyên kesane nafiroşin û reklaman nîşan nadin.",
       sections: [
         { h: "Firoşkar", p: ["Dema ku tu tomar dibî, em nav, e-name, şîfreyeke şîfrekirî (hash) û agahiyên firoşgehê yên ku tu dinivîsî diparêzin: nav, girêdan, logo, hejmara WhatsAppê, bajar û bihayên gihandinê, berhem û wêne."] },
-        { h: "Kirrîyar", p: ["Dema ku tu siparîş didî, firoşgeh nav, hejmara telefonê, bajar, herêm, navnîşan an nîşaneya cihê te, nîşeyên siparîşê û tiştên ku te kirîne werdigire. Ev dane yên wê firoşgehê ne ku te jê kirîye; Bazarga wan li ser navê firoşgehê diparêze da ku firoşkar siparîşa te bigihîne û tu bikarî wê bişopînî.", "Dibe ku geroka te sepet û agahiyên gihandinê li ser cîhaza te bi bîr bîne da ku siparîşa din zûtir be. Tu dikarî bi paqijkirina daneyên gerokê wan jê bibî."] },
+        { h: "Kirrîyar", p: ["Dema ku tu siparîş didî, firoşgeh nav, hejmara telefonê, bajar, herêm, navnîşan an nîşaneya cihê te, nîşeyên siparîşê û tiştên ku te kirîne werdigire. Ev dane yên wê firoşgehê ne ku te jê kirîye; Reelcart wan li ser navê firoşgehê diparêze da ku firoşkar siparîşa te bigihîne û tu bikarî wê bişopînî.", "Dibe ku geroka te sepet û agahiyên gihandinê li ser cîhaza te bi bîr bîne da ku siparîşa din zûtir be. Tu dikarî bi paqijkirina daneyên gerokê wan jê bibî."] },
         { h: "Statîstîkên serdanan", p: ["Firoşgeh hejmara serdanvanan, dîtinên berheman û siparîşan dibînin. Em serdanan bê cookie û bê tomarkirina navnîşanên IP an agahiyên cîhazê dijmêrin; tenê berhevokên rojane têne tomarkirin."] },
         { h: "Cookie", p: ["Em çend cookieyên pêwîst bikar tînin: rûniştina têketinê, zimanê te, û cookieyeke kurtdem ku siparîşa ku te nû şopandiye nîşan dide. Tu cookieyên reklamê an şopandina aliyê sêyem tune ne."] },
         { h: "Ewlehî", p: ["Dane bi girêdanên şîfrekirî tên veguhestin û li cem peydakerên hosting û danegeha me (Vercel û Supabase) tên hilanîn. Her firoşgeh tenê siparîş û kirrîyarên xwe dibîne. Ji bo rawestandina destdirêjiyê, em jimarkerên kurtdem ên daxwazan ji bo her navnîşana IP diparêzin, ku di nav rojekê de tên jêbirin."] },
@@ -143,8 +143,8 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
   refund: {
     en: {
       title: "Refund Policy",
-      description: "Refunds for Bazarga plans, and how refunds work for orders placed in a store.",
-      intro: "There are two kinds of payments on Bazarga: what sellers pay us for a plan, and what shoppers pay a store for an order. They have different refund rules.",
+      description: "Refunds for Reelcart plans, and how refunds work for orders placed in a store.",
+      intro: "There are two kinds of payments on Reelcart: what sellers pay us for a plan, and what shoppers pay a store for an order. They have different refund rules.",
       sections: [
         { h: "Plans (sellers)", p: ["The Free plan has nothing to refund. If you pay for Pro, Business or Max and are not happy, ask within 7 days of the payment and we refund it in full.", "After 7 days you can cancel any time: the plan stays active until the end of the period you paid for and is not renewed. We do not refund part of a period that has started, except where the law requires it."] },
         { h: "How to ask", p: ["Write to us from the email on your account with your store link. We answer within 3 working days and send the refund the same way you paid (FIB, ZainCash, card or cash), usually within 10 working days."] },
@@ -179,8 +179,8 @@ export const LEGAL: Record<LegalDoc, Record<Locale, LegalPage>> = {
     },
     kmr: {
       title: "Siyaseta Vegerandina Pere",
-      description: "Vegerandina pereyê planên Bazarga, û çawa vegerandin ji bo siparîşên di firoşgehan de dixebite.",
-      intro: "Li Bazarga du cure dayîn hene: tiştê ku firoşkar ji bo planê didin me, û tiştê ku kirrîyar ji bo siparîşê didin firoşgehê. Rêzikên vegerandina wan cuda ne.",
+      description: "Vegerandina pereyê planên Reelcart, û çawa vegerandin ji bo siparîşên di firoşgehan de dixebite.",
+      intro: "Li Reelcart du cure dayîn hene: tiştê ku firoşkar ji bo planê didin me, û tiştê ku kirrîyar ji bo siparîşê didin firoşgehê. Rêzikên vegerandina wan cuda ne.",
       sections: [
         { h: "Plan (firoşkar)", p: ["Di plana belaş de tiştek ji bo vegerandinê tune. Heke te ji bo Pro, Business an Max pere da û tu ne razî bî, di nav 7 rojan de ji dayînê bixwaze û em ê hemûyê vegerînin.", "Piştî 7 rojan tu dikarî her dem betal bikî: plan heta dawiya dema ku te pere daye çalak dimîne û nayê nûkirin. Em beşek ji demeke ku dest pê kiriye venagerînin, ji bilî dema ku qanûn wê dixwaze."] },
         { h: "Çawa bixwazî", p: ["Ji e-nameya hesabê xwe bi girêdana firoşgeha xwe ji me re binivîse. Em di nav 3 rojên kar de bersiv didin û pere bi heman rêbaza dayînê vedigerînin (FIB, ZainCash, kart an kaş), bi gelemperî di nav 10 rojên kar de."] },

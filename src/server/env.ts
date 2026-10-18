@@ -51,7 +51,7 @@ const schema = z.object({
   EMAIL_PROVIDER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["console", "resend", "brevo"]).optional()),
   /** One key for whichever provider is selected; RESEND_API_KEY / BREVO_API_KEY still work and win when set. */
   EMAIL_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().default("Bazarga <hello@mymarket.app>"),
+  EMAIL_FROM: z.string().default("Reelcart <hello@mymarket.app>"),
   RESEND_API_KEY: z.string().optional(),
   BREVO_API_KEY: z.string().optional(),
 
