@@ -5,12 +5,28 @@ import { themeToCssVars } from "@/lib/theme-studio/css";
 import { contrast } from "@/lib/theme-studio/contrast";
 import type { StoreTheme } from "@/lib/theme-studio/schema";
 import { AiDesigner, type AiDesignerLabels, type AiDesignerMode } from "./AiDesigner";
+import { CARD_VARIANTS, DENSITIES, FOOTER_VARIANTS, GRID_VARIANTS, HEADER_VARIANTS, HERO_VARIANTS, HOME_SECTIONS, MOTIONS, PREMIUM_VARIANTS, PRODUCT_LAYOUTS, SURFACES, TYPE_PAIRS, composeDesign, encodeComposition, usesPremium, type HomeSection } from "@/lib/theme-studio/designs";
+import { ThemeThumb } from "./ThemeThumb";
+
+export type FlagshipCard = { id: string; group: string; premium: boolean; theme: StoreTheme };
+type V2Labels = {
+  themesTab: string; layoutTab: string; themesIntro: string; layoutIntro: string; apply: string; inUse: string; morePalettes: string;
+  moveUp: string; moveDown: string; showSection: string; hideSection: string;
+  group: Record<string, string>; axis: Record<string, string>; vopt: Record<string, string>; flagship: Record<string, { name: string; desc: string }>;
+};
+const PAIR_SAMPLE: Record<string, string> = {
+  "sans-clean": "var(--font-inter), var(--font-vazirmatn)", "serif-editorial": "var(--font-fraunces), var(--font-naskh)", "luxe-serif": "var(--font-playfair), var(--font-naskh)",
+  "rounded-soft": "var(--font-nunito), var(--font-vazirmatn)", playful: "var(--font-nunito), var(--font-kufi)", "mono-bold": "var(--font-jetbrains), var(--font-plex-arabic)",
+  "tech-mono": "var(--font-grotesk), var(--font-plex-arabic)", grotesk: "var(--font-grotesk), var(--font-plex-arabic)", condensed: "var(--font-oswald), var(--font-kufi)",
+};
+const LAYOUT_AXES = [["hero", HERO_VARIANTS], ["grid", GRID_VARIANTS], ["card", CARD_VARIANTS], ["product", PRODUCT_LAYOUTS], ["footer", FOOTER_VARIANTS], ["density", DENSITIES], ["surface", SURFACES], ["motion", MOTIONS]] as const;
 
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string>; premium?: boolean };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
   undo: string; redo: string; surprise: string; saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; header: string; headerLayout: string; announce: string; announcePh: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
   premiumBadge: string; premiumNote: string; premiumCta: string;
+  v2: V2Labels;
 };
 
 const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)]!;
@@ -22,39 +38,52 @@ const setPreviewCookie = (slug: string, d: string) => { document.cookie = `bz_pv
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Theme Studio editor shell: preset gallery (left), live iframe preview (right) fed by postMessage, autosaved draft, publish. */
-export function ThemeEditor({ slug, presets, initial, published, labels, premiumLocked = false, ai }: { slug: string; presets: Preset[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels; premiumLocked?: boolean; ai?: { mode: AiDesignerMode; remaining: number; labels: AiDesignerLabels } }) {
+export function ThemeEditor({ slug, presets, flagships, initial, published, labels, premiumLocked = false, ai }: { slug: string; presets: Preset[]; flagships: FlagshipCard[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels; premiumLocked?: boolean; ai?: { mode: AiDesignerMode; remaining: number; labels: AiDesignerLabels } }) {
   const [theme, setTheme] = useState<StoreTheme>(initial);
   // AI Website Designer: the theme the seller had before the AI draft, so Discard can bring it back.
   const [aiBase, setAiBase] = useState<StoreTheme | null>(null);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
-  const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards" | "header">("presets");
+  const [tab, setTab] = useState<"themes" | "layout" | "colors" | "type" | "buttons" | "cards" | "header">("themes");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [pending, start] = useTransition();
   const [hist, setHist] = useState<{ past: StoreTheme[]; future: StoreTheme[] }>({ past: [], future: [] });
   const commit = (n: StoreTheme | ((t: StoreTheme) => StoreTheme)) => { setHist((h) => ({ past: [...h.past.slice(-49), theme], future: [] })); setTheme(typeof n === "function" ? n(theme) : n); };
   const undo = () => { const p = hist.past[hist.past.length - 1]; if (!p) return; setHist({ past: hist.past.slice(0, -1), future: [...hist.future, theme] }); setTheme(p); };
   const redo = () => { const n = hist.future[hist.future.length - 1]; if (!n) return; setHist({ past: [...hist.past, theme], future: hist.future.slice(0, -1) }); setTheme(n); };
-  const surprise = () => commit(randomTheme(presets.filter((p) => !p.premium || !premiumLocked).map((p) => p.theme)));
-  const premiumIds = new Set(presets.filter((p) => p.premium).map((p) => p.theme.design));
-  const lockedPreview = premiumLocked && premiumIds.has(theme.design);
+  // Surprise me: a random flagship with a few of its parts swapped (never a premium part on a plan without it).
+  const surprise = () => {
+    const pool = flagships.filter((f) => !f.premium || !premiumLocked);
+    if (!pool.length) return commit(randomTheme(presets.filter((p) => !p.premium || !premiumLocked).map((p) => p.theme)));
+    const base = pick(pool).theme;
+    const free = <T extends string>(axis: string, list: readonly T[]) => list.filter((v) => !premiumLocked || !isPremiumOpt(axis, v));
+    commit({ ...base, preset: "custom", layout: { ...base.layout, hero: pick(free("hero", HERO_VARIANTS.filter((h) => h !== "spotlight"))), card: pick(free("card", CARD_VARIANTS)), surface: pick(SURFACES) } });
+  };
+  const lockedPreview = premiumLocked && usesPremium(theme);
+  const spec = composeDesign(theme);
+  const composition = encodeComposition(spec);
+  const v2 = labels.v2;
+  const setLayout = (k: string, v: unknown) => commit((t) => ({ ...t, preset: "custom", layout: { ...t.layout, [k]: v } }));
+  const applyFlagship = (f: FlagshipCard) => commit({ ...f.theme, header: { ...f.theme.header, ...(theme.header.announce ? { announce: theme.header.announce } : {}) }, ...(theme.copy ? { copy: theme.copy } : {}) });
+  const isPremiumOpt = (axis: string, v: string) => ((PREMIUM_VARIANTS as Record<string, readonly string[]>)[axis] ?? []).includes(v);
   const frame = useRef<HTMLIFrameElement>(null);
   const ready = useRef(false);
   const first = useRef(true);
   // The preview iframe renders the *draft* design server-side: the editor leaves the choice in a cookie the storefront
   // honours for iframe loads only. The iframe gets its src after the cookie is set, and reloads when the design changes.
-  const designRef = useRef(theme.design);
+  // Design system v2: the cookie carries the whole composition (design + per-section variants + type pair).
+  const designRef = useRef(composition);
   useEffect(() => {
     setPreviewCookie(slug, designRef.current);
     if (frame.current && !frame.current.getAttribute("src")) frame.current.src = `/s/${slug}?pv=1`;
   }, [slug]);
   useEffect(() => {
-    if (designRef.current === theme.design) return;
-    designRef.current = theme.design;
-    setPreviewCookie(slug, theme.design);
+    if (designRef.current === composition) return;
+    designRef.current = composition;
+    setPreviewCookie(slug, composition);
     ready.current = false;
     frame.current?.contentWindow?.location.reload();
-  }, [theme.design, slug]);
+  }, [composition, slug]);
 
   const push = (t: StoreTheme) => {
     const v = themeToCssVars(t).vars;
@@ -124,9 +153,9 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
           <button type="button" onClick={surprise} data-testid="theme-surprise" className="min-h-11 flex-[1.4] rounded-full border border-line text-[13px] hover:border-ink/30">{labels.surprise}</button>
         </div>
         <div className="flex flex-wrap gap-1 px-4 pb-3" role="tablist">
-          {(["presets", "colors", "type", "buttons", "cards", "header"] as const).map((k) => (
+          {(["themes", "layout", "colors", "type", "buttons", "cards", "header"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} data-testid={`tab-${k}`} className={`min-h-11 rounded-full px-4 text-[13px] transition-colors duration-150 ${tab === k ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5"}`}>
-              {labels[k]}
+              {k === "themes" ? v2.themesTab : k === "layout" ? v2.layoutTab : labels[k]}
             </button>
           ))}
         </div>
@@ -151,6 +180,15 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
         )}
         {tab === "type" && (
           <div className="grid gap-3 px-4 pb-6" data-testid="theme-type">
+            <p className="t-label text-ink/60">{v2.axis.pair}</p>
+            <div className="grid grid-cols-3 gap-2">
+              {TYPE_PAIRS.map((k) => (
+                <button key={k} type="button" aria-pressed={theme.type.pair === k} onClick={() => commit((t) => ({ ...t, preset: "custom", type: { ...t.type, pair: k } }))} data-testid={`pair-${k}`} className={`grid min-h-16 content-center gap-0.5 rounded-xl border px-2 py-2 text-center transition-colors duration-150 ${theme.type.pair === k ? "border-blue-600 ring-1 ring-blue-600" : "border-line hover:border-ink/30"}`}>
+                  <span className="text-[20px] leading-tight" style={{ fontFamily: PAIR_SAMPLE[k], fontWeight: k === "playful" || k === "condensed" ? 800 : 500 }} aria-hidden>Aa ئا</span>
+                  <span className="text-[11px] leading-snug text-ink/70">{v2.vopt[k] ?? k}</span>
+                </button>
+              ))}
+            </div>
             <p className="t-label text-ink/60">{labels.sizeLabel}</p>
             <div className="flex gap-2">
               {(["s", "m", "l"] as const).map((k) => (
@@ -191,10 +229,10 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
           <div className="grid gap-5 px-4 pb-6" data-testid="theme-header">
             <fieldset className="grid gap-2">
               <legend className="t-label text-ink/60">{labels.headerLayout}</legend>
-              <div className="flex gap-2">
-                {(["centered", "split", "minimal"] as const).map((o) => (
-                  <button key={o} type="button" aria-pressed={theme.header.layout === o} onClick={() => commit((t) => ({ ...t, preset: "custom", header: { ...t.header, layout: o } }))} data-testid={`header-${o}`} className={`min-h-11 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${theme.header.layout === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
-                    {labels.opt[o]}
+              <div className="flex flex-wrap gap-2">
+                {HEADER_VARIANTS.map((o) => (
+                  <button key={o} type="button" aria-pressed={spec.header === o} onClick={() => commit((t) => ({ ...t, preset: "custom", header: { ...t.header, layout: o }, layout: { ...t.layout, header: o } }))} data-testid={`header-${o}`} className={`min-h-11 min-w-20 flex-1 rounded-full border px-3 text-[13px] transition-colors duration-150 ${spec.header === o ? "border-ink bg-ink text-white" : "border-line hover:border-ink/30"}`}>
+                    {labels.opt[o] ?? v2.vopt[o] ?? o}
                   </button>
                 ))}
               </div>
@@ -221,7 +259,39 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
             ))}
           </div>
         )}
-        {tab === "presets" && <ul className="grid grid-cols-2 gap-3 overflow-y-auto px-4 pb-6">
+        {tab === "themes" && (
+          <div className="grid gap-6 overflow-y-auto px-4 pb-6" data-testid="theme-gallery">
+            <p className="text-[13px] leading-relaxed text-ink/70">{v2.themesIntro}</p>
+            {Object.keys(v2.group).map((g) => {
+              const items = flagships.filter((f) => f.group === g);
+              if (!items.length) return null;
+              return (
+                <section key={g} className="grid gap-2" aria-label={v2.group[g]}>
+                  <h2 className="t-label text-ink/60">{v2.group[g]}</h2>
+                  <ul className="grid grid-cols-2 gap-3">
+                    {items.map((f) => {
+                      const sel = theme.preset === f.id;
+                      return (
+                        <li key={f.id}>
+                          <button type="button" onClick={() => applyFlagship(f)} aria-pressed={sel} data-testid={`flagship-${f.id}`} className={`group grid w-full gap-1.5 rounded-xl border p-1.5 text-start transition-colors duration-150 ${sel ? "border-blue-600 ring-1 ring-blue-600" : "border-line hover:border-ink/30"}`}>
+                            <ThemeThumb src={`/s/${slug}?pv=1&pvt=${f.id}`} title={v2.flagship[f.id]?.name ?? f.id} bg={f.theme.colors.bg} />
+                            <span className="flex items-center justify-between gap-1 px-0.5 text-[13px] font-semibold leading-snug">
+                              {v2.flagship[f.id]?.name ?? f.id}
+                              {f.premium && <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-[11px] font-semibold leading-normal text-white" data-testid={`flagship-premium-${f.id}`}>{labels.premiumBadge}</span>}
+                            </span>
+                            <span className="px-0.5 text-[12px] leading-snug text-ink/60">{v2.flagship[f.id]?.desc}</span>
+                            <span className="px-0.5 pb-0.5 text-[12px] font-medium text-blue-700">{sel ? v2.inUse : v2.apply}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              );
+            })}
+            <details className="group rounded-xl border border-line px-3 py-1" data-testid="legacy-palettes">
+              <summary className="flex min-h-11 cursor-pointer items-center text-[13px] font-medium">{v2.morePalettes}</summary>
+            <ul className="grid grid-cols-2 gap-3 pt-3">
           {presets.map((p) => {
             const sel = theme.preset === p.id;
             const r = p.vars["--t-radius-btn"];
@@ -249,7 +319,43 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
               </li>
             );
           })}
-        </ul>}
+            </ul>
+            </details>
+          </div>
+        )}
+        {tab === "layout" && (
+          <div className="grid gap-4 overflow-y-auto px-4 pb-6" data-testid="theme-layout">
+            <p className="text-[13px] leading-relaxed text-ink/70">{v2.layoutIntro}</p>
+            {LAYOUT_AXES.map(([axis, opts]) => (
+              <label key={axis} className="grid gap-1.5">
+                <span className="t-label text-ink/60">{v2.axis[axis]}</span>
+                <select value={spec[axis]} onChange={(e) => setLayout(axis, e.target.value)} data-testid={`layout-${axis}`} className="min-h-11 rounded-xl border border-line bg-transparent px-3 text-[14px] outline-none focus:border-blue-600">
+                  {opts.map((o) => (
+                    <option key={o} value={o}>{(v2.vopt[o] ?? o) + (premiumLocked && isPremiumOpt(axis, o) ? ` · ${labels.premiumBadge}` : "")}</option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            <fieldset className="grid gap-2" data-testid="layout-sections">
+              <legend className="t-label mb-1.5 text-ink/60">{v2.axis.sections}</legend>
+              <ol className="grid gap-1.5">
+                {spec.sections.map((sec, i) => (
+                  <li key={sec} className="flex min-h-11 items-center gap-1 rounded-xl border border-line ps-3 text-[14px]">
+                    <span className="me-auto">{v2.vopt[sec] ?? sec}</span>
+                    <button type="button" disabled={i === 0} onClick={() => { const a = [...spec.sections]; [a[i - 1], a[i]] = [a[i]!, a[i - 1]!]; setLayout("sections", a); }} aria-label={`${v2.moveUp}: ${v2.vopt[sec] ?? sec}`} className="h-11 w-11 rounded-full text-ink/70 hover:bg-ink/5 disabled:opacity-30">↑</button>
+                    <button type="button" disabled={i === spec.sections.length - 1} onClick={() => { const a = [...spec.sections]; [a[i + 1], a[i]] = [a[i]!, a[i + 1]!]; setLayout("sections", a); }} aria-label={`${v2.moveDown}: ${v2.vopt[sec] ?? sec}`} className="h-11 w-11 rounded-full text-ink/70 hover:bg-ink/5 disabled:opacity-30">↓</button>
+                    <button type="button" disabled={spec.sections.length <= 1} onClick={() => setLayout("sections", spec.sections.filter((x) => x !== sec))} className="min-h-11 rounded-full px-3 text-[12px] text-ink/70 hover:bg-ink/5 disabled:opacity-30" data-testid={`section-hide-${sec}`}>{v2.hideSection}</button>
+                  </li>
+                ))}
+              </ol>
+              <div className="flex flex-wrap gap-2">
+                {HOME_SECTIONS.filter((x): x is Exclude<HomeSection, "rail"> => x !== "rail" && !spec.sections.includes(x)).map((sec) => (
+                  <button key={sec} type="button" onClick={() => setLayout("sections", [...spec.sections, sec])} className="min-h-11 rounded-full border border-dashed border-line px-3 text-[13px] text-ink/70 hover:border-ink/30" data-testid={`section-show-${sec}`}>+ {v2.vopt[sec] ?? sec}</button>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+        )}
       </aside>
       <section className="flex min-h-[28rem] min-w-0 flex-1 flex-col bg-ink/[0.03]" aria-label={labels.preview}>
         <div className="flex items-center justify-center gap-1 border-b border-line py-2" role="group">

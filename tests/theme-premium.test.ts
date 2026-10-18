@@ -33,7 +33,7 @@ describe("premium designs (Max)", () => {
     expect(getPlan("max").features.find((f) => f.key === "templatesPremium")?.soon).toBeUndefined();
   });
   it("publishing is gated server-side and the storefront passes the plan", () => {
-    expect(readFileSync("src/server/actions/theme.ts", "utf8")).toMatch(/isPremiumDesign\(theme\.design\)\) assertFeature\(store, "templatesPremium"\)/);
+    expect(readFileSync("src/server/actions/theme.ts", "utf8")).toMatch(/usesPremium\(theme\)\) assertFeature\(store, "templatesPremium"\)/);
     expect(readFileSync("src/app/s/[slug]/design.ts", "utf8")).toContain('hasFeature(normalizePlan(plan), "templatesPremium")');
     for (const f of ["src/app/s/[slug]/layout.tsx", "src/app/s/[slug]/page.tsx", "src/app/s/[slug]/p/[productId]/page.tsx"]) expect(readFileSync(f, "utf8")).toMatch(/resolve(Store)?Design\(slug, store\.themePublished, store\.plan\)/);
   });

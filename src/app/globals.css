@@ -1161,3 +1161,4 @@ html:is(:lang(ckb), :lang(ar)) .storefront[data-product] [data-pdp] [data-testid
 .storefront :is(.btn-ghost, .btn-gold) { border-radius: var(--t-radius-btn, 9999px); }
 .storefront :is(.t-headline, .t-title).truncate { line-height: 1.25; }
 .storefront[data-surface="glass"] .spot-panel { background: radial-gradient(80% 80% at 50% 30%, color-mix(in srgb, var(--st-accent) 22%, var(--st-surface)), var(--st-surface)); }
+.storefront[data-type="condensed"] :is(.t-headline, .t-title).truncate { line-height: 1.5; }
