@@ -58,6 +58,10 @@ export const users = pgTable("users", {
   phone: text("phone"),
   locale: localeEnum("locale").notNull().default("ku"),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+  /** Platform role (migration 0030, src/lib/admin.ts): user | admin | owner. ADMIN_EMAILS also grants owner. */
+  role: text("role").$type<"user" | "admin" | "owner">().notNull().default("user"),
+  /** active | suspended | banned (migration 0030): suspended/banned users cannot sign in and their sessions stop working. */
+  status: text("status").$type<"active" | "suspended" | "banned">().notNull().default("active"),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
@@ -73,6 +77,8 @@ export const sessions = pgTable(
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     userAgent: text("user_agent"),
     ip: text("ip"),
+    /** Admin "view as seller" session (migration 0030): the admin's user id; such sessions are short and never slide. */
+    impersonatedBy: uuid("impersonated_by"),
     createdAt: createdAt(),
   },
   (t) => [index("sessions_user_idx").on(t.userId)],
@@ -171,6 +177,11 @@ export const stores = pgTable(
     linkSharedAt: timestamp("link_shared_at", { withTimezone: true }),
     /** Seller confirmed the seeded delivery fees as-is ("fees look right"); null = not confirmed. */
     deliveryConfirmedAt: timestamp("delivery_confirmed_at", { withTimezone: true }),
+    /** Admin suspension (migration 0030): the storefront shows a "temporarily unavailable" page; null = live. */
+    suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+    suspendedReason: text("suspended_reason"),
+    /** Admin-featured on the public showcase (migration 0030): listed first (the seller's opt-in still applies). */
+    featured: boolean("featured").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -224,6 +235,8 @@ export const products = pgTable(
     /** Product-level meta overrides (Max, migration 0025, src/lib/seo.ts ProductSeo); {} = derived. */
     seo: jsonb("seo").$type<ProductSeo>().notNull().default({}),
     isActive: boolean("is_active").notNull().default(true),
+    /** Hidden by platform moderation (migration 0030): never shown on the storefront, whatever isActive says. */
+    hiddenByAdminAt: timestamp("hidden_by_admin_at", { withTimezone: true }),
     sort: integer("sort").notNull().default(0),
     /** Short link code for /p/<code> (migration 0019): 8 random hex chars, set by the database on insert. */
     shortCode: text("short_code")
@@ -948,3 +961,47 @@ export const phoneOtps = pgTable(
   },
   (t) => [index("phone_otps_phone_created_idx").on(t.phone, t.createdAt)],
 );
+
+// ---------------------------------------------------------------- owner admin console (migration 0030, docs/ADMIN.md)
+/** Every admin write: who, what, before/after (secret-free snapshots), IP, user agent, time. Append-only. */
+export const adminAudit = pgTable(
+  "admin_audit",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+    actorEmail: text("actor_email").notNull(),
+    action: text("action").notNull(),
+    targetType: text("target_type").notNull(),
+    targetId: text("target_id"),
+    targetLabel: text("target_label"),
+    before: jsonb("before").$type<Record<string, unknown> | null>(),
+    after: jsonb("after").$type<Record<string, unknown> | null>(),
+    ip: text("ip"),
+    userAgent: text("user_agent"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("admin_audit_created_idx").on(t.createdAt), index("admin_audit_action_idx").on(t.action, t.createdAt), index("admin_audit_target_idx").on(t.targetType, t.targetId)],
+);
+export type AdminAuditRow = typeof adminAudit.$inferSelect;
+
+/** Runtime platform settings (feature flags, maintenance mode, announcement). Read through src/server/services/platform-settings.ts. */
+export const platformSettings = pgTable("platform_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").$type<unknown>().notNull(),
+  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: updatedAt(),
+});
+
+/** Admin per-store limit overrides; null column = the plan's own limit. */
+export const storeLimitOverrides = pgTable("store_limit_overrides", {
+  storeId: uuid("store_id").primaryKey().references(() => stores.id, { onDelete: "cascade" }),
+  products: integer("products"),
+  studioEdits: integer("studio_edits"),
+  aiCredits: integer("ai_credits"),
+  seats: integer("seats"),
+  stores: integer("stores"),
+  note: text("note"),
+  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: updatedAt(),
+});
+export type StoreLimitOverride = typeof storeLimitOverrides.$inferSelect;
