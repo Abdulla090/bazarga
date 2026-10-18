@@ -265,6 +265,11 @@
     "themeSkip": "تخطَّ الآن"
   },
   "dash": {
+    "lowStockTitle": "على وشك النفاد",
+    "lowStockSub": "أعد التخزين قبل أن تنفد هذه المنتجات.",
+    "soldOut": "نفد",
+    "lowStockLeft": "{count} متبقي",
+    "lowStockAll": "عرض كل المنتجات",
     "newOrders": "{count} طلب جديد",
     "home": "الرئيسية",
     "products": "المنتجات",

@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { requireStore } from "@/server/auth/session";
 import { db } from "@/server/db";
 import { env } from "@/server/env";
+import { listLowStock } from "@/server/services/catalog";
+import { pickText } from "@/lib/i18n";
 import { listOrders, storeStats } from "@/server/services/orders";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
@@ -19,10 +21,11 @@ export default async function DashboardHome() {
   const t = await getTranslations("dash");
   const tf = await getTranslations("founding");
   const locale = await currentLocale();
-  const [stats, recent, checklist] = await Promise.all([
+  const [stats, recent, checklist, low] = await Promise.all([
     storeStats(db(), store.id),
     listOrders(db(), store.id, { limit: 5 }),
     getSetupChecklist(db(), store.id),
+    listLowStock(db(), store.id),
   ]);
   const link = `${env().APP_URL}/s/${store.slug}`;
   const cards = [
@@ -49,6 +52,30 @@ export default async function DashboardHome() {
           </div>
         ))}
       </dl>
+      {low.rows.length > 0 && (
+        <section className="grid gap-3 rounded-2xl border border-line bg-white p-5" data-testid="low-stock" aria-label={t("lowStockTitle")}>
+          <div>
+            <h2 className="t-title">{t("lowStockTitle")}</h2>
+            <p className="mt-1 text-sm text-ink-70">{t("lowStockSub")}</p>
+          </div>
+          <ul className="divide-y divide-line">
+            {low.rows.map((r, i) => (
+              <li key={`${r.productId}-${i}`}>
+                <Link href={`/dashboard/products/${r.productId}`} className="flex min-h-11 items-center gap-3 py-2 hover:bg-paper/60">
+                  <span className="min-w-0 flex-1 truncate">
+                    {pickText(r.name, locale)}
+                    {r.variantLabels.length > 0 && <span className="text-ink-70"> · {r.variantLabels.map((l) => pickText(l, locale)).join(" / ")}</span>}
+                  </span>
+                  <span className={r.stock <= 0 ? "badge badge-danger py-1" : "badge py-1"}>{r.stock <= 0 ? t("soldOut") : t("lowStockLeft", { count: r.stock })}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {low.total > low.rows.length && (
+            <Link href="/dashboard/products" className="inline-flex min-h-11 items-center text-sm font-medium text-gold hover:underline">{t("lowStockAll")}</Link>
+          )}
+        </section>
+      )}
       <section className="grid min-w-0 gap-4 border-b border-line pb-10 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-5">
           <h2 className="t-title">{t("shareTitle")}</h2>
