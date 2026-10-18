@@ -64,7 +64,7 @@ describe("advanced SEO storage (server)", () => {
     expect((await loadProductDetail(database, a.store.id, p.id))?.seo).toEqual({ title: "Linen shirt Erbil" });
     await expect(updateProductSeo(database, b.store.id, p.id, { title: "hijack" })).rejects.toThrow();
     const [row] = await database.select({ seo: products.seo }).from(products).where(eq(products.id, p.id));
-    expect(row.seo).toEqual({ title: "Linen shirt Erbil" });
+    expect(row?.seo).toEqual({ title: "Linen shirt Erbil" });
   });
 
   it("the SEO server actions enforce the Max gate", () => {
