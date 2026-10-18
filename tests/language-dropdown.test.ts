@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }) }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }), usePathname: () => "/" }));
 vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {}, setLocaleFormAction: async () => {} }));
 
 const { LocaleSwitcher } = await import("@/components/LocaleSwitcher");
