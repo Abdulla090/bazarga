@@ -27,6 +27,8 @@ export const themeSchema = z.object({
   }),
   background: z.object({ kind: z.enum(["solid", "gradient", "pattern"]) }),
   header: z.object({ layout: z.enum(["centered", "split", "minimal"]), announce: z.string().max(80).optional() }),
+  /** AI Website Designer (SF10): hero tagline written in the store language; publishing copies it into the store tagline. */
+  copy: z.object({ lang: z.enum(["ku", "kmr", "ar", "en"]), tagline: z.string().trim().max(140) }).optional(),
 });
 
 export type StoreTheme = z.infer<typeof themeSchema>;

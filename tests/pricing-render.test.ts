@@ -106,7 +106,8 @@ describe("pricing v2: four cards, cumulative features, Soon tags", () => {
     expect(item("max", "priorityStudio")).toContain("data-soon");
     expect(item("max", "priorityStudio")).toContain(">Soon<");
     expect(item("pro", "studio")).not.toContain("data-soon");
-    expect(item("max", "aiDesigner")).toContain(">Soon<");
+    expect(item("max", "aiDesigner")).not.toContain("data-soon");
+    expect(item("max", "designRefresh")).toContain(">Soon<");
     expect(item("pro", "discounts")).not.toContain("data-soon");
     expect(item("free", "codWhatsapp")).not.toContain("Soon");
   });

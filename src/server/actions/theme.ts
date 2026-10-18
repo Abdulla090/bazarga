@@ -28,7 +28,9 @@ export async function publishThemeAction(raw: unknown): Promise<ActionState> {
     const { store } = await requireOwner();
     const theme = themeSchema.parse(raw);
     if (isPremiumDesign(theme.design)) assertFeature(store, "templatesPremium");
-    await db().update(stores).set({ themeDraft: theme, themePublished: theme }).where(eq(stores.id, store.id));
+    // AI Website Designer (SF10): the draft's hero tagline becomes the store tagline in its language on publish.
+    const tagline = theme.copy?.tagline ? { ...(store.tagline ?? {}), [theme.copy.lang]: theme.copy.tagline } : undefined;
+    await db().update(stores).set({ themeDraft: theme, themePublished: theme, ...(tagline ? { tagline } : {}) }).where(eq(stores.id, store.id));
     invalidateStore(store.id, [store.slug]);
     revalidatePath(`/s/${store.slug}`, "layout");
     return { ok: true };

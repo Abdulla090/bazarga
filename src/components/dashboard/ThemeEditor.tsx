@@ -4,6 +4,7 @@ import { saveThemeDraftAction, publishThemeAction } from "@/server/actions/theme
 import { themeToCssVars } from "@/lib/theme-studio/css";
 import { contrast } from "@/lib/theme-studio/contrast";
 import type { StoreTheme } from "@/lib/theme-studio/schema";
+import { AiDesigner, type AiDesignerLabels, type AiDesignerMode } from "./AiDesigner";
 
 type Preset = { id: string; theme: StoreTheme; vars: Record<string, string>; premium?: boolean };
 type Labels = {
@@ -21,8 +22,10 @@ const setPreviewCookie = (slug: string, d: string) => { document.cookie = `bz_pv
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Theme Studio editor shell: preset gallery (left), live iframe preview (right) fed by postMessage, autosaved draft, publish. */
-export function ThemeEditor({ slug, presets, initial, published, labels, premiumLocked = false }: { slug: string; presets: Preset[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels; premiumLocked?: boolean }) {
+export function ThemeEditor({ slug, presets, initial, published, labels, premiumLocked = false, ai }: { slug: string; presets: Preset[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels; premiumLocked?: boolean; ai?: { mode: AiDesignerMode; remaining: number; labels: AiDesignerLabels } }) {
   const [theme, setTheme] = useState<StoreTheme>(initial);
+  // AI Website Designer: the theme the seller had before the AI draft, so Discard can bring it back.
+  const [aiBase, setAiBase] = useState<StoreTheme | null>(null);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
   const [tab, setTab] = useState<"presets" | "colors" | "type" | "buttons" | "cards" | "header">("presets");
@@ -56,7 +59,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
   const push = (t: StoreTheme) => {
     const v = themeToCssVars(t).vars;
     const vars = { ...v, "--st-bg": v["--t-bg"]!, "--st-surface": v["--t-surface"]!, "--st-fg": v["--t-fg"]!, "--st-muted": v["--t-muted"]!, "--st-border": v["--t-border"]!, "--st-accent": v["--t-accent"]!, "--st-on-accent": v["--t-on-accent"]!, "--st-radius": v["--t-radius-card"]! };
-    frame.current?.contentWindow?.postMessage({ type: "bazarga-theme", vars, header: { layout: t.header.layout, announce: t.header.announce ?? "" } }, window.location.origin);
+    frame.current?.contentWindow?.postMessage({ type: "bazarga-theme", vars, header: { layout: t.header.layout, announce: t.header.announce ?? "" }, tagline: t.copy?.tagline ?? "" }, window.location.origin);
   };
 
   useEffect(() => {
@@ -85,7 +88,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
     text: ["#0A0A0B", "#1F2937", "#111827", "#F5F5F4", "#FFFFFF"],
   };
   const dirty = !same(theme, pub);
-  const doPublish = () => start(async () => { const r = await publishThemeAction(theme); if (r.ok) { setPub(theme); setStatus("saved"); } });
+  const doPublish = () => start(async () => { const r = await publishThemeAction(theme); if (r.ok) { setPub(theme); setStatus("saved"); setAiBase(null); } });
 
   return (
     <div className="-mx-4 -my-6 flex min-h-[calc(100dvh-8rem)] flex-col md:mx-0 md:my-0 md:h-[calc(100dvh-7rem)] md:flex-row" data-testid="theme-editor">
@@ -104,6 +107,16 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
         </div>
         {lockedPreview && (
           <p role="status" className="mx-4 mb-3 rounded-xl border border-[#2563EB]/30 bg-[#2563EB]/5 p-3 text-[13px] leading-relaxed" data-testid="theme-premium-note">{labels.premiumNote}</p>
+        )}
+        {ai && (
+          <AiDesigner
+            mode={ai.mode}
+            remaining={ai.remaining}
+            labels={ai.labels}
+            hasDraft={!!aiBase}
+            onDesign={(t) => { setAiBase((b) => b ?? theme); commit(t); }}
+            onDiscard={() => { if (aiBase) commit(aiBase); setAiBase(null); }}
+          />
         )}
         <div className="flex gap-2 px-4 pb-3">
           <button type="button" onClick={undo} disabled={!hist.past.length} data-testid="theme-undo" className="min-h-11 flex-1 rounded-full border border-line text-[13px] disabled:opacity-40">{labels.undo}</button>

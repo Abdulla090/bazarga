@@ -21,7 +21,7 @@ Hourly loop: do NOT take these items; a dedicated subagent ships them easiest fi
 - [x] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md
 - [x] SF8. Sign in with WhatsApp (phone OTP): env-gated OtpProvider + mock provider (live stays "coming soon" until WHATSAPP_* or TWILIO_* is set)
 - [x] SF9. Product Studio (photo cleanup, quota 10/100/100): in-browser cleanup + optional remove.bg (REMOVE_BG_API_KEY), product_studio_usage quota server-side; "Soon" tag removed (priority Studio on Max stays Soon)
-- [ ] SF10. AI Website Designer (Max): brand brief -> Theme Studio draft, preview, publish (owned by subagent)
+- [x] SF10. AI Website Designer (Max): brand brief (+ vibe) -> Theme Studio draft (design incl. Atelier/Pulse, palette, fonts, header line, hero tagline in store language), preview, publish or discard; ai_usage credits 30/month, rate-limited, AI_DEMO_MOCK for the demo seller; "Soon" tag removed (monthly design refresh stays Soon)
 Out of scope: online payments (src/server/payments/**, migration 0014, Rasedi env).
 
 ## SALE-READY (Abdulla Oct 18 — top priority)
