@@ -15,7 +15,7 @@ export function isPremiumDesign(id: unknown): boolean {
   return typeof id === "string" && (PREMIUM_DESIGNS as readonly string[]).includes(id);
 }
 
-export const HERO_VARIANTS = ["split", "masthead", "banner", "fullbleed", "arch", "type", "stage", "runway", "pulse", "spotlight"] as const;
+export const HERO_VARIANTS = ["split", "masthead", "banner", "fullbleed", "arch", "type", "stage", "runway", "pulse", "spotlight", "play"] as const;
 export const GRID_VARIANTS = ["auto", "magazine", "dense", "tiles", "soft", "rows", "masonry", "lookbook", "bento"] as const;
 export const CARD_VARIANTS = ["classic", "editorial", "compact", "tile", "soft", "row", "float", "frame", "glow"] as const;
 export const FOOTER_VARIANTS = ["classic", "editorial", "dense", "minimal", "soft", "ledger", "band", "colophon", "ticker"] as const;

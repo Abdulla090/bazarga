@@ -181,4 +181,14 @@ describe("design system v2: Theme Studio", () => {
       for (const v of [...TYPE_PAIRS, ...HOME_SECTIONS]) expect(ts.vopt![v], `${l} ${v}`).toBeTruthy();
     }
   });
+
+  it("Kids & Playful has its own phone-first playground hero (full-colour sticker cover, never grayscale)", () => {
+    expect(FLAGSHIPS.play.theme.layout?.hero).toBe("play");
+    const hero = readFileSync("src/components/store/HomeHero.tsx", "utf8");
+    const body = hero.slice(hero.indexOf("export function HeroPlay"), hero.indexOf("export function HeroStage"));
+    expect(body).toContain('data-hero="play"');
+    expect(body).not.toContain("grayscale");
+    expect(readFileSync("src/app/s/[slug]/page.tsx", "utf8")).toContain("play: HeroPlay");
+    for (const l of ["en", "ku", "kmr", "ar"]) expect(JSON.parse(readFileSync(`messages/${l}.json`, "utf8")).themeStudio.vopt.play).toBeTruthy();
+  });
 });

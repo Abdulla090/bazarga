@@ -205,6 +205,44 @@ export function HeroType({ name, tagline, cover, shopNow }: HeroProps) {
  * button under the tagline, and the cover sits on the inline end as a rounded card tilted two degrees (flat on phones).
  * Two crisp rings behind it stand in for a photo when the store has no cover.
  */
+/**
+ * Playground hero (Kids & Playful): phone-first. An accent-tinted rounded play panel with hard borders and an offset
+ * shadow, confetti shapes (circle, squircle, star) that stay inside the panel, the store name in the chunky display
+ * face, a full-width pill CTA, and the cover in full colour as a tilted rounded "sticker" with its own offset shadow.
+ */
+export function HeroPlay({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="play-hero relative isolate overflow-hidden rounded-[2rem] border-2 border-st-fg md:rounded-[2.5rem]" data-testid="store-hero" data-hero="play">
+      <span aria-hidden className="play-dot pointer-events-none absolute -end-10 -top-10 -z-10 h-20 w-20 rounded-full md:-end-8 md:-top-8 md:h-40 md:w-40" />
+      <span aria-hidden className="play-sq pointer-events-none absolute -bottom-5 -start-5 -z-10 h-20 w-20 rotate-12 rounded-3xl md:h-28 md:w-28" />
+      <span aria-hidden className="play-star pointer-events-none absolute start-5 top-4 -z-10 h-9 w-9 md:start-auto md:end-[46%] md:top-8 md:h-12 md:w-12" />
+      <div className={`grid items-center gap-6 px-5 pb-7 pt-8 md:gap-12 md:px-12 md:py-14 ${cover ? "md:grid-cols-[1.1fr_0.9fr]" : ""}`}>
+        <div className="grid justify-items-start gap-4 md:gap-6">
+          <h1 className="play-name break-words">{name}</h1>
+          <HeroTagline text={tagline} className="line-clamp-3 max-w-md text-[17px] font-semibold leading-snug md:text-xl empty:hidden" />
+          <a href="#products" className="btn-gold min-h-12 w-full px-8 text-base sm:w-auto">{shopNow}</a>
+        </div>
+        {cover && (
+          <div className="play-cover overflow-hidden rounded-[1.75rem] border-2 border-st-fg bg-st-surface -rotate-2 rtl:rotate-2 md:-rotate-3 rtl:md:rotate-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={cover.url}
+              srcSet={buildSrcSet(cover.renditions)}
+              sizes={cover.renditions?.length ? "(min-width: 768px) 40vw, 100vw" : undefined}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="aspect-[4/3] w-full object-cover md:aspect-square"
+              style={coverStyle(cover)}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function HeroStage({ name, tagline, cover, shopNow }: HeroProps) {
   return (
     <section className="relative isolate overflow-hidden rounded-[2rem] bg-st-accent text-st-on-accent md:rounded-[2.5rem]" data-testid="store-hero" data-hero="stage">
