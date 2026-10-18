@@ -127,7 +127,10 @@ describe("AI Website Designer (SF10)", () => {
     expect(heroes.length).toBeGreaterThan(5);
     for (const name of heroes) {
       const body = hero.slice(hero.indexOf(name), hero.indexOf("\nexport function", hero.indexOf(name) + 10) >>> 0 || undefined);
-      expect(body, name).toContain("data-hero-tagline");
+      expect(body, name).toContain("<HeroTagline");
     }
+    const bridge = readFileSync("src/components/store/PreviewBridge.tsx", "utf8");
+    expect(bridge).toContain("setPreviewTagline(");
+    expect(bridge).not.toMatch(/data-hero-tagline/); // never mutate React-owned DOM (hydration error #418)
   });
 });
