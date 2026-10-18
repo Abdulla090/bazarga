@@ -35,6 +35,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="t-headline me-auto">{t("title")}</h1>
+        {all.length > 0 && (
+          <a href="/api/products/export" download className="btn-ghost btn-sm" data-testid="products-export">{t("export")}</a>
+        )}
         <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
         <Link href="/dashboard/products/new" className="btn-gold btn-sm">+ {t("new")}</Link>
       </div>

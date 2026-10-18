@@ -883,7 +883,8 @@
     "bulkStock": "Stok ji bo hemûyan",
     "variantsStockNote": "Stok û SKU ji bo her cureyê li jêr têne danîn.",
     "variantsLimit": "Heta {max} têkel. Nirxekê jê bibe da ku zêdetir lê zêde bikî.",
-    "maxOptions": "Heta 3 komên vebijarkan."
+    "maxOptions": "Heta 3 komên vebijarkan.",
+    "export": "CSV dakêşe"
   },
   "categories": {
     "title": "Beş",

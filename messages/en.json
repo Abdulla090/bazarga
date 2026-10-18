@@ -404,7 +404,8 @@
     "bulkStock": "Stock for all",
     "variantsStockNote": "Stock and SKU are set per variant below.",
     "variantsLimit": "Up to {max} combinations. Remove a value to add more.",
-    "maxOptions": "Up to 3 option groups."
+    "maxOptions": "Up to 3 option groups.",
+    "export": "Download CSV"
   },
   "categories": {
     "title": "Categories",
