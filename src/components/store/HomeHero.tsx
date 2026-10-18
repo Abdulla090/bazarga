@@ -305,11 +305,20 @@ export function HeroPulse({ name, tagline, cover, shopNow }: HeroProps) {
           {Array.from({ length: 8 }, (_, i) => (
             <span key={i} className="flex items-center gap-8">
               {words}
-              <span className="text-base">✦</span>
+              <TickerStar className="h-4 w-4 shrink-0" />
             </span>
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+/** Four-point star between ticker items (SVG, not an emoji glyph). */
+export function TickerStar({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 0c.9 6.6 4.4 10.6 12 12-7.6 1.4-11.1 5.4-12 12-.9-6.6-4.4-10.6-12-12 7.6-1.4 11.1-5.4 12-12z" />
+    </svg>
   );
 }

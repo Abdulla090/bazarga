@@ -1,3 +1,4 @@
+import { TickerStar } from "./HomeHero";
 import Link from "next/link";
 import { normalizePlan, showsBazargaBadge } from "@/lib/plans";
 import { whiteLabelOn } from "@/lib/seo";
@@ -221,7 +222,7 @@ export async function StoreFooter({
             {Array.from({ length: 8 }, (_, i) => (
               <span key={i} className="flex items-center gap-10">
                 {store.name}
-                <span className="text-xl md:text-3xl">✦</span>
+                <TickerStar className="h-6 w-6 shrink-0 md:h-8 md:w-8" />
               </span>
             ))}
           </div>
