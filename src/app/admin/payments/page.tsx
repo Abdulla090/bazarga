@@ -8,6 +8,7 @@ import { gateway } from "@/server/payments/gateway/registry";
 import { desc } from "drizzle-orm";
 import { auditLog } from "@/server/db/schema";
 import { getPlan, isPaidPlan, usd } from "@/lib/plans";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Payouts", robots: { index: false } };
 
@@ -21,8 +22,9 @@ export default async function AdminPaymentsPage() {
   const day = (d: Date | null) => (d ? d.toISOString().slice(0, 16).replace("T", " ") : "—");
   const n = (v: number) => v.toLocaleString("en-US");
   return (
-    <div className="mx-auto max-w-4xl" dir="ltr" lang="en">
-      <h1 className="text-3xl font-light tracking-tight">Upgrade requests</h1>
+    <div className="max-w-5xl" dir="ltr" lang="en">
+      <PageHeader title="Payouts & online payments" sub={`${pays.length} online payments · ${profiles.length} payout profiles · ${outs.length} payouts (latest 100 each)`} />
+      <h2 className="text-[17px] font-semibold tracking-tight">Upgrade requests</h2>
       <p className="mt-1 text-sm text-ink-70">Activate after payment arrives (FIB, ZainCash or cash). Extends from the current period end if still active.</p>
       <ul className="mt-8 divide-y divide-line border-y border-line">
         {rows.length === 0 && <li className="py-6 text-sm text-ink-70">No requests yet.</li>}
@@ -45,7 +47,7 @@ export default async function AdminPaymentsPage() {
         ))}
       </ul>
 
-      <h2 className="mt-14 text-2xl font-light tracking-tight">Online payments</h2>
+      <h2 className="mt-10 text-[17px] font-semibold tracking-tight">Online payments</h2>
       <p className="mt-1 text-sm text-ink-70">Gateway: {gateway()?.id ?? "none (PAYMENTS_PROVIDER unset)"}. Status comes only from the provider (webhook / reconcile), never from redirects.</p>
       <div className="mt-4 overflow-x-auto border-y border-line">
         <table className="w-full text-left text-sm">
@@ -68,7 +70,7 @@ export default async function AdminPaymentsPage() {
         </table>
       </div>
 
-      <h2 className="mt-14 text-2xl font-light tracking-tight">Payout profiles</h2>
+      <h2 className="mt-10 text-[17px] font-semibold tracking-tight">Payout profiles</h2>
       <ul className="mt-4 divide-y divide-line border-y border-line">
         {profiles.length === 0 && <li className="py-6 text-sm text-ink-70">No payout profiles yet.</li>}
         {profiles.map((p) => (
@@ -86,7 +88,7 @@ export default async function AdminPaymentsPage() {
         ))}
       </ul>
 
-      <h2 className="mt-14 text-2xl font-light tracking-tight">Payouts</h2>
+      <h2 className="mt-10 text-[17px] font-semibold tracking-tight">Payouts</h2>
       <ul className="mt-4 divide-y divide-line border-y border-line">
         {outs.length === 0 && <li className="py-6 text-sm text-ink-70">No payouts yet.</li>}
         {outs.map((o) => (
@@ -106,7 +108,7 @@ export default async function AdminPaymentsPage() {
         ))}
       </ul>
 
-      <h2 className="mt-14 text-2xl font-light tracking-tight">Audit log</h2>
+      <h2 className="mt-10 text-[17px] font-semibold tracking-tight">Audit log</h2>
       <ul className="mt-4 divide-y divide-line border-y border-line">
         {audit.length === 0 && <li className="py-6 text-sm text-ink-70">No settings changes recorded yet.</li>}
         {audit.map((a) => (

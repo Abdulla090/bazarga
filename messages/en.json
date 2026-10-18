@@ -1698,13 +1698,17 @@
       "overview": "Overview",
       "users": "Users",
       "stores": "Stores",
-      "catalog": "Moderation",
       "plans": "Plans & limits",
-      "site": "Site controls",
-      "growth": "Waitlist & demand",
+      "site": "Site & flags",
+      "growth": "Waitlist",
       "payments": "Payouts",
       "audit": "Audit log",
-      "settings": "Admin team"
+      "settings": "Team",
+      "products": "Products",
+      "orders": "Orders",
+      "database": "Database",
+      "health": "Health",
+      "menu": "Menu"
     },
     "c": {
       "search": "Search",
@@ -1779,22 +1783,55 @@
       "liveStores": "{n} live",
       "products": "Products",
       "orders": "Orders",
-      "last30": "{n} in 30 days",
-      "gmv": "GMV (IQD)",
-      "mrr": "MRR estimate",
-      "mrrHint": "Paid stores × list price",
       "waitlist": "Waitlist",
       "pending": "Upgrade requests waiting",
-      "signups": "Signups · last 30 days",
-      "ordersChart": "Orders · last 30 days",
-      "planMix": "Plan mix",
-      "health": "Health",
+      "signups": "Signups",
+      "ordersChart": "Orders",
       "db": "Database",
       "build": "Build",
       "flags": "Feature flags",
       "cron": "Daily cron",
       "integrations": "Integrations",
-      "maintenanceOn": "Maintenance mode is ON: sellers and shoppers see the maintenance page."
+      "maintenanceOn": "Maintenance mode is ON: sellers and shoppers see the maintenance page.",
+      "fromDb": "Every number below is counted live from the database.",
+      "periodLabel": "Period",
+      "period": {
+        "7d": "Last 7 days",
+        "30d": "Last 30 days",
+        "90d": "Last 90 days",
+        "all": "All time"
+      },
+      "periodShort": {
+        "7d": "7d",
+        "30d": "30d",
+        "90d": "90d",
+        "all": "All"
+      },
+      "newIn": "{n} new · {period}",
+      "verified": "{n} verified",
+      "activeN": "{n} active",
+      "hiddenN": "{n} hidden",
+      "inPeriod": "{n} · {period}",
+      "gmvIqd": "GMV (IQD)",
+      "mrrEstimate": "MRR (estimate)",
+      "mrrFrom": "{n} active paid plans × list price",
+      "mrrNote": "MRR is an estimate: stores on a paid plan that is running now (not expired, not suspended) × the plan's monthly list price. It is not money received.",
+      "signupsVsOrders": "Signups and orders per day",
+      "noActivity": "No signups or orders in this period.",
+      "storesByPlan": "Stores by plan",
+      "storesByStatus": "Stores by status",
+      "ordersByStatus": "Orders by status",
+      "allTime": "All time",
+      "allTimeN": "{n} all time",
+      "activePaid": "{n} running",
+      "noStores": "No stores yet.",
+      "noOrders": "No orders yet.",
+      "usage": "Usage",
+      "usageMonth": "This month ({month}) and all time",
+      "images": "Product images",
+      "inStorage": "{n} in storage",
+      "aiCredits": "AI credits used",
+      "studioEdits": "Studio edits"
     },
     "u": {
       "title": "Users",
@@ -1882,7 +1919,6 @@
       "openStore": "Open storefront"
     },
     "cat": {
-      "title": "Moderation",
       "products": "Products",
       "orders": "Orders",
       "searchProducts": "Product, store or code",
@@ -1895,7 +1931,9 @@
       "stock": "Stock",
       "total": "Total",
       "customer": "Customer",
-      "inactive": "off by seller"
+      "inactive": "off by seller",
+      "productsSub": "Every product across all stores. Hidden products vanish from the storefront.",
+      "ordersSub": "Every order across all stores, newest first."
     },
     "pl": {
       "title": "Plans & limits",
@@ -1905,7 +1943,8 @@
       "upgrades": "Upgrade requests",
       "activate": "Activate",
       "reject": "Reject",
-      "months": "{n} months"
+      "months": "{n} months",
+      "sub": "{pending} upgrade requests waiting · {overrides} stores with overrides"
     },
     "site": {
       "title": "Site controls",
@@ -1947,7 +1986,9 @@
       "joined": "Joined",
       "invite": "Invite",
       "inviteMsg": "Hi {name}! Your Reelcart store is ready to open: {url}",
-      "topCities": "Top cities"
+      "topCities": "Top cities",
+      "empty": "Nobody has joined the waitlist yet.",
+      "showing": "Showing the first {n} of {total}. Search to narrow it down, or export the CSV for all."
     },
     "a": {
       "title": "Audit log",
@@ -1986,6 +2027,38 @@
     },
     "pay": {
       "title": "Payouts & online payments"
+    },
+    "navGroup": {
+      "people": "People",
+      "commerce": "Commerce",
+      "growth": "Growth",
+      "system": "System"
+    },
+    "ost": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "postponed": "Postponed",
+      "refused": "Refused",
+      "returned": "Returned",
+      "cancelled": "Cancelled"
+    },
+    "h": {
+      "sub": "Database, build, cron, integrations and feature flags.",
+      "runtime": "Runtime",
+      "maintenance": "Maintenance mode"
+    },
+    "db": {
+      "sub": "Read-only. {rows} rows in total; secrets are masked.",
+      "searchTables": "Table name",
+      "columnsN": "{n} columns",
+      "readOnly": "Read-only view. Password hashes, tokens, OTP hashes, session ids, keys and payout account numbers are masked.",
+      "searchRows": "Search visible columns",
+      "exportVisible": "Export rows on screen",
+      "masked": "masked",
+      "noMatch": "No rows match.",
+      "emptyTable": "This table is empty."
     }
   },
   "site": {

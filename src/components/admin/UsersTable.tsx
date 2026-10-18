@@ -56,9 +56,9 @@ export function UsersTable({ rows, q, status, role, page, total, size, me }: { r
         </div>
       )}
       <p className="mb-2 text-xs text-ink-50">{t("u.edited")}</p>
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="overflow-clip rounded-2xl border border-line bg-white">
         <table className="w-full text-start text-sm" data-testid="users-table">
-          <thead className="hidden bg-[#F9FAFB] text-xs text-ink-50 md:table-header-group">
+          <thead className="hidden bg-[#F9FAFB] text-xs text-ink-50 lg:sticky lg:top-14 lg:z-10 lg:table-header-group">
             <tr>
               <th className="w-10 px-3 py-2"><input type="checkbox" aria-label={t("c.selectAll")} className="size-4" checked={sel.size === list.length && list.length > 0} onChange={(e) => setSel(e.target.checked ? new Set(list.map((u) => u.id)) : new Set())} /></th>
               <th className="px-3 py-2 text-start font-medium">{t("c.name")}</th>
@@ -72,26 +72,26 @@ export function UsersTable({ rows, q, status, role, page, total, size, me }: { r
           <tbody className="divide-y divide-line">
             {list.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-ink-50">{t("c.none")}</td></tr>}
             {list.map((u) => (
-              <tr key={u.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3 md:table-row md:p-0" data-testid="user-row">
-                <td className="md:px-3 md:py-2"><input type="checkbox" className="size-5 md:size-4" aria-label={u.email} checked={sel.has(u.id)} onChange={() => toggle(u.id)} /></td>
-                <td className="min-w-0 flex-1 md:px-3 md:py-2">
+              <tr key={u.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3 lg:table-row lg:p-0" data-testid="user-row">
+                <td className="lg:px-3 lg:py-2"><input type="checkbox" className="size-5 lg:size-4" aria-label={u.email} checked={sel.has(u.id)} onChange={() => toggle(u.id)} /></td>
+                <td className="min-w-0 flex-1 lg:px-3 lg:py-2">
                   {editing === u.id ? (
                     <input autoFocus defaultValue={u.name} className={inputCls} aria-label={t("c.name")} onBlur={(e) => saveName(u, e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") saveName(u, (e.target as HTMLInputElement).value); if (e.key === "Escape") setEditing(null); }} data-testid="inline-name" />
                   ) : (
                     <button type="button" className="min-h-11 text-start font-medium hover:text-[#2563EB]" onClick={() => setEditing(u.id)}>{u.name}{u.id === me && <span className="ms-1 text-xs text-ink-50">({t("t.you")})</span>}</button>
                   )}
                 </td>
-                <td className="w-full truncate text-ink-70 md:w-auto md:px-3 md:py-2" dir="ltr">{u.email}</td>
-                <td className="md:px-3 md:py-2">
+                <td className="w-full truncate text-ink-70 lg:w-auto lg:px-3 lg:py-2" dir="ltr">{u.email}</td>
+                <td className="lg:px-3 lg:py-2">
                   <span className="flex flex-wrap gap-1">
                     <Badge tone={STATUS_TONE[u.status as keyof typeof STATUS_TONE] ?? "gray"}>{t(`u.status.${u.status}`)}</Badge>
                     {u.role !== "user" && <Badge tone="blue">{t(`u.role.${u.role}`)}</Badge>}
                     {!u.emailVerifiedAt && <Badge>{t("u.unverified")}</Badge>}
                   </span>
                 </td>
-                <td className="tabular-nums text-ink-70 md:px-3 md:py-2">{u.storeCount}</td>
-                <td className="text-xs text-ink-50 md:px-3 md:py-2">{fmtDate(u.createdAt)}</td>
-                <td className="ms-auto md:px-3 md:py-2 md:text-end">
+                <td className="tabular-nums text-ink-70 lg:px-3 lg:py-2">{u.storeCount}</td>
+                <td className="text-xs text-ink-50 lg:px-3 lg:py-2">{fmtDate(u.createdAt)}</td>
+                <td className="ms-auto lg:px-3 lg:py-2 lg:text-end">
                   <Link href={`/admin/users/${u.id}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm hover:border-ink/30" data-testid="user-open">{t("c.open")}</Link>
                 </td>
               </tr>

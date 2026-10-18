@@ -7,6 +7,7 @@ import { listOverrides } from "@/server/admin/service";
 import { UpgradeButtons } from "@/components/admin/UpgradeButtons";
 import { LIMIT_KEYS } from "@/lib/admin";
 import { AI_MONTHLY_LIMIT, PLAN_IDS, STORE_LIMIT, TEAM_LIMIT, getPlan, productLimit, studioEditsLimit } from "@/lib/plans";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Plans", robots: { index: false } };
 
@@ -24,7 +25,7 @@ export default async function AdminPlans() {
   ];
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("pl.title")}</h1>
+      <PageHeader title={t("pl.title")} sub={t("pl.sub", { pending: reqs.filter((x) => x.r.status === "pending").length, overrides: overrides.length })} />
       <section className="overflow-x-auto rounded-2xl border border-line bg-white" data-testid="plan-matrix">
         <h2 className="px-4 pt-4 text-[15px] font-semibold">{t("pl.matrix")}</h2>
         <table className="mt-2 w-full min-w-[520px] text-sm">

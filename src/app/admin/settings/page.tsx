@@ -7,6 +7,7 @@ import { sessions } from "@/server/db/schema";
 import { listAdmins } from "@/server/admin/service";
 import { AdminTeam } from "@/components/admin/AdminTeam";
 import { parseAdminEmails } from "@/lib/admin";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Team", robots: { index: false } };
 
@@ -20,7 +21,7 @@ export default async function AdminSettings() {
   ]);
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("t.title")}</h1>
+      <PageHeader title={t("t.title")} count={team.length} />
       <AdminTeam
         me={{ id: admin.id, role: admin.role }}
         team={team.map((m) => ({ ...m, createdAt: m.createdAt.toISOString() }))}

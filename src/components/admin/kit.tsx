@@ -7,13 +7,14 @@ export type ActionResult = { ok?: boolean; error?: string; data?: Record<string,
 
 // ---------------------------------------------------------------- toasts
 type Toast = { id: number; text: string; tone: "ok" | "err" };
+let toastSeq = 0;
 const ToastCtx = createContext<(text: string, tone?: "ok" | "err") => void>(() => {});
 export const useToast = () => useContext(ToastCtx);
 
 export function AdminToaster({ children }: { children: ReactNode }) {
   const [list, setList] = useState<Toast[]>([]);
   const push = useCallback((text: string, tone: "ok" | "err" = "ok") => {
-    const id = Date.now() + Math.random();
+    const id = ++toastSeq;
     setList((l) => [...l.slice(-3), { id, text, tone }]);
     setTimeout(() => setList((l) => l.filter((t) => t.id !== id)), 3800);
   }, []);
@@ -256,3 +257,24 @@ export function fmtDate(d: string | Date | null | undefined, withTime = false): 
   return withTime ? x.toISOString().slice(0, 16).replace("T", " ") : x.toISOString().slice(0, 10);
 }
 export const fmtN = (n: number) => n.toLocaleString("en-US");
+
+// ---------------------------------------------------------------- page header + empty state
+/** One header for every admin page: title, the real row count beside it, an optional line and actions. */
+export function PageHeader({ title, count, sub, actions, testId }: { title: string; count?: number | null; sub?: ReactNode; actions?: ReactNode; testId?: string }) {
+  return (
+    <header className="mb-5 flex flex-wrap items-end justify-between gap-3 md:mb-6" data-testid={testId ?? "admin-page-header"}>
+      <div className="min-w-0">
+        <h1 className="flex flex-wrap items-baseline gap-x-2.5 text-2xl font-semibold tracking-tight text-ink md:text-[28px]">
+          <span className="min-w-0">{title}</span>
+          {typeof count === "number" && <span className="text-base font-medium tabular-nums text-ink-50" data-testid="admin-page-count" dir="ltr">{fmtN(count)}</span>}
+        </h1>
+        {sub && <p className="mt-1 max-w-2xl text-sm text-ink-70">{sub}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </header>
+  );
+}
+
+export function Empty({ children, testId }: { children: ReactNode; testId?: string }) {
+  return <p data-testid={testId ?? "admin-empty"} className="rounded-xl border border-dashed border-line px-4 py-10 text-center text-sm text-ink-50">{children}</p>;
+}
