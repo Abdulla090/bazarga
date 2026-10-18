@@ -1,12 +1,10 @@
-import { connection } from "next/server";
 import { z } from "zod";
 
-// No `export const dynamic`: route segment config is not allowed with cacheComponents (it broke `next build` in CI).
+// No `export const dynamic`: route segment config is not allowed with cacheComponents (it broke `next build` in CI). Prerendered at build; Expires is a year ahead.
 
 const emailSchema = z.string().email();
 
-export async function GET() {
-  await connection();
+export function GET() {
   const parsed = emailSchema.safeParse(process.env.SECURITY_CONTACT_EMAIL);
   const contact = parsed.success ? parsed.data : "security@bazarga.app";
   const expires = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 11, 31)).toISOString();
