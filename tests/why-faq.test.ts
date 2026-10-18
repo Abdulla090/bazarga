@@ -11,8 +11,8 @@ const LOCALES = ["en", "ku", "kmr", "ar"] as const;
 const msgs = (l: string) => JSON.parse(readFileSync(`messages/${l}.json`, "utf8"));
 const FAQ = ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"];
 const NEW_KEYS = [
-  "whyLead", "whyChatName", "whyChatMsg", "whyCardBadge", "whyCardCta", "whyPayLabel", "whySoon", "whyDeliveryLabel", "whyMapLabel",
-  "cityBerlin", "cityStockholm", "cityLondon", "whoLead", "faqEyebrow", "faqTitle", "faqLead", "faqMore",
+  "whyLead", "whyChatName", "whyChatMsg", "whyCardBadge", "whyCardCta", "whyPayLabel", "whySoon", "whyDeliveryLabel",
+  "whoLead", "faqEyebrow", "faqTitle", "faqLead", "faqMore",
   ...Array.from({ length: 12 }, (_, i) => `c${i + 1}`),
 ];
 
@@ -51,7 +51,7 @@ describe("landing FAQ accordion", () => {
     expect(css).toContain("cubic-bezier(0.32, 0.72, 0, 1)");
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[^}]*\.faq-panel/);
     // every blur keyframe/end state that animates in returns to blur(0)
-    for (const kf of ["bento-in", "zs-s4"]) {
+    for (const kf of ["zs-s4", "hero-in-line", "hero-in-media"]) {
       const block = css.slice(css.indexOf(`@keyframes ${kf}`), css.indexOf(`@keyframes ${kf}`) + 400);
       expect(block).toContain("blur(0)");
     }
@@ -121,19 +121,20 @@ describe("marketing sections are blue + ink only", () => {
     return {
       eyebrow: m.whyEyebrow, title: m.whyTitle, lead: m.whyLead,
       w1Title: m.w1Title, w1Body: m.w1Body, w2Title: m.w2Title, w2Body: m.w2Body,
-      w3Title: m.w3Title, w3Body: m.w3Body, w4Title: m.w4Title, w4Body: m.w4Body,
+      w3Title: m.w3Title, w3Body: m.w3Body,
       chatName: m.whyChatName, chatMsg: m.whyChatMsg, cardBadge: m.whyCardBadge, cardCta: m.whyCardCta,
-      payLabel: m.whyPayLabel, soon: m.whySoon, deliveryLabel: m.whyDeliveryLabel, mapLabel: m.whyMapLabel,
-      berlin: m.cityBerlin, stockholm: m.cityStockholm, london: m.cityLondon, productName: "Linen overshirt",
+      payLabel: m.whyPayLabel, soon: m.whySoon, deliveryLabel: m.whyDeliveryLabel,
+      productName: "Linen overshirt",
     };
   };
 
-  it("why bento renders 4 tiles with live visuals (no generic glyph circles) in every locale", () => {
+  it("why bento renders 3 tiles with live visuals, light band, no map, in every locale", () => {
     for (const l of LOCALES) {
       const html = renderToStaticMarkup(createElement(WhyBento, { locale: l, l: labels(l) }));
-      expect(html.match(/class="bento-tile/g)?.length).toBe(4);
+      expect(html.match(/class="bento-tile/g)?.length).toBe(3);
       for (const p of ["COD", "FIB", "ZainCash", "FastPay", "Qi Card"]) expect(html).toContain(p);
-      expect(html).toContain('class="map-dots"');
+      expect(html).not.toContain("map-");
+      expect(html).not.toContain("mk-eyebrow-dark");
       // the typewriter line carries its own direction (Sorani/Arabic rtl, English/Kurmanji ltr)
       expect(html).toMatch(new RegExp(`dir="${l === "ku" || l === "ar" ? "rtl" : "ltr"}" class="tm-line"`));
       expect(html).not.toContain("bg-gold");
