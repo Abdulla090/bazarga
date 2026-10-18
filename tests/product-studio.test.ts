@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { autoCropBox, backgroundMask, cropRgba, edgeColor, enhance, runStudio, whitenBackground, type Rgba } from "@/lib/studio/process";
 import { removeBackground, removeBgOn } from "@/server/studio/remove-bg";
@@ -79,6 +80,11 @@ describe("Product Studio local cleanup (SF9)", () => {
 });
 
 describe("Product Studio plans + AI provider", () => {
+  it("before/after canvases are absolutely sized inside the square frame so portrait crops letterbox, not clip", () => {
+    const src = readFileSync("src/components/dashboard/ProductStudio.tsx", "utf8");
+    expect(src).toMatch(/relative aspect-square overflow-hidden/);
+    expect(src).toContain('className="absolute inset-0 h-full w-full object-contain"');
+  });
   it("quota 0 / 10 / 100 / 100 and no Soon tag", () => {
     expect(["free", "pro", "business", "max"].map((p) => studioEditsLimit(p as "free"))).toEqual([0, 10, 100, 100]);
     expect(COMPARE.find((r) => r.key === "studio")).toMatchObject({ free: false, pro: 10, business: 100, max: 100 });
