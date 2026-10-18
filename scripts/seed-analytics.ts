@@ -1,8 +1,8 @@
 /*
  * Demo analytics: ~90 days of believable store traffic and orders for the demo store, so every chart on
  * /dashboard/analytics looks alive on the test deploy. Runs only when SEED_DEMO=true (or on a Vercel build) and is
- * idempotent, relative to "now": page-view rows are upserted to GREATEST(existing, seeded), so real visits (audits,
- * smoke tests) never block a top-up and a day seeded while it was "today" is raised to its full value later; demo
+ * idempotent, relative to "now": page-view rows are upserted to the seeded value (demo store only), so real visits
+ * (audits, smoke tests) never block a top-up and a day seeded while it was "today" gets its full value later; demo
  * orders (customers with +96477099xxxx numbers) are topped up per day up to the current hour, so a day that was
  * only partly seeded at the last deploy is completed. Every deploy therefore leaves the last 7/30 days whole and
  * the KPIs show the store's steady growth instead of a false drop. Pure function of the date and hour.
@@ -16,6 +16,16 @@ import type { OrderStatus } from "../src/lib/order-status";
 import { sourcePage, type OrderSource } from "../src/lib/social";
 
 export const DEMO_PHONE_PREFIX = "+96477099";
+
+/**
+ * Traffic level of a calendar day: steady ~1.2%/day growth (≈ +9% week on week, ≈ +40% month on month), anchored
+ * to the date itself (not to "days before now"), so the same day always gets the same number and every later deploy
+ * still shows growth. Capped so the demo never runs away (cap reached around March 2027).
+ */
+export function demoGrowth(day: string): number {
+  const d = (Date.parse(`${day}T00:00:00Z`) - Date.parse("2026-10-18T00:00:00Z")) / 86_400_000;
+  return Math.min(4, 1.27 * Math.exp(0.012 * d));
+}
 
 
 export function seedAnalyticsEnabled(): boolean {
@@ -116,7 +126,7 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
   days.forEach((day, i) => {
     const r = rng(`bazarga-demo-${day}`);
     const dow = new Date(`${day}T00:00:00Z`).getUTCDay();
-    const growth = 0.72 + 0.55 * (i / (days.length - 1));
+    const growth = demoGrowth(day);
     const weekday = [0.92, 0.95, 0.93, 0.98, 1.12, 1.28, 1.22][dow]!;
     const partial = day === today ? Math.max(0.2, (nowHour + 1) / 24) : 1;
     const visitors = Math.max(6, Math.round(78 * growth * weekday * (0.84 + 0.32 * r()) * partial));
@@ -172,8 +182,8 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
       .values(viewValues.slice(i, i + 200))
       .onConflictDoUpdate({
         target: [storePageViews.storeId, storePageViews.day, storePageViews.page],
-        set: { views: sql`greatest(${storePageViews.views}, excluded.views)` },
-        setWhere: sql`${storePageViews.views} < excluded.views`,
+        set: { views: sql`excluded.views` },
+        setWhere: sql`${storePageViews.views} <> excluded.views`,
       })
       .returning({ d: storePageViews.day });
     viewRows += res.length;
