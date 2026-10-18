@@ -35,10 +35,15 @@ const NOT_SOLD = sql`('cancelled','refused','returned')`;
  * period (7d / 30d / 90d / all, "all" from the first account) and are all zeros when nothing happened.
  */
 export async function overviewKpis(database: Db, period: AdminPeriod = "30d", now = new Date()) {
-  const [first] = await database.select({ at: sql<Date | string | null>`min(${users.createdAt})` }).from(users);
+  // "all" starts the chart at the oldest account or order (orders can predate accounts, e.g. imported or seeded ones).
+  const [first] = await database
+    .select({ at: sql<Date | string | null>`least((select min(${users.createdAt}) from ${users}), (select min(${orders.createdAt}) from ${orders}))` })
+    .from(sql`(select 1) as one`);
   const firstAt = first?.at ? new Date(first.at) : null;
   const days = periodDays(period, firstAt, now);
-  const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - (days - 1) * 86_400_000);
+  const chartSince = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - (days - 1) * 86_400_000);
+  // Period totals for "all" have no lower bound at all, so they always equal the all-time totals.
+  const since = period === "all" ? new Date(0) : chartSince;
   const month = studioPeriod(now);
   const [
     [u], [s], [p], [o], orderStatusRows, planRows, paidRows, signupRows, orderRows, [w], [pend], [img], aiRows, [studio],
@@ -84,8 +89,8 @@ export async function overviewKpis(database: Db, period: AdminPeriod = "30d", no
       .from(stores)
       .where(and(ne(stores.plan, "free"), isNull(stores.suspendedAt), or(isNull(stores.planPeriodEnd), gte(stores.planPeriodEnd, now))))
       .groupBy(stores.plan),
-    database.select({ at: users.createdAt }).from(users).where(gte(users.createdAt, since)),
-    database.select({ at: orders.createdAt }).from(orders).where(gte(orders.createdAt, since)),
+    database.select({ at: users.createdAt }).from(users).where(gte(users.createdAt, chartSince)),
+    database.select({ at: orders.createdAt }).from(orders).where(gte(orders.createdAt, chartSince)),
     database.select({ n: sql<number>`count(*)::int` }).from(waitlist),
     database.select({ n: sql<number>`count(*)::int` }).from(upgradeRequests).where(eq(upgradeRequests.status, "pending")),
     database
@@ -109,7 +114,7 @@ export async function overviewKpis(database: Db, period: AdminPeriod = "30d", no
   return {
     period,
     days,
-    since,
+    since: chartSince,
     users: Number(u?.n ?? 0),
     usersVerified: Number(u?.verified ?? 0),
     usersNew: Number(u?.fresh ?? 0),

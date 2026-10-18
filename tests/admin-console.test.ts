@@ -332,6 +332,9 @@ describe("overview + database browser: real data only", () => {
     expect(Object.values(k.ordersByStatus).reduce((a, b) => a + b, 0)).toBe(k.orders);
     expect(Object.values(k.planMix).reduce((a, b) => a + b, 0)).toBe(k.stores);
     expect(k.signups.reduce((a, d) => a + d.n, 0)).toBe(k.usersNew);
+    expect(k.usersNew).toBe(k.users);
+    expect(k.ordersInPeriod).toBe(k.orders);
+    expect(k.gmvInPeriod).toBe(k.gmv);
     // MRR estimate = running paid plans (not expired, not suspended) × list price, recomputed here from raw rows.
     const paid = ((await database.execute(sql`select plan, count(*)::int as n from stores where plan <> 'free' and suspended_at is null and (plan_period_end is null or plan_period_end >= now()) group by plan`)) as unknown as { rows: { plan: string; n: number }[] }).rows;
     const price: Record<string, number> = { pro: 15, business: 50, max: 100 };
