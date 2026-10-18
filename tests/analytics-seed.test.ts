@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { and, eq, like } from "drizzle-orm";
 import type { Db } from "@/server/db";
 import { orders, storePageViews } from "@/server/db/schema";
-import { getAnalyticsExtras, getStoreAnalytics } from "@/server/services/analytics";
+import { VISITORS_PAGE } from "@/lib/analytics";
+import { elapsedDayFraction, getAnalyticsExtras, getPreviousTotals, getStoreAnalytics } from "@/server/services/analytics";
 import { DEMO_PHONE_PREFIX, seedAnalytics } from "../scripts/seed-analytics";
 import { product, seller, testDb } from "./support/db";
 
@@ -44,6 +45,39 @@ describe("demo analytics seed + chart extras", () => {
     expect(a.totals.conversion).toBeGreaterThan(2);
     expect(a.topSold.length).toBeGreaterThan(0);
     expect(a.byCity.length).toBeGreaterThan(3);
+  });
+
+  it("tops up relative to now: a partly seeded day is completed and real visits never block the seed", async () => {
+    const { store } = await seller(database, "seedan3");
+    await product(database, store.id, 25_000);
+    const morning = new Date("Mon 2026-10-12 8:00 AM (UTC+03:00)");
+    const evening = new Date("Mon 2026-10-12 9:00 PM (UTC+03:00)");
+    // A real visit on a past day before the first seed (used to make ON CONFLICT DO NOTHING skip the whole day).
+    await database.insert(storePageViews).values({ storeId: store.id, day: "2026-10-10", page: VISITORS_PAGE, views: 3 });
+    await seedAnalytics(database, store.id, morning);
+    const visitorsOn = async (day: string) =>
+      (await database.select().from(storePageViews).where(and(eq(storePageViews.storeId, store.id), eq(storePageViews.day, day), eq(storePageViews.page, VISITORS_PAGE))))[0]!.views;
+    expect(await visitorsOn("2026-10-10")).toBeGreaterThan(40);
+    const todayMorning = await visitorsOn("2026-10-12");
+    const later = await seedAnalytics(database, store.id, evening);
+    expect(later.orders).toBeGreaterThan(0);
+    expect(await visitorsOn("2026-10-12")).toBeGreaterThan(todayMorning);
+    // Fully seeded days are not touched again.
+    expect(await seedAnalytics(database, store.id, evening)).toEqual({ viewRows: 0, orders: 0 });
+  });
+
+  it("vs previous period is like for like (cut at the same point of the day), so steady growth reads as growth", async () => {
+    const { store } = await seller(database, "seedan4");
+    await product(database, store.id, 25_000);
+    await product(database, store.id, 40_000);
+    await seedAnalytics(database, store.id, NOW);
+    expect(elapsedDayFraction(NOW)).toBeCloseTo(15 / 24, 5);
+    for (const days of [7, 30] as const) {
+      const cur = await getStoreAnalytics(database, store.id, { days, locale: "en", now: NOW });
+      const prev = await getPreviousTotals(database, store.id, { days, now: NOW });
+      expect(cur.totals.visitors).toBeGreaterThan(prev.visitors);
+      expect(prev.orders).toBeGreaterThan(0);
+    }
   });
 
   it("extras are tenant-scoped", async () => {
