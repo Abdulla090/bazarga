@@ -192,7 +192,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
                 <ArrowForward className="text-base transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
               </Link>
             </div>
-            <div {...rv("c", 180)}><FaqList items={faqItems} /></div>
+            <div {...rv("t", 120)}><FaqList items={faqItems} /></div>
           </div>
         </section>
 

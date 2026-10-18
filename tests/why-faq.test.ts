@@ -19,22 +19,24 @@ const NEW_KEYS = [
 describe("landing FAQ accordion", () => {
   const items = FAQ.map((k) => msgs("en").landing.faq[k]);
 
-  it("renders real buttons with aria-expanded/aria-controls and labelled regions", () => {
+  it("is native <details>/<summary>: opens with no JS, one shared name (exclusive), heading inside the summary", () => {
     const html = renderToStaticMarkup(createElement(FaqList, { items }));
-    expect(html.match(/<button[^>]*type="button"/g)?.length).toBe(8);
-    expect(html.match(/aria-expanded="false"/g)?.length).toBe(8);
-    const controls = [...html.matchAll(/aria-controls="([^"]+)"/g)].map((m) => m[1]);
-    const regions = [...html.matchAll(/<div id="([^"]+)" role="region" aria-labelledby="([^"]+)"/g)];
-    expect(regions.map((m) => m[1])).toEqual(controls);
-    const btnIds = [...html.matchAll(/<button[^>]*id="([^"]+)"/g)].map((m) => m[1]);
-    expect(regions.map((m) => m[2])).toEqual(btnIds);
-    expect(html).toContain("<h3");
+    expect(html.match(/<details[^>]*class="faq-item"/g)?.length).toBe(8);
+    expect(html.match(/<summary class="faq-btn"><h3 class="faq-q">/g)?.length).toBe(8);
+    const names = [...html.matchAll(/<details[^>]*name="([^"]+)"/g)].map((m) => m[1]);
+    expect(names.length).toBe(8);
+    expect(new Set(names).size).toBe(1);
+    // nothing JS-only: no buttons, no aria-expanded state to keep in sync, nothing open by default
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain("aria-expanded");
+    expect(html).not.toMatch(/<details[^>]* open/);
+    const src = readFileSync("src/components/marketing/FaqList.tsx", "utf8");
+    expect(src).not.toMatch(/useState|onClick|onToggle|localStorage|sessionStorage/);
   });
 
-  it("only the open item is expanded", () => {
+  it("initialOpen renders exactly one item open", () => {
     const html = renderToStaticMarkup(createElement(FaqList, { items, initialOpen: 2 }));
-    expect(html.match(/aria-expanded="true"/g)?.length).toBe(1);
-    expect(html.match(/role="region"[^>]*data-open="true"/g)?.length).toBe(1);
+    expect(html.match(/<details[^>]*open=""/g)?.length).toBe(1);
   });
 
   it("single-open toggle rule", () => {
@@ -43,14 +45,22 @@ describe("landing FAQ accordion", () => {
     expect(toggleFaq(3, 5)).toBe(5);
   });
 
-  it("the open animation ends sharp: blur(0) + scale(1), spring easing, reduced motion static", () => {
+  it("the open animation is CSS only, ends sharp, and can never leave an answer hidden", () => {
     const css = readFileSync("src/app/(marketing)/marketing.css", "utf8");
-    const open = css.slice(css.indexOf(".faq-panel[data-open] .faq-a {"));
-    expect(open.slice(0, 300)).toMatch(/filter: blur\(0\)/);
-    expect(open.slice(0, 300)).toMatch(/transform: scale\(1\)/);
+    const rest = css.slice(css.indexOf(".faq-a {"), css.indexOf(".faq-a {") + 500);
+    expect(rest).toMatch(/opacity: 1/);
+    expect(rest).toMatch(/filter: blur\(0\)/);
+    expect(rest).toMatch(/transform: scale\(1\)/);
+    // the hidden genie start only exists as @starting-style on an [open] item
+    expect(css).toMatch(/@starting-style \{\s*\.faq-item\[open\] \.faq-a \{ opacity: 0/);
+    expect(css).toMatch(/\.faq-item\[open\]::details-content \{ block-size: auto/);
+    expect(css).toContain("interpolate-size: allow-keywords");
+    // no pointer-events:none / visibility:hidden anywhere in the FAQ rules; the reveal can't clip it
+    const faq = css.slice(css.indexOf(".faq {"), css.indexOf("@media (prefers-reduced-motion: reduce) {\n  .faq-item"));
+    expect(faq).not.toMatch(/pointer-events:\s*none|visibility:\s*hidden/);
+    expect(css).toContain("[data-rv]:has(> [data-faq]) { clip-path: none !important; pointer-events: auto !important; }");
     expect(css).toContain("cubic-bezier(0.32, 0.72, 0, 1)");
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[^}]*\.faq-panel/);
-    // every blur keyframe/end state that animates in returns to blur(0)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[^}]*\.faq-item::details-content/);
     for (const kf of ["zs-s4", "hero-in-line", "hero-in-media"]) {
       const block = css.slice(css.indexOf(`@keyframes ${kf}`), css.indexOf(`@keyframes ${kf}`) + 400);
       expect(block).toContain("blur(0)");
@@ -136,7 +146,9 @@ describe("marketing sections are blue + ink only", () => {
       expect(html).not.toContain("map-");
       expect(html).not.toContain("mk-eyebrow-dark");
       // the typewriter line carries its own direction (Sorani/Arabic rtl, English/Kurmanji ltr)
-      expect(html).toMatch(new RegExp(`dir="${l === "ku" || l === "ar" ? "rtl" : "ltr"}" class="tm-line"`));
+      expect(html).toMatch(new RegExp(`dir="${l === "ku" || l === "ar" ? "rtl" : "ltr"}" class="tm-line tm-live"`));
+      // fixed height: all 4 phrases are laid out invisibly in the same cell
+      expect(html.match(/class="tm-line tm-sizer" aria-hidden="true"/g)?.length).toBe(4);
       expect(html).not.toContain("bg-gold");
       // language demo: one compact dropdown, not a row of 4 chips
       expect(html).not.toContain("tm-tab");
@@ -147,7 +159,9 @@ describe("marketing sections are blue + ink only", () => {
 
   it("Sorani Why copy reads naturally (Oct 15 review) and every locale has the demo picker label", () => {
     const ku = msgs("ku").landing;
-    expect(ku.whyEyebrow).toBe("بۆچی بازارگا؟");
+    expect(ku.whyEyebrow).toBe("بۆچی Reelcart؟");
+    expect(msgs("ar").landing.whyEyebrow).toBe("لماذا Reelcart؟");
+    for (const l of LOCALES) expect(msgs(l).landing.whyEyebrow, l).toContain("Reelcart");
     expect(ku.whyTitle).toBe("بۆ بازاڕی ئێمە دروستکراوە.");
     expect(ku.whyLead).toContain("بەپێی شێوازی فرۆشتنی خەڵکی ئێرە");
     expect(ku.w1Title).toBe("کوردی لە پێشەوە");

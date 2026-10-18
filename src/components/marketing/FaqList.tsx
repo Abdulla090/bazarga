@@ -1,68 +1,55 @@
 "use client";
-import { useId, useRef, useState, type KeyboardEvent } from "react";
+import { useId, type KeyboardEvent } from "react";
 import { Icon, Plus } from "@/components/ui/icons";
 
 export type FaqItem = { q: string; a: string };
 
-/** Single-open rule: clicking the open item closes it; clicking another opens it and closes the rest. */
+/** Single-open rule (what the shared `name` on the <details> gives natively): the open item closes, another one replaces it. */
 export function toggleFaq(open: number | null, i: number): number | null {
   return open === i ? null : i;
 }
 
 /**
- * Landing FAQ accordion: one item open at a time. Each header is a real <button aria-expanded aria-controls> inside
- * an <h3>; its answer is a role="region" labelled by that button. Arrow Up/Down, Home and End move between headers.
- * The macOS-style open (height via grid rows 0fr→1fr, content scale .96→1 from the icon corner, opacity, blur 6px→0)
- * is pure CSS in marketing.css on [data-open]; closed panels are visibility:hidden, so nothing inside is focusable.
+ * Landing FAQ accordion, native <details>/<summary> (Oct 18 Brave fix). Opening never depends on JavaScript: no React
+ * state, no click handler, no preventDefault. The browser toggles [open] itself, so an answer opens the moment the HTML
+ * is painted, before (or without) hydration, with Brave Shields, script blocking or storage blocked. All items share one
+ * `name`, so the browser keeps one open at a time (exclusive accordion); older engines simply allow several.
+ * The open animation is CSS only (marketing.css): ::details-content block-size 0 → auto via interpolate-size, and the
+ * answer fades/de-blurs in from @starting-style. Where unsupported it just opens instantly. The answer's resting style is
+ * fully visible, so nothing can leave it hidden. The only JS is an optional enhancement: Arrow Up/Down, Home and End move
+ * focus between questions.
  */
 export function FaqList({ items, initialOpen = null }: { items: FaqItem[]; initialOpen?: number | null }) {
-  const [open, setOpen] = useState<number | null>(initialOpen);
   const base = useId();
-  const btns = useRef<(HTMLButtonElement | null)[]>([]);
+  const group = `faq${base.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
-  const onKey = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
-    const last = items.length - 1;
-    const to = e.key === "ArrowDown" ? (i === last ? 0 : i + 1) : e.key === "ArrowUp" ? (i === 0 ? last : i - 1) : e.key === "Home" ? 0 : e.key === "End" ? last : -1;
-    if (to < 0) return;
+  const onKey = (e: KeyboardEvent<HTMLElement>) => {
+    const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    const all = Array.from(e.currentTarget.closest("[data-faq]")?.querySelectorAll<HTMLElement>("summary.faq-btn") ?? []);
+    const i = all.indexOf(e.currentTarget);
+    if (i < 0) return;
+    const last = all.length - 1;
+    const to = e.key === "ArrowDown" ? (i === last ? 0 : i + 1) : e.key === "ArrowUp" ? (i === 0 ? last : i - 1) : e.key === "Home" ? 0 : last;
     e.preventDefault();
-    btns.current[to]?.focus();
+    all[to]?.focus();
   };
 
   return (
     <div className="faq" data-faq>
-      {items.map((it, i) => {
-        const isOpen = open === i;
-        const bid = `${base}-q${i}`;
-        const pid = `${base}-a${i}`;
-        return (
-          <div key={i} className="faq-item" data-open={isOpen || undefined}>
-            <h3 className="m-0">
-              <button
-                ref={(el) => {
-                  btns.current[i] = el;
-                }}
-                id={bid}
-                type="button"
-                className="faq-btn"
-                aria-expanded={isOpen}
-                aria-controls={pid}
-                onClick={() => setOpen((o) => toggleFaq(o, i))}
-                onKeyDown={(e) => onKey(e, i)}
-              >
-                <span className="faq-q">{it.q}</span>
-                <span className="faq-icon" aria-hidden="true">
-                  <Icon as={Plus} />
-                </span>
-              </button>
-            </h3>
-            <div id={pid} role="region" aria-labelledby={bid} className="faq-panel" data-open={isOpen || undefined}>
-              <div className="faq-clip">
-                <p className="faq-a">{it.a}</p>
-              </div>
-            </div>
+      {items.map((it, i) => (
+        <details key={i} className="faq-item" name={group} open={initialOpen === i || undefined} data-faq-item>
+          <summary className="faq-btn" onKeyDown={onKey}>
+            <h3 className="faq-q">{it.q}</h3>
+            <span className="faq-icon" aria-hidden="true">
+              <Icon as={Plus} />
+            </span>
+          </summary>
+          <div className="faq-panel">
+            <p className="faq-a">{it.a}</p>
           </div>
-        );
-      })}
+        </details>
+      ))}
     </div>
   );
 }

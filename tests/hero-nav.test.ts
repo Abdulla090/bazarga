@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }) }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {}, push() {} }), usePathname: () => "/" }));
 vi.mock("@/server/actions/locale", () => ({ setLocaleAction: async () => {}, setLocaleFormAction: async () => {} }));
 vi.mock("next-intl/server", () => ({
   getTranslations: async () => (k: string, v?: Record<string, unknown>) => (v ? `${k}:${JSON.stringify(v)}` : k),
@@ -68,8 +68,30 @@ describe("marketing header: one clean row", () => {
     expect(ku).toContain('aria-expanded="false"');
     expect(ku).toContain("سۆرانی");
     expect(ku).toContain("data-lang-trigger");
-    expect(ku).not.toContain("aria-pressed");
+    // the bar itself has no pills; the phone sheet's language control is a segmented control (Oct 18 redesign)
+    expect(ku.slice(0, ku.indexOf("data-mobile-sheet"))).not.toContain("aria-pressed");
     expect(header("en")).toMatch(/data-lang-trigger[\s\S]*English/);
+  });
+
+  it("phone sheet (Oct 18): native popover, scrim hides natively, 4-language segmented form, CTA + Log in pinned", () => {
+    for (const l of LOCALES) {
+      const html = header(l);
+      const sheet = html.slice(html.indexOf("data-mobile-sheet"));
+      expect(html).toMatch(/<button[^>]*popovertarget="[^"]+"[^>]*data-nav-menu-button/i);
+      expect(sheet).toMatch(/popovertargetaction="hide"/i);
+      expect(sheet.match(/<button type="submit"[^>]*data-locale="(ku|kmr|ar|en)" name="locale"/g)?.length).toBe(4);
+      expect(sheet.match(/aria-pressed="true"/g)?.length).toBe(1);
+      expect(sheet).toMatch(new RegExp(`aria-pressed="true"[^>]*data-locale="${l}"`));
+      expect(sheet).toContain("data-menu-cta");
+      expect(sheet).toContain("data-menu-login");
+      expect(sheet.indexOf("data-menu-cta")).toBeLessThan(sheet.indexOf("data-menu-login"));
+    }
+    const css = readFileSync("src/components/marketing/mobile-menu.css", "utf8");
+    expect(css).toContain("cubic-bezier(0.16, 1, 0.3, 1)");
+    expect(css).toMatch(/\[dir="rtl"\] \.mm-panel \{ transform: translate3d\(-104%/);
+    expect(css).toContain("html:has(.mm-sheet:popover-open) { overflow: hidden; }");
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)/);
+    expect(css).not.toMatch(/orange|#f97316|#fb923c|#ea580c/i);
   });
 
   it("signed in: no Log in, the CTA goes to the dashboard", () => {
