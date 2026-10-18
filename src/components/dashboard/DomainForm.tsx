@@ -10,14 +10,14 @@ import type { DnsRecord } from "@/lib/custom-domain";
 /** Custom domain (SF7): save → DNS record to add → Verify (server DNS lookup) → Connected. */
 export function DomainForm({ host, verified, record, auto }: { host: string; verified: boolean; record: DnsRecord | null; auto: boolean }) {
   const t = useTranslations("domain");
-  const [saved, save, saving] = useActionState(saveDomainAction, {});
+  const [saved, action, saving] = useActionState(saveDomainAction, {});
   const [check, verify, checking] = useActionState(verifyDomainAction, {});
-  const keep = useKeepValues(save);
+  const keep = useKeepValues(action);
   const found = typeof check.data?.found === "string" ? check.data.found : "";
   const ok = check.ok === true || (check.ok === undefined && verified);
   return (
     <>
-      <form action={save} onSubmit={keep} className="card grid gap-4" data-testid="domain-form">
+      <form action={action} onSubmit={keep} className="card grid gap-4" data-testid="domain-form">
         <div className="grid gap-1">
           <h2 className="text-lg font-bold">{t("formTitle")}</h2>
           <p className="hint">{t("hint")}</p>
@@ -27,7 +27,7 @@ export function DomainForm({ host, verified, record, auto }: { host: string; ver
         <button className="btn-gold" disabled={saving} aria-busy={saving || undefined} data-testid="domain-save">{t("save")}</button>
       </form>
       {host && (
-        <form action={save} className="-mt-2 flex justify-end">
+        <form action={action} className="-mt-2 flex justify-end">
           <input type="hidden" name="domain" value="" />
           <button className="btn-ghost btn-sm min-h-11" disabled={saving} data-testid="domain-remove">{t("remove")}</button>
         </form>
@@ -44,7 +44,7 @@ export function DomainForm({ host, verified, record, auto }: { host: string; ver
               <div key={k} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-line p-3">
                 <dt className="w-full text-sm text-ink-70 sm:w-36">{t(k)}</dt>
                 <dd className="num me-auto break-all font-semibold" dir="ltr" data-testid={`domain-record-${k}`}>{v}</dd>
-                {k !== "type" && <CopyButton text={v} className="btn-ghost btn-sm" testId={`domain-copy-${k}`} />}
+                {k !== "type" && <CopyButton text={v} className="btn-ghost btn-sm min-h-11 min-w-11" testId={`domain-copy-${k}`} />}
               </div>
             ))}
           </dl>
