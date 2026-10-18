@@ -1,4 +1,5 @@
 "use server";
+import { flagOn } from "../services/platform-settings";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
@@ -24,6 +25,7 @@ function provider() {
 /** Step 1: send a 6-digit code on WhatsApp. Same answer whether or not the number has an account. */
 export async function sendLoginCodeAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
+    if (!(await flagOn(db(), "whatsappLogin"))) throw new AppError("UNAVAILABLE");
     const p = provider();
     const ip = await clientIp();
     const { phone } = phoneIn.parse(formObject(fd));

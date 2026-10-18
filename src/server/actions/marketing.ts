@@ -1,4 +1,6 @@
 "use server";
+import { flagOn } from "../services/platform-settings";
+import { AppError } from "../errors";
 import { headers } from "next/headers";
 import { db } from "../db";
 import { waitlistSchema } from "@/lib/validation";
@@ -11,6 +13,7 @@ export async function joinWaitlistAction(_prev: ActionState, fd: FormData): Prom
   try {
     const ip = ((await headers()).get("x-forwarded-for") ?? "unknown").split(",")[0]!.trim();
     await enforceRateLimit(db(), `waitlist:${ip}`, 10, 3600);
+    if (!(await flagOn(db(), "waitlist"))) throw new AppError("UNAVAILABLE");
     const input = waitlistSchema.parse(formObject(fd));
     const r = await joinWaitlist(db(), input, formObject(fd).ref);
     logger.info("waitlist.joined", { city: input.city, sells: input.sells, existing: r.existing, referred: Boolean(formObject(fd).ref) });

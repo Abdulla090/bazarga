@@ -1,3 +1,4 @@
+import { withOverrides } from "./limit-overrides";
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
 import type { Db } from "../db";
 import { storePlanHistory, stores } from "../db/schema";
@@ -41,7 +42,7 @@ export function bestPlan(plans: (string | null | undefined)[]): PlanId {
 export async function ownedStoreUsage(database: Db, ownerId: string) {
   const owned = await database.select({ id: stores.id, plan: stores.plan, planPeriodEnd: stores.planPeriodEnd }).from(stores).where(eq(stores.ownerId, ownerId)).orderBy(asc(stores.createdAt));
   const plan = bestPlan(owned.map((s) => s.plan));
-  return { used: owned.length, limit: STORE_LIMIT[plan], plan, owned };
+  return { used: owned.length, limit: await withOverrides(database, owned.map((s) => s.id), "stores", STORE_LIMIT[plan]), plan, owned };
 }
 
 /**

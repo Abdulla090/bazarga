@@ -6,6 +6,7 @@ import { isCronAuthorized } from "@/lib/cron-auth";
 import { expireLapsedPlans } from "@/server/services/plan-expiry";
 import { runPaymentJobs } from "@/server/payments/reconcile";
 import { pruneRateLimits } from "@/server/auth/rate-limit";
+import { recordCronRun } from "@/server/services/platform-settings";
 
 /** Daily housekeeping (Vercel Hobby cron): plan expiry + payment reconcile/abandoned-order expiry + stale rate-limit counters. Bearer CRON_SECRET; unset → 404. */
 export async function GET(req: Request) {
@@ -20,9 +21,11 @@ export async function GET(req: Request) {
     const payments = await runPaymentJobs(db(), { ttlMinutes: e.PAYMENT_ORDER_TTL_MINUTES });
     // Counters older than a day can't affect any window (longest is 1 h); keeps rate_limits small.
     await pruneRateLimits(db());
+    await recordCronRun(db(), "daily", true, { plansExpired: plans.expired });
     return NextResponse.json({ ok: true, plans, payments }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     logger.error("cron.daily_failed", { err });
+    await recordCronRun(db(), "daily", false);
     return NextResponse.json({ ok: false }, { status: 500, headers: { "Cache-Control": "no-store" } });
   }
 }

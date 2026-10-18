@@ -17,6 +17,10 @@ import { VerifyEmailBanner } from "@/components/dashboard/VerifyEmailBanner";
 import { PendingButton } from "@/components/ui/PendingButton";
 import { StoreSwitcher } from "@/components/dashboard/StoreSwitcher";
 import { listAccessibleStores } from "@/server/services/store-access";
+import { AnnouncementBar } from "@/components/site/AnnouncementBar";
+import { StatusPage } from "@/components/site/StatusPage";
+import { announcementFor, maintenanceFor } from "@/server/admin/site-gate";
+import { endImpersonationAction } from "@/server/actions/admin";
 
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
@@ -31,9 +35,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const tp = await getTranslations("pricing");
   const plan = normalizePlan(store.plan);
   const locale = await currentLocale();
-  const [newOrders, verified, stores] = await Promise.all([countNewOrders(db(), store.id), isEmailVerified(db(), user.id), listAccessibleStores(db(), user.id)]);
+  const [newOrders, verified, stores, maint, ann] = await Promise.all([countNewOrders(db(), store.id), isEmailVerified(db(), user.id), listAccessibleStores(db(), user.id), maintenanceFor(), announcementFor(locale)]);
+  // Admin maintenance mode (docs/ADMIN.md): sellers see the maintenance page; a view-as session too (the admin bypass is the admin's own session).
+  if (maint) {
+    const ts = await getTranslations("site");
+    return <StatusPage title={ts("maintenance.title")} body={maint.message || ts("maintenance.body")} testId="maintenance-page" />;
+  }
+  const ta = user.impersonatedBy ? await getTranslations("admin") : null;
   return (
     <IntlProvider>
+    {ta && (
+      <form action={endImpersonationAction} className="sticky top-0 z-[60] flex flex-wrap items-center justify-center gap-3 bg-[#B54708] px-4 py-2 text-sm text-white print:hidden" data-testid="impersonation-banner">
+        <span>{ta("imp.banner", { name: user.name, email: user.email })}</span>
+        <button className="min-h-11 rounded-full bg-white px-4 font-medium text-[#B54708]" data-testid="impersonation-end">{ta("imp.end")}</button>
+      </form>
+    )}
+    {ann && <AnnouncementBar {...ann} />}
     <div className="min-h-dvh bg-paper pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 print:min-h-0 print:bg-white print:pb-0">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-md print:hidden">
         <div className="flex h-16 items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] md:px-6">

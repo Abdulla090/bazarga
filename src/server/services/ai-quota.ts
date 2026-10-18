@@ -1,3 +1,4 @@
+import { withOverride } from "./limit-overrides";
 import { and, eq, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import { aiUsage, stores } from "../db/schema";
@@ -22,14 +23,14 @@ export async function getAiUsage(db: Db, storeId: string, feature: AiFeature, no
     .from(aiUsage)
     .where(and(eq(aiUsage.storeId, storeId), eq(aiUsage.feature, feature), eq(aiUsage.period, period)));
   const used = row?.used ?? 0;
-  const limit = AI_MONTHLY_LIMIT[feature][plan];
+  const limit = await withOverride(db, storeId, "aiCredits", AI_MONTHLY_LIMIT[feature][plan]);
   return { plan, feature, period, used, limit, remaining: Math.max(0, limit - used) };
 }
 
 /** Spend one credit atomically (never overshoots under concurrency). Throws VALIDATION "plan_limit_ai" when used up. */
 export async function consumeAiCredit(db: Db, storeId: string, feature: AiFeature, now: Date = new Date()): Promise<AiUsage> {
   const plan = await planOf(db, storeId);
-  const limit = AI_MONTHLY_LIMIT[feature][plan];
+  const limit = await withOverride(db, storeId, "aiCredits", AI_MONTHLY_LIMIT[feature][plan]);
   const period = studioPeriod(now);
   if (limit <= 0) throw new AppError("VALIDATION", "plan_limit_ai");
   const rows = await db

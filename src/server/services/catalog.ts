@@ -1,3 +1,4 @@
+import { withOverride } from "./limit-overrides";
 import { and, asc, count, desc, eq, inArray, isNotNull, lte } from "drizzle-orm";
 import type { Db } from "../db";
 import { categories, productImages, productOptionValues, productOptions, productVariants, products, stores } from "../db/schema";
@@ -370,7 +371,8 @@ export async function getProductUsage(database: Db, storeId: string) {
   const [st] = await database.select({ plan: stores.plan }).from(stores).where(eq(stores.id, storeId));
   const plan = normalizePlan(st?.plan);
   const [c] = await database.select({ n: count() }).from(products).where(eq(products.storeId, storeId));
-  return { plan, used: Number(c?.n ?? 0), cap: productLimit(plan), shown: productsShown(plan) };
+  const cap = await withOverride(database, storeId, "products", productLimit(plan));
+  return { plan, used: Number(c?.n ?? 0), cap, shown: cap === productLimit(plan) ? productsShown(plan) : cap };
 }
 
 /**

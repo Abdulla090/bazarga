@@ -8,6 +8,9 @@ import { getShowcaseStores } from "@/server/cache/showcase";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { IRAQI_CITIES } from "@/lib/cities";
+import { notFound } from "next/navigation";
+import { db } from "@/server/db";
+import { flagOn } from "@/server/services/platform-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("showcase");
@@ -16,6 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Public seller showcase (docs/DEMAND.md D4): only stores that opted in; the empty state is an honest invitation, never fake stores. */
 export default async function ShowcasePage() {
+  // Admin feature flag (docs/ADMIN.md): the public showcase can be switched off at runtime.
+  if (!(await flagOn(db(), "showcase"))) notFound();
   const t = await getTranslations("showcase");
   const tc = await getTranslations("common");
   const locale = await currentLocale();

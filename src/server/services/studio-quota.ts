@@ -1,3 +1,4 @@
+import { withOverride } from "./limit-overrides";
 import { and, eq, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import { productStudioUsage, stores } from "../db/schema";
@@ -30,7 +31,7 @@ export async function getStudioUsage(db: Db, storeId: string, now: Date = new Da
     .from(productStudioUsage)
     .where(and(eq(productStudioUsage.storeId, storeId), eq(productStudioUsage.period, period)));
   const used = row?.used ?? 0;
-  const limit = studioEditsLimit(plan);
+  const limit = await withOverride(db, storeId, "studioEdits", studioEditsLimit(plan));
   return { plan, period, used, limit, remaining: Math.max(0, limit - used) };
 }
 
@@ -41,7 +42,7 @@ export async function getStudioUsage(db: Db, storeId: string, now: Date = new Da
  */
 export async function consumeStudioEdit(db: Db, storeId: string, now: Date = new Date()): Promise<StudioUsage> {
   const plan = await planOf(db, storeId);
-  const limit = studioEditsLimit(plan);
+  const limit = await withOverride(db, storeId, "studioEdits", studioEditsLimit(plan));
   const period = studioPeriod(now);
   if (limit <= 0) throw new AppError("VALIDATION", "plan_limit_studio");
   const rows = await db

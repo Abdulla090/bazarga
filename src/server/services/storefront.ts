@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, inArray, notInArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, notInArray, sql } from "drizzle-orm";
 import type { ProductSeo, StoreSeo } from "../db/schema";
 import type { Db } from "../db";
 import {
@@ -62,6 +62,8 @@ export type StorefrontStore = {
   /** Advanced SEO overrides + white-label switch (Max; apply via effectiveSeo / whiteLabelOn in src/lib/seo.ts). */
   seo: StoreSeo;
   whiteLabel: boolean;
+  /** Admin suspension (migration 0030): the storefront renders a "temporarily unavailable" page instead. */
+  suspendedAt: Date | null;
 };
 
 export async function loadStorefrontStore(database: Db, slug: string): Promise<StorefrontStore | null> {
@@ -93,6 +95,7 @@ export async function loadStorefrontStore(database: Db, slug: string): Promise<S
       foundingNumber: true,
       seo: true,
       whiteLabel: true,
+      suspendedAt: true,
     },
   });
   return s ?? null;
@@ -173,7 +176,7 @@ export const CATALOG_LIMIT = 1000;
 
 export async function loadCatalog(database: Db, storeId: string): Promise<Catalog> {
   const list = await database.query.products.findMany({
-    where: and(eq(products.storeId, storeId), eq(products.isActive, true)),
+    where: and(eq(products.storeId, storeId), eq(products.isActive, true), isNull(products.hiddenByAdminAt)),
     columns: { id: true, name: true, categoryId: true, price: true, compareAtPrice: true, stock: true, badge: true },
     orderBy: [asc(products.sort), desc(products.createdAt)],
     limit: CATALOG_LIMIT,
@@ -346,7 +349,7 @@ export type ProductDetail = {
 
 export async function loadProductDetail(database: Db, storeId: string, productId: string): Promise<ProductDetail | null> {
   const p = await database.query.products.findFirst({
-    where: and(eq(products.id, productId), eq(products.storeId, storeId), eq(products.isActive, true)),
+    where: and(eq(products.id, productId), eq(products.storeId, storeId), eq(products.isActive, true), isNull(products.hiddenByAdminAt)),
     columns: {
       id: true,
       storeId: true,

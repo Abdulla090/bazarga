@@ -1,3 +1,4 @@
+import { withOverride } from "./limit-overrides";
 import { and, asc, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Db } from "../db";
@@ -16,7 +17,7 @@ export async function teamUsage(database: Db, storeId: string): Promise<TeamUsag
   const [st] = await database.select({ plan: stores.plan }).from(stores).where(eq(stores.id, storeId));
   if (!st) throw new AppError("NOT_FOUND");
   const [c] = await database.select({ n: sql<number>`count(*)` }).from(storeMembers).where(eq(storeMembers.storeId, storeId));
-  return { used: Number(c?.n ?? 0), limit: TEAM_LIMIT[normalizePlan(st.plan)] };
+  return { used: Number(c?.n ?? 0), limit: await withOverride(database, storeId, "seats", TEAM_LIMIT[normalizePlan(st.plan)]) };
 }
 
 export async function listMembers(database: Db, storeId: string) {

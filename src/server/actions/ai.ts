@@ -1,4 +1,5 @@
 "use server";
+import { flagOn } from "../services/platform-settings";
 import { db } from "../db";
 import { requireStore } from "../auth/session";
 import { assertFeature } from "../plan-gate";
@@ -19,6 +20,7 @@ export async function writeProductCopyAction(input: { lang: string; hint: string
   try {
     const { store, user } = await requireStore();
     assertFeature(store, "aiDescriptions");
+    if (!(await flagOn(db(), "aiDescriptions"))) throw new AppError("UNAVAILABLE", "ai_disabled");
     const provider = textProviderFor(user.email);
     if (!provider) throw new AppError("UNAVAILABLE", "ai_disabled");
     const parsed = productCopyInputSchema.parse({ ...input, price: input.price === "" ? null : input.price });

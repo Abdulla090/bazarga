@@ -9,6 +9,7 @@
  * (Variable names honey/dress/scarf are the historical product slots.)
  * Idempotent: re-running does nothing if the store exists.
  */
+import { promoteSeedAdmins } from "./seed-admin";
 import { randomBytes } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { createDb } from "../src/server/db";
@@ -54,13 +55,19 @@ if (!process.env.SEED_DEMO_PASSWORD && process.env.VERCEL_ENV === "production" &
 const DEMO_PLAN = normalizePlan(process.env.SEED_DEMO_PLAN ?? "max");
 
 async function main() {
+  const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "pglite://./.pglite";
+  const db = createDb(url);
+  // SEED_ADMIN_EMAIL → platform owner (docs/ADMIN.md); runs on exit so a demo account created below counts too.
+  const promote = async () => {
+    const done = await promoteSeedAdmins(db).catch((err) => { console.error("[seed] admin promotion failed", err); return []; });
+    if (done.length) console.log(`[seed] platform owner role granted to ${done.length} account(s) from SEED_ADMIN_EMAIL`);
+  };
   // SEED_DEMO=false launches an empty platform: no demo seller, no demo store (docs/SETUP.md).
   if (process.env.SEED_DEMO === "false") {
     console.log("[seed] SEED_DEMO=false — demo store skipped");
+    await promote();
     process.exit(0);
   }
-  const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "pglite://./.pglite";
-  const db = createDb(url);
 
   const existingStore = await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") });
   if (existingStore) {
@@ -75,6 +82,7 @@ async function main() {
     }
     if (seedAnalyticsEnabled()) console.log("[seed] demo analytics topped up", await seedAnalytics(db, existingStore.id));
     console.log("[seed] Studio Hawler already exists — nothing else to do");
+    await promote();
     process.exit(0);
   }
 
@@ -359,6 +367,7 @@ async function main() {
   if (seedAnalyticsEnabled()) console.log("[seed] demo analytics", await seedAnalytics(db, store.id));
 
   console.log(`[seed] created Studio Hawler → /s/hawler-bazaar  (login: ${DEMO_EMAIL} / ${DEMO_PASSWORD})`);
+  await promote();
   process.exit(0);
 }
 

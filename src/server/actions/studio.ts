@@ -4,6 +4,8 @@ import { requireStore } from "../auth/session";
 import { enforceRateLimit } from "../auth/rate-limit";
 import { consumeStudioEdit } from "../services/studio-quota";
 import { toActionState, type ActionState } from "./util";
+import { flagOn } from "../services/platform-settings";
+import { AppError } from "../errors";
 
 /**
  * Product Studio (SF9): spend one monthly edit for a photo cleaned up in the browser. The editor calls it after the
@@ -14,6 +16,8 @@ export async function claimStudioEditAction(): Promise<ActionState> {
   try {
     const { store } = await requireStore();
     await enforceRateLimit(db(), `studio:local:${store.id}`, 60, 3600);
+    // Admin feature flag (docs/ADMIN.md): Product Studio can be switched off at runtime.
+    if (!(await flagOn(db(), "productStudio"))) throw new AppError("UNAVAILABLE");
     const u = await consumeStudioEdit(db(), store.id);
     return { ok: true, data: { used: u.used, limit: u.limit, remaining: u.remaining } };
   } catch (e) {

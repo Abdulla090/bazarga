@@ -1,4 +1,5 @@
 "use server";
+import { getMaintenance } from "../services/platform-settings";
 import { after } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -76,6 +77,8 @@ export type PlaceOrderResult = ActionState & { redirectTo?: string; external?: b
 export async function placeOrderAction(slug: string, payload: unknown): Promise<PlaceOrderResult> {
   try {
     const store = await storeOr404(slug);
+    // Admin controls (docs/ADMIN.md): no orders into a suspended / unpublished store or while the platform is in maintenance.
+    if (store.suspendedAt || !store.isActive || (await getMaintenance(db())).on) throw new AppError("UNAVAILABLE");
     const ip = await clientIp();
     await enforceRateLimit(db(), `checkout:${ip}`, 20, 600);
     // Per store too, so one IP can't flood a single seller with fake COD orders (src/lib/order-risk.ts). Skipped when
