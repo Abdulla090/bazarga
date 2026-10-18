@@ -75,7 +75,9 @@ describe("demo analytics seed + chart extras", () => {
     for (const days of [7, 30] as const) {
       const cur = await getStoreAnalytics(database, store.id, { days, locale: "en", now: NOW });
       const prev = await getPreviousTotals(database, store.id, { days, now: NOW });
-      expect(cur.totals.visitors).toBeGreaterThan(prev.visitors);
+      expect(cur.totals.visitors).toBeGreaterThan(prev.visitors * 1.03);
+      expect(cur.totals.storeViews).toBeGreaterThan(prev.storeViews);
+      expect(cur.totals.orders).toBeGreaterThan(prev.orders);
       expect(prev.orders).toBeGreaterThan(0);
     }
   });
