@@ -97,7 +97,7 @@ export const PLANS: Plan[] = [
       { key: "stores3", soon: true },
       { key: "team5", soon: true },
       { key: "analyticsAdvanced" },
-      { key: "bulkCsv", soon: true },
+      { key: "bulkCsv" },
       { key: "aiDescriptions", soon: true },
       { key: "lowStock" },
       { key: "priority" },
@@ -170,7 +170,7 @@ export const COMPARE: FeatureRow[] = [
   { key: "discounts", free: false, pro: true, business: true, max: true },
   { key: "badge", free: "shown", pro: "removed", business: "removed", max: soon("whiteLabel") },
   { key: "domain", free: false, pro: false, business: soon(true), max: soon(true) },
-  { key: "bulkCsv", free: false, pro: false, business: soon(true), max: soon(true) },
+  { key: "bulkCsv", free: false, pro: false, business: true, max: true },
   { key: "aiDescriptions", free: false, pro: false, business: soon(true), max: soon(true) },
   { key: "lowStock", free: true, pro: true, business: true, max: true },
   { key: "aiDesigner", free: false, pro: false, business: false, max: soon(true) },
@@ -211,4 +211,34 @@ export function isPaidPlan(v: string): v is PaidPlanId {
 /** Pro and up remove the "Made with Bazarga" store footer badge. */
 export function showsBazargaBadge(plan: PlanId): boolean {
   return plan === "free";
+}
+
+// ---------------------------------------------------------------- feature gates (enforced server-side)
+export const PLAN_RANK: Record<PlanId, number> = { free: 0, pro: 1, business: 2, max: 3 };
+
+/** True when `plan` is `min` or a higher tier. */
+export function planAtLeast(plan: PlanId, min: PlanId): boolean {
+  return PLAN_RANK[plan] >= PLAN_RANK[min];
+}
+
+/**
+ * Lowest plan that unlocks each gated feature (matches the pricing cards). Server actions call
+ * `assertFeature` (src/server/plan-gate.ts); pages use `hasFeature` only to choose between the tool and an upgrade card.
+ */
+export const FEATURE_MIN_PLAN = {
+  bulkCsv: "business",
+  seoAdvanced: "max",
+  whiteLabel: "max",
+  multiStore: "business",
+  team: "pro",
+  aiDescriptions: "business",
+  templatesPremium: "max",
+  domain: "business",
+  studio: "pro",
+  aiDesigner: "max",
+} as const satisfies Record<string, PlanId>;
+export type GatedFeature = keyof typeof FEATURE_MIN_PLAN;
+
+export function hasFeature(plan: PlanId, f: GatedFeature): boolean {
+  return planAtLeast(plan, FEATURE_MIN_PLAN[f]);
 }

@@ -828,7 +828,8 @@
     "too_many_variants": "Up to 100 combinations.",
     "variants_all_off": "Turn on at least one combination, or remove the options.",
     "compare_at_must_exceed_price": "The old price must be higher than the price.",
-    "network": "No connection. Your cart and details are still here; try again when you're back online."
+    "network": "No connection. Your cart and details are still here; try again when you're back online.",
+    "plan_feature": "This feature isn't included in your plan. Upgrade to use it."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1517,5 +1518,11 @@
         "a": "Message us on WhatsApp or email founder@kurdistanai.app."
       }
     }
+  },
+  "planGate": {
+    "badge": "{plan} plan",
+    "cta": "Upgrade to {plan}",
+    "csvTitle": "Bulk CSV import is on Business",
+    "csvBody": "Add hundreds of products at once from a spreadsheet. Exporting your products and orders stays free on every plan."
   }
 }

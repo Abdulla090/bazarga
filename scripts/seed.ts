@@ -27,6 +27,7 @@ import {
   users,
 } from "../src/server/db/schema";
 import { signUp } from "../src/server/auth/service";
+import { normalizePlan } from "../src/lib/plans";
 import { createStore } from "../src/server/services/stores";
 import { createCategory, createProduct } from "../src/server/services/catalog";
 import type { ProductImageInput } from "../src/lib/validation";
@@ -46,6 +47,8 @@ const spec = (label: LocalizedText, value: LocalizedText) => ({ label, value });
 
 const DEMO_EMAIL = process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app";
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo";
+/** Plan of the demo store, re-applied on every seed so the demo shows every unlocked feature (default max). */
+const DEMO_PLAN = normalizePlan(process.env.SEED_DEMO_PLAN ?? "max");
 
 async function main() {
   // SEED_DEMO=false launches an empty platform: no demo seller, no demo store (docs/SETUP.md).
@@ -63,6 +66,10 @@ async function main() {
       .update(users)
       .set({ emailVerifiedAt: new Date() })
       .where(and(eq(users.id, existingStore.ownerId), sql`${users.emailVerifiedAt} is null`));
+    if (existingStore.plan !== DEMO_PLAN) {
+      await db.update(stores).set({ plan: DEMO_PLAN, planPeriodEnd: null }).where(eq(stores.id, existingStore.id));
+      console.log(`[seed] demo store plan set to ${DEMO_PLAN}`);
+    }
     if (seedAnalyticsEnabled()) console.log("[seed] demo analytics topped up", await seedAnalytics(db, existingStore.id));
     console.log("[seed] Studio Hawler already exists — nothing else to do");
     process.exit(0);
@@ -82,6 +89,8 @@ async function main() {
     city: "erbil",
     tagline: { ku: "کەلوپەلی ڕۆژانە، بە باشی دروستکراو", ar: "أغراض يومية، مصنوعة بإتقان", en: "Everyday goods, made well", kmr: "Tiştên rojane, baş çêkirî" },
   });
+
+  await db.update(stores).set({ plan: DEMO_PLAN }).where(eq(stores.id, store.id));
 
   const clothing = await createCategory(db, store.id, { name: { ku: "جلوبەرگ", ar: "ملابس", en: "Clothing", kmr: "Cil" }, sort: 0 });
   const home = await createCategory(db, store.id, { name: { ku: "ماڵ", ar: "المنزل", en: "Home", kmr: "Mal" }, sort: 1 });

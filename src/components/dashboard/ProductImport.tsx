@@ -36,7 +36,7 @@ export function ProductImport({ labels, room }: { labels: ImportLabels; room: nu
     start(async () => {
       const r = await importProductsCsvAction(text);
       if (r.ok && r.data) { setResult(r.data as { created: number; skipped: number; overLimit: number }); setText(""); router.refresh(); }
-      else setErr(r.error === "plan_limit_products" ? labels.limit : labels.failed);
+      else setErr(r.error === "plan_limit_products" || r.error === "plan_feature" ? labels.limit : labels.failed);
     });
   }
 

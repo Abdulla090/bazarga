@@ -12,11 +12,16 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Custom domain per seller (`shop.yourbrand.com`) | Business, Max | `stores.custom_domain`, subdomain routing in `src/proxy.ts` + `src/lib/domains.ts` |
 | Team members (2 / 5 / 10 seats) | Pro / Business / Max | Session + store ownership model; add a store_members table |
 | Multiple stores per account (3 / 5) | Business / Max | Store creation service already per-user |
-| Bulk CSV import | Business | CSV export for products and orders already built (`src/lib/products-csv.ts`) |
 | AI product descriptions | Business | AI builder (`src/server/ai`) behind `AI_ENABLED` |
 | AI Website Designer, exclusive designs, premium templates, monthly design refresh | Max | Theme Studio schema + 7 layout designs (`src/lib/theme-studio`) |
 | Advanced SEO, white-label, priority processing | Max | SEO helpers (`src/lib/seo.ts`), "Made with Reelcart" badge toggle |
 | Sign in with WhatsApp (phone OTP) | All | `OtpProvider` interface (`src/server/otp`) |
+
+## Shipped from the "Soon" list (Oct 18, 2026)
+
+| Feature | Plan | Where it lives |
+|---|---|---|
+| Bulk CSV import (preview, per-row validation, plan product cap) | Business, Max | `/dashboard/products/import`, `src/lib/products-csv-import.ts`; gate `assertFeature(store, "bulkCsv")` (`src/server/plan-gate.ts`) |
 
 ## Growth ideas (highest leverage first)
 

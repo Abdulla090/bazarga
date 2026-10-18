@@ -33,7 +33,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Sign up, email verification, login, password reset; onboarding wizard (store name, link, theme)
 - Overview: KPIs with trends, latest orders, running-low products, first-run setup checklist
 - Cmd-K command palette and "g then key" keyboard shortcuts; skeleton loading states; mobile tab bar
-- Products: create/edit with photos (browser compression before upload, server renditions), variants editor, specs editor, categories, low-stock alerts, CSV export
+- Products: create/edit with photos (browser compression before upload, server renditions), variants editor, specs editor, categories, low-stock alerts, CSV export, bulk CSV import with a validated preview (Business+)
 - Orders: list with filters and search, detail with status timeline, history notes, courier + tracking number, printable slip, courier sheet, WhatsApp reply templates, quick replies, order source ("From TikTok"), risk flags, CSV export, block abusive phone numbers
 - Customers list; delivery zones and areas per city; discount codes screen
 - Settings: store info, cover photo, contact/WhatsApp, pixels, showcase opt-in, push notifications toggle
