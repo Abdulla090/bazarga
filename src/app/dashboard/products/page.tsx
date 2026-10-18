@@ -39,6 +39,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         {all.length > 0 && (
           <a href="/api/products/export" download className="btn-ghost btn-sm" data-testid="products-export">{t("export")}</a>
         )}
+        <Link href="/dashboard/products/import" className="btn-ghost btn-sm" data-testid="products-import-link">{t("importCta")}</Link>
         <Link href="/dashboard/ai" className="btn-ghost btn-sm"><Icon as={Sparkles} /> {td("ai")}</Link>
         <Link href="/dashboard/products/new" className="btn-gold btn-sm">+ {t("new")}</Link>
       </div>

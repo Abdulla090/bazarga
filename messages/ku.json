@@ -395,7 +395,31 @@
     "variantsStockNote": "کۆگا و SKU بۆ هەر جۆرێک لە خوارەوە دیاری دەکرێن.",
     "variantsLimit": "تا {max} تێکەڵە. بەهایەک لابە بۆ زیادکردنی زیاتر.",
     "maxOptions": "تا ٣ گرووپی هەڵبژاردن.",
-    "export": "داگرتنی CSV"
+    "export": "داگرتنی CSV",
+    "importTitle": "هاوردەکردنی کاڵاکان",
+    "importHelp": "فایلی CSV لە Excel یان Google Sheets باربکە (یان لێرە بیلکێنە). پێویستی بە ستوونی ناو (name_ku، name_en، name_ar یان name_kmr) و ستوونی price هەیە. وێنەکان دواتر لە دەستکاریکەری کاڵا زیاد دەکرێن.",
+    "importPick": "فایلی CSV هەڵبژێرە",
+    "importPaste": "یان CSV لێرە بلکێنە",
+    "importPreview": "پێشبینین",
+    "importReady": "{n} کاڵا ئامادەن بۆ هاوردەکردن",
+    "importSkipped": "{n} ڕیز تێپەڕێنران (کێشەیان هەیە)",
+    "importRoom": "پلانەکەت شوێنی {n} کاڵای تری هەیە، ئەوانی تر نایەنە ناوەوە",
+    "importStart": "هاوردەکردنی {n} کاڵا",
+    "importWorking": "هاوردە دەکرێت…",
+    "importDone": "{n} کاڵا هاوردە کران",
+    "importTemplate": "داگرتنی نموونە",
+    "importView": "بینینی کاڵاکان",
+    "importRowError": "ڕیزی {line}: {why}",
+    "importLimit": "گەیشتیتە سنووری کاڵای پلانەکەت. بەرزی بکەرەوە بۆ زیادکردنی زیاتر.",
+    "importFailed": "نەکرا هاوردە بکرێت. فایلەکە بپشکنە و دووبارە هەوڵ بدەوە.",
+    "importFatal": {
+      "empty": "فایلەکە بەتاڵە.",
+      "too_big": "فایلەکە زۆر گەورەیە (زیاتر لە 400KB).",
+      "no_name_column": "ستوونی ناو زیاد بکە: name_ku، name_en، name_ar یان name_kmr.",
+      "no_price_column": "ستوونی price زیاد بکە.",
+      "too_many_rows": "تا 200 کاڵا لە هەر فایلێک."
+    },
+    "importCta": "هاوردەکردنی CSV"
   },
   "categories": {
     "title": "پۆلەکان",

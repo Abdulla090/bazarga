@@ -395,7 +395,31 @@
     "variantsStockNote": "يُحدَّد المخزون وSKU لكل نوع في الأسفل.",
     "variantsLimit": "حتى {max} تركيبة. احذف قيمة لإضافة المزيد.",
     "maxOptions": "حتى ٣ مجموعات خيارات.",
-    "export": "تنزيل CSV"
+    "export": "تنزيل CSV",
+    "importTitle": "استيراد المنتجات",
+    "importHelp": "ارفع ملف CSV من Excel أو Google Sheets (أو الصقه هنا). يلزم عمود للاسم (name_ar أو name_en أو name_ku أو name_kmr) وعمود price. تُضاف الصور لاحقاً من محرر المنتج.",
+    "importPick": "اختر ملف CSV",
+    "importPaste": "أو الصق CSV هنا",
+    "importPreview": "معاينة",
+    "importReady": "{n} منتج جاهز للاستيراد",
+    "importSkipped": "تم تخطي {n} صف (فيها مشاكل)",
+    "importRoom": "باقتك تتسع لـ {n} منتج إضافي، والباقي سيُترك",
+    "importStart": "استيراد {n} منتج",
+    "importWorking": "جارٍ الاستيراد…",
+    "importDone": "تم استيراد {n} منتج",
+    "importTemplate": "تنزيل القالب",
+    "importView": "عرض المنتجات",
+    "importRowError": "الصف {line}: {why}",
+    "importLimit": "وصلت إلى حد منتجات باقتك. قم بالترقية لإضافة المزيد.",
+    "importFailed": "تعذر الاستيراد. تحقق من الملف وحاول مرة أخرى.",
+    "importFatal": {
+      "empty": "الملف فارغ.",
+      "too_big": "الملف كبير جداً (400 كيلوبايت كحد أقصى).",
+      "no_name_column": "أضف عمود الاسم: name_ar أو name_en أو name_ku أو name_kmr.",
+      "no_price_column": "أضف عمود price.",
+      "too_many_rows": "حتى 200 منتج في الملف الواحد."
+    },
+    "importCta": "استيراد CSV"
   },
   "categories": {
     "title": "الأقسام",
