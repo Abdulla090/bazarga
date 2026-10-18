@@ -1831,7 +1831,8 @@
       "images": "Product images",
       "inStorage": "{n} in storage",
       "aiCredits": "AI credits used",
-      "studioEdits": "Studio edits"
+      "studioEdits": "Studio edits",
+      "gmvHint": "Excludes cancelled, refused and returned"
     },
     "u": {
       "title": "Users",

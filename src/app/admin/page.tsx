@@ -73,6 +73,7 @@ export default async function AdminOverview({ searchParams }: { searchParams: Pr
   const periodLabel = t(`ov.period.${period}`);
   const range: [string, string] = [k.signups[0]?.day ?? "", k.signups.at(-1)?.day ?? ""];
   const quiet = k.signups.every((d) => d.n === 0) && k.ordersDaily.every((d) => d.n === 0);
+  const all = period === "all";
   const aiMonth = k.usage.ai.reduce((s, r) => s + r.month, 0);
   const aiAll = k.usage.ai.reduce((s, r) => s + r.all, 0);
   return (
@@ -87,7 +88,7 @@ export default async function AdminOverview({ searchParams }: { searchParams: Pr
                 key={p}
                 href={p === "30d" ? "/admin" : `/admin?period=${p}`}
                 aria-current={p === period ? "true" : undefined}
-                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-sm sm:min-h-9 ${p === period ? "bg-ink font-medium text-white" : "text-ink-70 hover:text-ink"}`}
+                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-sm ${p === period ? "bg-ink font-medium text-white" : "text-ink-70 hover:text-ink"}`}
               >
                 {t(`ov.periodShort.${p}`)}
               </Link>
@@ -98,11 +99,11 @@ export default async function AdminOverview({ searchParams }: { searchParams: Pr
       {maint.on && <p className="mb-5 rounded-2xl border border-[#FEC84B] bg-[#FFFAEB] px-4 py-3 text-sm text-[#B54708]" data-testid="maint-on">{t("ov.maintenanceOn")}</p>}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Tile testId="kpi-users" href="/admin/users" label={t("ov.users")} value={n(k.users)} sub={`${t("ov.newIn", { n: n(k.usersNew), period: periodLabel })} · ${t("ov.verified", { n: n(k.usersVerified) })}`} />
+        <Tile testId="kpi-users" href="/admin/users" label={t("ov.users")} value={n(k.users)} sub={all ? t("ov.verified", { n: n(k.usersVerified) }) : `${t("ov.newIn", { n: n(k.usersNew), period: periodLabel })} · ${t("ov.verified", { n: n(k.usersVerified) })}`} />
         <Tile testId="kpi-stores" href="/admin/stores" label={t("ov.stores")} value={n(k.stores)} sub={`${t("ov.liveStores", { n: k.storesByStatus.live })} · ${t("ov.sellers")}: ${n(k.sellers)}`} />
         <Tile testId="kpi-products" href="/admin/products" label={t("ov.products")} value={n(k.products)} sub={`${t("ov.activeN", { n: n(k.productsActive) })} · ${t("ov.hiddenN", { n: n(k.productsHidden) })}`} />
-        <Tile testId="kpi-orders" href="/admin/orders" label={t("ov.orders")} value={n(k.orders)} sub={t("ov.inPeriod", { n: n(k.ordersInPeriod), period: periodLabel })} />
-        <Tile testId="kpi-gmv" label={t("ov.gmvIqd")} value={n(k.gmv)} sub={t("ov.inPeriod", { n: n(k.gmvInPeriod), period: periodLabel })} />
+        <Tile testId="kpi-orders" href="/admin/orders" label={t("ov.orders")} value={n(k.orders)} sub={all ? undefined : t("ov.inPeriod", { n: n(k.ordersInPeriod), period: periodLabel })} />
+        <Tile testId="kpi-gmv" label={t("ov.gmvIqd")} value={n(k.gmv)} sub={all ? t("ov.gmvHint") : t("ov.inPeriod", { n: n(k.gmvInPeriod), period: periodLabel })} />
         <Tile testId="kpi-mrr" href="/admin/plans" label={t("ov.mrrEstimate")} value={`$${n(k.mrrUsd)}`} sub={t("ov.mrrFrom", { n: k.activePaidStores })} />
         <Tile testId="kpi-waitlist" href="/admin/growth" label={t("ov.waitlist")} value={n(k.waitlist)} />
         <Tile testId="kpi-pending" href="/admin/plans" label={t("ov.pending")} value={n(k.pendingUpgrades)} />
