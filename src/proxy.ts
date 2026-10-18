@@ -5,6 +5,7 @@ import { GEO_LOCALE_HEADER, guessLocale } from "@/lib/geo-locale";
 import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
 import { resolveDomainConfig, storeSlugFromHost } from "@/lib/domains";
 import { PREVIEW_HEADER, isPreviewRequest } from "@/lib/preview";
+import { HostSlugCache, maybeCustomHost, normalizeDomain, platformHostsFromEnv } from "@/lib/custom-domain";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
 // Storefront subdomains are off unless ROOT_DOMAIN is set (src/lib/domains.ts; docs/LAUNCH.md "Custom domain").
@@ -13,6 +14,24 @@ const IS_DEV = process.env.NODE_ENV === "development";
 const UPGRADE_INSECURE = (process.env.APP_URL ?? "").startsWith("https://");
 const GATEWAY_ON = paymentsGatewayOn(process.env.PAYMENTS_PROVIDER);
 const storeExistence = new ExistenceCache();
+// Custom domains (SF7): the platform's own hosts are never looked up; any other host asks /api/domain-store (cached).
+const PLATFORM_HOSTS = platformHostsFromEnv(process.env);
+const customHosts = new HostSlugCache();
+
+async function customDomainSlug(origin: string, host: string): Promise<string | null> {
+  const cached = customHosts.get(host);
+  if (cached !== undefined) return cached;
+  try {
+    const r = await fetch(`${origin}/api/domain-store?host=${encodeURIComponent(host)}`, { signal: AbortSignal.timeout(2000), cache: "no-store" });
+    if (!r.ok) return null;
+    const slug = ((await r.json()) as { slug?: unknown }).slug;
+    const out = typeof slug === "string" && /^[a-z0-9-]+$/.test(slug) ? slug : null;
+    customHosts.set(host, out);
+    return out;
+  } catch {
+    return null;
+  }
+}
 
 /** A full-page browser navigation (not an RSC/prefetch/server-action request), the only kind we answer with an HTML 404. */
 function isDocumentRequest(req: NextRequest): boolean {
@@ -66,14 +85,19 @@ async function notFoundResponse(req: NextRequest, kind: "page" | "store"): Promi
  *  - per-request CSP nonce for every page (request header → Next stamps its scripts; response header → browser)
  *  - {slug}.ROOT_DOMAIN  → rewrite to /s/{slug}/…  (storefront subdomains; only when ROOT_DOMAIN is set)
  *  - /s/{slug}/…         → tag the request with the store slug (store-language default)
- *  - custom domains      → TODO(roadmap): look up a verified `stores.custom_domain` (cache it) and rewrite the same way.
+ *  - custom domains      → a verified `stores.custom_domain` (SF7, via /api/domain-store, cached) is rewritten the same way.
  */
 export async function proxy(req: NextRequest) {
   const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "").split(":")[0]!.toLowerCase();
   const url = req.nextUrl;
-  const subSlug = storeSlugFromHost(host, DOMAINS);
   const requestHeaders = new Headers(req.headers);
   const isApi = url.pathname.startsWith("/api/");
+  let subSlug = storeSlugFromHost(host, DOMAINS);
+  if (!subSlug && !isApi && maybeCustomHost(host, PLATFORM_HOSTS) && normalizeDomain(host)) {
+    // Ask the platform host (APP_URL) when known, so the lookup never loops through the custom host itself.
+    const appOrigin = (() => { try { return new URL(process.env.APP_URL ?? "").origin; } catch { return url.origin; } })();
+    subSlug = await customDomainSlug(appOrigin, host);
+  }
 
   // Never trust client-sent values for headers we own.
   requestHeaders.delete(STORE_SLUG_HEADER);

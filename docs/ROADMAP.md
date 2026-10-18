@@ -148,11 +148,10 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 
 ## 4. Custom domains & subdomains (weeks 4–6)
 
-- Seller adds `shop.example.com` → DNS TXT verification → store `stores.custom_domain`.
-- Proxy (`src/proxy.ts`): look up verified domains (cached, e.g. LRU + 60 s TTL; proxy runs on Node so a DB
-  query is fine) and rewrite to `/s/{slug}`.
-- Automatic TLS: Caddy on-demand TLS with an `ask` endpoint (`/api/domains/check`), or Vercel Domains API.
-- Add each verified domain to the server-action allowed origins (or forward `X-Forwarded-Host`).
+- ~~Seller domain + DNS verify + proxy rewrite~~ shipped Oct 18 (SF7, Business+): `/dashboard/settings/domain`,
+  CNAME/A instructions, server DNS check (`custom_domain_verified_at`, migration 0028), proxy lookup through the cached
+  `/api/domain-store` (DB-free proxy), optional Vercel Domains API auto-add (`VERCEL_TOKEN` + `VERCEL_PROJECT_ID`).
+- Next: Caddy on-demand TLS `ask` endpoint for self-hosting; periodic re-verify of verified domains.
 
 ## 5. Analytics (weeks 5–8)
 

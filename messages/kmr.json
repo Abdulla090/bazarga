@@ -191,7 +191,7 @@
       },
       "q5": {
         "q": "Ez dikarim domaina xwe bi kar bînim?",
-        "a": "Erê, di planên Business (mehê $50) û Max de: domainek wek shop.yourbrand.com girê bide (zû çalak dibe). Firoşgehên Free û Pro girêdana xwe ya Reelcart digirin."
+        "a": "Erê, di planên Business (mehê $50) û Max de: domainek wek shop.yourbrand.com girê bide. Firoşgehên Free û Pro girêdana xwe ya Reelcart digirin."
       },
       "q6": {
         "q": "Bihayê gihandinê li gorî bajar çawa dixebite?",
@@ -664,7 +664,10 @@
     "invite_wrong_account": "Ev vexwendin ji bo e-nameyeke din e.",
     "plan_limit_ai": "Te krediyên AI yên vê mehê bi kar anîn. Ji bo bêtir pilana xwe bilind bike.",
     "ai_failed": "Xizmeta AI bersiv neda. Piştî demekê dîsa biceribîne.",
-    "hint_required": "Pêşî çend peyvan binivîse."
+    "hint_required": "Pêşî çend peyvan binivîse.",
+    "invalid_domain": "Ev ne domaineke ku tu dikarî bi kar bînî ye. Tiştekî wek shop.yourbrand.com biceribîne.",
+    "domain_taken": "Firoşgeheke din berê vê domainê bi kar tîne.",
+    "domain_not_pointing": "Domaina te hêj ber bi me ve nîşan nade. Tomarê kontrol bike, paşê piştî çend deqeyan dîsa biceribîne."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1622,5 +1625,31 @@
     "copied": "Hat kopîkirin",
     "addTags": "Li danasînê zêde bike",
     "connect": "Operator: nivîsandina AI amade ye lê ne girêdayî ye. GEMINI_API_KEY an OPENAI_API_KEY saz bike (docs/SETUP.md). Firoşkar vê notê nabînin."
+  },
+  "domain": {
+    "title": "Domaina taybet",
+    "linkHint": "Firoşgeha xwe li ser navnîşana xwe veke, wek shop.yourbrand.com",
+    "lockTitle": "Domaina taybet di plana Business û Max de ye",
+    "lockBody": "Firoşgeha xwe bixe ser navnîşaneke ku ya te ye, wek shop.yourbrand.com. Kiriyar marqeya te di darika navnîşanê de dibînin.",
+    "formTitle": "Domaina te",
+    "hint": "Domaineke ku ya te ye binivîse. Binedomaineke wek shop.yourbrand.com ya herî hêsan e ji bo girêdanê.",
+    "label": "Navê domainê",
+    "save": "Domainê tomar bike",
+    "remove": "Domainê rake",
+    "stepsTitle": "Vê tomarê li cem peydakerê domaina xwe zêde bike",
+    "stepsHint": "Mîhengên DNS li cihê ku te domain jê kirî veke (GoDaddy, Namecheap, Cloudflare…), vê tomarê zêde bike, paşê vegere û li Kontrol bike bitikîne.",
+    "type": "Cure",
+    "name": "Nav / Host",
+    "value": "Nirx / Nîşan dide",
+    "verify": "Niha kontrol bike",
+    "verifying": "Tê kontrolkirin…",
+    "verified": "Girêdayî ye",
+    "notVerified": "Hêj nehatiye piştrastkirin",
+    "verifiedHint": "Firoşgeha te li {host} vedibe. Kilîda ewle (HTTPS) dibe ku çend deqeyan bigire.",
+    "notVerifiedHint": "Em hêj tomarê nabînin. Guhertinên DNS ji çend deqeyan heta 24 saetan digirin.",
+    "found": "Tiştê ku em niha dibînin: {found}",
+    "foundNone": "Hêj ji bo vê domainê tu tomar nehat dîtin.",
+    "hostingAuto": "Domaina te bixweber li serverên me tê zêdekirin.",
+    "hostingManual": "Piştî piştrastkirinê, tîma platformê wê ji bo firoşgeha te çalak dike (bi gelemperî di nava rojekê de)."
   }
 }

@@ -109,6 +109,16 @@ const schema = z.object({
   GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
   OPENAI_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
+  /**
+   * Custom domains (SF7): the DNS target sellers point at (defaults are Vercel's). With VERCEL_TOKEN + VERCEL_PROJECT_ID
+   * (optional VERCEL_TEAM_ID) a saved domain is also attached to the Vercel project automatically; otherwise the
+   * operator adds it by hand (docs/SETUP.md).
+   */
+  CUSTOM_DOMAIN_CNAME: z.string().optional(),
+  CUSTOM_DOMAIN_A: z.string().optional(),
+  VERCEL_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  VERCEL_PROJECT_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  VERCEL_TEAM_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   AI_DEMO_MOCK: z.string().optional().transform((v) => !/^(false|0|off|no)$/i.test((v ?? "").trim())),
 });
 

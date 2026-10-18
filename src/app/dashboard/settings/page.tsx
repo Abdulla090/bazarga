@@ -22,6 +22,7 @@ export default async function SettingsPage() {
   const push = pushConfig();
   const tg = await getTranslations("gatewayPay");
   const tseo = await getTranslations("seo");
+  const tdom = await getTranslations("domain");
   return (
     <div className="grid max-w-2xl gap-4">
       <h1 className="t-headline">{t("title")}</h1>
@@ -57,6 +58,13 @@ export default async function SettingsPage() {
         <span className="grid gap-0.5">
           <span className="font-bold">{tseo("title")}</span>
           <span className="hint">{tseo("linkHint")}</span>
+        </span>
+        <span aria-hidden className="text-xl text-ink-70 rtl:rotate-180">›</span>
+      </Link>
+      <Link href="/dashboard/settings/domain" className="card flex min-h-11 items-center justify-between gap-3" data-testid="settings-domain-link">
+        <span className="grid gap-0.5">
+          <span className="font-bold">{tdom("title")}</span>
+          <span className="hint">{store.customDomain ? <bdi dir="ltr">{store.customDomain}</bdi> : tdom("linkHint")}</span>
         </span>
         <span aria-hidden className="text-xl text-ink-70 rtl:rotate-180">›</span>
       </Link>

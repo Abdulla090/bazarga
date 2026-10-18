@@ -6,6 +6,9 @@
  *                                  (*.bazarga.app → the host) and a wildcard TLS certificate on the host.
  *   STORE_SUBDOMAINS=false       → kill switch: keep ROOT_DOMAIN for links/emails but stop subdomain routing.
  *
+ * Sellers' own domains (SF7, e.g. shop.brand.com) are separate: src/lib/custom-domain.ts + the proxy's cached
+ * /api/domain-store lookup, after the seller verifies DNS in Dashboard → Settings → Custom domain.
+ *
  * Reserved labels (www, app, api, admin, …) never resolve to a store, and only one label deep counts
  * (a.b.bazarga.app is not a store). Before Oct 18 the root defaulted to "mymarket.app"; now no default.
  */

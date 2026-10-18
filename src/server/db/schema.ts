@@ -130,8 +130,9 @@ export const stores = pgTable(
     city: text("city"),
     currency: text("currency").notNull().default("IQD"),
     orderSeq: integer("order_seq").notNull().default(1000),
-    /** Future: custom domain mapping (verified via DNS TXT). */
+    /** Seller's own domain (SF7, Business+, src/lib/custom-domain.ts); served only once DNS is verified. */
     customDomain: text("custom_domain"),
+    customDomainVerifiedAt: timestamp("custom_domain_verified_at", { withTimezone: true }),
     isActive: boolean("is_active").notNull().default(true),
     /** Subscription plan (src/lib/plans.ts): free | pro | business | max. Limits enforced server-side. */
     plan: text("plan").notNull().default("free"),

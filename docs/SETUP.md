@@ -109,6 +109,16 @@ Redeploy, then test with "Forgot password" on your own account.
 
 Reserved names (www, app, api, admin, mail, status, cdn, img, static) never become stores.
 
+**Sellers' own domains (Business and Max).** A seller opens **Dashboard → Settings → Custom domain**, types
+`shop.theirbrand.com`, adds the record the page shows at their registrar (CNAME → `cname.vercel-dns.com`, or for a bare
+`theirbrand.com` an A record → `76.76.21.21`) and taps **Verify** (a server DNS lookup). Once verified the domain serves
+that store. The domain must also be attached to your hosting:
+- **Automatic:** set `VERCEL_TOKEN` (Vercel → Account → Tokens), `VERCEL_PROJECT_ID` (Project → Settings → General) and,
+  for a team, `VERCEL_TEAM_ID`. Saving a domain then adds it to the project; Vercel issues HTTPS by itself.
+- **By hand (default):** Vercel → project → **Settings → Domains → Add** the seller's domain after it shows *Connected*.
+- Other hosts: point `CUSTOM_DOMAIN_CNAME` / `CUSTOM_DOMAIN_A` at your server and give it a TLS certificate for the
+  domain (Caddy on-demand TLS, Coolify, etc.).
+
 ### 4.4 Online payments (Rasedi: FIB, ZainCash, AsiaPay, NassWallet, cards)
 Cash on delivery always works. Online payments are fully built but off until you have a Rasedi merchant account.
 1. Apply at <https://rasedi.com> (business KYC). You receive **test** keys first.
@@ -161,6 +171,7 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
   `/s/<slug>/sitemap.xml`.
 - **Bulk CSV import** (Business+): **Dashboard → Products → Import**.
 - **Premium designs** (Max): Atelier and Pulse in **Dashboard → Theme**; everyone can preview, Max publishes.
+- **Custom domain** (Business+): **Dashboard → Settings → Custom domain**; hosting step in section 4.3.
 
 ## 5. Troubleshooting
 
