@@ -1,12 +1,13 @@
 # Bazarga status
-Updated: 2026-10-18 16:10 Asia/Baghdad
-Health: On track — main green, live smoke passes (production sprint: 5 slices merged + live-verified today)
+Updated: 2026-10-18 17:36 Asia/Baghdad
+Health: On track — main green, live smoke passes
 Prototype (Sun Oct 18): landed
 Production confidence (Fri Oct 30): 84%
 Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
+- 2026-10-18 17:36 | production 84% | On track
 - 2026-10-18 16:10 | prototype landed | production 84% | On track (R2/email/cron/domain env-gated, demo polish, logo perf, CSP reporting)
 - 2026-10-18 04:35 | prototype 100% | production 80% | On track
 - 2026-10-18 03:30 | prototype 100% | production 80% | On track
