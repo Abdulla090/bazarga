@@ -10,7 +10,7 @@ Goal: a buyer who barely codes can understand, run and launch Bazarga with their
 - [x] S6. SEED_DEMO=false really skips the demo (scripts/seed.ts + seed-analytics)
 - [x] S7. docs/sale/: FEATURES.md, TECH.md, HANDOVER.md, ROADMAP.md with real repo stats
 - [x] S8. 12 curated screenshots in docs/sale/screenshots (webp, <400 KB each)
-- [x] S9. Demo videos (mobile 412x915 ku, desktop 1440x900 en, ~90 s, H.264) — kept outside the repo in /workspace/work/sale/ (script: /workspace/work/sale/record-demo.mjs)
+- [x] S9. Demo videos (mobile 412x915 ku, desktop 1440x900 en, ~90 s, H.264; 1.8 MB + 3.5 MB) in docs/sale/video/ (also /workspace/work/sale/; recorder script /workspace/work/sale/record-demo.mjs)
 - [x] S10. Acquisition brief PDF (/workspace/work/sale/Bazarga-Acquisition-Brief.pdf)
 - [x] S11. LICENSE proprietary, all rights reserved (Abdulla Aziz Hameed); package.json "license": "UNLICENSED"
 - [ ] S12. Verify the Deploy button end-to-end on a throwaway Vercel + Supabase account (fresh DB → migrations → seed → /api/health ok → sign up → /admin). Needs a second Vercel account; the repo must be public or the tester must have access.

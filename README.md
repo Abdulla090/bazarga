@@ -33,7 +33,7 @@ It is a multi-tenant SaaS: you run the platform, sellers sign up, and you charge
 | Pricing | <https://bazarga.vercel.app/pricing> |
 | Health check | <https://bazarga.vercel.app/api/health> |
 
-Screenshots: [docs/sale/screenshots](docs/sale/screenshots).
+Screenshots: [docs/sale/screenshots](docs/sale/screenshots) · 90-second walkthrough videos: [mobile, Kurdish](docs/sale/video/bazarga-demo-mobile.mp4) · [desktop, English](docs/sale/video/bazarga-demo-desktop.mp4).
 
 ## Features
 
