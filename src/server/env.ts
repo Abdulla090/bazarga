@@ -19,6 +19,8 @@ const schema = z.object({
   SESSION_COOKIE_NAME: z.string().default("mm_session"),
   SESSION_TTL_DAYS: z.coerce.number().int().positive().default(30),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  /** Optional: every error log line is also POSTed here (Discord/Slack webhook or any JSON sink). See src/server/logger.ts. */
+  LOG_WEBHOOK_URL: z.string().url().optional().or(z.literal("")),
 
   // Storage
   /** Unset → R2/S3 when S3_BUCKET + keys + S3_PUBLIC_URL are all present, else local disk. */

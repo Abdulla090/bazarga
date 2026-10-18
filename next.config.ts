@@ -12,6 +12,9 @@ const securityHeaders = [
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
   { key: "X-DNS-Prefetch-Control", value: "on" },
+  // Where browsers send CSP violation reports (`report-to csp`); see src/app/api/csp-report.
+  { key: "Reporting-Endpoints", value: 'csp="/api/csp-report"' },
+  { key: "Origin-Agent-Cluster", value: "?1" },
 ];
 
 const IMMUTABLE = "public, max-age=31536000, immutable";
