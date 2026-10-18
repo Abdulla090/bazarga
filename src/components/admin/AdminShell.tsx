@@ -58,7 +58,7 @@ export function AdminShell({ children, admin }: { children: ReactNode; admin: { 
         <div className="min-h-dvh bg-[#F6F7F9] text-ink" data-testid="admin-shell">
           <header className="sticky top-0 z-30 border-b border-line bg-white/85 pt-[env(safe-area-inset-top)] backdrop-blur-md">
             <div className="flex h-14 items-center gap-3 px-4 md:px-6">
-              <Link href="/admin" className="flex min-h-11 items-center gap-2 font-semibold tracking-tight">
+              <Link href="/admin" className="flex min-h-11 min-w-11 items-center gap-2 font-semibold tracking-tight">
                 <span className="grid size-8 place-items-center rounded-lg bg-ink text-[13px] font-bold text-white">R</span>
                 <span className="hidden sm:inline">{t("title")}</span>
               </Link>
