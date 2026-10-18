@@ -14,12 +14,43 @@ export type ImageLike = {
   renditions?: readonly RenditionLike[] | null;
 };
 
+/**
+ * Widths that exist on disk for the pre-built seed images (public/images/seed/<name>-<w>.webp). Mirrors the upload
+ * pipeline's RENDITION_WIDTHS (src/server/storage/pipeline.ts; a test pins the two together) — kept here because this
+ * module must stay free of Node/sharp imports.
+ */
+export const SEED_RENDITION_WIDTHS = [320, 480, 640, 1024, 1280] as const;
+const SEED_TAIL = /^(.*\/images\/seed\/[a-z0-9-]+?)-(\d{2,5})\.webp$/;
+
+/**
+ * Renditions that are safe to list in a srcset, ascending and one per width. A stored rendition list can outlive the
+ * files it names: the Oct 2026 lean re-encode replaced the seed hero's 1376 w top size (its source width) with 1280,
+ * but rows seeded earlier still list `hero-1376.webp`, which 404s — and a phone at DPR ≈ 2.6 picks exactly that entry.
+ * Seed entries wider than the largest generated width are clamped to it (the seed build, like the pipeline, keeps a
+ * smaller source's own width as its top size but never emits anything above the top target); entries with a non-positive/non-integer width or no URL are dropped for any image. Pipeline uploads keep
+ * whatever widths they store (legacy 1600 w files are real).
+ */
+export function srcSetRenditions<T extends RenditionLike>(renditions: readonly T[] | null | undefined): T[] {
+  if (!renditions?.length) return [];
+  const seedMax: number = SEED_RENDITION_WIDTHS[SEED_RENDITION_WIDTHS.length - 1]!;
+  const out = new Map<number, T>();
+  for (const r of [...renditions].sort((a, b) => a.width - b.width)) {
+    if (!r?.url || !Number.isInteger(r.width) || r.width <= 0) continue;
+    let entry = r;
+    const seed = SEED_TAIL.exec(r.url);
+    if (seed && r.width > seedMax) {
+      // The seed build (like the pipeline) never emits a file wider than its top target: point at that one.
+      entry = { ...r, width: seedMax, height: Math.round((r.height * seedMax) / r.width), url: `${seed[1]}-${seedMax}.webp` };
+    }
+    if (!out.has(entry.width)) out.set(entry.width, entry);
+  }
+  return [...out.values()].sort((a, b) => a.width - b.width);
+}
+
 export function buildSrcSet(renditions: readonly RenditionLike[] | null | undefined): string | undefined {
-  if (!renditions?.length) return undefined;
-  return [...renditions]
-    .sort((a, b) => a.width - b.width)
-    .map((r) => `${r.url} ${r.width}w`)
-    .join(", ");
+  const list = srcSetRenditions(renditions);
+  if (!list.length) return undefined;
+  return list.map((r) => `${r.url} ${r.width}w`).join(", ");
 }
 
 /** Common `sizes` presets for the storefront layouts. */
