@@ -5,6 +5,7 @@ import { validateSession } from "@/server/auth/service";
 import { currentStoreFor } from "@/server/auth/session";
 import { enforceRateLimit } from "@/server/auth/rate-limit";
 import { AppError } from "@/server/errors";
+import { flagOn } from "@/server/services/platform-settings";
 import { assertSameOrigin, jsonError } from "@/server/http";
 import { consumeStudioEdit, refundStudioEdit } from "@/server/services/studio-quota";
 import { removeBackground } from "@/server/studio/remove-bg";
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
     const store = (await currentStoreFor(user.id))?.store;
     if (!store) throw new AppError("FORBIDDEN");
     await enforceRateLimit(db(), `studio:ai:${store.id}`, 20, 3600);
+    if (!(await flagOn(db(), "productStudio"))) throw new AppError("UNAVAILABLE");
     const form = await req.formData();
     const file = form.get("file");
     if (!(file instanceof File) || file.size === 0) throw new AppError("VALIDATION", "empty_file");

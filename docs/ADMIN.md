@@ -81,7 +81,8 @@ means: every flag on, no maintenance, no announcement. A failed read falls back 
 | `aiDescriptions` | AI product copy is refused |
 | `whatsappLogin` | WhatsApp login codes are not sent |
 | `showcase` | `/showcase` is 404 (featured order cached up to 5 min) |
-| `productStudio`, `aiDesigner` | Stored and shown; the SF9/SF10 features must check `flagOn(db, "productStudio" / "aiDesigner")` (see BACKLOG) |
+| `productStudio` | Product Studio saves and AI cut-outs are refused |
+| `aiDesigner` | Stored and shown; the AI Website Designer (SF10) must check `flagOn(db, "aiDesigner")` when it ships (see BACKLOG) |
 
 ## Limit overrides
 
