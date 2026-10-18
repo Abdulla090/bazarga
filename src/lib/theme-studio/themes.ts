@@ -129,7 +129,7 @@ export const FLAGSHIPS: Record<FlagshipId, Flagship> = {
     header: { layout: "split" },
     layout: { header: "split", hero: "split", grid: "auto", card: "classic", footer: "classic", product: "split", density: "regular", surface: "paper", motion: "fade", sections: ["offers", "story", "collections", "best", "whatsapp"] },
   }),
-  // Kids / Playful: chunky Nunito, a giant typographic hero, hard-bordered blocks with offset shadows, roomy soft cards,
+  // Kids / Playful: chunky Nunito, a playground hero (tinted panel, confetti shapes, tilted sticker cover), hard-bordered blocks with offset shadows, roomy soft cards,
   // a colour band footer. Bright but restrained: one accent, one background.
   play: f("play", "bold", false, {
     design: "studio",
@@ -139,7 +139,7 @@ export const FLAGSHIPS: Record<FlagshipId, Flagship> = {
     cards: { radius: "lg", style: "hairline", ratio: "square" },
     background: { kind: "solid" },
     header: { layout: "split" },
-    layout: { header: "split", hero: "type", grid: "soft", card: "soft", footer: "band", product: "split", density: "regular", surface: "blocks", motion: "none", sections: ["offers", "collections", "best", "sale", "whatsapp"] },
+    layout: { header: "split", hero: "play", grid: "soft", card: "soft", footer: "band", product: "split", density: "regular", surface: "blocks", motion: "none", sections: ["offers", "collections", "best", "sale", "whatsapp"] },
   }),
 };
 

@@ -22,7 +22,7 @@ import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, CollectionIndex, SocialStrip, Spotlight, StoryBand, WhatsAppBand } from "@/components/store/HomeSections";
-import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroPulse, HeroRunway, HeroSplit, HeroSpotlight, HeroStage, HeroType } from "@/components/store/HomeHero";
+import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroPulse, HeroRunway, HeroSplit, HeroSpotlight, HeroStage, HeroType, HeroPlay } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -233,7 +233,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             const hp = withPhoto.find((p) => p.badge === "featured") ?? best.find((p) => p.image && !p.soldOut) ?? withPhoto[0];
             return <HeroSpotlight {...heroProps} product={hp ? { href: `/s/${slug}/p/${hp.id}`, title: pickText(hp.name, locale), price: hp.priceMax > hp.price ? from.replace("{price}", formatIQD(hp.price, locale)) : formatIQD(hp.price, locale), image: hp.image, view: t("view") } : null} />;
           })() : (() => {
-            const Hero = { split: HeroSplit, masthead: HeroMasthead, banner: HeroBanner, fullbleed: HeroFullbleed, arch: HeroArch, type: HeroType, stage: HeroStage, runway: HeroRunway, pulse: HeroPulse, spotlight: HeroSplit }[design.hero];
+            const Hero = { split: HeroSplit, masthead: HeroMasthead, banner: HeroBanner, fullbleed: HeroFullbleed, arch: HeroArch, type: HeroType, stage: HeroStage, runway: HeroRunway, pulse: HeroPulse, spotlight: HeroSplit, play: HeroPlay }[design.hero];
             return <Hero {...heroProps} />;
           })()}
           {design.sections.map((k) => (
