@@ -3,15 +3,17 @@ import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { inviteMemberAction } from "@/server/actions/team";
 import { Field, FormError } from "@/components/forms/Field";
+import { useKeepValues } from "@/lib/use-keep-values";
 
 /** Invite by email. With email configured the link is also sent; it is always shown so the owner can share it on WhatsApp. */
 export function TeamInviteForm({ disabled }: { disabled?: boolean }) {
   const t = useTranslations("team");
   const [state, action, pending] = useActionState(inviteMemberAction, {});
+  const keep = useKeepValues(action);
   const [copied, setCopied] = useState(false);
   const link = typeof state.data?.link === "string" ? state.data.link : null;
   return (
-    <form action={action} className="card grid gap-4" data-testid="team-invite">
+    <form action={action} onSubmit={keep} className="card grid gap-4" data-testid="team-invite">
       <h2 className="text-lg font-bold">{t("inviteTitle")}</h2>
       <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
       <Field label={t("email")} name="email" type="email" ltr required autoComplete="off" disabled={disabled} error={state.fieldErrors?._ || state.fieldErrors?.email ? "VALIDATION" : undefined} />

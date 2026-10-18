@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
  */
 const walk = (d: string): string[] => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : f.endsWith(".tsx") ? [join(d, f)] : []));
 // Button-only / hidden-input forms: nothing typed to lose.
-const NO_TYPED_FIELDS = ["VerifyForm.tsx", "CheckPaymentButton.tsx", "OnlinePaymentsCard.tsx", "ShowcaseToggle.tsx", "VerifyEmailBanner.tsx"];
+const NO_TYPED_FIELDS = ["VerifyForm.tsx", "CheckPaymentButton.tsx", "OnlinePaymentsCard.tsx", "ShowcaseToggle.tsx", "VerifyEmailBanner.tsx", "AcceptInviteForm.tsx"];
 
 describe("action forms keep typed values on a server error", () => {
   const files = walk("src").filter((f) => readFileSync(f, "utf8").includes("useActionState") && !NO_TYPED_FIELDS.some((n) => f.endsWith(n)));
