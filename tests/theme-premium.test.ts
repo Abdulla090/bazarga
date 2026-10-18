@@ -35,7 +35,7 @@ describe("premium designs (Max)", () => {
   it("publishing is gated server-side and the storefront passes the plan", () => {
     expect(readFileSync("src/server/actions/theme.ts", "utf8")).toMatch(/isPremiumDesign\(theme\.design\)\) assertFeature\(store, "templatesPremium"\)/);
     expect(readFileSync("src/app/s/[slug]/design.ts", "utf8")).toContain('hasFeature(normalizePlan(plan), "templatesPremium")');
-    for (const f of ["src/app/s/[slug]/layout.tsx", "src/app/s/[slug]/page.tsx"]) expect(readFileSync(f, "utf8")).toContain("resolveDesign(slug, store.themePublished, store.plan)");
+    for (const f of ["src/app/s/[slug]/layout.tsx", "src/app/s/[slug]/page.tsx", "src/app/s/[slug]/p/[productId]/page.tsx"]) expect(readFileSync(f, "utf8")).toMatch(/resolve(Store)?Design\(slug, store\.themePublished, store\.plan\)/);
   });
   it("RTL-safe CSS: no uppercase/tracking for ckb/ar in premium designs", () => {
     const css = readFileSync("src/app/globals.css", "utf8");

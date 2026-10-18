@@ -776,7 +776,12 @@
       "body": "This store uses ad pixels to measure which videos bring orders. Nothing else is tracked.",
       "accept": "OK",
       "decline": "Decline"
-    }
+    },
+    "storyTitle": "Our story",
+    "socialTitle": "On Instagram",
+    "socialBody": "New pieces show up there first.",
+    "waBandTitle": "Order on WhatsApp",
+    "waBandBody": "Ask about sizes, colours or delivery and order in one chat."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

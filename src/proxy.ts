@@ -4,7 +4,7 @@ import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn 
 import { GEO_LOCALE_HEADER, guessLocale } from "@/lib/geo-locale";
 import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
 import { resolveDomainConfig, storeSlugFromHost } from "@/lib/domains";
-import { PREVIEW_HEADER, isPreviewRequest } from "@/lib/preview";
+import { PREVIEW_HEADER, PREVIEW_THEME_HEADER, isPreviewRequest, previewThemeParam } from "@/lib/preview";
 import { HostSlugCache, maybeCustomHost, normalizeDomain, platformHostsFromEnv } from "@/lib/custom-domain";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
@@ -121,7 +121,10 @@ export async function proxy(req: NextRequest) {
   requestHeaders.delete(NONCE_HEADER);
   requestHeaders.delete(GEO_LOCALE_HEADER);
   requestHeaders.delete(PREVIEW_HEADER);
+  requestHeaders.delete(PREVIEW_THEME_HEADER);
   if (isPreviewRequest(url.pathname, url.searchParams)) requestHeaders.set(PREVIEW_HEADER, "1");
+  const pvt = previewThemeParam(url.pathname, url.searchParams);
+  if (pvt) requestHeaders.set(PREVIEW_THEME_HEADER, pvt);
   // Language from IP location (Vercel edge geo headers; no browser permission prompt). Used only when the visitor has no saved choice.
   const geoLocale = guessLocale(req.headers.get("x-vercel-ip-country"), req.headers.get("x-vercel-ip-country-region"), req.headers.get("accept-language"));
   if (geoLocale) requestHeaders.set(GEO_LOCALE_HEADER, geoLocale);

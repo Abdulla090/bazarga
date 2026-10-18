@@ -16,6 +16,7 @@ import { loadStore } from "../../data";
 import { getCatalog, getProductDetail, getStorefrontSettings } from "@/server/cache/storefront";
 import { currentLocale } from "@/server/locale";
 import { env } from "@/server/env";
+import { resolveDesign } from "../../design";
 import { NONCE_HEADER } from "@/server/csp";
 import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
@@ -87,6 +88,18 @@ const summary =
   "flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-medium [&::-webkit-details-marker]:hidden";
 const chevron = <Icon as={ChevronDown} className="text-muted transition-transform duration-150 group-open:rotate-180" />;
 /** One item of the hairline trust row: small icon over a short label. */
+/**
+ * Product page layouts (design system v2, design.product). Phones are always one column (gallery, then buy box);
+ * the layouts differ from md up. split: gallery start, pinned; wide: big gallery + narrow pinned buy box; stacked:
+ * one centred column; reverse: buy box on the start side, gallery pinned on the end side (magazine).
+ */
+const PDP = {
+  split: { gallery: "md:sticky md:top-24 md:col-span-6 lg:col-span-7 xl:col-span-6", info: "md:col-span-6 md:col-start-7 md:ps-4 lg:col-span-5 lg:col-start-8 lg:ps-0 xl:col-start-8" },
+  wide: { gallery: "md:col-span-7 lg:col-span-8", info: "md:sticky md:top-24 md:col-span-5 md:col-start-8 md:ps-4 lg:col-span-4 lg:col-start-9" },
+  stacked: { gallery: "md:col-span-8 md:col-start-3 lg:col-span-6 lg:col-start-4", info: "md:col-span-8 md:col-start-3 md:mt-12 lg:col-span-6 lg:col-start-4" },
+  reverse: { gallery: "md:sticky md:top-24 md:col-span-6 md:col-start-7 md:row-start-1 lg:col-span-7 lg:col-start-6", info: "md:col-span-6 md:col-start-1 md:row-start-1 md:pe-6 lg:col-span-4 lg:pe-0" },
+} as const;
+
 const trustItem = "flex min-h-11 flex-col items-center justify-start gap-1.5 px-1.5 py-3 text-center text-[13px] leading-snug text-balance text-muted";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string; productId: string }> }) {
@@ -100,6 +113,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     currentLocale(),
     headers().then((h) => h.get(NONCE_HEADER) ?? undefined),
   ]);
+  const design = await resolveDesign(slug, store.themePublished, store.plan);
   const name = pickText(p.name, locale);
   const description = pickText(p.description, locale);
   const paragraphs = descriptionParagraphs(description);
@@ -162,8 +176,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       {/* Balanced two-column product page: a compact gallery (one 4:5 photo + thumbnail rail, about one viewport tall)
           pinned on the start side, and everything else — buy box, trust row, details, delivery & returns — in one
           column on the end side, so neither column runs on alone into empty space. Phones: one column in the same order. */}
-      <div className="grid-12 items-start gap-y-6 md:gap-y-0">
-        <div className="relative col-span-4 min-w-0 md:sticky md:top-24 md:col-span-6 lg:col-span-7 xl:col-span-6">
+      <div className="grid-12 items-start gap-y-6 md:gap-y-0" data-pdp={design.product}>
+        <div className={`relative col-span-4 min-w-0 ${PDP[design.product].gallery}`}>
           <ViewTransition name={`product-${p.id}`} share="product-morph">
             <ProductGallery
               images={p.images}
@@ -182,7 +196,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {/* Best seller / New / Featured on the photo (the % off sits next to the price). */}
           <MerchBadges price={p.price} compareAtPrice={null} bestSeller={!!self?.bestSeller} badge={self?.badge ?? null} labels={badges} size="md" corner={p.images.length > 1 ? "gallery-rail" : "gallery"} />
         </div>
-        <div className="col-span-4 grid min-w-0 gap-8 md:col-span-6 md:col-start-7 md:ps-4 lg:col-span-5 lg:col-start-8 lg:ps-0 xl:col-start-8">
+        <div className={`col-span-4 grid min-w-0 gap-8 ${PDP[design.product].info}`}>
           <ProductBuy
             slug={store.slug}
             productId={p.id}

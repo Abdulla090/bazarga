@@ -395,7 +395,12 @@
       "body": "Ev dikan pixelên reklamê bi kar tîne da ku bizanibe kîjan vîdyo ferman tînin. Tiştekî din nayê şopandin.",
       "accept": "Baş e",
       "decline": "Red bike"
-    }
+    },
+    "storyTitle": "Çîroka me",
+    "socialTitle": "Li ser Instagramê",
+    "socialBody": "Berhemên nû pêşî li wir xuya dibin.",
+    "waBandTitle": "Bi WhatsAppê bixwaze",
+    "waBandBody": "Li ser mezinahî, reng an gihandinê bipirse û di yek sohbetê de bixwaze."
   },
   "pwa": {
     "installTitle": "Reelcart saz bike",

@@ -12,7 +12,8 @@ export function PreviewBridge() {
       const d = e.data as { type?: string; vars?: Record<string, string>; header?: { layout?: string; announce?: string }; tagline?: string };
       if (d?.type !== "bazarga-theme" || !d.vars) return;
       if (d.header) {
-        if (["centered", "split", "minimal"].includes(d.header.layout ?? "")) root.dataset.header = d.header.layout;
+        // Header variant changes reload the iframe (the editor's composition cookie); only the 3 CSS-only ones swap live.
+        if (["centered", "split", "minimal"].includes(d.header.layout ?? "") && ["centered", "split", "minimal"].includes(root.dataset.header ?? "")) root.dataset.header = d.header.layout;
         const bar = document.getElementById("announce-bar");
         if (bar) { const txt = String(d.header.announce ?? "").slice(0, 80); bar.textContent = txt; bar.hidden = !txt; }
       }

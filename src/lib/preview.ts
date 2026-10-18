@@ -10,3 +10,17 @@ export const PREVIEW_PARAM = "pv";
 export function isPreviewRequest(pathname: string, search: URLSearchParams): boolean {
   return pathname.startsWith("/s/") && search.get(PREVIEW_PARAM) === "1";
 }
+
+/**
+ * Theme gallery thumbnails: /s/<slug>?pv=1&pvt=<flagship id> renders that whole flagship theme (colours, type, layout)
+ * for the preview load only. The proxy forwards the id as this header (client copies stripped); the storefront checks
+ * it against the flagship list. Like the design cookie it only picks a presentation of public data.
+ */
+export const PREVIEW_THEME_HEADER = "x-bz-preview-theme";
+export const PREVIEW_THEME_PARAM = "pvt";
+
+export function previewThemeParam(pathname: string, search: URLSearchParams): string | null {
+  if (!isPreviewRequest(pathname, search)) return null;
+  const v = search.get(PREVIEW_THEME_PARAM);
+  return v && /^[a-z]{2,16}$/.test(v) ? v : null;
+}
