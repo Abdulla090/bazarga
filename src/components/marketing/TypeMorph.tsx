@@ -86,7 +86,7 @@ export function TypeMorph({ phrases, label = "Language" }: { phrases: MorphPhras
     <div ref={root} className="tm" data-tm>
       <div className="tm-bar">
         <LanguageDropdown
-          tone="dark"
+          tone="light"
           label={label}
           items={phrases.map((x) => ({ value: x.lang, label: x.label, lang: x.lang, dir: x.dir }))}
           value={p.lang}

@@ -22,6 +22,8 @@ import { DmsVsBazarga } from "@/components/marketing/DmsVsBazarga";
 import { Testimonials } from "@/components/marketing/Testimonials";
 import { getTestimonials } from "@/server/cache/testimonials";
 import { LiveStats } from "@/components/marketing/LiveStats";
+import { RevealObserver } from "@/components/marketing/RevealObserver";
+import { rv, Words } from "@/components/marketing/reveal";
 import { getLiveStats } from "@/server/cache/live-stats";
 
 const DEMO_SLUG = "hawler-bazaar";
@@ -69,10 +71,10 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
       <SiteHeader />
       <main id="main">
         {/* Hero: centred and calm. Minimal $1 | Try Pro pill as the eyebrow (full terms live on /pricing), H1 with the blue
-            "Start free." hook (social-first story lives in the DMs vs Bazarga section), a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
+            "Start free." hook (social-first story lives in the DMs vs Reelcart section), a two-line subhead, two equal-height CTAs, then the product story (HeroVisual) lower down. */}
         <section className="hero-stage">
           <div className="container-page flex flex-col items-center pt-8 text-center sm:pt-14">
-            <Link href="/pricing" data-hero-promo className="promo-eyebrow hero-rise group inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full ps-3.5 pe-3 text-start">
+            <Link href="/pricing" data-hero-promo className="promo-eyebrow ho-chip group inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-full ps-3.5 pe-3 text-start">
               <span className="sr-only">{tp("wasNow")}</span>
               <span aria-hidden="true" dir="ltr" className="promo-num text-xl font-bold">$1</span>
               <span aria-hidden="true" className="h-4 w-px shrink-0 bg-[#2563EB]/25" />
@@ -80,15 +82,15 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
               <ArrowForward className="text-base text-[#2563EB] transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>
             <h1 className="mt-5 max-w-4xl text-[2.5rem] font-light leading-[1.1] tracking-tight text-balance sm:mt-6 sm:text-6xl lg:text-[4.5rem] lg:leading-[1.04]">
-              <span className="block">{t("heroTitle1")}</span>
-              <span className="block"><HeroHook text={t("heroTitle2")} /></span>
+              <span className="ho-line ho-line-1 block">{t("heroTitle1")}</span>
+              <span className="ho-line ho-line-2 block"><HeroHook text={t("heroTitle2")} /></span>
             </h1>
-            <p data-hero-lead className="hero-rise hero-d2 mt-4 hidden max-w-[36rem] text-ink-70 text-balance sm:block sm:text-lg sm:leading-relaxed">{t("heroLead")}</p>
-            <div data-hero-ctas className="hero-rise hero-d3 mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
+            <p data-hero-lead className="ho-sub mt-4 hidden max-w-[36rem] text-ink-70 text-balance sm:block sm:text-lg sm:leading-relaxed">{t("heroLead")}</p>
+            <div data-hero-ctas className="ho-ctas mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
               <HeroCta href="/signup" label={tp("cta")} />
               <Link href={`/s/${DEMO_SLUG}`} data-hero-cta2 className="cta-ghost">{t("heroCta2")}</Link>
             </div>
-            <div data-hero-phone className="hero-rise hero-d4 mt-10 w-full sm:mt-[5.5rem]">
+            <div data-hero-phone className="ho-media mt-10 w-full sm:mt-[5.5rem]">
               <HeroVisual locale={locale} />
             </div>
           </div>
@@ -97,11 +99,10 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
         {/* Social-first (docs/SOCIAL-FIRST.md S1): keep posting on TikTok; take the order on Bazarga, not in the DMs. */}
         <DmsVsBazarga
           l={{
-            eyebrow: t("dvb.eyebrow"), title: t("dvb.title"), lead: t("dvb.lead"),
-            dmTitle: t("dvb.dmTitle"), dmBubble: t("dvb.dmBubble"), dmUnread: t("dvb.dmUnread"),
-            dms: [t("dvb.dm1"), t("dvb.dm2"), t("dvb.dm3"), t("dvb.dm4")],
-            bzTitle: t("dvb.bzTitle"), bzs: [t("dvb.bz1"), t("dvb.bz2"), t("dvb.bz3"), t("dvb.bz4"), t("dvb.bz5")],
-            orderLabel: t("dvb.orderLabel"), orderFrom: t("dvb.orderFrom"), orderName: t("dvb.orderName"), orderCity: t("dvb.orderCity"), cod: t("dvb.cod"), cta: t("dvb.cta"),
+            eyebrow: t("dvb.eyebrow"), title: t("dvb.title"),
+            dmTitle: t("dvb.dmTitle"), dms: [t("dvb.dm1"), t("dvb.dm2"), t("dvb.dm3"), t("dvb.dm4")],
+            bzTitle: t("dvb.bzTitle"), bzs: [t("dvb.bz1"), t("dvb.bz2"), t("dvb.bz3"), t("dvb.bz4")],
+            cta: t("dvb.cta"),
           }}
         />
 
@@ -120,11 +121,11 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
         {/* How it works */}
         <section id="how" className="scroll-mt-20 bg-white py-14">
           <div className="container-page">
-            <p className="mk-eyebrow">{t("howEyebrow")}</p>
-            <h2 className="mt-2 text-3xl font-extrabold">{t("howTitle")}</h2>
+            <p className="mk-eyebrow" {...rv("e")}>{t("howEyebrow")}</p>
+            <h2 className="mt-2 text-3xl font-extrabold" {...rv("h", 60)}><Words text={t("howTitle")} /></h2>
             <ol className="mt-8 grid gap-4 md:grid-cols-3">
               {steps.map((s, i) => (
-                <li key={i} className="card bg-paper">
+                <li key={i} className="card bg-paper" {...rv("c", 140 + i * 130)}>
                   <div className="flex items-center gap-3">
                     <span className="num text-3xl font-extrabold text-gold">0{i + 1}</span>
                     <span className="chip bg-ink text-paper">{s.who}</span>
@@ -139,12 +140,12 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
 
         {/* Demo */}
         <section className="container-page py-14">
-          <p className="mk-eyebrow">{t("demoEyebrow")}</p>
-          <h2 className="mt-2 text-3xl font-extrabold">{t("demoTitle")}</h2>
-          <p className="mt-3 max-w-prose text-ink-70">{t("demoBody")}</p>
+          <p className="mk-eyebrow" {...rv("e")}>{t("demoEyebrow")}</p>
+          <h2 className="mt-2 text-3xl font-extrabold" {...rv("h", 60)}><Words text={t("demoTitle")} /></h2>
+          <p className="mt-3 max-w-prose text-ink-70" {...rv("t", 220)}>{t("demoBody")}</p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {DEMO.map((p) => (
-              <Link key={p.img} href={`/s/${DEMO_SLUG}`} className="group overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
+            {DEMO.map((p, i) => (
+              <Link key={p.img} href={`/s/${DEMO_SLUG}`} className="group overflow-hidden rounded-[var(--radius-card)] border border-line bg-white" {...rv("m", 160 + i * 110)}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={seedSrc(p.img, 640)} srcSet={seedSrcSet(p.img)} sizes={DEMO_SIZES} width={1024} height={1024} alt={pickText(p.name, locale)} className="aspect-square h-auto w-full object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                 <div className="p-3">
@@ -154,7 +155,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
               </Link>
             ))}
           </div>
-          <Link href={`/s/${DEMO_SLUG}`} className="btn-ink mt-6">{t("demoCta")}</Link>
+          <Link href={`/s/${DEMO_SLUG}`} className="btn-ink mt-6" {...rv("t", 120)}>{t("demoCta")}</Link>
         </section>
 
         <WhyBento
@@ -162,10 +163,9 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
           l={{
             eyebrow: t("whyEyebrow"), title: t("whyTitle"), lead: t("whyLead"),
             w1Title: t("w1Title"), w1Body: t("w1Body"), w2Title: t("w2Title"), w2Body: t("w2Body"),
-            w3Title: t("w3Title"), w3Body: t("w3Body"), w4Title: t("w4Title"), w4Body: t("w4Body"),
+            w3Title: t("w3Title"), w3Body: t("w3Body"),
             chatName: t("whyChatName"), chatMsg: t("whyChatMsg"), cardBadge: t("whyCardBadge"), cardCta: t("whyCardCta"),
-            payLabel: t("whyPayLabel"), soon: t("whySoon"), deliveryLabel: t("whyDeliveryLabel"), mapLabel: t("whyMapLabel"), langPick: t("whyLangPick"),
-            berlin: t("cityBerlin"), stockholm: t("cityStockholm"), london: t("cityLondon"),
+            payLabel: t("whyPayLabel"), soon: t("whySoon"), deliveryLabel: t("whyDeliveryLabel"), langPick: t("whyLangPick"),
             productName: pickText(SHIRT.name, locale),
           }}
         />
@@ -174,8 +174,8 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
 
         {/* Pricing */}
         <section id="pricing" className="container-page scroll-mt-20 py-14 xl:max-w-7xl">
-          <h2 className="text-3xl font-light sm:text-4xl">{tp("title")}</h2>
-          <p className="mt-2 mb-8 max-w-xl text-ink-70">{tp("lead")}</p>
+          <h2 className="text-3xl font-light sm:text-4xl" {...rv("h")}><Words text={tp("title")} /></h2>
+          <p className="mt-2 mb-8 max-w-xl text-ink-70" {...rv("t", 200)}>{tp("lead")}</p>
           <PricingPlans />
         </section>
 
@@ -184,29 +184,30 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
           <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }} />
           <div className="container-page grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
             <div className="lg:sticky lg:top-24 lg:self-start">
-              <p className="mk-eyebrow">{t("faqEyebrow")}</p>
-              <h2 id="faq-title" className="mt-3 text-[2rem] font-light leading-[1.1] tracking-tight text-balance sm:text-[2.75rem]">{t("faqTitle")}</h2>
-              <p className="mt-4 max-w-sm text-pretty text-ink-70">{t("faqLead")}</p>
+              <p className="mk-eyebrow" {...rv("e")}>{t("faqEyebrow")}</p>
+              <h2 id="faq-title" className="mt-3 text-[2rem] font-light leading-[1.1] tracking-tight text-balance sm:text-[2.75rem]" {...rv("h", 70)}><Words text={t("faqTitle")} /></h2>
+              <p className="mt-4 max-w-sm text-pretty text-ink-70" {...rv("t", 260)}>{t("faqLead")}</p>
               <Link href="/pricing" className="faq-more group mt-5">
                 {t("faqMore")}
                 <ArrowForward className="text-base transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
               </Link>
             </div>
-            <FaqList items={faqItems} />
+            <div {...rv("c", 180)}><FaqList items={faqItems} /></div>
           </div>
         </section>
 
         {/* Waitlist */}
         <section id="join" className="scroll-mt-20 bg-white py-14">
           <div className="container-page max-w-2xl">
-            <p className="mk-eyebrow">{t("joinEyebrow")}</p>
-            <h2 className="mt-2 mb-6 text-3xl font-extrabold">{t("joinTitle")}</h2>
-            <WaitlistForm refCode={refCode} cities={IRAQI_CITIES.map((c) => ({ key: c.key, name: pickText(c.name, locale) }))} />
+            <p className="mk-eyebrow" {...rv("e")}>{t("joinEyebrow")}</p>
+            <h2 className="mt-2 mb-6 text-3xl font-extrabold" {...rv("h", 60)}><Words text={t("joinTitle")} /></h2>
+            <div {...rv("c", 200)}><WaitlistForm refCode={refCode} cities={IRAQI_CITIES.map((c) => ({ key: c.key, name: pickText(c.name, locale) }))} /></div>
           </div>
         </section>
       </main>
       <SiteFooter />
       <StickyFreeCta />
+      <RevealObserver />
     </>
   );
 }

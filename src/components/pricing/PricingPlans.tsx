@@ -139,6 +139,8 @@ export function PricingPlans({ showToggle = true, defaultYearly = false }: { sho
           <article
             key={p.id}
             data-plan={p.id}
+            data-rv="p"
+            style={{ "--rv-d": `${80 + idx * 120}ms` } as CSSProperties}
             className={`relative flex flex-col rounded-3xl border p-6 ${
               p.premium
                 ? "plan-max max-card text-white"

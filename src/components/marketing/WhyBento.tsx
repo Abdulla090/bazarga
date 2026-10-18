@@ -5,14 +5,7 @@ import { IRAQ_GOVERNORATES } from "@/lib/governorates";
 import { Icon, Sparkles } from "@/components/ui/icons";
 import { BentoSpotlight } from "./BentoSpotlight";
 import { TypeMorph, type MorphPhrase } from "./TypeMorph";
-import {
-  MAP_CITIES,
-  MAP_DOTS,
-  MAP_H,
-  MAP_W,
-  arcPath,
-  project,
-} from "./why-map";
+import { rv, Words } from "./reveal";
 
 export type WhyLabels = {
   eyebrow: string;
@@ -24,8 +17,6 @@ export type WhyLabels = {
   w2Body: string;
   w3Title: string;
   w3Body: string;
-  w4Title: string;
-  w4Body: string;
   chatName: string;
   chatMsg: string;
   cardBadge: string;
@@ -33,10 +24,6 @@ export type WhyLabels = {
   payLabel: string;
   soon: string;
   deliveryLabel: string;
-  mapLabel: string;
-  berlin: string;
-  stockholm: string;
-  london: string;
   productName: string;
   /** Accessible name for the demo's language dropdown. */
   langPick?: string;
@@ -85,9 +72,9 @@ const TICKER_CITIES = [
 const seed = (b: string) => `/images/seed/${b}-320.webp`;
 
 /**
- * "Why Bazarga" bento (agentb/why-faq): dark ink band, four uneven tiles, each with a live mini-visual instead of an
+ * "Why Bazarga" bento (agentb/why-faq): light band (Oct 18: was ink), three uneven tiles, each with a live mini-visual instead of an
  * icon. All motion is CSS (marketing.css) except two small islands: TypeMorph (typewriter) and BentoSpotlight (cursor
- * ring). Reveal is a CSS scroll-driven animation where supported, otherwise tiles are simply visible.
+ * ring). Reveal: one-time card rise via RevealObserver (data-rv), visible without JS.
  */
 export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
   const first = (ORDER as readonly string[]).includes(locale)
@@ -103,38 +90,20 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
     (g): g is NonNullable<typeof g> => Boolean(g),
   );
   const tickerLoop = ticker.length ? [...ticker, ticker[0]!] : [];
-  const hub = MAP_CITIES[0]!;
-  const cityName = (k: string) =>
-    k === "berlin"
-      ? l.berlin
-      : k === "stockholm"
-        ? l.stockholm
-        : k === "london"
-          ? l.london
-          : gov.get(k)
-            ? pickText(gov.get(k)!.name, locale)
-            : k;
-  const labelPos: Record<string, string> = {
-    erbil: "lbl-w",
-    duhok: "lbl-n",
-    sulaymaniyah: "lbl-sw",
-    berlin: "lbl-e",
-    stockholm: "lbl-e",
-    london: "lbl-w",
-  };
 
   return (
     <section className="why-band" aria-labelledby="why-title">
       <div className="container-page relative">
         <div className="max-w-2xl">
-          <p className="mk-eyebrow mk-eyebrow-dark">{l.eyebrow}</p>
+          <p className="mk-eyebrow" {...rv("e")}>{l.eyebrow}</p>
           <h2
             id="why-title"
-            className="mt-3 text-[2rem] font-light leading-[1.1] tracking-tight text-balance text-white sm:text-5xl"
+            className="mt-3 text-[2rem] font-light leading-[1.1] tracking-tight text-balance sm:text-5xl"
+            {...rv("h", 60)}
           >
-            {l.title}
+            <Words text={l.title} />
           </h2>
-          <p className="mt-4 max-w-xl text-pretty text-white/60 sm:text-lg">
+          <p className="mt-4 max-w-xl text-pretty text-ink-70 sm:text-lg" {...rv("t", 240)}>
             {l.lead}
           </p>
         </div>
@@ -143,10 +112,7 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
           <BentoSpotlight />
 
           {/* 1 · Kurdish-first: typewriter morph */}
-          <article
-            className="bento-tile bento-a"
-            style={{ "--i": 0 } as React.CSSProperties}
-          >
+          <article className="bento-tile bento-a" {...rv("c", 100)}>
             <div className="bento-copy">
               <h3 className="bento-title">{l.w1Title}</h3>
               <p className="bento-body">{l.w1Body}</p>
@@ -157,10 +123,7 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
           </article>
 
           {/* 2 · Zero setup: chat photos → product card */}
-          <article
-            className="bento-tile bento-b"
-            style={{ "--i": 1 } as React.CSSProperties}
-          >
+          <article className="bento-tile bento-b" {...rv("c", 220)}>
             <div className="bento-copy">
               <h3 className="bento-title">{l.w2Title}</h3>
               <p className="bento-body">{l.w2Body}</p>
@@ -231,10 +194,7 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
           </article>
 
           {/* 3 · Local money: payment chips + city price ticker */}
-          <article
-            className="bento-tile bento-c"
-            style={{ "--i": 2 } as React.CSSProperties}
-          >
+          <article className="bento-tile bento-c" {...rv("c", 340)}>
             <div className="bento-copy">
               <h3 className="bento-title">{l.w3Title}</h3>
               <p className="bento-body">{l.w3Body}</p>
@@ -272,74 +232,6 @@ export function WhyBento({ locale, l }: { locale: Locale; l: WhyLabels }) {
             </div>
           </article>
 
-          {/* 4 · Any community: dotted map, pulsing points, diaspora arcs */}
-          <article
-            className="bento-tile bento-d"
-            style={{ "--i": 3 } as React.CSSProperties}
-          >
-            <div className="bento-copy">
-              <h3 className="bento-title">{l.w4Title}</h3>
-              <p className="bento-body">{l.w4Body}</p>
-            </div>
-            <div
-              className="bento-vis map"
-              role="img"
-              aria-label={l.mapLabel}
-              dir="ltr"
-            >
-              <svg
-                viewBox={`0 0 ${MAP_W} ${MAP_H}`}
-                className="map-svg"
-                aria-hidden="true"
-              >
-                <path d={MAP_DOTS} className="map-dots" />
-                {MAP_CITIES.filter((c) => !c.hub && c.lon < 30).map((c, i) => (
-                  <path
-                    key={c.key}
-                    d={arcPath(hub, c)}
-                    className="map-arc"
-                    style={{ "--k": i } as React.CSSProperties}
-                    pathLength={1}
-                  />
-                ))}
-                {MAP_CITIES.map((c, i) => {
-                  const [x, y] = project(c.lon, c.lat);
-                  return (
-                    <g
-                      key={c.key}
-                      transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
-                    >
-                      <circle
-                        r={c.hub ? 9 : 7}
-                        className="map-pulse"
-                        style={{ "--k": i } as React.CSSProperties}
-                      />
-                      <circle
-                        r={c.hub ? 3.6 : 2.8}
-                        className={c.hub ? "map-pt map-hub" : "map-pt"}
-                      />
-                    </g>
-                  );
-                })}
-              </svg>
-              {MAP_CITIES.map((c) => {
-                const [x, y] = project(c.lon, c.lat);
-                return (
-                  <span
-                    key={c.key}
-                    aria-hidden="true"
-                    className={`map-lbl ${labelPos[c.key] ?? "lbl-e"}`}
-                    style={{
-                      left: `${(x / MAP_W) * 100}%`,
-                      top: `${(y / MAP_H) * 100}%`,
-                    }}
-                  >
-                    {cityName(c.key)}
-                  </span>
-                );
-              })}
-            </div>
-          </article>
         </div>
       </div>
     </section>

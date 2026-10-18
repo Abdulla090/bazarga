@@ -1,3 +1,4 @@
+import { rv, Words } from "./reveal";
 import { visibleStats, type LiveStats as Stats, type StatKey } from "@/lib/live-stats";
 
 export type LiveStatsLabels = { eyebrow: string; title: string; note: string; labels: Record<StatKey, string> };
@@ -10,17 +11,17 @@ export function LiveStats({ stats, l, locale }: { stats: Stats | null; l: LiveSt
   return (
     <section className="stats-band" aria-labelledby="stats-title">
       <div className="container-page">
-        <p className="mk-eyebrow">{l.eyebrow}</p>
-        <h2 id="stats-title" className="mt-3 text-[1.75rem] font-light leading-[1.15] tracking-tight text-balance sm:text-[2.25rem]">{l.title}</h2>
+        <p className="mk-eyebrow" {...rv("e")}>{l.eyebrow}</p>
+        <h2 id="stats-title" className="mt-3 text-[1.75rem] font-light leading-[1.15] tracking-tight text-balance sm:text-[2.25rem]" {...rv("h", 60)}><Words text={l.title} /></h2>
         <dl className="stats-grid">
-          {items.map((s) => (
-            <div key={s.key} className="stat">
+          {items.map((s, i) => (
+            <div key={s.key} className="stat" {...rv("c", 120 + i * 90)}>
               <dt className="stat-label">{l.labels[s.key]}</dt>
-              <dd className="stat-num num"><bdi dir="ltr">{fmt.format(s.value)}</bdi></dd>
+              <dd className="stat-num num"><bdi dir="ltr" data-rv-count={s.value} data-rv-locale={fmt.resolvedOptions().locale}>{fmt.format(s.value)}</bdi></dd>
             </div>
           ))}
         </dl>
-        <p className="mt-5 text-sm text-ink-70">{l.note}</p>
+        <p className="mt-5 text-sm text-ink-70" {...rv("t", 300)}>{l.note}</p>
       </div>
     </section>
   );

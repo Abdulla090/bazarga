@@ -651,16 +651,7 @@ html:lang(ckb) .mono-label, html:lang(ar) .mono-label { text-transform: none; le
   background: radial-gradient(closest-side, rgb(37 99 235 / 0.08), rgb(37 99 235 / 0.03) 55%, transparent);
   pointer-events: none;
 }
-/* Staged reveal on load. Only when motion is welcome; otherwise everything is simply visible. */
-@keyframes hero-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: no-preference) {
-  .hero-rise { animation: hero-rise 700ms var(--ease-out-expo) both; }
-  .hero-d1 { animation-delay: 60ms; }
-  .hero-d2 { animation-delay: 140ms; }
-  .hero-d3 { animation-delay: 220ms; }
-  .hero-d4 { animation-delay: 320ms; }
-  .hero-d5 { animation-delay: 440ms; }
-}
+/* Hero opening sequence: see (marketing)/marketing.css "Hero opening sequence" (.ho-*). */
 
 /* ---- Hero visual (agentb/hero-visual): chat photos -> phone storefront -> order. CSS only, CSP-safe. ---- */
 /* $1 Pro eyebrow pill (agentb/hero-1-badge), Linear/Stripe-style: crisp 1px gradient stroke (padding-box/border-box
@@ -734,20 +725,13 @@ html:lang(ckb) .mono-label, html:lang(ar) .mono-label { text-transform: none; le
 @keyframes hv-float { from { transform: translateY(0); } to { transform: translateY(-7px); } }
 @keyframes hv-dash { to { stroke-dashoffset: -44; } }
 @keyframes hv-ping { 0% { opacity: 0.9; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(1.35); } }
-@keyframes hv-par { from { transform: translateY(0); } to { transform: translateY(var(--hv-par, -24px)); } }
 @media (prefers-reduced-motion: no-preference) {
   .hv-float { animation: hv-float 3.6s ease-in-out infinite alternate; }
   .hv-float-2 { animation-duration: 4.2s; animation-delay: -1.4s; }
   .hv-float-3 { animation-duration: 3.1s; animation-delay: -0.6s; }
   .hv-dash { animation: hv-dash 2.4s linear infinite; }
   .hv-ping::after { animation: hv-ping 2.2s var(--ease-out-expo) infinite; }
-  /* Scroll parallax where the browser supports scroll-driven animations; static elsewhere. */
-  @supports (animation-timeline: scroll()) {
-    .hv-par-a, .hv-par-b, .hv-par-phone { animation: hv-par linear both; animation-timeline: scroll(root); animation-range: 0 600px; }
-    .hv-par-a { --hv-par: -40px; }
-    .hv-par-b { --hv-par: -64px; }
-    .hv-par-phone { --hv-par: -12px; }
-  }
+  /* Oct 18: scroll-linked hero parallax removed: the landing reveals once and then holds still. */
 }
 
 /* ---- Pricing: Apple-style blur swap for the monthly/yearly toggle (agentb/hero-visual). ----

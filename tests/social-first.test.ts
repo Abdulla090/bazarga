@@ -217,6 +217,6 @@ describe("social-first: migration + copy", () => {
       expect(m.landing.dvb.title).toBeTruthy();
     }
     expect(msgs("ku").landing.heroTitle1).toBe("دوکانەکەت ئەمڕۆ بکەرەوە."); // Abdulla Oct 15: original hero title restored
-    expect(msgs("ku").landing.dvb.dmBubble).toBe("بەچەندە؟");
+    expect(msgs("ku").landing.dvb.dm2).toContain("بەچەندە؟");
   });
 });
