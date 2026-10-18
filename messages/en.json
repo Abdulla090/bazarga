@@ -1615,7 +1615,6 @@
     "copy": "Copy hashtags",
     "copied": "Copied",
     "addTags": "Add to description",
-    "locked": "Business",
     "connect": "Operator: AI writing is ready but not connected. Set GEMINI_API_KEY or OPENAI_API_KEY (docs/SETUP.md). Sellers don't see this note."
   }
 }

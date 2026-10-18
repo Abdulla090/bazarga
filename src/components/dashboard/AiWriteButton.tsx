@@ -25,6 +25,7 @@ const val = (id: string) => (document.getElementById(id) as HTMLInputElement | H
 export function AiWriteButton({ mode, lang }: { mode: AiMode; lang: Locale }) {
   const t = useTranslations("aiWrite");
   const te = useTranslations("errors");
+  const tu = useTranslations("upgrade");
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -40,7 +41,7 @@ export function AiWriteButton({ mode, lang }: { mode: AiMode; lang: Locale }) {
   if (mode === "locked")
     return (
       <Link href="/dashboard/upgrade" data-testid="ai-locked" className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold">
-        <Sparkle /> {t("button")} · <span className="text-[#2563EB]">{t("locked")}</span>
+        <Sparkle /> {t("button")} · <span className="text-[#2563EB]">{tu("name.business")}</span>
       </Link>
     );
 
