@@ -22,6 +22,7 @@
     "db:setup": "npm run db:migrate && npm run db:seed",
     "images:backfill": "tsx --conditions=react-server scripts/backfill-renditions.ts",
     "payments:reconcile": "tsx --conditions=react-server scripts/reconcile-payments.ts",
+    "db:cleanup-tests": "tsx --conditions=react-server scripts/cleanup-test-accounts.ts",
     "test:smoke": "node scripts/smoke.mjs",
     "start:standalone": "node .next/standalone/server.js",
     "budget": "node scripts/budget.mjs",
