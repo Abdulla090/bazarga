@@ -1,4 +1,4 @@
-# Bazarga — handover
+# Reelcart — handover
 
 What a buyer receives and how each piece moves to them. Final scope and terms are set in the written sale
 agreement; this is the practical checklist.
@@ -12,10 +12,10 @@ agreement; this is the practical checklist.
 | Live deployment | Vercel project `bazarga` → <https://bazarga.vercel.app> | Vercel project transfer to the buyer's team, **or** buyer deploys fresh with the Deploy button (recommended; 15 min) |
 | Database | Supabase Postgres (demo data, test sellers) | Usually not transferred: buyer starts fresh (`SEED_DEMO=false`). On request: `pg_dump` handed over securely |
 | Product photos | Supabase Storage bucket `uploads` | Included in a database handover if requested; demo photos also ship in the repo (`public/images/seed`) |
-| Brand | Name "Bazarga" / بازارگە, logo and wordmark (in repo), landing copy in 4 languages | Included with the code |
-| Domain | None in use (site runs on `bazarga.vercel.app`) | Nothing to transfer; buyer adds their own domain (docs/SETUP.md §4.3) |
+| Brand | Name "Reelcart" (formerly codenamed Bazarga; Kurdish/Arabic UI keeps the local name بازارگە), logo and wordmark (in repo), landing copy in 4 languages | Included with the code |
+| Domain | None in use (site runs on `bazarga.vercel.app`; suggested `reelcart.app` is not registered) | Nothing to transfer; buyer adds their own domain (docs/SETUP.md §4.3) |
 | Documentation | README, docs/SETUP.md, docs/sale/*, OPS, PAYMENTS, CAPACITY, PERFORMANCE, design docs | In the repo |
-| Demo videos + acquisition brief | Mobile and desktop walkthroughs, PDF brief | Delivered as files alongside the repo |
+| Demo videos + acquisition brief | PDF brief (Reelcart); mobile and desktop walkthrough videos are a legacy codename build (old Bazarga wordmark) | Delivered as files alongside the repo |
 | Third-party accounts | None with paid commitments. Rasedi payment KYC not started | Buyer opens their own (payment provider KYC is tied to the buyer's legal entity) |
 
 Not included unless agreed: support after handover, the seller's personal accounts (GitHub, Vercel, Google), and

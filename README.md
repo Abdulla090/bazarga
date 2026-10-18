@@ -1,6 +1,8 @@
-# Bazarga · بازارگە
+# Reelcart · بازارگە
 
-**Turn TikTok, Instagram and WhatsApp views into real orders.** A Kurdish-first online store builder for sellers in Iraq and the Kurdistan Region.
+**Reels in, cart out: turn TikTok, Instagram and WhatsApp views into real orders.** A Kurdish-first online store builder for sellers in Iraq and the Kurdistan Region.
+
+Formerly codenamed Bazarga; Kurdish/Arabic UI keeps the local name بازارگە.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAbdulla090%2Fbazarga&project-name=bazarga&repository-name=bazarga&env=APP_URL%2CCRON_SECRET%2CADMIN_EMAILS%2CSEED_DEMO&envDescription=APP_URL%20%3D%20https%3A%2F%2F%3Cproject-name%3E.vercel.app%20%C2%B7%20CRON_SECRET%20%3D%20any%20long%20random%20text%20%2824%2B%20chars%29%20%C2%B7%20ADMIN_EMAILS%20%3D%20your%20email%20%C2%B7%20SEED_DEMO%20%3D%20true%20to%20keep%20the%20demo%20store%2C%20false%20for%20an%20empty%20site&envLink=https%3A%2F%2Fgithub.com%2FAbdulla090%2Fbazarga%2Fblob%2Fmain%2Fdocs%2FSETUP.md&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%5D)
 
@@ -9,13 +11,13 @@
 
 ---
 
-## What Bazarga is
+## What Reelcart is
 
 Sellers in Iraq already get attention on TikTok, Instagram and WhatsApp. What they lose is everything after the
 view: DMs pile up, "how much?" gets answered a hundred times a day, there is no order record, no tracking, and no
 idea which platform actually sold.
 
-Bazarga gives every seller a mobile store in minutes: one link for the bio, every product with a visible price,
+Reelcart gives every seller a mobile store in minutes: one link for the bio, every product with a visible price,
 structured cash-on-delivery orders (name, phone, city, area), the order handed to WhatsApp, and analytics that
 show **which platform sold**. Sorani Kurdish is the default language; Kurmanji, Arabic and English are built in,
 with full right-to-left support.
@@ -33,7 +35,9 @@ It is a multi-tenant SaaS: you run the platform, sellers sign up, and you charge
 | Pricing | <https://bazarga.vercel.app/pricing> |
 | Health check | <https://bazarga.vercel.app/api/health> |
 
-Screenshots: [docs/sale/screenshots](docs/sale/screenshots) · 90-second walkthrough videos: [mobile, Kurdish](docs/sale/video/bazarga-demo-mobile.mp4) · [desktop, English](docs/sale/video/bazarga-demo-desktop.mp4).
+The live demo stays on `bazarga.vercel.app` (the deployment URL keeps the codename). Suggested production domain: `reelcart.app` (not registered yet).
+
+Screenshots: [docs/sale/screenshots](docs/sale/screenshots). (Legacy codename build: 90-second walkthrough videos recorded before the rename still show the old Bazarga wordmark — [mobile, Kurdish](docs/sale/video/bazarga-demo-mobile.mp4) · [desktop, English](docs/sale/video/bazarga-demo-desktop.mp4).)
 
 ## Features
 

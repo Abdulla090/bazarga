@@ -1,9 +1,9 @@
 {
-  "name": "bazarga",
+  "name": "reelcart",
   "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "description": "Bazarga (بازارگە) — Kurdish-first, zero-setup online store builder",
+  "description": "Reelcart (بازارگە, formerly Bazarga) — Kurdish-first, zero-setup online store builder: reels and social views turn into a cart",
   "engines": {
     "node": ">=22"
   },

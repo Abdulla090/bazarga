@@ -1,4 +1,4 @@
-# Bazarga — roadmap for a new owner
+# Reelcart — roadmap for a new owner
 
 What is marked "Soon" in the product today, then the growth ideas with the most leverage. Each item notes the code
 seam that already exists, so a developer can pick it up quickly. Detailed engineering notes: docs/ROADMAP.md.
@@ -15,7 +15,7 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Bulk CSV import | Business | CSV export for products and orders already built (`src/lib/products-csv.ts`) |
 | AI product descriptions | Business | AI builder (`src/server/ai`) behind `AI_ENABLED` |
 | AI Website Designer, exclusive designs, premium templates, monthly design refresh | Max | Theme Studio schema + 7 layout designs (`src/lib/theme-studio`) |
-| Advanced SEO, white-label, priority processing | Max | SEO helpers (`src/lib/seo.ts`), "Made with Bazarga" badge toggle |
+| Advanced SEO, white-label, priority processing | Max | SEO helpers (`src/lib/seo.ts`), "Made with Reelcart" badge toggle |
 | Sign in with WhatsApp (phone OTP) | All | `OtpProvider` interface (`src/server/otp`) |
 
 ## Growth ideas (highest leverage first)
@@ -32,7 +32,7 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
    their clients; white-label on Max is the hook.
 6. **Expand regionally.** The stack already speaks Arabic and Kurmanji; adding Turkish and Persian covers
    neighbouring diaspora markets (the landing already shows stores "from Erbil to Berlin").
-7. **Marketplace / showcase.** Turn the existing showcase page into a discovery directory of Bazarga stores with
+7. **Marketplace / showcase.** Turn the existing showcase page into a discovery directory of Reelcart stores with
    search by city and category.
 8. **Retention tools.** Abandoned-cart WhatsApp reminders, repeat-customer discounts, loyalty points — the customer
    and discount tables already exist.

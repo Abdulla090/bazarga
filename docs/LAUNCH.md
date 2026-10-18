@@ -1,4 +1,4 @@
-# Bazarga — launch checklist
+# Reelcart — launch checklist
 
 FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with seller + shopper e2e. Fri 2026-10-30 production at super quality; Thu 2026-10-29 freeze and bug bash. Demand track: docs/DEMAND.md.
 
@@ -60,7 +60,7 @@ Fallback: `STORAGE_DRIVER=r2` with a missing value uses Supabase Storage (log `s
 |---|---|
 | `EMAIL_PROVIDER` | `resend` (free 3,000/mo) or `brevo` (free 300/day); unset = `console` (mail written to the log) |
 | `EMAIL_API_KEY` | the provider key (`RESEND_API_KEY` / `BREVO_API_KEY` also work) |
-| `EMAIL_FROM` | `Bazarga <hello@<verified-domain>>`; the domain must be verified at the provider (SPF + DKIM) |
+| `EMAIL_FROM` | `Reelcart <hello@<verified-domain>>`; the domain must be verified at the provider (SPF + DKIM) |
 
 A provider without a key falls back to console and logs `email.provider_key_missing`. Plain `fetch`, 10 s timeout.
 `EMAIL_DRIVER` is the old name of `EMAIL_PROVIDER`.
