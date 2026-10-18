@@ -48,6 +48,11 @@ const DEMO_EMAIL = process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app";
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo";
 
 async function main() {
+  // SEED_DEMO=false launches an empty platform: no demo seller, no demo store (docs/SETUP.md).
+  if (process.env.SEED_DEMO === "false") {
+    console.log("[seed] SEED_DEMO=false — demo store skipped");
+    process.exit(0);
+  }
   const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "pglite://./.pglite";
   const db = createDb(url);
 

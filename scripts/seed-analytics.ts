@@ -29,6 +29,7 @@ export function demoGrowth(day: string): number {
 
 
 export function seedAnalyticsEnabled(): boolean {
+  if (process.env.SEED_DEMO === "false") return false;
   return process.env.SEED_DEMO === "true" || process.env.VERCEL === "1";
 }
 
