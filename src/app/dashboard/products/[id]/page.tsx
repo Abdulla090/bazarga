@@ -9,6 +9,8 @@ import { editorFromDb } from "@/lib/variant-editor";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { ProductForm } from "@/components/dashboard/ProductForm";
+import { ProductSeoForm } from "@/components/dashboard/SeoForms";
+import { hasFeature, normalizePlan } from "@/lib/plans";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -49,6 +51,13 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           })),
         }}
       />
+      {hasFeature(normalizePlan(store.plan), "seoAdvanced") && (
+        <ProductSeoForm
+          productId={product.id}
+          placeholderTitle={`${pickText(product.name, store.defaultLocale)} · ${store.name}`}
+          initial={{ title: product.seo?.title ?? "", description: product.seo?.description ?? "" }}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,11 @@
 import { InstantSearch } from "@/components/store/InstantSearch";
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { NONCE_HEADER } from "@/server/csp";
+import { absoluteUrl, serializeJsonLd } from "@/lib/product-page";
+import { effectiveSeo, siteUrl, storeJsonLd } from "@/lib/seo";
+import { normalizePlan } from "@/lib/plans";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
@@ -57,6 +62,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const design = await resolveDesign(slug, store.themePublished);
   const t = await getTranslations("store");
   const locale = await currentLocale();
+  const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
   const [{ products, categories: usedCats, bestSellers }, { zones }, codes] = await Promise.all([
     getCatalog(store.id),
     getStorefrontSettings(store.id),
@@ -203,6 +209,16 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     // Room under the last block so the floating chat button (390/360) never sits on top of it at the end of the page.
     <div className={wa ? "grid pb-20 sm:pb-0" : "grid"}>
       <ViewPixel slug={store.slug} />
+      {browsing && <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(storeJsonLd({
+        name: store.name,
+        url: `${siteUrl()}/s/${store.slug}`,
+        description: effectiveSeo(normalizePlan(store.plan), store.seo).description || pickText(store.tagline, locale) || undefined,
+        logo: store.logoUrl ? absoluteUrl(siteUrl(), store.logoUrl) : null,
+        image: store.coverImageUrl ? absoluteUrl(siteUrl(), store.coverImageUrl) : null,
+        telephone: store.phone,
+        city: store.city,
+        sameAs: store.instagram ? [`https://instagram.com/${store.instagram}`] : [],
+      })) }} />}
       {browsing && (
         <>
           {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : design.hero === "stage" ? <HeroStage {...heroProps} /> : <HeroSplit {...heroProps} />}

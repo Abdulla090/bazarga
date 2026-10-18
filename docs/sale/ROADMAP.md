@@ -14,7 +14,7 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Multiple stores per account (3 / 5) | Business / Max | Store creation service already per-user |
 | AI product descriptions | Business | AI builder (`src/server/ai`) behind `AI_ENABLED` |
 | AI Website Designer, exclusive designs, premium templates, monthly design refresh | Max | Theme Studio schema + 7 layout designs (`src/lib/theme-studio`) |
-| Advanced SEO, white-label, priority processing | Max | SEO helpers (`src/lib/seo.ts`), "Made with Reelcart" badge toggle |
+| Priority processing | Max | Queue/ordering for Product Studio once it ships |
 | Sign in with WhatsApp (phone OTP) | All | `OtpProvider` interface (`src/server/otp`) |
 
 ## Shipped from the "Soon" list (Oct 18, 2026)
@@ -22,6 +22,7 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Feature | Plan | Where it lives |
 |---|---|---|
 | Bulk CSV import (preview, per-row validation, plan product cap) | Business, Max | `/dashboard/products/import`, `src/lib/products-csv-import.ts`; gate `assertFeature(store, "bulkCsv")` (`src/server/plan-gate.ts`) |
+| Advanced SEO + white-label (store + product meta title/description, share image, per-store sitemap, JSON-LD Store/Product, white-label switch) | Max | `/dashboard/settings/seo`, `src/lib/seo.ts`, `src/server/actions/seo.ts`, `/s/<slug>/sitemap.xml`; migration 0025 |
 
 ## Growth ideas (highest leverage first)
 

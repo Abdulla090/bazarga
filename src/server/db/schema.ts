@@ -21,6 +21,9 @@ export type LocalizedText = Partial<Record<"ku" | "ar" | "en" | "kmr", string>>;
 export type ProductSpec = { label: LocalizedText; value: LocalizedText };
 /** Seller-set storefront badge (src/lib/merch.ts). */
 export type ProductBadge = "new" | "featured";
+/** Advanced SEO overrides (Max plan, migration 0025). Validated by src/lib/seo.ts. */
+export type StoreSeo = { title?: string; description?: string; ogImageUrl?: string };
+export type ProductSeo = { title?: string; description?: string };
 
 export const localeEnum = pgEnum("locale", ["ku", "ar", "en", "kmr"]);
 /** COD-shaped lifecycle — see src/lib/order-status.ts (kept in sync by tests/schema-enums.test.ts). */
@@ -140,6 +143,10 @@ export const stores = pgTable(
     foundingNumber: integer("founding_number"),
     /** Seller chose to appear on the public /showcase (migration 0023, docs/DEMAND.md D4); default off. */
     showcaseOptIn: boolean("showcase_opt_in").notNull().default(false),
+    /** Advanced SEO overrides (Max, migration 0025, src/lib/seo.ts StoreSeo); {} = derived from name/tagline. */
+    seo: jsonb("seo").$type<StoreSeo>().notNull().default({}),
+    /** White-label switch (Max, migration 0025): hides every Reelcart mark on the storefront. */
+    whiteLabel: boolean("white_label").notNull().default(false),
     // ---- storefront theme (src/lib/theme.ts)
     themePreset: themePresetEnum("theme_preset").notNull().default("bazaar"),
     /** #RRGGBB override of the preset's accent; null = preset accent. */
@@ -213,6 +220,8 @@ export const products = pgTable(
     specs: jsonb("specs").$type<ProductSpec[]>().notNull().default([]),
     /** Seller's manual storefront badge ("New" / "Featured"); null = none (migration 0009). */
     badge: text("badge").$type<ProductBadge>(),
+    /** Product-level meta overrides (Max, migration 0025, src/lib/seo.ts ProductSeo); {} = derived. */
+    seo: jsonb("seo").$type<ProductSeo>().notNull().default({}),
     isActive: boolean("is_active").notNull().default(true),
     sort: integer("sort").notNull().default(0),
     /** Short link code for /p/<code> (migration 0019): 8 random hex chars, set by the database on insert. */

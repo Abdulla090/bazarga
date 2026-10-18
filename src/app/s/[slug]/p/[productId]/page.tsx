@@ -1,3 +1,5 @@
+import { normalizePlan } from "@/lib/plans";
+import { effectiveSeo } from "@/lib/seo";
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { ViewPixel } from "@/components/store/ViewPixel";
@@ -62,10 +64,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const locale = await currentLocale();
   const t = await getTranslations("store");
   const name = pickText(p.name, locale);
-  const title = `${name} · ${store.name}`;
+  // Advanced SEO (Max): the seller's own product title/description win over the derived ones.
+  const seo = effectiveSeo(normalizePlan(store.plan), p.seo);
+  const title = seo.title || `${name} · ${store.name}`;
   // The product's own description, trimmed to ~155 chars on a word; without one, store + product name (4 locales).
   const own = pickText(p.description, locale).replace(/\s+/g, " ").trim();
-  const description = own ? clip(own, 155) : clip(t("metaProductFallback", { product: name, store: store.name }), 155);
+  const description = seo.description || (own ? clip(own, 155) : clip(t("metaProductFallback", { product: name, store: store.name }), 155));
   const url = `${base()}/s/${store.slug}/p/${p.id}`;
   // Generated 1200×630 card (photo + name + price + store); the route falls back to a text card without a cover.
   const og = [{ url: `${url}/og?lang=${locale}`, width: 1200, height: 630, alt: pickText(p.name, locale) }];

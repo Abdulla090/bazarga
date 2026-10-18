@@ -13,15 +13,32 @@ import { pickText } from "@/lib/i18n";
 import { resolveTheme, themeStyle } from "@/lib/theme";
 import { publishedThemeStyle, parseTheme } from "@/lib/theme-studio/resolve";
 import { normalizePhone } from "@/lib/phone";
+import { normalizePlan } from "@/lib/plans";
+import { effectiveSeo, whiteLabelOn } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const store = await loadStore(slug);
   const locale = await currentLocale();
+  const plan = normalizePlan(store.plan);
+  const seo = effectiveSeo(plan, store.seo);
+  const title = seo.title || store.name;
+  const description = seo.description || pickText(store.tagline, locale) || store.name;
+  const ogImage = seo.ogImageUrl || store.coverImageUrl || store.logoUrl;
+  const white = whiteLabelOn(plan, store.whiteLabel);
   return {
-    title: { absolute: store.name },
-    description: pickText(store.tagline, locale) || store.name,
-    openGraph: { title: store.name, images: store.logoUrl ? [store.logoUrl] : undefined },
+    title: { absolute: title },
+    description,
+    openGraph: { title, description, siteName: store.name, images: ogImage ? [ogImage] : undefined },
+    twitter: { card: ogImage ? "summary_large_image" : "summary", title, description, images: ogImage ? [ogImage] : undefined },
+    // White-label (Max): the store's own name and logo replace every Reelcart mark in the browser chrome.
+    ...(white
+      ? {
+          applicationName: store.name,
+          appleWebApp: { capable: true, title: store.name, statusBarStyle: "default" as const },
+          ...(store.logoUrl ? { icons: { icon: store.logoUrl, apple: store.logoUrl } } : {}),
+        }
+      : {}),
   };
 }
 

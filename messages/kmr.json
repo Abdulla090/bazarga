@@ -1525,5 +1525,26 @@
     "cta": "Bilind bike bo {plan}",
     "csvTitle": "Barkirina girseyî bi CSV di plana Business de ye",
     "csvBody": "Bi carekê bi sedan berheman ji tabloyekê zêde bike. Derxistina berhem û fermanan di hemû planan de belaş dimîne."
+  },
+  "seo": {
+    "title": "SEO û white-label",
+    "linkHint": "Sernav û şirove ji bo Google, wêneyê parvekirinê, sitemap, veşartina Reelcart",
+    "storeTitle": "Firoşgeha te li Google çawa xuya dike",
+    "storeHint": "Qadekê vala bihêle da ku nav û dirûşma firoşgehê were bikaranîn.",
+    "metaTitle": "Sernavê lêgerînê",
+    "metaTitleHint": "Heta {n} tîpan. Wek girêdana şîn li Google tê nîşandan.",
+    "metaDescription": "Şiroveya lêgerînê",
+    "metaDescriptionHint": "Heta {n} tîpan. Nivîsa kurt a di bin girêdanê de.",
+    "ogImage": "Girêdana wêneyê parvekirinê",
+    "ogImageHint": "Girêdaneke wêneyê https (1200×630 baştirîn e) dema girêdana firoşgehê li WhatsApp, Facebook an Telegram tê parvekirin. Vala = wêneyê bergê.",
+    "whiteLabel": "White-label: Reelcart li firoşgeha min veşêre",
+    "whiteLabelHint": "Nîşana \"Bi Reelcart hatiye çêkirin\" û nîşana damezrêner radike, û logo û navê te wek îkona gerokê û navê sepanê bi kar tîne.",
+    "save": "Mîhengên SEO tomar bike",
+    "productTitle": "Sernav û şiroveya lêgerînê (SEO)",
+    "productHint": "Bijarte. Vala = nav û şiroveya berhemê.",
+    "extrasTitle": "Sitemap û daneyên birêkxistî",
+    "extrasHint": "Sitemapa firoşgeha te ya taybet heye, û her rûpel bixweber daneyên Store û Product ên Google hildigire. Girêdana sitemapê têxe Google Search Console.",
+    "lockTitle": "SEO ya pêşketî û white-label di plana Max de ne",
+    "lockBody": "Sernav û şiroveya xwe ya Google ji bo firoşgehê û her berhemê binivîse, wêneyê parvekirinê hilbijêre, sitemapa firoşgehê bistîne û her nîşana Reelcart rake."
   }
 }

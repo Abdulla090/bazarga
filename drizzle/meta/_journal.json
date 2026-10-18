@@ -176,6 +176,13 @@
       "when": 1791514200000,
       "tag": "0024_testimonials",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1791600000000,
+      "tag": "0025_store_seo_white_label",
+      "breakpoints": true
     }
   ]
 }

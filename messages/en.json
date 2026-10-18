@@ -1524,5 +1524,26 @@
     "cta": "Upgrade to {plan}",
     "csvTitle": "Bulk CSV import is on Business",
     "csvBody": "Add hundreds of products at once from a spreadsheet. Exporting your products and orders stays free on every plan."
+  },
+  "seo": {
+    "title": "SEO and white-label",
+    "linkHint": "Google title and description, share image, sitemap, hide Reelcart",
+    "storeTitle": "How your store looks on Google",
+    "storeHint": "Leave a field empty to use your store name and tagline.",
+    "metaTitle": "Search title",
+    "metaTitleHint": "Up to {n} characters. Shown as the blue link on Google.",
+    "metaDescription": "Search description",
+    "metaDescriptionHint": "Up to {n} characters. The short text under the link.",
+    "ogImage": "Share image link",
+    "ogImageHint": "An https image link (1200×630 works best) shown when your store link is shared on WhatsApp, Facebook or Telegram. Empty = your cover photo.",
+    "whiteLabel": "White-label: hide Reelcart on my store",
+    "whiteLabelHint": "Removes the \"Made with Reelcart\" badge and the founding badge, and uses your logo and name as the browser icon and app name.",
+    "save": "Save SEO settings",
+    "productTitle": "Search title and description (SEO)",
+    "productHint": "Optional. Empty = the product name and description.",
+    "extrasTitle": "Sitemap and structured data",
+    "extrasHint": "Your store has its own sitemap, and every page carries Google's Store and Product data automatically. Paste the sitemap link into Google Search Console.",
+    "lockTitle": "Advanced SEO and white-label are on Max",
+    "lockBody": "Write your own Google title and description for the store and each product, pick the share image, get a store sitemap, and remove every Reelcart mark."
   }
 }
