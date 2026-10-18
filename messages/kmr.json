@@ -894,7 +894,7 @@
     "importDone": "{n} berhem hatin hinardekirin",
     "importTemplate": "Nimûneyê dakêşe",
     "importView": "Berheman bibîne",
-    "importRowError": "Rêza {line}: {why}",
+    "importRowError": "Rêza {line}: stûna {why} kontrol bike",
     "importLimit": "Te gihaşt sînorê berhemên planê. Bilind bike da ku zêdetir zêde bikî.",
     "importFailed": "Nehat hinardekirin. Pelê kontrol bike û dîsa biceribîne.",
     "importFatal": {

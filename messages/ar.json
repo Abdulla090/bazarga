@@ -409,7 +409,7 @@
     "importDone": "تم استيراد {n} منتج",
     "importTemplate": "تنزيل القالب",
     "importView": "عرض المنتجات",
-    "importRowError": "الصف {line}: {why}",
+    "importRowError": "الصف {line}: تحقق من العمود {why}",
     "importLimit": "وصلت إلى حد منتجات باقتك. قم بالترقية لإضافة المزيد.",
     "importFailed": "تعذر الاستيراد. تحقق من الملف وحاول مرة أخرى.",
     "importFatal": {

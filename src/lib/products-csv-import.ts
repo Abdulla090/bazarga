@@ -49,6 +49,9 @@ function normNumber(s: string): string {
   return latin.replace(NUM, "").replace(/(iqd|د\.ع)$/i, "");
 }
 
+/** A failed row reports the CSV column to fix (shown LTR inside a translated sentence), never raw validation text. */
+const COLUMN_OF: Record<string, string> = { name: "name", price: "price", compareAtPrice: "compare_at_price", stock: "stock", sku: "sku", badge: "badge", description: "description" };
+
 export function parseProductsCsv(text: string): ImportParse {
   if (!text.trim()) return { rows: [], fatal: "empty" };
   if (text.length > IMPORT_MAX_BYTES) return { rows: [], fatal: "too_big" };
@@ -86,7 +89,7 @@ export function parseProductsCsv(text: string): ImportParse {
     const parsed = productSchema.safeParse(candidate);
     if (parsed.success) return { line, input: parsed.data as ProductInput };
     const issue = parsed.error.issues[0]!;
-    return { line, error: `${issue.path.join(".") || "row"}:${issue.message}` };
+    return { line, error: COLUMN_OF[String(issue.path[0] ?? "")] ?? "name" };
   });
   return { rows };
 }
