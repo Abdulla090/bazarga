@@ -51,7 +51,7 @@ export function DmsVsBazarga({ l }: { l: DvbLabels }) {
           <article className="dvb-card dvb-bz" aria-labelledby="dvb-bz-title" data-testid="dvb-bz">
             <header className="flex items-center justify-between gap-3">
               <h3 id="dvb-bz-title" className="text-lg font-bold text-white">{l.bzTitle}</h3>
-              <span className="dvb-live" aria-hidden="true"><span className="dvb-live-dot" />bazarga.app/s/…</span>
+              <span className="dvb-live" aria-hidden="true"><span className="dvb-live-dot" />reelcart.app/s/…</span>
             </header>
             <div className="dvb-order" aria-hidden="true">
               <div className="flex items-center justify-between gap-2">

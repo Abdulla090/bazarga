@@ -1,7 +1,7 @@
 {
   "_comment": "Kurmanji (Latin). Every key is translated; needs native review before launch.",
   "common": {
-    "appName": "Bazarga",
+    "appName": "Reelcart",
     "tagline": "Dikana te, bi zimanê te.",
     "save": "Tomar bike",
     "cancel": "Betal bike",
@@ -75,7 +75,7 @@
     "heroEyebrow": "Ji bo firoşkarên Instagram û WhatsApp",
     "heroSub": "Wêne û bihayan bi zimanê xwe bişîne. Dikana te dikeve ser înternetê.",
     "madeIn": "Li Hewlêr, Kurdistan hatiye çêkirin",
-    "metaTitle": "Bazarga · Firoşgeha te, bi zimanê te",
+    "metaTitle": "Reelcart · Firoşgeha te, bi zimanê te",
     "metaDescription": "Firoşgeheke serhêl a Kurdî-pêşî ji bo firoşkarên Instagram û WhatsAppê. Wêne û bihayan bişîne, firoşgehek bi gihandina li gorî bajêr û dayînên herêmî bistîne.",
     "heroCta2": "Firoşgehek mînak bibîne",
     "badge": "Firoşgeh di çend deqeyan de amade ye",
@@ -92,9 +92,9 @@
     "s3Body": "Siparîş tên, û tu di gihandinê de pere werdigirî.",
     "demoEyebrow": "Mînaka zindî",
     "demoTitle": "Firoşgehek mîna vê, tenê ya te.",
-    "demoBody": "Studio Hawler firoşgeheke rastîn e ya ku li ser Bazargayê dixebite. Tiştekî têxe selikê, bajarê xwe hilbijêre û bihayê gihandinê bibîne.",
+    "demoBody": "Studio Hawler firoşgeheke rastîn e ya ku li ser Reelcartê dixebite. Tiştekî têxe selikê, bajarê xwe hilbijêre û bihayê gihandinê bibîne.",
     "demoCta": "Studio Hawler veke",
-    "whyEyebrow": "Çima Bazarga",
+    "whyEyebrow": "Çima Reelcart",
     "whyTitle": "Ji bo bazara li vir hatiye çêkirin.",
     "w1Title": "Kurdî-pêşî",
     "w1Body": "Soranî û Kurmancî di xwe de ne. Reqîb bi Erebî pêşengî dikin.",
@@ -131,7 +131,7 @@
     "wlLink": "Lînka te ya taybet",
     "wlFriends": "Hevalên ku bi lînka te tev bûn: {n}",
     "wlWa": "Di WhatsAppê de parve bike",
-    "wlShare": "Ez di lîsteya hêviyê ya Bazargayê de me. Dikana xwe ya serhêl ji Instagram, TikTok û WhatsAppê veke. Bi lînka min tev li me bibe:",
+    "wlShare": "Ez di lîsteya hêviyê ya Reelcartê de me. Dikana xwe ya serhêl ji Instagram, TikTok û WhatsAppê veke. Bi lînka min tev li me bibe:",
     "wlInvited": "Hevalekî te vexwendiye. Hûn her du jî ber bi pêş ve diçin.",
     "wlStatusTitle": "Cihê te di lîsteya hêviyê de",
     "wlStatusMissing": "Me ev cih nedît. Lînkê kontrol bike, an tev li lîsteyê bibe.",
@@ -143,8 +143,8 @@
     "hookLabel": "Pro biceribîne",
     "mockStore": "Bazara Hewlêrê",
     "mockOrder": "Niha bixwaze",
-    "mockAria": "Pêşdîtina firoşgeheke Bazarga",
-    "hvAria": "Bazarga çawa dixebite: wêne û bihayên xwe li WhatsApp an Instagramê bişîne, dikaneke online ya rastîn bistîne, û siparîşan bi dayîna di gihandinê de an bi FIB bistîne.",
+    "mockAria": "Pêşdîtina firoşgeheke Reelcart",
+    "hvAria": "Reelcart çawa dixebite: wêne û bihayên xwe li WhatsApp an Instagramê bişîne, dikaneke online ya rastîn bistîne, û siparîşan bi dayîna di gihandinê de an bi FIB bistîne.",
     "hvStep1": "Wêneyan bişîne",
     "hvStep2": "Dikana te amade ye",
     "hvStep3": "Siparîşan bistîne",
@@ -181,11 +181,11 @@
     "faq": {
       "q1": {
         "q": "Bi rastî belaş e?",
-        "a": "Erê. Plana Belaş sînorê demê nîne û kart nexwaze: heta 10 berhem, temayên destpêkê, pere dan dema gihandinê û fermanên WhatsApp. Nîşaneyek biçûk a Bazarga li firoşgeha te xuya dibe."
+        "a": "Erê. Plana Belaş sînorê demê nîne û kart nexwaze: heta 10 berhem, temayên destpêkê, pere dan dema gihandinê û fermanên WhatsApp. Nîşaneyek biçûk a Reelcart li firoşgeha te xuya dibe."
       },
       "q2": {
         "q": "Meha Pro ya $1 çi dihewîne?",
-        "a": "Hemû Pro ji bo meha yekem bi $1, paşê mehê $15, an salê $150 (2 meh belaş). Pro heta 100 berhem, hemû tema û Theme Studio, analîtîka 90 rojan û kodên daxistinê dide û nîşaneya Bazarga radike."
+        "a": "Hemû Pro ji bo meha yekem bi $1, paşê mehê $15, an salê $150 (2 meh belaş). Pro heta 100 berhem, hemû tema û Theme Studio, analîtîka 90 rojan û kodên daxistinê dide û nîşaneya Reelcart radike."
       },
       "q3": {
         "q": "Kîjan rêyên pere danê têne piştgirî kirin?",
@@ -197,7 +197,7 @@
       },
       "q5": {
         "q": "Ez dikarim domaina xwe bi kar bînim?",
-        "a": "Erê, di planên Business (mehê $50) û Max de: domainek wek shop.yourbrand.com girê bide (zû çalak dibe). Firoşgehên Free û Pro girêdana xwe ya Bazarga digirin."
+        "a": "Erê, di planên Business (mehê $50) û Max de: domainek wek shop.yourbrand.com girê bide (zû çalak dibe). Firoşgehên Free û Pro girêdana xwe ya Reelcart digirin."
       },
       "q6": {
         "q": "Bihayê gihandinê li gorî bajar çawa dixebite?",
@@ -214,7 +214,7 @@
     },
     "whyLangPick": "Ziman",
     "dvb": {
-      "eyebrow": "DM li hember Bazarga",
+      "eyebrow": "DM li hember Reelcart",
       "title": "Postên te kiriyaran tînin. DM wan winda dikin.",
       "lead": "Li TikTok, Instagram û WhatsAppê parvekirinê nesekinîne. Tenê siparîşan di çatê de negire.",
       "dmTitle": "Firotin di DMan de",
@@ -224,7 +224,7 @@
       "dm2": "Tevahiya rojê bersiva «bi çiqasî ye?» didî",
       "dm3": "Tomara kê çi siparîş kir tune",
       "dm4": "Piştî şandinê şopandin tune",
-      "bzTitle": "Firotin bi Bazarga",
+      "bzTitle": "Firotin bi Reelcart",
       "bz1": "Lînkek di bioyê de ji bo hemû berheman",
       "bz2": "Biha xuya ne, kes ne hewce ye bipirse",
       "bz3": "Siparîşên rêkxistî: nav, telefon, bajar, navnîşan",
@@ -247,7 +247,7 @@
       "note": "Rasterast ji databaseya me tên jimartin û her çend deqeyan carekê nû dibin."
     },
     "quotesEyebrow": "Gotinên firoşkaran",
-    "quotesTitle": "Firoşkar der barê Bazargayê de çi dibêjin"
+    "quotesTitle": "Firoşkar der barê Reelcartê de çi dibêjin"
   },
   "store": {
     "cart": "Selik",
@@ -305,7 +305,7 @@
     "unavailableLine": "Êdî tune ye",
     "orderNumber": "Siparîşa #{number}",
     "orderThanks": "Spas, {name}. Firoşkar wê bi te re têkilî daynê da ku piştrast bike.",
-    "poweredBy": "Bi Bazargayê hatiye çêkirin",
+    "poweredBy": "Bi Reelcartê hatiye çêkirin",
     "fibTitle": "Bi FIB bide",
     "fibScan": "Bi sepana FIB skan bike, an vê kodê têkevîne:",
     "openFib": "Sepana FIB veke",
@@ -413,7 +413,7 @@
     }
   },
   "pwa": {
-    "installTitle": "Bazarga saz bike",
+    "installTitle": "Reelcart saz bike",
     "installSub": "Panela xwe ji ekrana sereke veke, wek sepanekê.",
     "installCta": "Saz bike",
     "installDismiss": "Paşê",
@@ -741,7 +741,7 @@
     "expired": "Di nav {minutes} deqeyan de nehat dayîn, ji ber vê yekê ev ferman hate betal kirin û stoka wê hate vegerandin.",
     "paidAfterExpiry": "Kiriyar piştî ku ev ferman qediya pere da. Bi wî re têkilî dayne da ku bişînî an pereyê vegerînî.",
     "noAttempts": "Ji bo vê fermanê tu dayîn dest pê nekiriye.",
-    "auto": "Bazarga dayînên li bendê bixweber bi pêşkêşkerê re kontrol dike."
+    "auto": "Reelcart dayînên li bendê bixweber bi pêşkêşkerê re kontrol dike."
   },
   "track": {
     "title": "Siparîşa xwe bişopîne",
@@ -1150,15 +1150,15 @@
     "onb": "Niha belaş · Pro meha yekem $1",
     "features": {
       "store1": "1 firoşgeh",
-      "subdomain": "Girêdana te ya bazarga",
+      "subdomain": "Girêdana te ya Reelcart",
       "products": "Heta {count} berhem",
       "codWhatsapp": "Dayîn li dema gihandinê + fermanên WhatsApp",
       "themesStarter": "2 temayên destpêkê",
       "analytics7": "Analîtîka 7 rojan",
-      "badge": "Nîşana Bazarga li jêrê firoşgehê",
+      "badge": "Nîşana Reelcart li jêrê firoşgehê",
       "studio": "{count} guhertinên AI yên Product Studio/meh",
       "themesAll": "Hemû tema + Theme Studio",
-      "noBadge": "Bê nîşana Bazarga",
+      "noBadge": "Bê nîşana Reelcart",
       "analytics90": "Analîtîka 90 rojan bi grafîkan",
       "discounts": "Kodên daxistinê",
       "onlinePay": "Dayîna online: FIB, ZainCash, kart",
@@ -1175,7 +1175,7 @@
       "priority": "Piştgiriya pêşî",
       "exclusiveDesigns": "Dîzaynên taybet ên super-premium",
       "aiDesigner": "Dîzaynerê malperê bi AI: firoşgeheke temam ji nivîsekê",
-      "whiteLabel": "White-label: li tu derê Bazarga tune",
+      "whiteLabel": "White-label: li tu derê Reelcart tune",
       "earlyAccess": "Gihîştina zû bo taybetmendiyên nû",
       "stores5": "5 firoşgeh",
       "team10": "10 endamên tîmê",
@@ -1193,7 +1193,7 @@
       "analytics": "Analîtîk",
       "payments": "Dayîn",
       "discounts": "Kodên daxistinê",
-      "badge": "Navê Bazarga",
+      "badge": "Navê Reelcart",
       "domain": "Domaina taybet",
       "bulkCsv": "CSV bi komî",
       "aiDescriptions": "Danasînên AI (4 ziman)",
@@ -1216,7 +1216,7 @@
       "codOnline": "Gihandin + online",
       "shown": "Xuya",
       "removed": "Hatiye rakirin",
-      "whiteLabel": "Bê navê Bazarga",
+      "whiteLabel": "Bê navê Reelcart",
       "community": "Navenda alîkariyê",
       "email": "E-name",
       "priority": "Pêşî"
@@ -1247,7 +1247,7 @@
     "after": "paşê $15/meh",
     "wasNow": "Berê $15, niha $1 ji bo meha yekem",
     "max": "Max",
-    "maxDesc": "Bazarga ya temam: dîzaynên taybet û AI ku ji te re ava dike.",
+    "maxDesc": "Reelcart ya temam: dîzaynên taybet û AI ku ji te re ava dike.",
     "ctaMax": "Max hilbijêre",
     "everything": "Hemû tiştên {plan}, û:",
     "soon": "Di rê de",
@@ -1363,7 +1363,7 @@
   "founding": {
     "badge": "Firoşkarê damezrîner",
     "dashTitle": "Firoşkarê damezrîner",
-    "dashBody": "Yek ji 100 dikanên yekem ên Bazargayê. Hejmara te herdem dimîne.",
+    "dashBody": "Yek ji 100 dikanên yekem ên Reelcartê. Hejmara te herdem dimîne.",
     "eyebrow": "Firoşkarên damezrîner",
     "title": "100 dikanên yekem rewşa damezrîner distînin",
     "lead": "Hejmareke herdemî, nîşanek li ser dikana te, û dengek dema em çêdikin.",
@@ -1374,15 +1374,15 @@
     "perk": {
       "badge": "Nîşana damezrîner di panela te û li dikana te ya giştî de",
       "early": "Gihiştina pêşîn bi şêwaz û taybetmendiyên nû",
-      "support": "Bersiva pêşîn gava tu ji tîmê Bazargayê re dinivîsî",
+      "support": "Bersiva pêşîn gava tu ji tîmê Reelcartê re dinivîsî",
       "voice": "Dengê te heye li ser tiştê em paşê çêdikin"
     }
   },
   "showcase": {
     "nav": "Pêşangeh",
-    "metaTitle": "Pêşangeh: dikanên ku li Bazargayê difroşin",
+    "metaTitle": "Pêşangeh: dikanên ku li Reelcartê difroşin",
     "eyebrow": "Pêşangeh",
-    "title": "Dikanên ku li Bazargayê difroşin",
+    "title": "Dikanên ku li Reelcartê difroşin",
     "lead": "Dikanên firoşkarên ku xwestin li vir bên dîtin. Li yekê bitikîne, bigere û ferman bide.",
     "products": "{n} berhem",
     "demo": "Dikana nîşandanê",
@@ -1394,7 +1394,7 @@
     "ctaTitle": "Tu dixwazî dikana te li vir be?",
     "ctaBody": "Dikana xwe belaş veke, paşê ji Mîhengan pêşangehê çalak bike.",
     "ctaButton": "Belaş dest pê bike",
-    "toggleTitle": "Dikana min di pêşangeha Bazargayê de nîşan bide",
+    "toggleTitle": "Dikana min di pêşangeha Reelcartê de nîşan bide",
     "toggleHint": "Nav, wêne, bajar û hejmara berhemên dikana te di rûpela giştî ya pêşangehê de xuya dibin. Her kêlî dikarî vemirînî.",
     "toggleOn": "Dikana te di pêşangehê de ye.",
     "toggleOff": "Dikana te di pêşangehê de nîne.",
@@ -1406,7 +1406,7 @@
     "title": "Rewşa pergalê",
     "ok": "Hemû pergal dixebitin",
     "degraded": "Xizmet pirsgirêk e",
-    "okLead": "Bazarga bi awayekî normal dixebite.",
+    "okLead": "Reelcart bi awayekî normal dixebite.",
     "degLead": "Em pirsgirêkekê dibînin û li ser dixebitin.",
     "db": "Danegeh",
     "app": "Sepan",
@@ -1417,9 +1417,9 @@
     "checked": "Hate kontrolkirin"
   },
   "compare": {
-    "title": "Bazarga li hember DM û Shopify",
+    "title": "Reelcart li hember DM û Shopify",
     "colFeature": "Tu çi digirî",
-    "colBazarga": "Bazarga",
+    "colBazarga": "Reelcart",
     "colDms": "DMên Instagram/WhatsApp",
     "colShopify": "Shopify",
     "rows": {
@@ -1477,7 +1477,7 @@
     "title": "Pirs û bersiv",
     "items": {
       "q1": {
-        "q": "Bazarga çi ye?",
+        "q": "Reelcart çi ye?",
         "a": "Dikanek amade ye ji bo firoşkarên Instagram û WhatsApp, bi zimanê te."
       },
       "q2": {

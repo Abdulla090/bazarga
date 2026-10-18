@@ -1,4 +1,4 @@
-# Bazarga — technical overview
+# Reelcart — technical overview
 
 Counted from the repository on 2026-10-18 (`main`).
 

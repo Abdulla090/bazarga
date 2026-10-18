@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Bazarga",
+    "appName": "Reelcart",
     "tagline": "Your store, in your language.",
     "save": "Save",
     "saved": "Saved",
@@ -38,7 +38,7 @@
     "main": "Main"
   },
   "landing": {
-    "metaTitle": "Bazarga · Your store, in your language",
+    "metaTitle": "Reelcart · Your store, in your language",
     "metaDescription": "A Kurdish-first online store for Instagram and WhatsApp sellers. Send photos and prices, get a store with delivery per city and local payments.",
     "heroEyebrow": "For Instagram and WhatsApp sellers",
     "heroSub": "Send photos and prices in your language. Your store goes live. No themes, no dashboard.",
@@ -57,9 +57,9 @@
     "s3Body": "Orders come in, and you get paid cash on delivery.",
     "demoEyebrow": "Live sample",
     "demoTitle": "A store like this, only yours.",
-    "demoBody": "Studio Hawler is a real working store on Bazarga. Add something to the cart, pick your city and see the delivery fee.",
+    "demoBody": "Studio Hawler is a real working store on Reelcart. Add something to the cart, pick your city and see the delivery fee.",
     "demoCta": "Open Studio Hawler",
-    "whyEyebrow": "Why Bazarga",
+    "whyEyebrow": "Why Reelcart",
     "whyTitle": "Built for the bazaar right here.",
     "w1Title": "Kurdish-first",
     "w1Body": "Sorani and Kurmanji built in. Rivals lead in Arabic.",
@@ -96,7 +96,7 @@
     "wlLink": "Your personal link",
     "wlFriends": "Friends who joined with your link: {n}",
     "wlWa": "Share on WhatsApp",
-    "wlShare": "I'm on the Bazarga waitlist. Open your own online store from Instagram, TikTok and WhatsApp. Join with my link:",
+    "wlShare": "I'm on the Reelcart waitlist. Open your own online store from Instagram, TikTok and WhatsApp. Join with my link:",
     "wlInvited": "A friend invited you. You both move up the list.",
     "wlStatusTitle": "Your waitlist spot",
     "wlStatusMissing": "We couldn't find that spot. Check the link, or join the waitlist.",
@@ -109,8 +109,8 @@
     "hookLabel": "Try Pro",
     "mockStore": "Hawler Bazaar",
     "mockOrder": "Order now",
-    "mockAria": "Preview of a Bazarga store",
-    "hvAria": "How Bazarga works: send your photos and prices on WhatsApp or Instagram, get a real online store, and receive orders paid cash on delivery or by FIB.",
+    "mockAria": "Preview of a Reelcart store",
+    "hvAria": "How Reelcart works: send your photos and prices on WhatsApp or Instagram, get a real online store, and receive orders paid cash on delivery or by FIB.",
     "hvStep1": "Send photos",
     "hvStep2": "Get a store",
     "hvStep3": "Receive orders",
@@ -147,11 +147,11 @@
     "faq": {
       "q1": {
         "q": "Is it really free?",
-        "a": "Yes. The Free plan has no time limit and needs no card: up to 10 products, starter themes, cash on delivery and WhatsApp orders. A small Bazarga badge shows on your store."
+        "a": "Yes. The Free plan has no time limit and needs no card: up to 10 products, starter themes, cash on delivery and WhatsApp orders. A small Reelcart badge shows on your store."
       },
       "q2": {
         "q": "What does the $1 Pro month include?",
-        "a": "Everything in Pro for $1 your first month, then $15 a month, or $150 a year (2 months free). Pro gives you 100 products, all themes plus Theme Studio, 90-day analytics, discount codes and no Bazarga badge."
+        "a": "Everything in Pro for $1 your first month, then $15 a month, or $150 a year (2 months free). Pro gives you 100 products, all themes plus Theme Studio, 90-day analytics, discount codes and no Reelcart badge."
       },
       "q3": {
         "q": "Which payments are supported?",
@@ -163,7 +163,7 @@
       },
       "q5": {
         "q": "Can I use my own domain?",
-        "a": "Yes, on Business ($50 a month) and Max: connect a domain like shop.yourbrand.com (switching on soon). Free and Pro stores get their own Bazarga link."
+        "a": "Yes, on Business ($50 a month) and Max: connect a domain like shop.yourbrand.com (switching on soon). Free and Pro stores get their own Reelcart link."
       },
       "q6": {
         "q": "How does delivery pricing per city work?",
@@ -180,7 +180,7 @@
     },
     "whyLangPick": "Language",
     "dvb": {
-      "eyebrow": "DMs vs Bazarga",
+      "eyebrow": "DMs vs Reelcart",
       "title": "Your posts bring the buyers. DMs lose them.",
       "lead": "Don't stop posting on TikTok, Instagram and WhatsApp. Just stop taking orders in the chat.",
       "dmTitle": "Selling in the DMs",
@@ -190,7 +190,7 @@
       "dm2": "Answering “how much?” all day, every day",
       "dm3": "No record of who ordered what",
       "dm4": "No tracking once it ships",
-      "bzTitle": "Selling with Bazarga",
+      "bzTitle": "Selling with Reelcart",
       "bz1": "One link in your bio for every product",
       "bz2": "Prices are visible, nobody has to ask",
       "bz3": "Structured orders: name, phone, city, address",
@@ -213,7 +213,7 @@
       "note": "Counted straight from our database. Updated every few minutes."
     },
     "quotesEyebrow": "Sellers say",
-    "quotesTitle": "What sellers say about Bazarga"
+    "quotesTitle": "What sellers say about Reelcart"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -617,7 +617,7 @@
     "sendOrderWa": "Send your order to the seller on WhatsApp",
     "sendOrderWaHint": "One tap and the message is ready with your order number and items, so the seller confirms faster.",
     "backToStore": "Back to the store",
-    "poweredBy": "Made with Bazarga",
+    "poweredBy": "Made with Reelcart",
     "fibTitle": "Pay with FIB",
     "fibScan": "Scan with the FIB app, or enter this code:",
     "openFib": "Open FIB app",
@@ -822,7 +822,7 @@
     "network": "No connection. Your cart and details are still here; try again when you're back online."
   },
   "pwa": {
-    "installTitle": "Install Bazarga",
+    "installTitle": "Install Reelcart",
     "installSub": "Open your dashboard from your home screen, like an app.",
     "installCta": "Install",
     "installDismiss": "Later",
@@ -1018,7 +1018,7 @@
     "expired": "Not paid within {minutes} minutes, so this order was cancelled and its stock released.",
     "paidAfterExpiry": "The customer paid after this order expired. Contact them to deliver it or refund the payment.",
     "noAttempts": "No payment was started for this order.",
-    "auto": "Bazarga checks pending payments with the provider automatically."
+    "auto": "Reelcart checks pending payments with the provider automatically."
   },
   "courier": {
     "title": "Courier hand-off",
@@ -1149,15 +1149,15 @@
     "onb": "Free now · Pro $1 first month",
     "features": {
       "store1": "1 store",
-      "subdomain": "Your own bazarga link",
+      "subdomain": "Your own Reelcart link",
       "products": "Up to {count} products",
       "codWhatsapp": "Cash on delivery + WhatsApp orders",
       "themesStarter": "2 starter themes",
       "analytics7": "7-day analytics",
-      "badge": "Bazarga badge in your footer",
+      "badge": "Reelcart badge in your footer",
       "studio": "{count} Product Studio AI edits/month",
       "themesAll": "All themes + Theme Studio",
-      "noBadge": "No Bazarga badge",
+      "noBadge": "No Reelcart badge",
       "analytics90": "90-day analytics with charts",
       "discounts": "Discount codes",
       "onlinePay": "Online payments: FIB, ZainCash, cards",
@@ -1174,7 +1174,7 @@
       "priority": "Priority support",
       "exclusiveDesigns": "Super-premium exclusive designs",
       "aiDesigner": "AI Website Designer: a full store from a prompt",
-      "whiteLabel": "White-label: no Bazarga anywhere",
+      "whiteLabel": "White-label: no Reelcart anywhere",
       "earlyAccess": "Early access to new features",
       "stores5": "5 stores",
       "team10": "10 team members",
@@ -1192,7 +1192,7 @@
       "analytics": "Analytics",
       "payments": "Payments",
       "discounts": "Discount codes",
-      "badge": "Bazarga branding",
+      "badge": "Reelcart branding",
       "domain": "Custom domain",
       "bulkCsv": "Bulk CSV import/export",
       "aiDescriptions": "AI descriptions (4 languages)",
@@ -1246,7 +1246,7 @@
     "after": "$15/month after",
     "wasNow": "Was $15, now $1 for your first month",
     "max": "Max",
-    "maxDesc": "All of Bazarga: exclusive designs and AI that builds for you.",
+    "maxDesc": "All of Reelcart: exclusive designs and AI that builds for you.",
     "ctaMax": "Choose Max",
     "everything": "Everything in {plan}, plus:",
     "soon": "Soon",
@@ -1362,7 +1362,7 @@
   "founding": {
     "badge": "Founding seller",
     "dashTitle": "Founding seller",
-    "dashBody": "One of the first 100 stores on Bazarga. Your number is permanent.",
+    "dashBody": "One of the first 100 stores on Reelcart. Your number is permanent.",
     "eyebrow": "Founding sellers",
     "title": "The first 100 stores get founding status",
     "lead": "A permanent number, a badge on your store, and a seat at the table while we build.",
@@ -1373,15 +1373,15 @@
     "perk": {
       "badge": "Founding badge on your dashboard and your public store",
       "early": "First access to new themes and features",
-      "support": "Priority replies when you message the Bazarga team",
+      "support": "Priority replies when you message the Reelcart team",
       "voice": "A say in what we build next"
     }
   },
   "showcase": {
     "nav": "Showcase",
-    "metaTitle": "Showcase: stores selling on Bazarga",
+    "metaTitle": "Showcase: stores selling on Reelcart",
     "eyebrow": "Showcase",
-    "title": "Stores selling on Bazarga",
+    "title": "Stores selling on Reelcart",
     "lead": "Storefronts from sellers who chose to be listed. Tap one to browse and order.",
     "products": "{n} products",
     "demo": "Demo store",
@@ -1393,7 +1393,7 @@
     "ctaTitle": "Want your store here?",
     "ctaBody": "Open your store free, then switch on the showcase in Settings.",
     "ctaButton": "Start free",
-    "toggleTitle": "Show my store in the Bazarga showcase",
+    "toggleTitle": "Show my store in the Reelcart showcase",
     "toggleHint": "Your store's name, photo, city and product count appear on the public showcase page. Turn it off any time.",
     "toggleOn": "Your store is listed in the showcase.",
     "toggleOff": "Your store is not listed.",
@@ -1405,7 +1405,7 @@
     "title": "System status",
     "ok": "All systems operational",
     "degraded": "Service degraded",
-    "okLead": "Bazarga is running normally.",
+    "okLead": "Reelcart is running normally.",
     "degLead": "We're seeing a problem and are on it.",
     "db": "Database",
     "app": "Application",
@@ -1416,9 +1416,9 @@
     "checked": "Checked"
   },
   "compare": {
-    "title": "Bazarga vs DMs vs Shopify",
+    "title": "Reelcart vs DMs vs Shopify",
     "colFeature": "What you get",
-    "colBazarga": "Bazarga",
+    "colBazarga": "Reelcart",
     "colDms": "Instagram/WhatsApp DMs",
     "colShopify": "Shopify",
     "rows": {
@@ -1476,7 +1476,7 @@
     "title": "Questions, answered",
     "items": {
       "q1": {
-        "q": "What is Bazarga?",
+        "q": "What is Reelcart?",
         "a": "A ready-made store for Instagram and WhatsApp sellers, in your own language."
       },
       "q2": {

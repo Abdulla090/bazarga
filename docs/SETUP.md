@@ -1,7 +1,7 @@
-# Bazarga — setup guide (no coding needed)
+# Reelcart — setup guide (no coding needed)
 
-This guide takes you from nothing to your own live Bazarga in about 15 minutes, then shows how to switch on each
-optional service. You only click and paste. Every setting Bazarga reads is listed, with comments, in
+This guide takes you from nothing to your own live Reelcart in about 15 minutes, then shows how to switch on each
+optional service. You only click and paste. Every setting Reelcart reads is listed, with comments, in
 [`.env.example`](../.env.example).
 
 **You need:** a GitHub account and a Vercel account (free; "Continue with GitHub"). A Supabase account is created
@@ -90,7 +90,7 @@ Without this, emails are only written to the Vercel log. Pick one provider:
 |---|---|
 | `EMAIL_PROVIDER` | `resend` or `brevo` |
 | `EMAIL_API_KEY` | the key |
-| `EMAIL_FROM` | `Bazarga <hello@yourdomain.com>` (domain must be the verified one) |
+| `EMAIL_FROM` | `Reelcart <hello@yourdomain.com>` (domain must be the verified one) |
 
 Redeploy, then test with "Forgot password" on your own account.
 

@@ -42,8 +42,8 @@ describe("error webhook hook (LOG_WEBHOOK_URL)", () => {
   });
   const ev = { level: "error", msg: "request.error", err: { message: "boom" }, route: "/s/[slug]", digest: "123" };
   it("formats Discord and Slack messages, passes JSON elsewhere", () => {
-    expect(webhookPayload("https://discord.com/api/webhooks/1/x", ev)).toEqual({ content: "Bazarga error: request.error — boom (/s/[slug]) [123]" });
-    expect(webhookPayload("https://hooks.slack.com/services/x", ev)).toEqual({ text: "Bazarga error: request.error — boom (/s/[slug]) [123]" });
+    expect(webhookPayload("https://discord.com/api/webhooks/1/x", ev)).toEqual({ content: "Reelcart error: request.error — boom (/s/[slug]) [123]" });
+    expect(webhookPayload("https://hooks.slack.com/services/x", ev)).toEqual({ text: "Reelcart error: request.error — boom (/s/[slug]) [123]" });
     expect(webhookPayload("https://in.logs.example/x", ev)).toBe(ev);
   });
   it("caps sends per minute", () => {

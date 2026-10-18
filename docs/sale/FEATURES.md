@@ -1,15 +1,15 @@
-# Bazarga — full feature inventory
+# Reelcart — full feature inventory
 
 Status as of 2026-10-18. "Built" means merged on `main` and live on <https://bazarga.vercel.app> unless marked
 **off until keys** (code complete, switched on by an environment variable) or **soon** (see ROADMAP.md).
 
 ## 1. Positioning
-Social-first: sellers keep posting on TikTok, Instagram and WhatsApp; Bazarga turns those views into structured
+Social-first: sellers keep posting on TikTok, Instagram and WhatsApp; Reelcart turns those views into structured
 orders and tells the seller which platform sold. Built for Iraq and the Kurdistan Region: Sorani Kurdish first,
 IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsApp as the hand-off.
 
 ## 2. Marketing site
-- Landing page in 4 languages: hero ("Keep posting on TikTok. Bazarga turns views into orders."), DMs-vs-Bazarga comparison, product tour, FAQ, live counters, footer
+- Landing page in 4 languages: hero ("Keep posting on TikTok. Reelcart turns views into orders."), DMs-vs-Reelcart comparison, product tour, FAQ, live counters, footer
 - Pricing page (Free / Pro / Business / Max, monthly and yearly with 2 months free), comparison table
 - Showcase of real stores (opt-in), founding-seller badge, waitlist with referral ranking (`/waitlist/<code>`)
 - Status page (`/status`), legal pages (terms, privacy, refund), localized 404/500 pages
@@ -25,7 +25,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Order confirmation with WhatsApp hand-off to the seller (prefilled message with items, total, tracking link)
 - Order tracking page `/track` (order number + phone), status timeline in Baghdad time
 - Short product links `/p/<code>`, per-product 1200×630 link-preview cards for WhatsApp/Telegram/Instagram
-- Floating WhatsApp button; "Made with Bazarga" badge on the Free plan
+- Floating WhatsApp button; "Made with Reelcart" badge on the Free plan
 - Installable PWA with Kurdish offline page; responsive images (WebP renditions + blur placeholders)
 - Seller TikTok Pixel and Meta Pixel events (PageView, ViewContent, AddToCart, Purchase), respecting Do-Not-Track/GPC
 

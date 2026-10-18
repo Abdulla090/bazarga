@@ -1,7 +1,7 @@
-# Bazarga backlog (top unfinished first)
+# Reelcart backlog (top unfinished first)
 
 ## SALE-READY (Abdulla Oct 18 — top priority)
-Goal: a buyer who barely codes can understand, run and launch Bazarga with their own keys. Hourly loop: take the top unchecked item.
+Goal: a buyer who barely codes can understand, run and launch Reelcart with their own keys. Hourly loop: take the top unchecked item.
 - [x] S1. docs/BACKLOG.md sale section (this list)
 - [x] S2. README.md rewritten buyer-facing (what it is, live demo + login, grouped features, stack, Deploy in 15 minutes); old dev README moved to docs/DEVELOPERS.md
 - [x] S3. Real Deploy-to-Vercel button (env APP_URL, CRON_SECRET, ADMIN_EMAILS, SEED_DEMO + Supabase Marketplace store); vercel.json buildCommand = migrate + seed + build so a fresh project self-initialises
@@ -10,8 +10,9 @@ Goal: a buyer who barely codes can understand, run and launch Bazarga with their
 - [x] S6. SEED_DEMO=false really skips the demo (scripts/seed.ts + seed-analytics)
 - [x] S7. docs/sale/: FEATURES.md, TECH.md, HANDOVER.md, ROADMAP.md with real repo stats
 - [x] S8. 12 curated screenshots in docs/sale/screenshots (webp, <400 KB each)
-- [x] S9. Demo videos (mobile 412x915 ku, desktop 1440x900 en, ~90 s, H.264; 1.8 MB + 3.5 MB) in docs/sale/video/ (also /workspace/work/sale/; recorder script /workspace/work/sale/record-demo.mjs)
-- [x] S10. Acquisition brief PDF (/workspace/work/sale/Bazarga-Acquisition-Brief.pdf)
+- [x] S9. Demo videos — legacy codename build, show the old Bazarga wordmark; not re-recorded after the rename (mobile 412x915 ku, desktop 1440x900 en, ~90 s, H.264; 1.8 MB + 3.5 MB) in docs/sale/video/ (also /workspace/work/sale/; recorder script /workspace/work/sale/record-demo.mjs)
+- [x] S10. Acquisition brief PDF (/workspace/work/sale/Reelcart-Acquisition-Brief.pdf)
+- [x] S18. Rebrand Bazarga → Reelcart (Abdulla Oct 18; reels/social views → cart): en brand, Latin name in ku/kmr/ar (بازارگە stays local), wordmark, R icon, OG, manifest, mail copy, share kit, legal, docs, LICENSE, package name; brief PDF re-rendered as Reelcart-Acquisition-Brief.pdf. DB/env/cookies/routes/Vercel URL unchanged.
 - [x] S11. LICENSE proprietary, all rights reserved (Abdulla Aziz Hameed); package.json "license": "UNLICENSED"
 - [ ] S12. Verify the Deploy button end-to-end on a throwaway Vercel + Supabase account (fresh DB → migrations → seed → /api/health ok → sign up → /admin). Needs a second Vercel account; the repo must be public or the tester must have access.
 - [ ] S13. Fresh-DB dry run locally: empty pglite → db:migrate:deploy → SEED_DEMO=false db:seed → build → smoke; confirm no demo rows and signup + onboarding work on an empty platform.
