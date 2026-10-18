@@ -94,7 +94,7 @@ export const PLANS: Plan[] = [
       { key: "productsUnlimited" },
       { key: "studio", soon: true },
       { key: "domain", soon: true },
-      { key: "stores3", soon: true },
+      { key: "stores3" },
       { key: "team5", soon: true },
       { key: "analyticsAdvanced" },
       { key: "bulkCsv" },
@@ -121,7 +121,7 @@ export const PLANS: Plan[] = [
       { key: "designRefresh", soon: true },
       { key: "seoAdvanced" },
       { key: "whiteLabel" },
-      { key: "stores5", soon: true },
+      { key: "stores5" },
       { key: "team10", soon: true },
       { key: "earlyAccess" },
     ],
@@ -152,7 +152,7 @@ const soon = (v: CellValue) => ({ v, soon: true }) as const;
 
 /**
  * Store and team-seat limits per plan (margin pass, Abdulla 2026-10-14: no "unlimited" team, Max 5 stores / 10 seats).
- * Team counts are extra members besides the owner; 0 = owner only. Not enforced yet (multi-store and team are "Soon");
+ * Team counts are extra members besides the owner; 0 = owner only. Stores enforced in src/server/services/store-access.ts;
  * the feature keys `stores{n}` / `team{n}` must match these numbers (tests/plans.test.ts).
  */
 export const STORE_LIMIT: Record<PlanId, number> = { free: 1, pro: 1, business: 3, max: 5 };
@@ -162,7 +162,7 @@ export const TEAM_LIMIT: Record<PlanId, number> = { free: 0, pro: 2, business: 5
 export const COMPARE: FeatureRow[] = [
   { key: "products", free: 10, pro: 100, business: "unlimited", max: "unlimited" },
   { key: "studio", free: false, pro: soon(10), business: soon(100), max: soon(100) },
-  { key: "stores", free: STORE_LIMIT.free, pro: STORE_LIMIT.pro, business: soon(STORE_LIMIT.business), max: soon(STORE_LIMIT.max) },
+  { key: "stores", free: STORE_LIMIT.free, pro: STORE_LIMIT.pro, business: STORE_LIMIT.business, max: STORE_LIMIT.max },
   { key: "team", free: false, pro: soon(TEAM_LIMIT.pro), business: soon(TEAM_LIMIT.business), max: soon(TEAM_LIMIT.max) },
   { key: "themes", free: "starter", pro: "all", business: "all", max: soon("exclusive") },
   { key: "analytics", free: "d7", pro: "d90", business: "advanced", max: "advanced" },

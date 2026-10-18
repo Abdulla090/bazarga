@@ -23,7 +23,7 @@ const SPECIFIC = new Set([
   "discount_not_started", "discount_expired", "discount_used_up", "discount_below_minimum",
   "spec_label_required", "spec_value_required", "too_many_specs", "invalid_sku",
   "discount_code_taken", "invalid_discount_code", "invalid_percent", "invalid_date", "invalid_date_range",
-  "order_rejected", "too_many_orders", "payment_check_unavailable", "plan_limit_products", "plan_limit_studio", "plan_feature",
+  "order_rejected", "too_many_orders", "payment_check_unavailable", "plan_limit_products", "plan_limit_studio", "plan_feature", "plan_limit_stores", "owner_only", "plan_limit_team",
   "option_name_required", "duplicate_option_value", "variant_combination_invalid", "duplicate_sku", "sku_taken",
   "too_many_values", "too_many_options", "too_many_variants", "variants_all_off", "compare_at_must_exceed_price",
 ]);

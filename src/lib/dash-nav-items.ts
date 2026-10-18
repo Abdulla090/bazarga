@@ -12,6 +12,7 @@ export const PALETTE_ITEMS = [
   { href: "/dashboard/ai", key: "ai" },
   { href: "/dashboard/theme", key: "theme" },
   { href: "/dashboard/share", key: "share" },
+  { href: "/dashboard/stores", key: "stores" },
   { href: "/dashboard/settings", key: "settings" },
 ] as const;
 

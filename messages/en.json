@@ -292,7 +292,11 @@
     "noMatches": "Nothing matches “{q}”.",
     "cmdkPlaceholder": "Go to… (Ctrl/Cmd K)",
     "cmdkEmpty": "No matches",
-    "cmdkTitle": "Quick navigation"
+    "cmdkTitle": "Quick navigation",
+    "stores": "Stores",
+    "switchStore": "Switch store",
+    "manageStores": "Manage stores",
+    "staffBadge": "Staff"
   },
   "setup": {
     "title": "Set up your store",
@@ -829,7 +833,10 @@
     "variants_all_off": "Turn on at least one combination, or remove the options.",
     "compare_at_must_exceed_price": "The old price must be higher than the price.",
     "network": "No connection. Your cart and details are still here; try again when you're back online.",
-    "plan_feature": "This feature isn't included in your plan. Upgrade to use it."
+    "plan_feature": "This feature isn't included in your plan. Upgrade to use it.",
+    "plan_limit_stores": "You've reached the store limit for your plan.",
+    "owner_only": "Only the store owner can do this.",
+    "plan_limit_team": "You've used all team seats on your plan."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1545,5 +1552,18 @@
     "extrasHint": "Your store has its own sitemap, and every page carries Google's Store and Product data automatically. Paste the sitemap link into Google Search Console.",
     "lockTitle": "Advanced SEO and white-label are on Max",
     "lockBody": "Write your own Google title and description for the store and each product, pick the share image, get a store sitemap, and remove every Reelcart mark."
+  },
+  "stores": {
+    "title": "Your stores",
+    "usage": "{used} of {limit} stores on {plan}",
+    "owner": "Owner",
+    "staff": "Staff",
+    "current": "Open now",
+    "open": "Open",
+    "add": "Add a store",
+    "addHint": "Each store has its own link, products, orders and theme. It shares your plan.",
+    "lockTitle": "Run more than one store",
+    "lockBody": "Business includes {business} stores and Max includes {max}, all from one login.",
+    "atMax": "You're using all {n} stores on your plan."
   }
 }

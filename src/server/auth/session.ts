@@ -4,8 +4,9 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { db } from "../db";
 import { env } from "../env";
+import { AppError } from "../errors";
 import { createSession, deleteSession, validateSession, type SessionUser } from "./service";
-import { getStoreForOwner } from "../services/stores";
+import { CURRENT_STORE_COOKIE, resolveCurrentStore } from "../services/store-access";
 
 export async function clientIp(): Promise<string> {
   const h = await headers();
@@ -56,7 +57,21 @@ export async function requireUser(): Promise<SessionUser> {
  */
 export const requireStore = cache(async () => {
   const user = await requireUser();
-  const store = await getStoreForOwner(db(), user.id);
-  if (!store) redirect("/onboarding");
-  return { user, store };
+  const preferred = (await cookies()).get(CURRENT_STORE_COOKIE)?.value;
+  const current = await resolveCurrentStore(db(), user.id, preferred);
+  if (!current) redirect("/onboarding");
+  return { user, store: current.store, role: current.role };
 });
+
+/** Owner-only dashboard actions (store settings, billing, team, domains, deleting things): staff get FORBIDDEN. */
+export async function requireOwner() {
+  const ctx = await requireStore();
+  if (ctx.role !== "owner") throw new AppError("FORBIDDEN", "owner_only");
+  return ctx;
+}
+
+/** Current store for route handlers (same resolution as requireStore, without redirects). */
+export async function currentStoreFor(userId: string) {
+  const preferred = (await cookies()).get(CURRENT_STORE_COOKIE)?.value;
+  return resolveCurrentStore(db(), userId, preferred);
+}

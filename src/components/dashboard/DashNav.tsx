@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChartColumnIncreasing, ChevronForward, CreditCard, House, Icon, Menu, Palette, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Tags, TicketPercent, Truck, Users } from "@/components/ui/icons";
+import { ChartColumnIncreasing, ChevronForward, CreditCard, House, Icon, Menu, Palette, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Store, Tags, TicketPercent, Truck, Users } from "@/components/ui/icons";
 
 /* Three quiet groups split by a hairline (no group labels): run the shop · shape the catalog · grow. */
 const ITEMS = [
@@ -18,6 +18,7 @@ const ITEMS = [
   { href: "/dashboard/ai", key: "ai", icon: Sparkles, mobile: false, group: 2 },
   { href: "/dashboard/theme", key: "theme", icon: Palette, mobile: false, group: 2 },
   { href: "/dashboard/share", key: "share", icon: QrCode, mobile: false, group: 2 },
+  { href: "/dashboard/stores", key: "stores", icon: Store, mobile: false, group: 2 },
   { href: "/dashboard/settings", key: "settings", icon: Settings, mobile: false, group: 2 },
 ] as const;
 
