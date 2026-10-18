@@ -1,5 +1,19 @@
 # Reelcart backlog (top unfinished first)
 
+## URGENT (Oct 19, from design-rebuild-2)
+- [ ] AI composer photo detection bug: in `catalogContext` (src/server/actions/ai.ts) the has-photo check compiles to `"product_id" = "id"`, so every product reads as photo-less and photo-led covers are never offered. Fix with sql`exists (select 1 from "product_images" pi where pi.product_id = "products"."id")`, add a test, gate, merge, and confirm CI is green on main.
+- [ ] Reset demo store theme draft to its published theme (smoke left it changed).
+
+
+## STOREFRONT DESIGN SYSTEM v2 (Abdulla Oct 19: "themes differ only in colors… must be truly beast design with AI and without"; docs/DESIGN-SYSTEM.md)
+- [x] (a+b) Architecture + 10 flagship themes (ebfdc96)
+- [x] (c) Theme Studio gallery with live thumbnails + Layout mix-and-match + font pairs (e0cf8f2)
+- [x] Kids & Playful phone-first playground hero (dd41029)
+- [x] (d) AI Website Designer v2: 3 full catalogue-aware compositions side by side, live thumbnails, pick → draft → publish/discard; 1 credit per 3 (d93ea17)
+- [x] Storefront home/product render without JS (no loading.tsx Suspense on them) (6ff9fae)
+- [ ] Product page gallery thumbnails still stream behind a lazy Suspense (no-JS visitors see the main photo but not the thumb strip); render the strip server-side if it matters
+- [ ] With a real AI key (GEMINI/OPENAI), smoke the composer once on live and tune the prompt from 10 real answers (the mock is what the demo seller sees today)
+
 ## LIVE DB HYGIENE (Abdulla Oct 19 00:41)
 Live DB was wiped of test data on Oct 19 (backup kept outside the repo). e2e/gate/smoke/audit specs and scripts/e2e-matrix.mjs default to https://bazarga.vercel.app and sign up `…@example.com` accounts on LIVE; CI itself only uses pglite.
 - [ ] Hourly loop: after ANY run of e2e / gate / smoke / audit specs against live, run `DATABASE_URL=<live POSTGRES_URL_NON_POOLING> npm run db:cleanup-tests` (add `--dry-run` to preview). It deletes `@example.com` accounts older than 30 min + everything they own, "Social Test %" orders on the demo store, and admin_audit rows about test users. Never touches demo@mymarket.app or owners.
@@ -11,7 +25,7 @@ Live DB was wiped of test data on Oct 19 (backup kept outside the repo). e2e/gat
 - [x] A4. Moderation + site: products hide/delete, orders status, CSV exports; maintenance mode, feature flags, 4-locale announcement, featured stores, email subjects
 - [x] A5. Palette (Ctrl/⌘ K, g-shortcuts, /), toasts, optimistic toggles, bulk actions, 412 px
 - [x] A6a. Product Studio (SF9) honours the `productStudio` flag (claimStudioEditAction + /api/studio/remove-bg)
-- [x] A6b. AI Website Designer (SF10) honours the `aiDesigner` flag (designStoreWithAiAction)
+- [x] A6b. AI Website Designer (SF10) honours the `aiDesigner` flag (composeStoreDesignsAction)
 - [ ] A7. Before sale / real launch: remove SEED_ADMIN_EMAIL=demo@mymarket.app from Vercel and demote the demo account in Admin → Admin team (its password is public)
 
 ## SOON FEATURES (Abdulla Oct 18 18:35; all shipped Oct 18)

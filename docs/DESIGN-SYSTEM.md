@@ -34,7 +34,7 @@ cards) + **type pair**. All of it lives in the versioned theme JSON (`src/lib/th
 | Axis | Variants |
 | --- | --- |
 | header | split, centered, minimal, search (sticky bar with a search field), ticker (announcement marquee) |
-| hero | split, masthead, banner, fullbleed, arch, type, stage, runway*, pulse* (bento), spotlight (one real product) |
+| hero | split, masthead, banner, fullbleed, arch, type, stage, runway*, pulse* (bento), spotlight (one real product), play (tinted play panel, confetti shapes, tilted sticker cover) |
 | grid | auto, magazine, dense, tiles, soft, rows, masonry, lookbook*, bento* |
 | card | classic, editorial, compact, tile, soft, row, float, frame*, glow* |
 | product page | split, wide, stacked, reverse |
@@ -77,7 +77,10 @@ rejected (no ڕ/ڵ). On ckb/ar pages display text never uppercases or tracks and
   `v2.<design>.<hero>.<grid>.<card>.<footer>.<header>.<product>.<density>.<surface>.<motion>.<type>.<sections>`
   (a bare design id from older editors still works) and reloads the iframe when it changes; colours stay live via postMessage.
 - Theme gallery thumbnails: `/s/<slug>?pv=1&pvt=<flagship id>` renders that whole flagship (colours too). The proxy
-  forwards `pvt` as `x-bz-preview-theme` only with `pv=1` (client copies stripped); only flagship ids are honoured.
+  forwards `pvt` as `x-bz-preview-theme` only with `pv=1` (client copies stripped). Honoured values: a flagship id, or
+  `t.<token>` = an AI option (`src/lib/theme-studio/preview-token.ts`): base64url JSON of a whole theme with every
+  free-text field stripped (no announcement, no tagline), re-validated with the theme schema, so it can only choose a
+  presentation of the store's public data, never put words on it.
 
 ### Old themes
 
@@ -99,14 +102,14 @@ preset to the flagship that carries its look, for Theme Studio.
 | canvas | Gallery Art | minimal | Image first: minimal header, full-bleed cover, edge-to-edge tiles, stacked product page. |
 | glow | Cosmetics Glow | soft | Accent light, Playfair, stage hero, masonry of floating cards, spotlight band, Instagram strip. |
 | hearth | Food & Home | editorial | Warm paper, Fraunces, split cover, story near the top, cozy landscape cards, WhatsApp ordering. |
-| play | Kids & Playful | bold | Nunito Black / Kufi, giant type hero, hard-bordered blocks with offset shadows, colour band footer. |
+| play | Kids & Playful | bold | Nunito Black / Kufi, playground hero (tinted rounded panel, confetti shapes, full-colour tilted sticker cover, full-width pill CTA on phones), hard-bordered blocks with offset shadows, colour band footer. |
 
 Tests (`tests/design-system-v2.test.ts`): any two flagships differ on at least 4 structural axes (colours aside), every
 palette passes contrast (text 4.5:1 on bg and surface, accent 3:1), premium gating, legacy compatibility, cookie
 round-trip, CSS/font wiring.
 
-Screenshots: `daily-shots/2026-10-19/design-<theme>-{home,product}-{412,1440}.png`, contact sheet
-`design-contact-sheet.png`.
+Screenshots: `daily-shots/2026-10-19/design-<theme>-{home,product}-{412,1440}.png`, contact sheets
+`design-contact-sheet.png` (v1) and `design-contact-sheet-v2.png` (after the Kids & Playful hero, all 10 at 412).
 
 ## 4. Status
 
@@ -119,4 +122,43 @@ Screenshots: `daily-shots/2026-10-19/design-<theme>-{home,product}-{412,1440}.pn
   home sections (reorder, hide, add story / Instagram / WhatsApp). "Type" tab = the 9 font pairs with a live "Aa ئا"
   sample. "Header" tab = all 5 header variants. "Surprise me" = a random flagship with three parts swapped. Publishing
   needs Max for a premium design or any premium variant (`usesPremium`, server-side).
-- [ ] (d) AI Website Designer composes full designs (3 options side by side).
+- [x] (d) AI Website Designer v2 composes full designs, 3 options side by side (section 5).
+- [x] Storefront home and product pages render real content without JavaScript (no loading.tsx Suspense boundary on
+  them; `tests/storefront-nojs.test.ts`).
+
+## 5. AI composition (`src/server/ai/design-composer.ts`)
+
+One generation = **1 credit = 3 complete designs**. Each option is a flagship base + every section variant (header,
+hero, grid, card, product page, footer) + density, surface, motion + home section order + a type pair + a palette +
+the announcement line and hero tagline in the store's default language. `normalizeOption` writes every axis out
+(`composeDesign`), so an option is always a full composition whatever the model left out.
+
+- **Catalogue-aware.** `composeStoreDesignsAction` reads the store's real catalogue (up to 12 categories and 24 active
+  products: names in the store language, price, on sale, has a photo; total count; cover photo). `detectNiche` scores
+  11 niches (luxury, fashion, street, beauty, food, home, kids, art, books, tech, general) from the brief (weight 5),
+  the share of matching categories (3) and of matching product names (3), in ku/kmr/ar/en words, plus the vibe.
+  `catalogTraits` then constrains the options: no photo-led heroes/grids/cards (fullbleed, runway, spotlight, arch;
+  tiles, lookbook; tile, frame) when fewer than half the products have photos, no full-bleed cover without a cover
+  photo, a "sale" section only when something is on sale, a dense grid + compact density for 30+ products, airy for
+  fewer than 6. The real model gets the same facts in its prompt.
+- **Normaliser.** Unknown values fall back to the base flagship's per axis; colours are contrast-fixed (text 4.5:1 on
+  bg and surface, accent 3:1); copy is clipped (80 / 140); duplicate or broken options are replaced by the mock's so
+  the seller always gets three distinct designs; an answer with no usable option at all is `ai_bad_shape` (credit
+  refunded).
+- **Deterministic mock** (dev, tests, the demo seller): the niche's signature flagship leads (perfume → Minimal Luxe,
+  toys → Kids & Playful, sneakers → Bold Streetwear, honey → Food & Home, skincare → Cosmetics Glow, chargers → Tech
+  Gadget), the other two rotate with the brief; three different heroes per generation; b and c remix grid, card,
+  surface and type pair; palettes alternate light and dark moods from the niche's set; copy from per-niche nouns and
+  the top category in all 4 languages. Same store + brief → same three.
+- **UI.** Theme Studio → AI Website Designer: brief + optional vibe → three cards side by side (inline on phones, above
+  the big preview from 768 px), each with a live thumbnail of the seller's own store (`pvt=t.<token>`), its name, the
+  hero · grid · type it uses and "Use this" (44 px). Picking puts it into the draft (normal autosave; the big preview
+  shows it with its tagline); then Publish (premium parts still need Max, `publishThemeAction`) or "Discard AI draft"
+  (back to the theme before). Nothing is saved or published by the generation itself.
+- **Gating (server).** Owner only, Max only (`assertFeature aiDesigner`), the `aiDesigner` admin flag, an AI provider
+  (or AI_DEMO_MOCK for the demo seller), 4/minute + 20/hour per store, `ai_usage` credits (30/month on Max), refund on
+  provider failure.
+- Tests: `tests/ai-composer.test.ts` (validity of every option in 4 languages × 8 niches, contrast, distinctness,
+  niche fit, catalogue constraints, normaliser, prompt, provider, preview token round-trip and refusal, UI strings and
+  44 px targets) and `tests/ai-designer.test.ts` (plan, credits, server gate).
+- Screenshots: `daily-shots/2026-10-19/ai-options-*.png`.
