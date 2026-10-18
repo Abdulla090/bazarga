@@ -14,7 +14,7 @@ controls. It is **not** the seller dashboard (`/dashboard`) and shoppers never s
 - **owner**: everything, including adding/removing admins and promoting owners.
 - **admin**: everything except managing the admin team; cannot act on owners.
 - Suspended/banned accounts have no admin rights even when listed.
-- Anyone else gets a plain **404** on every `/admin` page and `/api/admin/*` route (the console stays invisible);
+- Anyone else (signed out included) gets a real **404** status on every `/admin` page (src/proxy.ts asks `/api/admin/check`) and on `/api/admin/export/*` (the console stays invisible);
   every server action answers `FORBIDDEN`.
 
 ### `SEED_ADMIN_EMAIL` (seeded owner)
