@@ -15,7 +15,7 @@ const faqs: Record<string, Faq> = {
 describe("landing FAQ parity", () => {
   for (const [loc, faq] of Object.entries(faqs)) {
     it(`${loc} has every question with non-empty text`, () => {
-      expect(Object.keys(faq.items).sort()).toEqual(Object.keys(faqs.en.items).sort());
+      expect(Object.keys(faq.items).sort()).toEqual(Object.keys(faqs.en!.items).sort());
       expect(faq.title.length).toBeGreaterThan(0);
       for (const it of Object.values(faq.items)) {
         expect(it.q.trim().length).toBeGreaterThan(0);
