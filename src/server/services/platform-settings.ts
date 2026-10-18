@@ -10,17 +10,20 @@ import { parseAnnouncement, parseMaintenance, resolveFlags, type Announcement, t
  * A write clears this instance's cache at once; other instances follow within TTL_MS.
  */
 const TTL_MS = 15_000;
+// performance.now(), not Date.now(): these reads also run while Next prerenders (Cache Components), where Date.now()
+// aborts the build ("unstable value Date.now()"); a monotonic per-instance clock is all a TTL needs.
+const now = () => performance.now();
 const cache = new Map<string, { at: number; value: unknown }>();
 
 export const SETTING_KEYS = { flags: "flags", maintenance: "maintenance", announcement: "announcement", emailSubjects: "email.subjects", cronDaily: "cron.daily" } as const;
 
 export async function getSetting(database: Db, key: string): Promise<unknown> {
   const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < TTL_MS) return hit.value;
+  if (hit && now() - hit.at < TTL_MS) return hit.value;
   try {
     const row = await database.query.platformSettings.findFirst({ where: eq(platformSettings.key, key) });
     const value = row?.value ?? null;
-    cache.set(key, { at: Date.now(), value });
+    cache.set(key, { at: now(), value });
     return value;
   } catch (err) {
     // Fail open to defaults (flags on, no maintenance): a settings read must never take the site down.
