@@ -85,8 +85,14 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Free $0 (10 products) · Pro $15/month with $1 first month (100 products) · Business $50 (unlimited) · Max $100 (unlimited); yearly = 2 months free
 - Limits enforced server-side; Product Studio quota per plan (Product Studio itself is **soon**); plan history and expiry handled by the daily cron
 
-## 12. Platform admin (`/admin`)
-- Upgrade requests → activate plans; payments list; payout profiles (verify/reject), queue and mark payouts; waitlist; restricted to `ADMIN_EMAILS`
+## 12. Owner admin console (`/admin`, docs/ADMIN.md)
+- Overview: live KPIs (accounts, sellers, stores, products, orders, GMV, MRR estimate, waitlist), 30-day signups vs orders, plan mix, health panel (DB, build, last cron, integrations, flags)
+- Users: search/filter/paginate, inline edit, verify email, sign out everywhere, suspend/ban/reactivate, delete, promote/demote admins, time-limited "view as seller" with banner
+- Stores: edit any setting, set/extend/comp plans, per-store limit overrides (products, studio edits, AI credits, seats, stores), suspend (storefront shows an unavailable page), transfer ownership, feature in showcase, reset theme, delete
+- Moderation: hide/delete any product, move any order through the status flow, CSV exports (users, stores, products, orders, waitlist, audit)
+- Site controls: maintenance mode (admins bypass), runtime feature flags, 4-locale announcement banner, featured stores, email subject lines
+- Waitlist with referrals and one-tap WhatsApp invites; upgrade requests; payouts
+- Security: server guard on every route and action (ADMIN_EMAILS + DB roles owner/admin), step-up confirmation for destructive actions, full audit log (who, before/after, IP, time), admin rate limits, noindex; command palette (Ctrl/⌘ K) and keyboard shortcuts; works at 412 px
 
 ## 13. Security and operations
 - scrypt password hashing; hashed single-use reset and verification tokens; sessions revoked on reset

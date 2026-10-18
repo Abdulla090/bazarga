@@ -40,8 +40,15 @@ variable, go to **Deployments → ⋯ on the newest one → Redeploy**, because 
 ## 2. Make yourself admin
 
 1. On your site click **Start free / Sign up** and register with the email you put in `ADMIN_EMAILS`.
-2. Open `https://<your-site>/admin`. You can now activate seller plans, see payments and payouts, and manage the waitlist.
-3. To add another admin later: add their email to `ADMIN_EMAILS` (comma-separated) → Redeploy.
+2. Open `https://<your-site>/admin`. This is your **owner console**: every user, store, product and order, plans and
+   limits, maintenance mode, feature flags, the announcement banner, the waitlist, payouts and a full audit log
+   (details: [docs/ADMIN.md](ADMIN.md)).
+3. To add another admin later: in `/admin` → **Admin team** → **Add admin** (they sign up first). Or add their email to
+   `ADMIN_EMAILS` (comma-separated) → Redeploy; env-listed emails are always owners.
+4. Bought the project? Make yourself the owner by putting **your** email in `ADMIN_EMAILS` (or `SEED_ADMIN_EMAIL`, which
+   promotes an existing account at the next deploy), then remove the seller's/previous owner's emails from both and
+   remove any other owners in **Admin team**. If the demo account was made an admin (`SEED_ADMIN_EMAIL=demo@mymarket.app`
+   on the test deploy), remove that value and demote it: its password is public.
 
 If `/admin` shows "not found": the email doesn't match exactly (check spelling/capitals), or you didn't redeploy after changing it.
 

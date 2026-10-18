@@ -1,5 +1,14 @@
 # Reelcart backlog (top unfinished first)
 
+## OWNER ADMIN CONSOLE (Abdulla Oct 18 21:01, subagent; docs/ADMIN.md)
+- [x] A1. Security + audit + overview: DB roles (owner/admin) + ADMIN_EMAILS guard on every page/route/action, step-up confirmations, admin_audit (0030), admin rate limits, noindex, time-limited audited impersonation; Overview KPIs/charts/health
+- [x] A2. Users: search/filter/paginate, inline edit, verify, force logout, suspend/ban/unban, delete, promote/demote, view-as
+- [x] A3. Stores + plans: edit settings, plan grant/extend/comp, overrides (products/studio/AI/seats/stores) enforced server-side, suspend page, transfer, feature, reset theme, delete; plan matrix + upgrade requests
+- [x] A4. Moderation + site: products hide/delete, orders status, CSV exports; maintenance mode, feature flags, 4-locale announcement, featured stores, email subjects
+- [x] A5. Palette (Ctrl/⌘ K, g-shortcuts, /), toasts, optimistic toggles, bulk actions, 412 px
+- [ ] A6. SF9/SF10 owners: gate Product Studio and the AI Website Designer on `flagOn(db(), "productStudio")` / `flagOn(db(), "aiDesigner")` (src/server/services/platform-settings.ts); the flags already exist in Admin → Site controls
+- [ ] A7. Before sale / real launch: remove SEED_ADMIN_EMAIL=demo@mymarket.app from Vercel and demote the demo account in Admin → Admin team (its password is public)
+
 ## SOON FEATURES (Abdulla Oct 18 18:35, owned by subagent until marked done)
 Hourly loop: do NOT take these items; a dedicated subagent ships them easiest first (branches agentb/soon-<name>).
 - [x] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+

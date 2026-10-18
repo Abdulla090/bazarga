@@ -1,4 +1,6 @@
 "use server";
+import { flagOn } from "../services/platform-settings";
+import { AppError } from "../errors";
 import { redirect } from "next/navigation";
 import { db } from "../db";
 import { env } from "../env";
@@ -18,6 +20,8 @@ export async function signUpAction(_prev: ActionState, fd: FormData): Promise<Ac
   try {
     const ip = await clientIp();
     await enforceRateLimit(db(), `signup:ip:${ip}`, ...LIMITS.signup);
+    // Admin feature flag (docs/ADMIN.md): signups can be paused at runtime.
+    if (!(await flagOn(db(), "signups"))) throw new AppError("UNAVAILABLE");
     const input = signUpSchema.parse(formObject(fd));
     next = safeInviteNext(fd.get("next"));
     const user = await signUp(db(), input);
