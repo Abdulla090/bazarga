@@ -404,7 +404,8 @@
     "bulkStock": "مخزون للكل",
     "variantsStockNote": "يُحدَّد المخزون وSKU لكل نوع في الأسفل.",
     "variantsLimit": "حتى {max} تركيبة. احذف قيمة لإضافة المزيد.",
-    "maxOptions": "حتى ٣ مجموعات خيارات."
+    "maxOptions": "حتى ٣ مجموعات خيارات.",
+    "export": "تنزيل CSV"
   },
   "categories": {
     "title": "الأقسام",

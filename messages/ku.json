@@ -404,7 +404,8 @@
     "bulkStock": "کۆگا بۆ هەموو",
     "variantsStockNote": "کۆگا و SKU بۆ هەر جۆرێک لە خوارەوە دیاری دەکرێن.",
     "variantsLimit": "تا {max} تێکەڵە. بەهایەک لابە بۆ زیادکردنی زیاتر.",
-    "maxOptions": "تا ٣ گرووپی هەڵبژاردن."
+    "maxOptions": "تا ٣ گرووپی هەڵبژاردن.",
+    "export": "داگرتنی CSV"
   },
   "categories": {
     "title": "پۆلەکان",

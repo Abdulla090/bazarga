@@ -4,6 +4,7 @@ import { categories, productImages, productOptionValues, productOptions, product
 import { AppError } from "../errors";
 import { normalizePlan, productLimit, productsShown } from "@/lib/plans";
 import type { LocalizedText } from "@/lib/i18n";
+import type { ExportProduct } from "@/lib/products-csv";
 import type { ProductImageInput, ProductInput, ProductVariantsInput } from "@/lib/validation";
 
 export type Product = typeof products.$inferSelect;
@@ -92,6 +93,37 @@ export async function listProducts(database: Db, storeId: string, opts: { active
     orderBy: [asc(products.sort), desc(products.createdAt)],
   });
   return attachImages(database, list);
+}
+
+/** Every product of the store (active or hidden) shaped for the CSV export. Store-scoped; two cheap aggregate queries. */
+export async function listProductsForExport(database: Db, storeId: string): Promise<ExportProduct[]> {
+  const [list, cats, imgCounts, varCounts] = await Promise.all([
+    database.query.products.findMany({ where: eq(products.storeId, storeId), orderBy: [asc(products.sort), desc(products.createdAt)] }),
+    database.select({ id: categories.id, name: categories.name }).from(categories).where(eq(categories.storeId, storeId)),
+    database.select({ productId: productImages.productId, n: count() }).from(productImages).where(eq(productImages.storeId, storeId)).groupBy(productImages.productId),
+    database.select({ productId: productVariants.productId, n: count() }).from(productVariants).where(eq(productVariants.storeId, storeId)).groupBy(productVariants.productId),
+  ]);
+  const catName = new Map(cats.map((c) => [c.id, (c.name as LocalizedText | null) ?? {}]));
+  const imgs = new Map(imgCounts.map((r) => [r.productId, Number(r.n)]));
+  const vars = new Map(varCounts.map((r) => [r.productId, Number(r.n)]));
+  return list.map((p) => {
+    const cn = p.categoryId ? catName.get(p.categoryId) : undefined;
+    return {
+      name: p.name,
+      description: p.description,
+      sku: p.sku,
+      price: p.price,
+      compareAtPrice: p.compareAtPrice,
+      stock: p.stock,
+      isActive: p.isActive,
+      badge: p.badge,
+      categoryName: cn ? (cn.ku ?? cn.en ?? cn.ar ?? cn.kmr ?? null) : null,
+      shortCode: p.shortCode,
+      imageCount: imgs.get(p.id) ?? 0,
+      variantCount: vars.get(p.id) ?? 0,
+      createdAt: p.createdAt,
+    };
+  });
 }
 
 export async function getProduct(database: Db, storeId: string, id: string): Promise<ProductWithImages | null> {
