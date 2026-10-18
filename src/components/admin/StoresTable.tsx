@@ -50,9 +50,9 @@ export function StoresTable({ rows, q, plan, state, page, total, size }: { rows:
           <Btn className="!min-h-9" onClick={() => bulkFeature(false)} disabled={pending}>{t("s.unfeature")}</Btn>
         </div>
       )}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="overflow-clip rounded-2xl border border-line bg-white">
         <table className="w-full text-sm" data-testid="stores-table">
-          <thead className="hidden bg-[#F9FAFB] text-xs text-ink-50 md:table-header-group">
+          <thead className="hidden bg-[#F9FAFB] text-xs text-ink-50 lg:sticky lg:top-14 lg:z-10 lg:table-header-group">
             <tr>
               <th className="w-10 px-3 py-2"><input type="checkbox" className="size-4" aria-label={t("c.selectAll")} checked={sel.size === list.length && list.length > 0} onChange={(e) => setSel(e.target.checked ? new Set(list.map((s) => s.id)) : new Set())} /></th>
               <th className="px-3 py-2 text-start font-medium">{t("c.store")}</th>
@@ -69,15 +69,15 @@ export function StoresTable({ rows, q, plan, state, page, total, size }: { rows:
             {list.map((s) => {
               const [tone, label] = stateOf(s);
               return (
-                <tr key={s.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3 md:table-row md:p-0" data-testid="store-row">
-                  <td className="md:px-3 md:py-2"><input type="checkbox" className="size-5 md:size-4" aria-label={s.slug} checked={sel.has(s.id)} onChange={() => toggle(s.id)} /></td>
-                  <td className="min-w-0 flex-1 md:px-3 md:py-2"><p className="font-medium">{s.name}</p><p className="text-xs text-ink-50" dir="ltr">/{s.slug}</p></td>
-                  <td className="w-full truncate text-ink-70 md:w-auto md:px-3 md:py-2" dir="ltr"><Link href={`/admin/users/${s.ownerId}`} className="inline-flex min-h-11 items-center hover:text-[#2563EB]">{s.ownerEmail}</Link></td>
-                  <td className="md:px-3 md:py-2"><Badge tone={s.plan === "free" ? "gray" : "blue"}>{s.plan}</Badge>{s.planPeriodEnd && <span className="ms-1 text-xs text-ink-50">→ {fmtDate(s.planPeriodEnd)}</span>}</td>
-                  <td className="md:px-3 md:py-2"><Badge tone={tone}>{label}</Badge></td>
-                  <td className="tabular-nums text-ink-70 md:px-3 md:py-2">{s.productCount} / {s.orderCount}</td>
-                  <td className="md:px-3 md:py-2"><Switch on={s.featured} onChange={(v) => setFeatured(s, v)} label={t("s.feature")} testId="store-featured" /></td>
-                  <td className="ms-auto md:px-3 md:py-2 md:text-end"><Link href={`/admin/stores/${s.id}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 hover:border-ink/30" data-testid="store-open">{t("c.open")}</Link></td>
+                <tr key={s.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3 lg:table-row lg:p-0" data-testid="store-row">
+                  <td className="lg:px-3 lg:py-2"><input type="checkbox" className="size-5 lg:size-4" aria-label={s.slug} checked={sel.has(s.id)} onChange={() => toggle(s.id)} /></td>
+                  <td className="min-w-0 flex-1 lg:px-3 lg:py-2"><p className="font-medium">{s.name}</p><p className="text-xs text-ink-50" dir="ltr">/{s.slug}</p></td>
+                  <td className="w-full truncate text-ink-70 lg:w-auto lg:px-3 lg:py-2" dir="ltr"><Link href={`/admin/users/${s.ownerId}`} className="inline-flex min-h-11 items-center hover:text-[#2563EB]">{s.ownerEmail}</Link></td>
+                  <td className="lg:px-3 lg:py-2"><Badge tone={s.plan === "free" ? "gray" : "blue"}>{s.plan}</Badge>{s.planPeriodEnd && <span className="ms-1 text-xs text-ink-50">→ {fmtDate(s.planPeriodEnd)}</span>}</td>
+                  <td className="lg:px-3 lg:py-2"><Badge tone={tone}>{label}</Badge></td>
+                  <td className="tabular-nums text-ink-70 lg:px-3 lg:py-2">{s.productCount} / {s.orderCount}</td>
+                  <td className="lg:px-3 lg:py-2"><Switch on={s.featured} onChange={(v) => setFeatured(s, v)} label={t("s.feature")} testId="store-featured" /></td>
+                  <td className="ms-auto lg:px-3 lg:py-2 lg:text-end"><Link href={`/admin/stores/${s.id}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 hover:border-ink/30" data-testid="store-open">{t("c.open")}</Link></td>
                 </tr>
               );
             })}

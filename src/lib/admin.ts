@@ -176,3 +176,41 @@ export function dailySeries(dates: Date[], days: number, now = new Date()): { da
 }
 
 export const ADMIN_PAGE_SIZE = 25;
+
+// ---------------------------------------------------------------- overview periods
+export const ADMIN_PERIODS = ["7d", "30d", "90d", "all"] as const;
+export type AdminPeriod = (typeof ADMIN_PERIODS)[number];
+export const parsePeriod = (v: unknown): AdminPeriod => ((ADMIN_PERIODS as readonly string[]).includes(String(v)) ? (v as AdminPeriod) : "30d");
+/** Days a period covers; "all" spans from the first record (at least 7 days, at most two years of daily points). */
+export function periodDays(p: AdminPeriod, first: Date | null, now = new Date()): number {
+  if (p !== "all") return Number(p.slice(0, -1));
+  if (!first) return 7;
+  const days = Math.ceil((now.getTime() - first.getTime()) / 86_400_000) + 1;
+  return Math.min(730, Math.max(7, days));
+}
+
+// ---------------------------------------------------------------- database browser
+/**
+ * Columns the read-only database browser never shows: password/token/OTP hashes, session ids (sha256 of the cookie),
+ * API keys and idempotency keys, push-subscription keys, payout account numbers, raw provider payloads, checkout links.
+ */
+const SECRET_COLUMN = /(^|_)(password|hash|token|secret|otp|api_?key|idempotency_key|p256dh|auth|endpoint|account_identifier|account_number|iban|checkout_url|payload|raw)($|_)/i;
+const SECRET_EXACT = new Set(["sessions.id", "users.password_hash", "seller_payout_profiles.account_identifier", "push_subscriptions.endpoint", "push_subscriptions.auth", "push_subscriptions.p256dh"]);
+export const MASK = "••••••";
+
+export function isSecretColumn(table: string, column: string): boolean {
+  return SECRET_EXACT.has(`${table}.${column}`) || SECRET_COLUMN.test(column) || /hash$/i.test(column);
+}
+
+/** One cell as the browser shows it: secrets masked, dates ISO, JSON stringified, long values cut. */
+export function browserCell(table: string, column: string, v: unknown): string | null {
+  if (v === null || v === undefined) return null;
+  if (isSecretColumn(table, column)) return MASK;
+  let s: string;
+  if (v instanceof Date) s = v.toISOString();
+  else if (typeof v === "object") s = JSON.stringify(v) ?? "";
+  else s = String(v);
+  return s.length > 240 ? `${s.slice(0, 240)}…` : s;
+}
+
+export const DB_BROWSER_PAGE_SIZE = 50;

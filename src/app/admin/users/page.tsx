@@ -4,6 +4,7 @@ import { db } from "@/server/db";
 import { listUsers } from "@/server/admin/service";
 import { UsersTable } from "@/components/admin/UsersTable";
 import { USER_STATUSES, PLATFORM_ROLES, type PlatformRole, type UserStatus } from "@/lib/admin";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Users", robots: { index: false } };
 
@@ -16,7 +17,7 @@ export default async function AdminUsers({ searchParams }: { searchParams: Promi
   const res = await listUsers(db(), { q: sp.q, status, role, page: Number(sp.page ?? 1) });
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-semibold tracking-tight md:text-3xl">{t("u.title")}</h1>
+      <PageHeader title={t("u.title")} count={res.total} />
       <UsersTable
         q={sp.q ?? ""}
         status={status}

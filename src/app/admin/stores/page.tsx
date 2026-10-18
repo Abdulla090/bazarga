@@ -4,6 +4,7 @@ import { db } from "@/server/db";
 import { listStores, type StoreFilter } from "@/server/admin/service";
 import { StoresTable } from "@/components/admin/StoresTable";
 import { PLAN_IDS, type PlanId } from "@/lib/plans";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Stores", robots: { index: false } };
 const STATES = ["live", "suspended", "unpublished", "featured"] as const;
@@ -17,7 +18,7 @@ export default async function AdminStores({ searchParams }: { searchParams: Prom
   const res = await listStores(db(), { q: sp.q, plan, state, page: Number(sp.page ?? 1) });
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-semibold tracking-tight md:text-3xl">{t("s.title")}</h1>
+      <PageHeader title={t("s.title")} count={res.total} />
       <StoresTable
         q={sp.q ?? ""}
         plan={plan}

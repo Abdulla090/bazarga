@@ -2,7 +2,10 @@ import "server-only";
 import { and, asc, desc, eq, gte, ilike, inArray, isNotNull, isNull, ne, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db";
 import {
+  aiUsage,
   orders,
+  productImages,
+  productStudioUsage,
   products,
   sessions,
   storeLimitOverrides,
@@ -14,55 +17,143 @@ import {
   waitlist,
 } from "../db/schema";
 import { AppError } from "../errors";
-import { ADMIN_PAGE_SIZE, LIMIT_KEYS, dailySeries, mrrEstimate, type LimitKey, type PlatformRole, type UserStatus } from "@/lib/admin";
+import { ADMIN_PAGE_SIZE, LIMIT_KEYS, dailySeries, mrrEstimate, periodDays, type AdminPeriod, type LimitKey, type PlatformRole, type UserStatus } from "@/lib/admin";
 import { PLAN_IDS, getPlan, normalizePlan, type PlanId } from "@/lib/plans";
-import { isOrderStatus, type OrderStatus } from "@/lib/order-status";
+import { ORDER_STATUSES, isOrderStatus, type OrderStatus } from "@/lib/order-status";
+import { studioPeriod } from "../services/studio-quota";
 import { isValidSlug } from "@/lib/slug";
 
 const like = (q: string) => `%${q.trim().replace(/[%_\\]/g, "").slice(0, 80)}%`;
 const pageOf = (p?: number) => Math.max(1, Math.min(Number.isFinite(p) ? Number(p) : 1, 10_000));
 
 // ---------------------------------------------------------------- overview
-export async function overviewKpis(database: Db, now = new Date()) {
-  const since30 = new Date(now.getTime() - 30 * 86_400_000);
-  const [[u], [s], [p], [o], planRows, signupRows, orderRows, [w], [pend]] = await Promise.all([
-    database.select({ n: sql<number>`count(*)::int`, sellers: sql<number>`count(distinct ${stores.ownerId})::int` }).from(users).leftJoin(stores, eq(stores.ownerId, users.id)),
-    database.select({ n: sql<number>`count(*)::int`, live: sql<number>`count(*) filter (where ${stores.isActive} and ${stores.suspendedAt} is null)::int` }).from(stores),
-    database.select({ n: sql<number>`count(*)::int` }).from(products),
+const NOT_SOLD = sql`('cancelled','refused','returned')`;
+
+/**
+ * Every overview number, straight from the database (no samples, no seeded series): counts and sums over users,
+ * stores, products, orders, waitlist, upgrade requests, images, AI and Studio usage. Daily series cover the chosen
+ * period (7d / 30d / 90d / all, "all" from the first account) and are all zeros when nothing happened.
+ */
+export async function overviewKpis(database: Db, period: AdminPeriod = "30d", now = new Date()) {
+  const [first] = await database.select({ at: sql<Date | string | null>`min(${users.createdAt})` }).from(users);
+  const firstAt = first?.at ? new Date(first.at) : null;
+  const days = periodDays(period, firstAt, now);
+  const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - (days - 1) * 86_400_000);
+  const month = studioPeriod(now);
+  const [
+    [u], [s], [p], [o], orderStatusRows, planRows, paidRows, signupRows, orderRows, [w], [pend], [img], aiRows, [studio],
+  ] = await Promise.all([
     database
       .select({
         n: sql<number>`count(*)::int`,
-        gmv: sql<number>`coalesce(sum(${orders.total}) filter (where ${orders.status} not in ('cancelled','refused','returned')), 0)::bigint`,
-        gmv30: sql<number>`coalesce(sum(${orders.total}) filter (where ${orders.status} not in ('cancelled','refused','returned') and ${orders.createdAt} >= ${since30}), 0)::bigint`,
-        n30: sql<number>`count(*) filter (where ${orders.createdAt} >= ${since30})::int`,
+        verified: sql<number>`count(*) filter (where ${users.emailVerifiedAt} is not null)::int`,
+        fresh: sql<number>`count(*) filter (where ${users.createdAt} >= ${since})::int`,
+        sellers: sql<number>`(select count(distinct ${stores.ownerId})::int from ${stores})`,
+      })
+      .from(users),
+    database
+      .select({
+        n: sql<number>`count(*)::int`,
+        live: sql<number>`count(*) filter (where ${stores.isActive} and ${stores.suspendedAt} is null)::int`,
+        unpublished: sql<number>`count(*) filter (where not ${stores.isActive} and ${stores.suspendedAt} is null)::int`,
+        suspended: sql<number>`count(*) filter (where ${stores.suspendedAt} is not null)::int`,
+        featured: sql<number>`count(*) filter (where ${stores.featured})::int`,
+        fresh: sql<number>`count(*) filter (where ${stores.createdAt} >= ${since})::int`,
+      })
+      .from(stores),
+    database
+      .select({
+        n: sql<number>`count(*)::int`,
+        active: sql<number>`count(*) filter (where ${products.isActive} and ${products.hiddenByAdminAt} is null)::int`,
+        hidden: sql<number>`count(*) filter (where ${products.hiddenByAdminAt} is not null)::int`,
+      })
+      .from(products),
+    database
+      .select({
+        n: sql<number>`count(*)::int`,
+        inPeriod: sql<number>`count(*) filter (where ${orders.createdAt} >= ${since})::int`,
+        gmv: sql<number>`coalesce(sum(${orders.total}) filter (where ${orders.status} not in ${NOT_SOLD}), 0)::bigint`,
+        gmvPeriod: sql<number>`coalesce(sum(${orders.total}) filter (where ${orders.status} not in ${NOT_SOLD} and ${orders.createdAt} >= ${since}), 0)::bigint`,
       })
       .from(orders),
+    database.select({ status: orders.status, n: sql<number>`count(*)::int` }).from(orders).groupBy(orders.status),
     database.select({ plan: stores.plan, n: sql<number>`count(*)::int` }).from(stores).groupBy(stores.plan),
-    database.select({ at: users.createdAt }).from(users).where(gte(users.createdAt, since30)),
-    database.select({ at: orders.createdAt }).from(orders).where(gte(orders.createdAt, since30)),
+    // Paid plans that are actually running now (no end date = comped/open-ended, or an end date still ahead), store not suspended.
+    database
+      .select({ plan: stores.plan, n: sql<number>`count(*)::int` })
+      .from(stores)
+      .where(and(ne(stores.plan, "free"), isNull(stores.suspendedAt), or(isNull(stores.planPeriodEnd), gte(stores.planPeriodEnd, now))))
+      .groupBy(stores.plan),
+    database.select({ at: users.createdAt }).from(users).where(gte(users.createdAt, since)),
+    database.select({ at: orders.createdAt }).from(orders).where(gte(orders.createdAt, since)),
     database.select({ n: sql<number>`count(*)::int` }).from(waitlist),
     database.select({ n: sql<number>`count(*)::int` }).from(upgradeRequests).where(eq(upgradeRequests.status, "pending")),
+    database
+      .select({ n: sql<number>`count(*)::int`, stored: sql<number>`count(*) filter (where ${productImages.storageKey} is not null)::int` })
+      .from(productImages),
+    database
+      .select({ feature: aiUsage.feature, month: sql<number>`coalesce(sum(${aiUsage.used}) filter (where ${aiUsage.period} = ${month}), 0)::int`, all: sql<number>`coalesce(sum(${aiUsage.used}), 0)::int` })
+      .from(aiUsage)
+      .groupBy(aiUsage.feature),
+    database
+      .select({ month: sql<number>`coalesce(sum(${productStudioUsage.used}) filter (where ${productStudioUsage.period} = ${month}), 0)::int`, all: sql<number>`coalesce(sum(${productStudioUsage.used}), 0)::int` })
+      .from(productStudioUsage),
   ]);
   const planMix: Record<PlanId, number> = { free: 0, pro: 0, business: 0, max: 0 };
   for (const r of planRows) planMix[normalizePlan(r.plan)] += Number(r.n);
+  const activePaid: Record<PlanId, number> = { free: 0, pro: 0, business: 0, max: 0 };
+  for (const r of paidRows) activePaid[normalizePlan(r.plan)] += Number(r.n);
   const monthly = Object.fromEntries(PLAN_IDS.map((id) => [id, id === "free" ? 0 : getPlan(id).monthly]));
+  const ordersByStatus = Object.fromEntries(ORDER_STATUSES.map((st) => [st, 0])) as Record<OrderStatus, number>;
+  for (const r of orderStatusRows) if (isOrderStatus(r.status)) ordersByStatus[r.status] += Number(r.n);
   return {
+    period,
+    days,
+    since,
     users: Number(u?.n ?? 0),
+    usersVerified: Number(u?.verified ?? 0),
+    usersNew: Number(u?.fresh ?? 0),
     sellers: Number(u?.sellers ?? 0),
     stores: Number(s?.n ?? 0),
+    storesNew: Number(s?.fresh ?? 0),
+    storesByStatus: { live: Number(s?.live ?? 0), unpublished: Number(s?.unpublished ?? 0), suspended: Number(s?.suspended ?? 0), featured: Number(s?.featured ?? 0) },
     liveStores: Number(s?.live ?? 0),
     products: Number(p?.n ?? 0),
+    productsActive: Number(p?.active ?? 0),
+    productsHidden: Number(p?.hidden ?? 0),
     orders: Number(o?.n ?? 0),
-    orders30: Number(o?.n30 ?? 0),
+    ordersInPeriod: Number(o?.inPeriod ?? 0),
+    ordersByStatus,
     gmv: Number(o?.gmv ?? 0),
-    gmv30: Number(o?.gmv30 ?? 0),
+    gmvInPeriod: Number(o?.gmvPeriod ?? 0),
     waitlist: Number(w?.n ?? 0),
     pendingUpgrades: Number(pend?.n ?? 0),
     planMix,
-    mrrUsd: mrrEstimate(planMix, monthly),
-    signups: dailySeries(signupRows.map((r) => r.at), 30, now),
-    ordersDaily: dailySeries(orderRows.map((r) => r.at), 30, now),
+    activePaid,
+    activePaidStores: PLAN_IDS.reduce((n, id) => n + activePaid[id], 0),
+    mrrUsd: mrrEstimate(activePaid, monthly),
+    usage: {
+      month,
+      images: Number(img?.n ?? 0),
+      imagesStored: Number(img?.stored ?? 0),
+      ai: aiRows.map((r) => ({ feature: r.feature, month: Number(r.month), all: Number(r.all) })),
+      studioMonth: Number(studio?.month ?? 0),
+      studioAll: Number(studio?.all ?? 0),
+    },
+    signups: dailySeries(signupRows.map((r) => r.at), days, now),
+    ordersDaily: dailySeries(orderRows.map((r) => r.at), days, now),
   };
+}
+
+/** Exact row count of the waitlist (the list itself is capped for display). */
+export async function waitlistCount(database: Db): Promise<{ n: number; refs: number }> {
+  const [r] = await database.select({ n: sql<number>`count(*)::int`, refs: sql<number>`coalesce(sum(${waitlist.referralCount}), 0)::int` }).from(waitlist);
+  return { n: Number(r?.n ?? 0), refs: Number(r?.refs ?? 0) };
+}
+
+/** Top waitlist cities over the whole table. */
+export async function waitlistCities(database: Db, limit = 6) {
+  return database.select({ city: waitlist.city, n: sql<number>`count(*)::int` }).from(waitlist).groupBy(waitlist.city).orderBy(desc(sql`count(*)`)).limit(limit);
 }
 
 // ---------------------------------------------------------------- users

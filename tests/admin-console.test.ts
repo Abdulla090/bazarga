@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 // ---- Next request scope, faked: one cookie jar + request headers the guard and actions read.
 const jar = vi.hoisted(() => new Map<string, string>());
@@ -34,9 +34,13 @@ import { loadStorefrontStore } from "@/server/services/storefront";
 import { clearSettingsCache, flagOn, getAnnouncement, getMaintenance } from "@/server/services/platform-settings";
 import { maintenanceFor } from "@/server/admin/site-gate";
 import { GET as exportGet } from "@/app/api/admin/export/[kind]/route";
+import DbPage from "@/app/admin/database/page";
+import DbTablePage from "@/app/admin/database/[table]/page";
+import { overviewKpis } from "@/server/admin/service";
+import { browseTable, listDbTables } from "@/server/admin/db-browser";
 import { promoteSeedAdmins } from "../scripts/seed-admin";
 import {
-  applyOverride, auditSnapshot, can, csvCell, effectiveRole, maintenanceExempt, parseAnnouncement, parseLimit, resolveFlags, stepUpMatches,
+  MASK, applyOverride, auditSnapshot, browserCell, can, isSecretColumn, csvCell, effectiveRole, maintenanceExempt, parseAnnouncement, parseLimit, resolveFlags, stepUpMatches,
 } from "@/lib/admin";
 import { seller, testDb } from "./support/db";
 
@@ -311,5 +315,97 @@ describe("admin actions", () => {
     expect(await promoteSeedAdmins(database, s.user.email)).toEqual([]);
     expect(await promoteSeedAdmins(database, "")).toEqual([]);
     expect((await database.query.users.findFirst({ where: eq(users.id, s.user.id) }))?.role).toBe("owner");
+  });
+});
+
+describe("overview + database browser: real data only", () => {
+  const count = async (table: string) => Number(((await database.execute(sql`select count(*)::int as n from ${sql.identifier(table)}`)) as unknown as { rows: { n: number }[] }).rows[0]!.n);
+
+  it("overview numbers are the database's own counts (no synthetic generator in admin code)", async () => {
+    const k = await overviewKpis(database, "all");
+    expect(k.users).toBe(await count("users"));
+    expect(k.stores).toBe(await count("stores"));
+    expect(k.products).toBe(await count("products"));
+    expect(k.orders).toBe(await count("orders"));
+    expect(k.waitlist).toBe(await count("waitlist"));
+    expect(k.storesByStatus.live + k.storesByStatus.unpublished + k.storesByStatus.suspended).toBe(k.stores);
+    expect(Object.values(k.ordersByStatus).reduce((a, b) => a + b, 0)).toBe(k.orders);
+    expect(Object.values(k.planMix).reduce((a, b) => a + b, 0)).toBe(k.stores);
+    expect(k.signups.reduce((a, d) => a + d.n, 0)).toBe(k.usersNew);
+    // MRR estimate = running paid plans (not expired, not suspended) × list price, recomputed here from raw rows.
+    const paid = ((await database.execute(sql`select plan, count(*)::int as n from stores where plan <> 'free' and suspended_at is null and (plan_period_end is null or plan_period_end >= now()) group by plan`)) as unknown as { rows: { plan: string; n: number }[] }).rows;
+    const price: Record<string, number> = { pro: 15, business: 50, max: 100 };
+    expect(k.mrrUsd).toBe(paid.reduce((a, r) => a + (price[r.plan] ?? 0) * Number(r.n), 0));
+    const k7 = await overviewKpis(database, "7d");
+    expect(k7.signups).toHaveLength(7);
+
+    const walk = (d: string, out: string[] = []): string[] => {
+      for (const n of readdirSync(d)) { const p = join(d, n); if (statSync(p).isDirectory()) walk(p, out); else if (/\.tsx?$/.test(n)) out.push(p); }
+      return out;
+    };
+    const files = [...walk("src/app/admin"), ...walk("src/components/admin"), ...walk("src/server/admin"), "src/lib/admin.ts"];
+    for (const f of files) {
+      const src = readFileSync(f, "utf8");
+      const imports = [...src.matchAll(/from\s+["']([^"']+)["']/g)].map((m) => m[1]!);
+      expect(imports.filter((i) => /seed|demo|sample|synthetic|fake|faker|mock|analytics/i.test(i)), f).toEqual([]);
+      expect(/Math\.random\(/.test(src), `${f} uses Math.random`).toBe(false);
+    }
+  });
+
+  it("lists every app table with its real row count", async () => {
+    const tables = await listDbTables(database);
+    const users_ = tables.find((x) => x.name === "users");
+    expect(users_?.rows).toBe(await count("users"));
+    expect(tables.find((x) => x.name === "admin_audit")).toBeTruthy();
+    expect(tables.length).toBeGreaterThanOrEqual(30);
+  });
+
+  it("masks secret columns, and a search can't probe them", async () => {
+    expect(isSecretColumn("users", "password_hash")).toBe(true);
+    expect(isSecretColumn("sessions", "id")).toBe(true);
+    expect(isSecretColumn("phone_otps", "code_hash")).toBe(true);
+    expect(isSecretColumn("store_members", "token_hash")).toBe(true);
+    expect(isSecretColumn("seller_payout_profiles", "account_identifier")).toBe(true);
+    expect(isSecretColumn("push_subscriptions", "p256dh")).toBe(true);
+    expect(isSecretColumn("users", "email")).toBe(false);
+    expect(isSecretColumn("testimonials", "author")).toBe(false);
+    expect(browserCell("users", "password_hash", "$argon2id$abc")).toBe(MASK);
+    expect(browserCell("users", "name", null)).toBeNull();
+
+    const u = await browseTable(database, { table: "users", q: plain.user.email });
+    expect(u).not.toBeNull();
+    const pw = u!.columns.findIndex((c) => c.name === "password_hash");
+    const em = u!.columns.findIndex((c) => c.name === "email");
+    expect(pw).toBeGreaterThanOrEqual(0);
+    expect(u!.columns[pw]!.secret).toBe(true);
+    expect(u!.rows.length).toBe(1);
+    expect(u!.rows[0]![pw]).toBe(MASK);
+    expect(u!.rows[0]![em]).toBe(plain.user.email);
+
+    const hash = (await database.query.users.findFirst({ where: eq(users.id, plain.user.id) }))!.passwordHash;
+    expect((await browseTable(database, { table: "users", q: hash.slice(0, 20) }))!.total).toBe(0);
+
+    await createSession(database, plain.user.id, 30);
+    const s = await browseTable(database, { table: "sessions" });
+    const sid = s!.columns.findIndex((c) => c.name === "id");
+    expect(s!.rows.length).toBeGreaterThan(0);
+    expect(s!.rows.every((r) => r[sid] === MASK)).toBe(true);
+
+    // Unknown names never reach SQL; sorting accepts only real columns.
+    expect(await browseTable(database, { table: "users; drop table users" })).toBeNull();
+    expect(await browseTable(database, { table: "pg_user" })).toBeNull();
+    const sorted = await browseTable(database, { table: "users", sort: "email\" desc --", dir: "asc" });
+    expect(sorted!.sort).toBe("created_at");
+  });
+
+  it("database browser: 404 for a seller and for a plain admin (owner only)", async () => {
+    const props = { searchParams: Promise.resolve({}) };
+    const tprops = { params: Promise.resolve({ table: "users" }), searchParams: Promise.resolve({}) };
+    for (const who of [plain.user.id, adminUser.user.id]) {
+      await signInAs(who);
+      await expect(DbPage(props)).rejects.toMatchObject({ digest: expect.stringMatching(/NEXT_HTTP_ERROR_FALLBACK;404/) });
+      await expect(DbTablePage(tprops)).rejects.toMatchObject({ digest: expect.stringMatching(/NEXT_HTTP_ERROR_FALLBACK;404/) });
+    }
+    for (const f of ["src/app/admin/database/page.tsx", "src/app/admin/database/[table]/page.tsx"]) expect(readFileSync(f, "utf8")).toMatch(/requireAdmin\("team"\)/);
   });
 });

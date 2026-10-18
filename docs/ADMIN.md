@@ -51,22 +51,45 @@ the seed). To remove a seeded owner: take the email out of `SEED_ADMIN_EMAIL`, t
 
 ## Sections
 
+The sidebar is grouped (on phones it is a drawer behind the menu button):
+
+- **Overview**
+- **People**: Users, Team
+- **Commerce**: Stores, Products, Orders, Plans & limits, Payouts
+- **Growth**: Waitlist
+- **System**: Site & flags, Database (owner only), Audit log, Health
+
+Every page opens with the same header: title plus the real row count for what it lists.
+
+**Real data only.** Nothing in the admin is sampled, seeded or generated: every number, chart and list is a query
+on the live database (`src/server/admin/service.ts`, `src/server/admin/db-browser.ts`). Empty tables show honest
+zeros and empty states ("No orders yet", "No signups or orders in this period"). The seller-side demo analytics are
+not used here; `tests/admin-console.test.ts` fails if admin code imports anything seed/demo/sample/synthetic or uses
+`Math.random`, and checks the overview against direct `count(*)` queries.
+
 | Section | What you can do |
 |---|---|
-| **Overview** | Accounts, sellers, stores (live), products, orders, GMV (all-time + 30 days), MRR estimate (paid stores × list price), waitlist, pending upgrades; 30-day signups vs orders chart; plan mix donut; health (DB ping, build sha, last daily cron run, integrations, feature flags, link to `/api/health`). |
+| **Overview** | Period picker (7d / 30d / 90d / all; "all" starts at the first account). Accounts (new in period, verified), stores (live, sellers), products (active, hidden), orders (in period), GMV in IQD from real orders (cancelled/refused/returned excluded; all-time and in period), **MRR (estimate)** = stores on a paid plan that is running now (no end date or end date ahead, not suspended) × the plan's monthly list price — not money received; waitlist size; upgrade requests waiting. Signups and orders per day for the period (from `users.created_at` / `orders.created_at`). Stores by plan (with how many paid plans are running) and by status (live / unpublished / suspended); orders by status; usage: product images (and how many are in storage), AI credits this month (Baghdad month) and all time per feature (`ai_usage`), Studio edits (`product_studio_usage`). |
 | **Users** | Search (name/email/phone), filter by status/role, paginate, inline-edit names, bulk verify / sign out, CSV. Detail: edit name/email/phone, verify/unverify email, sign out everywhere, view as seller, make/remove admin (owner only), suspend / ban / reactivate, delete (with stores), sessions, owned stores, audit trail. |
+| **Team** | Admins and owners (env-listed ones marked), add by email, remove, promote to owner; your own sessions. |
 | **Stores** | Search (name/slug/owner), filter by plan/state, featured toggle (optimistic), bulk feature/unfeature, CSV. Detail: edit name/slug/phone/WhatsApp/Instagram/city, published, featured, showcase opt-in, white-label; set plan + end date, +1/+12 months, comp (open-ended), plan history; limit overrides; suspend (storefront shows "This store is unavailable", checkout refuses orders) / lift; transfer ownership; reset theme; delete. |
-| **Moderation** | Every product across stores: hide/unhide (hidden products vanish from the storefront whatever the seller sets), bulk hide, delete. Every order: filter by status, move along the allowed status flow (same rules and restock as the seller), CSV. |
+| **Products** (`/admin/products`) | Every product across stores: hide/unhide (hidden products vanish from the storefront whatever the seller sets), bulk hide, delete, CSV. |
+| **Orders** (`/admin/orders`) | Every order: filter by status, move along the allowed status flow (same rules and restock as the seller), CSV. The old `/admin/catalog?tab=…` address redirects here. |
 | **Plans & limits** | Plan matrix (price, products, studio edits, AI credits, seats, stores); upgrade requests (activate/reject); every store with overrides. |
-| **Site controls** | Maintenance mode (sellers and shoppers see a maintenance page, orders are refused; `/admin` and `/login` keep working; admins bypass everywhere); feature flags; announcement banner (on/off, 5 colours, link, en/ku/ar/kmr text, live preview; shown on the marketing site and every seller dashboard); featured stores; password-reset / email-confirmation subject lines. |
-| **Waitlist & demand** | Waitlist with referrals, top cities, search, CSV, one-tap WhatsApp invite with the person's referral link. |
 | **Payouts** | The existing online payments, payout profiles and payouts screen (read via the payments services; unchanged). |
+| **Waitlist** | Exact waitlist size and referral total (counted over the whole table), top cities, search, CSV, one-tap WhatsApp invite with the person's referral link. The list shows up to 500 rows; the CSV has everyone. |
+| **Site & flags** | Maintenance mode (sellers and shoppers see a maintenance page, orders are refused; `/admin` and `/login` keep working; admins bypass everywhere); feature flags; announcement banner (on/off, 5 colours, link, en/ku/ar/kmr text, live preview; shown on the marketing site and every seller dashboard); featured stores; password-reset / email-confirmation subject lines. |
+| **Database** (`/admin/database`, owner only) | Read-only browser: every table in the `public` schema with its exact row count; open a table for 50 rows a page with the schema's column names, sort by any column, search the visible columns, export the rows on screen as CSV. No SQL input: table and column names must match `information_schema` exactly and go into queries as quoted identifiers. Masked on the server before rows leave it (`isSecretColumn` in `src/lib/admin.ts`): password hashes, token/OTP/code hashes, session ids, API/idempotency keys, push-subscription endpoint/keys, payout account numbers, raw provider payloads, checkout links. Searching never matches a masked column. Admins (not owners) and everyone else get a 404. |
 | **Audit log** | Filter by text, action prefix, admin, target type and date range; expand a row for before/after JSON; CSV. |
-| **Admin team** | Admins and owners (env-listed ones marked), add by email, remove, promote to owner; your own sessions. |
+| **Health** | DB ping, build sha, last daily cron run, maintenance state, integrations, feature flags, link to `/api/health`. |
+
+Layout: phones (≈412 px) get the drawer and stacked row cards (users, stores) or a table that scrolls inside its own
+box (database); nothing scrolls the page sideways. Tablet (768) keeps the sidebar with stacked rows; wide screens
+(≥1024) show full tables with sticky headers. Tap targets are at least 44 px; RTL locales mirror the layout.
 
 Keyboard: **Ctrl/⌘ K** opens the command palette (jump to any user, store or section); **g** then a letter jumps to a
-section (g o overview, g u users, g s stores, g m moderation, g p plans, g c site controls, g w waitlist, g y payouts,
-g a audit, g t team); **/** focuses the search box.
+section (g o overview, g u users, g t team, g s stores, g p products, g r orders, g l plans, g y payouts, g w waitlist,
+g c site & flags, g d database, g a audit, g h health); **/** focuses the search box.
 
 ## Runtime settings
 
@@ -97,7 +120,7 @@ owner's stores).
   `hidden_by_admin_at`, `admin_audit`, `platform_settings`, `store_limit_overrides`.
 - `src/lib/admin.ts` — pure rules (roles, step-up, flags, announcement, overrides, CSV, snapshots).
 - `src/server/auth/admin.ts` — guard. `src/server/actions/admin.ts` — every write. `src/server/admin/` — queries,
-  audit, maintenance/announcement gate.
+  audit, maintenance/announcement gate, `db-browser.ts` (read-only table browser).
 - `src/app/admin/**`, `src/components/admin/**`, `src/app/api/admin/export/[kind]` (users, stores, products, orders,
   waitlist, audit).
 - `scripts/seed-admin.ts` — `SEED_ADMIN_EMAIL`.

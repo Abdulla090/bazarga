@@ -6,6 +6,7 @@ import { auditLog } from "@/server/db/schema";
 import { listAdminAudit } from "@/server/admin/audit";
 import { AuditTable } from "@/components/admin/AuditTable";
 import { changedKeys } from "@/lib/admin";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Audit", robots: { index: false } };
 
@@ -19,7 +20,7 @@ export default async function AdminAudit({ searchParams }: { searchParams: Promi
   const seller = await db().select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(30);
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("a.title")}</h1>
+      <PageHeader title={t("a.title")} count={res.total} />
       <AuditTable
         filters={{ q: sp.q ?? "", action: sp.action ?? "", actor: sp.actor ?? "", type: sp.type ?? "", from: sp.from ?? "", to: sp.to ?? "" }}
         page={res.page}

@@ -5,6 +5,7 @@ import { db } from "@/server/db";
 import { stores } from "@/server/db/schema";
 import { SETTING_KEYS, getAnnouncement, getFlags, getMaintenance, getSetting } from "@/server/services/platform-settings";
 import { SiteControls } from "@/components/admin/SiteControls";
+import { PageHeader } from "@/components/admin/kit";
 
 export const metadata = { title: "Admin · Site", robots: { index: false } };
 
@@ -20,7 +21,7 @@ export default async function AdminSite() {
   ]);
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-semibold tracking-tight md:text-3xl">{t("site.title")}</h1>
+      <PageHeader title={t("nav.site")} />
       <SiteControls flags={flags} maintenance={maint} announcement={ann} subjects={(subjects ?? {}) as Record<string, string>} featured={featured} />
     </div>
   );

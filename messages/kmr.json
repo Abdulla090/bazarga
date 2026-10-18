@@ -1699,13 +1699,17 @@
       "overview": "Giştî",
       "users": "Bikarhêner",
       "stores": "Firoşgeh",
-      "catalog": "Çavdêrî",
       "plans": "Plan û sînor",
-      "site": "Kontrola malperê",
+      "site": "Malper û ala",
       "growth": "Lîsteya bendê",
       "payments": "Dravdan",
       "audit": "Tomara kontrolê",
-      "settings": "Tîma rêveberan"
+      "settings": "Tîm",
+      "products": "Berhem",
+      "orders": "Sipariş",
+      "database": "Danegeh",
+      "health": "Rewşa pergalê",
+      "menu": "Menû"
     },
     "c": {
       "search": "Lêgerîn",
@@ -1780,22 +1784,55 @@
       "liveStores": "{n} zindî",
       "products": "Berhem",
       "orders": "Sipariş",
-      "last30": "{n} di 30 rojan de",
-      "gmv": "Tevahiya firotanê (IQD)",
-      "mrr": "Dahata mehane (texmîn)",
-      "mrrHint": "Firoşgehên bi pere × biha",
       "waitlist": "Lîsteya bendê",
       "pending": "Daxwazên bilindkirinê li bendê ne",
-      "signups": "Tomarbûn · 30 rojên dawî",
-      "ordersChart": "Sipariş · 30 rojên dawî",
-      "planMix": "Belavbûna pakêtan",
-      "health": "Tenduristî",
+      "signups": "Tomarbûn",
+      "ordersChart": "Sipariş",
       "db": "Danegeh",
       "build": "Guherto",
       "flags": "Taybetmendî",
       "cron": "Karê rojane",
       "integrations": "Girêdan",
-      "maintenanceOn": "Moda lênêrînê vekirî ye: firoşkar û kiryar rûpela lênêrînê dibînin."
+      "maintenanceOn": "Moda lênêrînê vekirî ye: firoşkar û kiryar rûpela lênêrînê dibînin.",
+      "fromDb": "Her hejmara li jêr rasterast ji danegehê tê jimartin.",
+      "periodLabel": "Dem",
+      "period": {
+        "7d": "7 rojên dawî",
+        "30d": "30 rojên dawî",
+        "90d": "90 rojên dawî",
+        "all": "Hemû dem"
+      },
+      "periodShort": {
+        "7d": "7 roj",
+        "30d": "30 roj",
+        "90d": "90 roj",
+        "all": "Hemû"
+      },
+      "newIn": "{n} nû · {period}",
+      "verified": "{n} piştrastkirî",
+      "activeN": "{n} çalak",
+      "hiddenN": "{n} veşartî",
+      "inPeriod": "{n} di {period} de",
+      "gmvIqd": "Tevahiya firotanê (IQD)",
+      "mrrEstimate": "Dahata mehane (texmîn)",
+      "mrrFrom": "{n} planên bi pere yên çalak × bihayê lîsteyê",
+      "mrrNote": "Dahata mehane texmîn e: firoşgehên li ser planeke bi pere ya niha çalak × bihayê mehane yê planê. Ew ne pereyê wergirtî ye.",
+      "signupsVsOrders": "Tomarbûn û sipariş her roj",
+      "noActivity": "Di vê demê de tu tomarbûn an sipariş tune.",
+      "storesByPlan": "Firoşgeh li gorî planê",
+      "storesByStatus": "Firoşgeh li gorî rewşê",
+      "ordersByStatus": "Sipariş li gorî rewşê",
+      "allTime": "Hemû dem",
+      "allTimeN": "{n} hemû dem",
+      "activePaid": "{n} çalak",
+      "noStores": "Hîn firoşgeh tune.",
+      "noOrders": "Hîn sipariş tune.",
+      "usage": "Bikaranîn",
+      "usageMonth": "Vê mehê ({month}) û hemû dem",
+      "images": "Wêneyên berheman",
+      "inStorage": "{n} di embarê de",
+      "aiCredits": "Krediyên AI yên bikaranîn",
+      "studioEdits": "Guhertinên stûdyoyê"
     },
     "u": {
       "title": "Bikarhêner",
@@ -1883,7 +1920,6 @@
       "openStore": "Firoşgehê veke"
     },
     "cat": {
-      "title": "Çavdêrî",
       "products": "Berhem",
       "orders": "Sipariş",
       "searchProducts": "Berhem, firoşgeh an kod",
@@ -1896,7 +1932,9 @@
       "stock": "Stok",
       "total": "Tevahî",
       "customer": "Kiryar",
-      "inactive": "ji aliyê firoşkar ve girtî"
+      "inactive": "ji aliyê firoşkar ve girtî",
+      "productsSub": "Hemû berhem di hemû firoşgehan de. Berhemên veşartî ji vitrînê winda dibin.",
+      "ordersSub": "Hemû sipariş di hemû firoşgehan de, ya herî nû pêşî."
     },
     "pl": {
       "title": "Plan û sînor",
@@ -1906,7 +1944,8 @@
       "upgrades": "Daxwazên bilindkirinê",
       "activate": "Çalak bike",
       "reject": "Red bike",
-      "months": "{n} meh"
+      "months": "{n} meh",
+      "sub": "{pending} daxwazên bilindkirinê li bendê · {overrides} firoşgeh bi sînorên taybet"
     },
     "site": {
       "title": "Kontrola malperê",
@@ -1948,7 +1987,9 @@
       "joined": "Tevlî bû",
       "invite": "Vexwîne",
       "inviteMsg": "Silav {name}! Firoşgeha te ya Reelcart amade ye: {url}",
-      "topCities": "Bajarên serê"
+      "topCities": "Bajarên serê",
+      "empty": "Hîn kes neketiye lîsteya bendê.",
+      "showing": "{n} yên pêşî ji {total} tên nîşandan. Bigere an CSV derxe."
     },
     "a": {
       "title": "Tomara kontrolê",
@@ -1987,6 +2028,38 @@
     },
     "pay": {
       "title": "Dravdan û dravdana serhêl"
+    },
+    "navGroup": {
+      "people": "Mirov",
+      "commerce": "Bazirganî",
+      "growth": "Mezinbûn",
+      "system": "Pergal"
+    },
+    "ost": {
+      "pending": "Li bendê",
+      "confirmed": "Piştrastkirî",
+      "shipped": "Şandî",
+      "delivered": "Gihandî",
+      "postponed": "Paşxistî",
+      "refused": "Redkirî",
+      "returned": "Vegerandî",
+      "cancelled": "Betalkirî"
+    },
+    "h": {
+      "sub": "Danegeh, avakirin, cron, entegrasyon û ala.",
+      "runtime": "Xebitandin",
+      "maintenance": "Moda lênêrînê"
+    },
+    "db": {
+      "sub": "Tenê xwendin. Bi tevahî {rows} rêz; veşartî ne.",
+      "searchTables": "Navê tabloyê",
+      "columnsN": "{n} stûn",
+      "readOnly": "Tenê xwendin. Haşên şîfreyê, token, haşên OTP, nasnameyên danişînê, kilît û hejmarên hesabê dravdanê veşartî ne.",
+      "searchRows": "Di stûnên xuya de bigere",
+      "exportVisible": "Rêzên li ser ekranê derxe",
+      "masked": "veşartî",
+      "noMatch": "Tu rêz li hev nayê.",
+      "emptyTable": "Ev tablo vala ye."
     }
   },
   "site": {
