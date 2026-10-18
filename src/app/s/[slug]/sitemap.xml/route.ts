@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { products, stores } from "@/server/db/schema";
@@ -7,6 +8,7 @@ import { SITEMAP_MAX_PRODUCTS } from "@/server/services/sitemap";
 
 /** Per-store sitemap (Advanced SEO, Max): the store home and its active products. Other plans: 404. */
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  await connection(); // per request: never prerendered (Cache Components would bake one placeholder slug)
   const { slug } = await params;
   if (!/^[a-z0-9-]{2,40}$/.test(slug)) return new Response("Not found", { status: 404 });
   const [st] = await db()
