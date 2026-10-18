@@ -191,6 +191,24 @@
 /* language change: a soft crossfade (the only motion under reduced motion, where the line no longer types) */
 .tm-live { animation: tm-in 420ms ease both; }
 @media (prefers-reduced-motion: reduce) { .tm-caret { opacity: 0.85; } }
+/* No-JS / pre-hydration layer (Oct 18): until TypeMorph mounts (data-tm-js), the phrases themselves crossfade on a
+   12 s loop, 3 s each, starting with the visitor's language (first in DOM). !important + class specificity on purpose:
+   it must survive the global reduced-motion clamp in globals.css (a crossfade is the reduced-motion form). */
+@keyframes tm-cycle {
+  0% { opacity: 0; visibility: visible; }
+  4%, 21% { opacity: 1; visibility: visible; }
+  25%, 100% { opacity: 0; visibility: hidden; }
+}
+.tm:not([data-tm-js]) .tm-live { opacity: 0; }
+.tm:not([data-tm-js]) .tm-sizer {
+  animation: tm-cycle 12s linear infinite !important;
+  animation-duration: 12s !important;
+  animation-iteration-count: infinite !important;
+  animation-delay: calc(var(--k, 0) * 3s - 12s) !important;
+}
+.tm:not([data-tm-js]) .tm-sizer .tm-caret { animation: none !important; }
+/* the JS crossfade stays a gentle fade under reduced motion too (the global clamp would make it a hard cut) */
+.tm[data-tm-js] .tm-live { animation-duration: 420ms !important; }
 
 /* ---- B · Zero setup: chat → product card ---- */
 .zs { display: flex; flex-direction: column; gap: 0.75rem; }

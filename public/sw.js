@@ -2,12 +2,12 @@
  * Reelcart service worker — hand-written, no Workbox.
  *   precache:                /offline.html + its font and icon
  *   stale-while-revalidate:  /_next/static/* (hashed, immutable) and product image renditions (/api/files/*)
- *   network-first:           HTML navigations, falling back to the cached page, then the Kurdish offline page
+ *   network-first:           HTML navigations (revalidated, never HTTP-cache-fresh), falling back to the cached page, then the Kurdish offline page
  *   never touched:           /api/* (except image renditions), any non-GET (dashboard server actions, checkout),
  *                            /dashboard and checkout/cart/order pages are network-only (never stored)
  * Bump VERSION to drop old caches on deploy-incompatible changes.
  */
-const VERSION = "v1";
+const VERSION = "v2"; // v2 (Oct 18): drop pages/static cached by older deploys so returning phones get new code
 const PRECACHE = `mm-precache-${VERSION}`;
 const STATIC = `mm-static-${VERSION}`;
 const IMAGES = `mm-img-${VERSION}`;
@@ -69,7 +69,9 @@ async function staleWhileRevalidate(event, cacheName, max) {
 
 async function networkFirstPage(event, store) {
   try {
-    const res = await fetch(event.request);
+    // Always revalidate the HTML with the server (never a heuristically-fresh HTTP-cache copy): the page names the
+    // current deploy's hashed chunks, so a stale page would keep running an old bundle.
+    const res = await fetch(event.request, { cache: "no-cache" });
     if (store && res.ok && res.type === "basic" && !res.headers.get("Cache-Control")?.includes("no-store")) {
       const cache = await caches.open(PAGES);
       await cache.put(event.request, res.clone());
