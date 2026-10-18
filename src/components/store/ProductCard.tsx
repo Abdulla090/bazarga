@@ -201,6 +201,74 @@ export function ProductCard({
       </article>
     );
   }
+  if (variant === "frame") {
+    // Atelier: portrait photo inside an accent hairline inset, centered display-face name, price in the accent tone.
+    return (
+      <article className="reveal group relative grid min-w-0 content-start gap-4 text-center" data-card="frame">
+        <div className="sf-frame at-frame relative block overflow-hidden bg-st-surface">
+          <Link href={href} className="block" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes={SIZES.productGrid} index={index} aboveTheFold={2} className={cardImage} />
+            ) : (
+              <span className="block aspect-[4/5] w-full" />
+            )}
+          </Link>
+          <span aria-hidden className="at-inset pointer-events-none absolute inset-2.5" />
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
+          <div className="absolute inset-x-0 bottom-4 z-10 hidden justify-center opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:hover)]:md:flex">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} className="btn-ghost btn-sm min-h-9 border-st-fg/40 bg-st-bg/90 px-4 backdrop-blur">{labels.chooseOptions}</Link>
+            ) : !p.soldOut ? (
+              <AddToCart slug={slug} productId={p.id} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }} />
+            ) : null}
+          </div>
+        </div>
+        <div className="grid justify-items-center gap-1.5 px-2">
+          <Link href={href} className="sf-display line-clamp-2 text-lg leading-snug after:absolute after:inset-0 after:content-[''] md:text-xl">{name}</Link>
+          <span aria-hidden className="at-rule h-px w-8" />
+          <div className="text-st-accent [&_s]:text-muted"><CardPrice p={p} locale={locale} from={labels.from} /></div>
+        </div>
+      </article>
+    );
+  }
+  if (variant === "glow") {
+    // Pulse: a square tile (2×2 when the bento grid features it), caption on a dark scrim, accent add button, accent glow on hover.
+    const addCls = "flex h-11 w-11 items-center justify-center rounded-full bg-st-accent text-st-on-accent shadow-e1 transition-transform duration-150 active:scale-95";
+    return (
+      <article className="reveal group relative h-full min-w-0" data-card="glow">
+        <div className="sf-frame pulse-card relative block h-full overflow-hidden rounded-[1.25rem] bg-st-surface ring-1 ring-st-border transition-shadow duration-200">
+          <Link href={href} className="block h-full" tabIndex={-1} aria-hidden>
+            {p.image ? (
+              <ResponsiveImage image={p.image} alt="" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw" index={index} aboveTheFold={4} className="sf-img aspect-square h-full w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]" />
+            ) : (
+              <span className="block aspect-square h-full w-full" />
+            )}
+          </Link>
+          <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 grid gap-0.5 bg-gradient-to-t from-black/85 via-black/45 to-transparent px-3 pb-3 pt-12 pe-16 text-white">
+            <Link href={href} className="pointer-events-auto line-clamp-2 text-[14px] font-bold leading-snug after:absolute after:inset-0 after:content-[''] md:text-base">{name}</Link>
+            <span className="num text-sm font-semibold text-[#E8FF9A]">{p.priceMax > p.price ? fill(labels.from, { price: formatIQD(p.price, locale) }) : formatIQD(p.price, locale)}</span>
+          </div>
+          <div className="absolute bottom-2.5 end-2.5 z-10">
+            {p.hasVariants && !p.soldOut ? (
+              <Link href={href} aria-label={labels.chooseOptions} className={addCls}>
+                <Icon as={Plus} className="h-5 w-5" />
+              </Link>
+            ) : !p.soldOut ? (
+              <AddToCart
+                slug={slug}
+                productId={p.id}
+                labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }}
+                item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }}
+                icon={<Icon as={Plus} className="h-5 w-5" />}
+                className={addCls}
+              />
+            ) : null}
+          </div>
+        </div>
+      </article>
+    );
+  }
   if (variant === "tile") {
     return (
       <article className="reveal group relative min-w-0" data-card="tile">

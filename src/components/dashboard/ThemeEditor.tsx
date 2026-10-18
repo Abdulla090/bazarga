@@ -5,10 +5,11 @@ import { themeToCssVars } from "@/lib/theme-studio/css";
 import { contrast } from "@/lib/theme-studio/contrast";
 import type { StoreTheme } from "@/lib/theme-studio/schema";
 
-type Preset = { id: string; theme: StoreTheme; vars: Record<string, string> };
+type Preset = { id: string; theme: StoreTheme; vars: Record<string, string>; premium?: boolean };
 type Labels = {
   title: string; presets: string; publish: string; published: string; unpublished: string; desktop: string; phone: string;
   undo: string; redo: string; surprise: string; saving: string; saved: string; preview: string; colors: string; type: string; buttons: string; cards: string; header: string; headerLayout: string; announce: string; announcePh: string; cardsRadius: string; cardsStyle: string; cardsRatio: string; bgKind: string; opt: Record<string, string>; shape: string; btnStyle: string; shapes: Record<string, string>; styles: Record<string, string>; accent: string; bg: string; surface: string; text: string; custom: string; lowContrast: string; sizeLabel: string; sizes: Record<string, string>; names: Record<string, string>;
+  premiumBadge: string; premiumNote: string; premiumCta: string;
 };
 
 const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)]!;
@@ -20,7 +21,7 @@ const setPreviewCookie = (slug: string, d: string) => { document.cookie = `bz_pv
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Theme Studio editor shell: preset gallery (left), live iframe preview (right) fed by postMessage, autosaved draft, publish. */
-export function ThemeEditor({ slug, presets, initial, published, labels }: { slug: string; presets: Preset[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels }) {
+export function ThemeEditor({ slug, presets, initial, published, labels, premiumLocked = false }: { slug: string; presets: Preset[]; initial: StoreTheme; published: StoreTheme | null; labels: Labels; premiumLocked?: boolean }) {
   const [theme, setTheme] = useState<StoreTheme>(initial);
   const [pub, setPub] = useState<StoreTheme | null>(published);
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
@@ -31,7 +32,9 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
   const commit = (n: StoreTheme | ((t: StoreTheme) => StoreTheme)) => { setHist((h) => ({ past: [...h.past.slice(-49), theme], future: [] })); setTheme(typeof n === "function" ? n(theme) : n); };
   const undo = () => { const p = hist.past[hist.past.length - 1]; if (!p) return; setHist({ past: hist.past.slice(0, -1), future: [...hist.future, theme] }); setTheme(p); };
   const redo = () => { const n = hist.future[hist.future.length - 1]; if (!n) return; setHist({ past: [...hist.past, theme], future: hist.future.slice(0, -1) }); setTheme(n); };
-  const surprise = () => commit(randomTheme(presets.map((p) => p.theme)));
+  const surprise = () => commit(randomTheme(presets.filter((p) => !p.premium || !premiumLocked).map((p) => p.theme)));
+  const premiumIds = new Set(presets.filter((p) => p.premium).map((p) => p.theme.design));
+  const lockedPreview = premiumLocked && premiumIds.has(theme.design);
   const frame = useRef<HTMLIFrameElement>(null);
   const ready = useRef(false);
   const first = useRef(true);
@@ -90,11 +93,18 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
         <div className="flex items-center gap-3 px-4 py-4">
           <h1 className="t-headline me-auto">{labels.title}</h1>
           <span className="text-xs text-ink/50" aria-live="polite">{status === "saving" ? labels.saving : status === "saved" ? labels.saved : ""}</span>
-          <button type="button" onClick={doPublish} disabled={pending || !dirty} className="btn-ink btn-sm relative" data-testid="theme-publish">
-            {labels.publish}
-            {dirty && <span className="absolute -end-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-paper" aria-label={labels.unpublished} data-testid="theme-dirty" />}
-          </button>
+          {lockedPreview ? (
+            <a href="/dashboard/upgrade" className="inline-flex min-h-11 items-center rounded-full bg-[#2563EB] px-4 text-[13px] font-semibold text-white" data-testid="theme-premium-cta">{labels.premiumCta}</a>
+          ) : (
+            <button type="button" onClick={doPublish} disabled={pending || !dirty} className="btn-ink btn-sm relative" data-testid="theme-publish">
+              {labels.publish}
+              {dirty && <span className="absolute -end-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-paper" aria-label={labels.unpublished} data-testid="theme-dirty" />}
+            </button>
+          )}
         </div>
+        {lockedPreview && (
+          <p role="status" className="mx-4 mb-3 rounded-xl border border-[#2563EB]/30 bg-[#2563EB]/5 p-3 text-[13px] leading-relaxed" data-testid="theme-premium-note">{labels.premiumNote}</p>
+        )}
         <div className="flex gap-2 px-4 pb-3">
           <button type="button" onClick={undo} disabled={!hist.past.length} data-testid="theme-undo" className="min-h-11 flex-1 rounded-full border border-line text-[13px] disabled:opacity-40">{labels.undo}</button>
           <button type="button" onClick={redo} disabled={!hist.future.length} data-testid="theme-redo" className="min-h-11 flex-1 rounded-full border border-line text-[13px] disabled:opacity-40">{labels.redo}</button>
@@ -218,7 +228,10 @@ export function ThemeEditor({ slug, presets, initial, published, labels }: { slu
                       <span className="h-5 w-9" style={{ background: p.vars["--t-accent"], borderRadius: r }} />
                     </span>
                   </span>
-                  <span className="px-0.5 text-[13px] font-medium">{labels.names[p.id] ?? p.id}</span>
+                  <span className="flex items-center justify-between gap-1 px-0.5 text-[13px] font-medium">
+                    {labels.names[p.id] ?? p.id}
+                    {p.premium && <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] font-semibold leading-normal text-white" data-testid={`preset-premium-${p.id}`}>{labels.premiumBadge}</span>}
+                  </span>
                 </button>
               </li>
             );

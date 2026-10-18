@@ -22,7 +22,7 @@ import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
 import { CollectionBento, CollectionIndex, Spotlight } from "@/components/store/HomeSections";
-import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroSplit, HeroStage, HeroType } from "@/components/store/HomeHero";
+import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroPulse, HeroRunway, HeroSplit, HeroStage, HeroType } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -59,7 +59,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const c = one(sp.c);
   const offers = one(sp.offers) === "1";
   const store = await loadStore(slug);
-  const design = await resolveDesign(slug, store.themePublished);
+  const design = await resolveDesign(slug, store.themePublished, store.plan);
   const t = await getTranslations("store");
   const locale = await currentLocale();
   const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
@@ -126,6 +126,10 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     // Masonry: CSS columns of floating cards with uneven photo ratios; 2 columns on phones up to 4 on wide desktops.
     masonry: "columns-2 gap-3 sm:columns-3 sm:gap-5 xl:columns-4 [&>*]:mb-3 [&>*]:break-inside-avoid sm:[&>*]:mb-5",
     dense: "grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-x-4 md:gap-y-8 lg:grid-cols-5 xl:grid-cols-6",
+    // Lookbook (Atelier): airy columns, every fifth piece runs double width like a full-page look.
+    lookbook: "grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-8 md:grid-cols-4 md:gap-x-8 md:gap-y-16 [&>*:nth-child(5n+1)]:col-span-2",
+    // Bento (Pulse): tight square tiles, every seventh product a 2×2 feature; dense flow fills the holes.
+    bento: "grid grid-flow-row-dense grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 [&>*:nth-child(7n+1)]:col-span-2 [&>*:nth-child(7n+1)]:row-span-2",
   } as const;
   const catItems = [
     { key: "all", href: `${homeHref(slug, { q })}#products`, label: t("all"), on: !c && !offers },
@@ -221,7 +225,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       })) }} />}
       {browsing && (
         <>
-          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : design.hero === "stage" ? <HeroStage {...heroProps} /> : <HeroSplit {...heroProps} />}
+          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : design.hero === "stage" ? <HeroStage {...heroProps} /> : design.hero === "runway" ? <HeroRunway {...heroProps} /> : design.hero === "pulse" ? <HeroPulse {...heroProps} /> : <HeroSplit {...heroProps} />}
           {design.sections.map((k) => (
             <Fragment key={k}>{blocks[k]}</Fragment>
           ))}

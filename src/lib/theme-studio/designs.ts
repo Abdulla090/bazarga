@@ -3,17 +3,23 @@
  * renders (header, hero, section order, product grid, card, footer). Tokens (colours, radius, type size) still come
  * from the theme JSON; the design decides composition. Pure and shared by the server renderer, the editor and tests.
  */
-export const DESIGN_IDS = ["classic", "editorial", "gallery", "boutique", "mono", "studio", "market"] as const;
+export const DESIGN_IDS = ["classic", "editorial", "gallery", "boutique", "mono", "studio", "market", "atelier", "pulse"] as const;
 export type DesignId = (typeof DESIGN_IDS)[number];
 
 /** Designs that have their own layout components today; any added later render as "classic" until their slice ships. */
-export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique", "mono", "studio"] as const satisfies readonly DesignId[];
+export const BUILT_DESIGNS = ["classic", "editorial", "market", "gallery", "boutique", "mono", "studio", "atelier", "pulse"] as const satisfies readonly DesignId[];
 
-export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch" | "type" | "stage";
-export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows" | "masonry";
-export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row" | "float";
+/** Premium designs (Max, SF6): anyone can preview them in Theme Studio; publishing needs Max, and a store that drops below Max renders classic. */
+export const PREMIUM_DESIGNS = ["atelier", "pulse"] as const satisfies readonly DesignId[];
+export function isPremiumDesign(id: unknown): boolean {
+  return typeof id === "string" && (PREMIUM_DESIGNS as readonly string[]).includes(id);
+}
+
+export type HeroVariant = "split" | "masthead" | "banner" | "fullbleed" | "arch" | "type" | "stage" | "runway" | "pulse";
+export type GridVariant = "auto" | "magazine" | "dense" | "tiles" | "soft" | "rows" | "masonry" | "lookbook" | "bento";
+export type CardVariant = "classic" | "editorial" | "compact" | "tile" | "soft" | "row" | "float" | "frame" | "glow";
 export type HomeSection = "offers" | "collections" | "best" | "spotlight" | "sale" | "rail";
-export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger" | "band";
+export type FooterVariant = "classic" | "editorial" | "dense" | "minimal" | "soft" | "ledger" | "band" | "colophon" | "ticker";
 
 export type DesignSpec = {
   id: DesignId;
@@ -61,6 +67,20 @@ export const DESIGNS: Record<DesignId, DesignSpec> = {
     id: "studio", hero: "stage", grid: "masonry", card: "float", footer: "band", pageSize: 24, cardTitle: "sans",
     sections: ["offers", "best", "spotlight", "collections", "sale"],
   },
+  // Atelier (premium): a couture house. Centered eyebrow + display name over a hairline-framed cinematic cover, the
+  // spotlight lookbook first, a lookbook grid (every fifth piece runs double width), framed cards with display-face
+  // names, a centered colophon footer.
+  atelier: {
+    id: "atelier", hero: "runway", grid: "lookbook", card: "frame", footer: "colophon", pageSize: 18, cardTitle: "display",
+    sections: ["spotlight", "best", "collections", "offers", "sale"],
+  },
+  // Pulse (premium): a night-drop streetwear/electronics brand. Bento hero (name tile, tall cover tile, accent ticker),
+  // deals first, a bento grid (every seventh product is a 2×2 feature), glow cards with the caption on the photo,
+  // and a ticker footer.
+  pulse: {
+    id: "pulse", hero: "pulse", grid: "bento", card: "glow", footer: "ticker", pageSize: 30, cardTitle: "sans",
+    sections: ["sale", "best", "offers", "collections"],
+  },
 };
 
 export function isDesignId(v: unknown): v is DesignId {
@@ -68,7 +88,9 @@ export function isDesignId(v: unknown): v is DesignId {
 }
 
 /** The composition to render for a design id; unknown ids and not-yet-built designs fall back to classic. */
-export function designSpec(id: unknown): DesignSpec {
+/** `allowPremium: false` (store below Max) turns premium designs into classic. */
+export function designSpec(id: unknown, allowPremium = true): DesignSpec {
+  if (!allowPremium && isPremiumDesign(id)) return DESIGNS.classic;
   return isDesignId(id) && (BUILT_DESIGNS as readonly string[]).includes(id) ? DESIGNS[id] : DESIGNS.classic;
 }
 

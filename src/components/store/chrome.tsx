@@ -1,3 +1,4 @@
+import { TickerStar } from "./HomeHero";
 import Link from "next/link";
 import { normalizePlan, showsBazargaBadge } from "@/lib/plans";
 import { whiteLabelOn } from "@/lib/seo";
@@ -178,6 +179,59 @@ export async function StoreFooter({
           </div>
         </div>
         <div className="store-page grid gap-8 py-10 sm:grid-cols-2">
+          {returns && (
+            <section id="returns" className="scroll-mt-24">
+              <h2 className={colHead}>{t("returnPolicy")}</h2>
+              <p className="line-clamp-6 whitespace-pre-line leading-relaxed">{returns}</p>
+            </section>
+          )}
+          {contact}
+        </div>
+        {bar}
+      </footer>
+    );
+  }
+
+  if (design.footer === "colophon") {
+    return (
+      <footer className="store-footer mt-24 border-t border-st-border text-sm" data-footer="colophon">
+        <div className="store-page grid justify-items-center gap-10 py-16 text-center sm:py-24">
+          <p className="sf-display at-name-sm">{store.name}</p>
+          <span aria-hidden className="at-rule h-px w-16" />
+          {about && <p className="line-clamp-5 max-w-2xl whitespace-pre-line text-balance leading-relaxed text-muted">{about}</p>}
+          <div className="grid w-full max-w-3xl gap-10 sm:grid-cols-2">
+            {returns && (
+              <section id="returns" className="scroll-mt-24">
+                <h2 className={`${colHead} at-eyebrow`}>{t("returnPolicy")}</h2>
+                <p className="line-clamp-6 whitespace-pre-line leading-relaxed">{returns}</p>
+              </section>
+            )}
+            {contact}
+          </div>
+        </div>
+        {bar}
+      </footer>
+    );
+  }
+
+  if (design.footer === "ticker") {
+    return (
+      <footer className="store-footer mt-20 text-sm" data-footer="ticker">
+        <div className="pulse-ticker overflow-hidden border-y border-st-border bg-st-accent py-5 text-st-on-accent" aria-hidden>
+          <div className="pulse-track flex w-max gap-10 whitespace-nowrap text-3xl font-bold md:text-5xl">
+            {Array.from({ length: 8 }, (_, i) => (
+              <span key={i} className="flex items-center gap-10">
+                {store.name}
+                <TickerStar className="h-6 w-6 shrink-0 md:h-8 md:w-8" />
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="store-page grid gap-8 py-10 sm:grid-cols-3">
+          <section className="grid content-start gap-3">
+            <p className="store-name text-lg font-bold">{store.name}</p>
+            {about && <p className="line-clamp-4 whitespace-pre-line leading-relaxed text-muted">{about}</p>}
+          </section>
           {returns && (
             <section id="returns" className="scroll-mt-24">
               <h2 className={colHead}>{t("returnPolicy")}</h2>

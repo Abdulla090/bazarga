@@ -1079,7 +1079,9 @@
       "mono": "Mono",
       "editorial": "Editorial",
       "fresh": "Fresh",
-      "market": "Market"
+      "market": "Market",
+      "atelier": "Atelier",
+      "pulse": "Pulse"
     },
     "colors": "Colors",
     "type": "Type",
@@ -1134,7 +1136,10 @@
     "header": "Header",
     "headerLayout": "Header layout",
     "announce": "Announcement bar",
-    "announcePh": "Free delivery over 50,000 IQD"
+    "announcePh": "Free delivery over 50,000 IQD",
+    "premiumBadge": "Max",
+    "premiumNote": "You're previewing a premium Max design. Look around freely: publishing it needs the Max plan.",
+    "premiumCta": "Upgrade to Max to publish"
   },
   "pricing": {
     "nav": "Pricing",
