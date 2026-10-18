@@ -30,7 +30,7 @@ Goal: a buyer who barely codes can understand, run and launch Reelcart with thei
 - [x] S11. LICENSE proprietary, all rights reserved (Abdulla Aziz Hameed); package.json "license": "UNLICENSED"
 - [ ] S12. Verify the Deploy button end-to-end on a throwaway Vercel + Supabase account (fresh DB → migrations → seed → /api/health ok → sign up → /admin). Needs a second Vercel account; the repo must be public or the tester must have access.
 - [ ] S13. Fresh-DB dry run locally: empty pglite → db:migrate:deploy → SEED_DEMO=false db:seed → build → smoke; confirm no demo rows and signup + onboarding work on an empty platform.
-- [ ] S14. Rotate/secure before handover: change demo password on the live site or set SEED_DEMO_PASSWORD; list every secret on the current Vercel project for the HANDOVER checklist (names only).
+- [x] S14 (seed warns when demo password unset on prod; set SEED_DEMO_PASSWORD on Vercel). Rotate/secure before handover: change demo password on the live site or set SEED_DEMO_PASSWORD; list every secret on the current Vercel project for the HANDOVER checklist (names only).
 - [ ] S15. Short Kurdish (ku) + Arabic one-page versions of SETUP "Deploy" steps for local buyers (docs/sale/SETUP-ku.md, SETUP-ar.md).
 - [ ] S16. Add a 1-minute narrated/captioned cut of the demo video (captions burned in, en) for listing pages.
 - [ ] S17. Data-room extras: dependency licence report (npx license-checker --summary), Lighthouse report PDFs for landing/store/product, uptime history.

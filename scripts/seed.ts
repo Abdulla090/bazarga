@@ -47,6 +47,9 @@ const spec = (label: LocalizedText, value: LocalizedText) => ({ label, value });
 
 const DEMO_EMAIL = process.env.SEED_DEMO_EMAIL ?? "demo@mymarket.app";
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? "mymarket-demo";
+if (!process.env.SEED_DEMO_PASSWORD && process.env.VERCEL_ENV === "production" && process.env.SEED_DEMO !== "false") {
+  console.warn("[seed] SEED_DEMO_PASSWORD is not set: the public demo password is in use. Set it or SEED_DEMO=false before handover.");
+}
 /** Plan of the demo store, re-applied on every seed so the demo shows every unlocked feature (default max). */
 const DEMO_PLAN = normalizePlan(process.env.SEED_DEMO_PLAN ?? "max");
 
