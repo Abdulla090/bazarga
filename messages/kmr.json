@@ -428,6 +428,11 @@
     "pushError": "Xeletiyek çêbû, dîsa biceribîne."
   },
   "dash": {
+    "lowStockTitle": "Kêm dibe",
+    "lowStockSub": "Berî ku biqedin stok zêde bike.",
+    "soldOut": "Qediya",
+    "lowStockLeft": "{count} maye",
+    "lowStockAll": "Hemû berheman bibîne",
     "newOrders": "{count} daxwaza nû",
     "share": "Parvekirin",
     "analytics": "Analîtîk",

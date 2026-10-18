@@ -265,6 +265,11 @@
     "themeSkip": "ئێستا بیبوورە"
   },
   "dash": {
+    "lowStockTitle": "کەم دەبێتەوە",
+    "lowStockSub": "پێش ئەوەی تەواو بن، کاڵاکان زیاد بکە.",
+    "soldOut": "تەواو بووە",
+    "lowStockLeft": "{count} ماوە",
+    "lowStockAll": "هەموو بەرهەمەکان ببینە",
     "newOrders": "{count} داواکاری نوێ",
     "home": "سەرەکی",
     "products": "کاڵاکان",

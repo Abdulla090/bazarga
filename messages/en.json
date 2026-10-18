@@ -265,6 +265,11 @@
     "themeSkip": "Skip for now"
   },
   "dash": {
+    "lowStockTitle": "Running low",
+    "lowStockSub": "Restock before these sell out.",
+    "soldOut": "Sold out",
+    "lowStockLeft": "{count} left",
+    "lowStockAll": "See all products",
     "newOrders": "{count} new orders",
     "home": "Home",
     "products": "Products",

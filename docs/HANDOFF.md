@@ -33,6 +33,7 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
   Do NOT edit: `src/app/(marketing)/page.tsx`, `src/app/(marketing)/pricing/page.tsx`, `src/app/globals.css` hero/glow block, `src/components/SiteHeader.tsx`, `src/components/pricing/AnnouncementBar.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/components/pricing/StickyFreeCta.tsx`.
 
 ## Log
+- 2026-10-18 04:20 Agent B: merged `hark/order-wa-templates` (2d846ae, WhatsApp templates on order detail) and `agentb/low-stock`: dashboard "Running low" card (visible tracked products/variants ≤5, sold-out first, store-scoped), low/sold-out badge on the products list, 4 locales, plans lowStock no longer "Soon". Fixed a tsc error in tests/orders-export.test.ts from the template merge. Fast gate: tsc, eslint, vitest (low-stock, plans, pricing-render, kmr, orders-export), JSON.
 
 - 2026-10-18 03:15 Agent B: **Products CSV export** (`agentb/csv-export`): `GET /api/products/export` (session-scoped, rate limited 30/h, UTF-8 BOM, formula-injection safe, all 4 name/description locales, price/stock/status/category/variants/images count, public `/p/<code>` link) + "Download CSV" button on /dashboard/products in 4 locales. `listProductsForExport` in catalog service; `tests/products-export.test.ts` (tenant isolation, escaping, category). Fast gate: tsc, eslint, 22 message-touching vitest files (265 tests), JSON. BACKLOG 9 partly (export done; import, bulk edit, order-note templates next). No migration.
 

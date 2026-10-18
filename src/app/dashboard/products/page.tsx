@@ -7,6 +7,7 @@ import { getProductUsage, listProducts } from "@/server/services/catalog";
 import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
+import { stockLevel } from "@/lib/low-stock";
 import { ActiveToggle } from "./ActiveToggle";
 import { ProductShareButton } from "@/components/dashboard/ProductShareButton";
 import { CAPTION_LOCALES, type CaptionLocale } from "@/lib/social";
@@ -69,6 +70,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                 <span className="num block truncate text-sm text-ink-70">
                   {formatIQD(p.price, locale)} · {p.stock === null ? t("untracked") : t("inStock", { count: p.stock })}
                 </span>
+                {(stockLevel(p.stock) === "low" || stockLevel(p.stock) === "out") && (
+                  <span className={stockLevel(p.stock) === "out" ? "badge badge-danger mt-1 py-1" : "badge mt-1 py-1"} data-testid="stock-badge">
+                    {stockLevel(p.stock) === "out" ? td("soldOut") : td("lowStockLeft", { count: p.stock ?? 0 })}
+                  </span>
+                )}
               </Link>
               <ProductShareButton productId={p.id} slug={store.slug} storeName={store.name} names={p.name} price={p.price} defaultLocale={shareLocale} />
               <ActiveToggle id={p.id} active={p.isActive} />

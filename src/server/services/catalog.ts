@@ -1,10 +1,11 @@
-import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, lte } from "drizzle-orm";
 import type { Db } from "../db";
 import { categories, productImages, productOptionValues, productOptions, productVariants, products, stores } from "../db/schema";
 import { AppError } from "../errors";
 import { normalizePlan, productLimit, productsShown } from "@/lib/plans";
 import type { LocalizedText } from "@/lib/i18n";
 import type { ExportProduct } from "@/lib/products-csv";
+import { LOW_STOCK_THRESHOLD, rankLowStock, type LowStockRow } from "@/lib/low-stock";
 import type { ProductImageInput, ProductInput, ProductVariantsInput } from "@/lib/validation";
 
 export type Product = typeof products.$inferSelect;
@@ -370,4 +371,41 @@ export async function getProductUsage(database: Db, storeId: string) {
   const plan = normalizePlan(st?.plan);
   const [c] = await database.select({ n: count() }).from(products).where(eq(products.storeId, storeId));
   return { plan, used: Number(c?.n ?? 0), cap: productLimit(plan), shown: productsShown(plan) };
+}
+
+/**
+ * Visible products (or their variants) with tracked stock at or below the low-stock threshold, fewest units first.
+ * A product that has variants is judged by its variants only; its own stock column is unused once variants exist.
+ * Store-scoped; two small indexed reads.
+ */
+export async function listLowStock(database: Db, storeId: string, limit = 6): Promise<{ rows: LowStockRow[]; total: number }> {
+  const [simple, vars] = await Promise.all([
+    database
+      .select({ id: products.id, name: products.name, stock: products.stock })
+      .from(products)
+      .where(and(eq(products.storeId, storeId), eq(products.isActive, true), isNotNull(products.stock), lte(products.stock, LOW_STOCK_THRESHOLD))),
+    database
+      .select({ id: productVariants.id, productId: productVariants.productId, optionValueIds: productVariants.optionValueIds, stock: productVariants.stock, name: products.name })
+      .from(productVariants)
+      .innerJoin(products, eq(products.id, productVariants.productId))
+      .where(and(eq(productVariants.storeId, storeId), eq(productVariants.isActive, true), eq(products.isActive, true), isNotNull(productVariants.stock), lte(productVariants.stock, LOW_STOCK_THRESHOLD))),
+  ]);
+  const hasVariants = new Set(
+    (await database.select({ productId: productVariants.productId }).from(productVariants).where(eq(productVariants.storeId, storeId))).map((r) => r.productId),
+  );
+  const valueIds = [...new Set(vars.flatMap((v) => v.optionValueIds))];
+  const values = valueIds.length
+    ? await database.select({ id: productOptionValues.id, label: productOptionValues.label }).from(productOptionValues).where(and(eq(productOptionValues.storeId, storeId), inArray(productOptionValues.id, valueIds)))
+    : [];
+  const label = new Map(values.map((v) => [v.id, v.label]));
+  const all: LowStockRow[] = [
+    ...simple.filter((p) => !hasVariants.has(p.id)).map((p) => ({ productId: p.id, name: p.name as LowStockRow["name"], variantLabels: [], stock: p.stock ?? 0 })),
+    ...vars.map((v) => ({
+      productId: v.productId,
+      name: v.name as LowStockRow["name"],
+      variantLabels: v.optionValueIds.map((id) => label.get(id)).filter((l): l is LocalizedText => !!l),
+      stock: v.stock ?? 0,
+    })),
+  ];
+  return { rows: rankLowStock(all, limit), total: all.length };
 }

@@ -41,7 +41,7 @@ describe("orders CSV", () => {
     expect(csv.split("\r\n")).toHaveLength(3);
   });
   it("has the button label in all locales", () => {
-    for (const m of [en, ku, ar, kmr]) expect((m as { orders: Record<string, string> }).orders.export).toBeTruthy();
+    for (const m of [en, ku, ar, kmr]) expect((m as unknown as { orders: Record<string, string> }).orders.export).toBeTruthy();
   });
 });
 
