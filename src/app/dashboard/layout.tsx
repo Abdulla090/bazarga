@@ -71,7 +71,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="md:grid md:grid-cols-[15rem_minmax(0,1fr)] print:block">
         <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] flex-col border-e border-line px-3 py-6 md:flex print:hidden">
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <DashNav variant="side" newOrders={newOrders} />
+            <DashNav variant="side" newOrders={newOrders} role={role} />
           </div>
           <form action={logOutAction} className="border-t border-line pt-3">
             <PendingButton className="flex min-h-11 w-full items-center rounded-lg px-3 text-[14px] text-ink/60 transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink">{tc("logout")}</PendingButton>
@@ -79,7 +79,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </aside>
         <main className="mx-auto w-full min-w-0 max-w-[72rem] px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>
       </div>
-      <DashNav variant="bottom" newOrders={newOrders} />
+      <DashNav variant="bottom" newOrders={newOrders} role={role} />
       <CommandPalette />
     </div>
     </IntlProvider>

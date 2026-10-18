@@ -147,6 +147,16 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
 
 ---
 
+### Plan features that need no setup
+- **Team members** (Pro 2 / Business 5 / Max 10 seats): sellers invite staff at **Dashboard → Team**. With email set up
+  (section 4, `EMAIL_PROVIDER` + key) the invite is emailed; without it the seller copies the link and sends it on
+  WhatsApp. Staff run orders, products, categories, discounts, customers and sharing; settings, delivery, payments,
+  theme, plan and team stay with the owner.
+- **Multiple stores** (Business 3 / Max 5): **Dashboard → Stores**; extra stores share and renew with the plan.
+- **Advanced SEO + white-label** (Max): **Dashboard → Settings → SEO and white-label**. Each Max store also gets
+  `/s/<slug>/sitemap.xml`.
+- **Bulk CSV import** (Business+): **Dashboard → Products → Import**.
+
 ## 5. Troubleshooting
 
 | Symptom | Fix |

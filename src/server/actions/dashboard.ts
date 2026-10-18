@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "../db";
 import { recordAudit, auditDetail } from "../audit";
-import { requireStore, requireUser } from "../auth/session";
+import { requireOwner, requireStore, requireUser } from "../auth/session";
 import { assertFeature } from "../plan-gate";
 import { createStore, getStoreForOwner, updateStore, updateStorePixels, updateStoreStorefront, updateStoreTheme } from "../services/stores";
 import {
@@ -62,7 +62,7 @@ export async function createStoreAction(_prev: ActionState, fd: FormData): Promi
 
 export async function updateStoreAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     const input = storeInputFromForm(fd);
     let logoUrl: string | null | undefined;
     const logo = fd.get("logo");
@@ -80,7 +80,7 @@ export async function updateStoreAction(_prev: ActionState, fd: FormData): Promi
 
 export async function saveThemeAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     const input = storeThemeSchema.parse({
       themePreset: fd.get("themePreset") ?? undefined,
       accentColor: typeof fd.get("accentColor") === "string" ? (fd.get("accentColor") as string) : undefined,
@@ -110,7 +110,7 @@ function jsonField(v: FormDataEntryValue | null): unknown {
 /** Cover photo (uploaded client-side to /api/uploads first) + free-delivery threshold. */
 export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     const input = storeStorefrontSchema.parse({
       coverImageUrl: fd.get("coverImageUrl") ?? null,
       coverImagePlaceholder: fd.get("coverImagePlaceholder") ?? null,
@@ -129,7 +129,7 @@ export async function saveStorefrontAction(_prev: ActionState, fd: FormData): Pr
 
 export async function savePixelsAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     const input = storePixelsSchema.parse({ tiktokPixelId: fd.get("tiktokPixelId") ?? null, metaPixelId: fd.get("metaPixelId") ?? null });
     await updateStorePixels(db(), store.id, input);
     await recordAudit(store.id, user.id, "store.pixels", auditDetail(Object.keys(input)));
@@ -144,7 +144,7 @@ export async function savePixelsAction(_prev: ActionState, fd: FormData): Promis
 /** Seller opts their store in or out of the public /showcase (docs/DEMAND.md D4). */
 export async function saveShowcaseAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     const { optIn } = showcaseOptInSchema.parse({ optIn: fd.get("optIn") });
     await setShowcaseOptIn(db(), store.id, optIn);
     await recordAudit(store.id, user.id, "store.showcase", auditDetail(["showcaseOptIn"]));
@@ -246,7 +246,7 @@ export async function deleteCategoryAction(id: string) {
 // ---------------------------------------------------------------- delivery
 export async function updateZoneAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store } = await requireOwner();
     const data = z
       .object({ id: uuid, fee: z.coerce.number().int().min(0).max(1_000_000), isActive: z.boolean() })
       .parse({ id: fd.get("id"), fee: fd.get("fee"), isActive: fd.get("isActive") === "on" });
@@ -261,7 +261,7 @@ export async function updateZoneAction(_prev: ActionState, fd: FormData): Promis
 
 export async function addZoneAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store } = await requireOwner();
     const input = deliveryZoneSchema.parse({
       cityKey: fd.get("cityKey"),
       name: localizedFromForm(fd, "name"),
@@ -278,7 +278,7 @@ export async function addZoneAction(_prev: ActionState, fd: FormData): Promise<A
 }
 
 export async function deleteZoneAction(id: string) {
-  const { store } = await requireStore();
+  const { store } = await requireOwner();
   await deleteZone(db(), store.id, uuid.parse(id));
   invalidateStore(store.id);
   revalidatePath("/dashboard/delivery");
@@ -296,7 +296,7 @@ function areaInputFromForm(fd: FormData) {
 /** Add an area to a city (zone id in the form) or, with an `id`, rename it / change its fee override. */
 export async function saveAreaAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store } = await requireOwner();
     const input = areaInputFromForm(fd);
     const id = emptyToNull(fd.get("id"));
     if (id) await updateArea(db(), store.id, uuid.parse(id), input, AREA_FORM_LOCALES);
@@ -310,7 +310,7 @@ export async function saveAreaAction(_prev: ActionState, fd: FormData): Promise<
 }
 
 export async function deleteAreaAction(id: string) {
-  const { store } = await requireStore();
+  const { store } = await requireOwner();
   await deleteArea(db(), store.id, uuid.parse(id));
   invalidateStore(store.id);
   revalidatePath("/dashboard/delivery");
@@ -362,7 +362,7 @@ export async function toggleDiscountAction(id: string, isActive: boolean): Promi
 
 // ---------------------------------------------------------------- payments
 export async function togglePaymentAction(method: string, enabled: boolean) {
-  const { store, user } = await requireStore();
+  const { store, user } = await requireOwner();
   const input = paymentToggleSchema.parse({ method, enabled });
   // The platform gateway has its own gate (provider on + verified payouts): never via the generic toggle.
   if (input.method === "online") throw new Error("use setOnlinePaymentsAction");

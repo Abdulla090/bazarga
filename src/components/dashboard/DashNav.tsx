@@ -2,10 +2,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChartColumnIncreasing, ChevronForward, CreditCard, House, Icon, Menu, Palette, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Store, Tags, TicketPercent, Truck, Users } from "@/components/ui/icons";
+import { isOwnerOnlyPath } from "@/lib/team";
+import { ChartColumnIncreasing, ChevronForward, CreditCard, House, Icon, Menu, Palette, QrCode, Receipt, Settings, ShoppingBag, Sparkles, Store, Tags, TicketPercent, Truck, UserAdd, Users } from "@/components/ui/icons";
 
 /* Three quiet groups split by a hairline (no group labels): run the shop · shape the catalog · grow. */
-const ITEMS = [
+const ALL_ITEMS = [
   { href: "/dashboard", key: "home", icon: House, mobile: true, group: 0 },
   { href: "/dashboard/orders", key: "orders", icon: Receipt, mobile: true, group: 0 },
   { href: "/dashboard/products", key: "products", icon: ShoppingBag, mobile: true, group: 0 },
@@ -19,12 +20,13 @@ const ITEMS = [
   { href: "/dashboard/theme", key: "theme", icon: Palette, mobile: false, group: 2 },
   { href: "/dashboard/share", key: "share", icon: QrCode, mobile: false, group: 2 },
   { href: "/dashboard/stores", key: "stores", icon: Store, mobile: false, group: 2 },
+  { href: "/dashboard/team", key: "team", icon: UserAdd, mobile: false, group: 2 },
   { href: "/dashboard/settings", key: "settings", icon: Settings, mobile: false, group: 2 },
 ] as const;
 
-type Item = (typeof ITEMS)[number];
+type Item = (typeof ALL_ITEMS)[number];
 
-export function DashNav({ variant, newOrders = 0 }: { variant: "side" | "bottom" | "more"; newOrders?: number }) {
+export function DashNav({ variant, newOrders = 0, role = "owner" }: { variant: "side" | "bottom" | "more"; newOrders?: number; role?: "owner" | "staff" }) {
   const t = useTranslations("dash");
   const path = usePathname();
   const badge = (key: string) =>
@@ -37,6 +39,8 @@ export function DashNav({ variant, newOrders = 0 }: { variant: "side" | "bottom"
         {newOrders > 99 ? "99+" : newOrders}
       </span>
     ) : null;
+  // Staff never see owner-only areas (the pages and actions refuse them too).
+  const ITEMS = role === "owner" ? ALL_ITEMS : ALL_ITEMS.filter((i) => !isOwnerOnlyPath(i.href));
   const active = (href: string) => (href === "/dashboard" ? path === href : path.startsWith(href));
 
   if (variant === "bottom") {

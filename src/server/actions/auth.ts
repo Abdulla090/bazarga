@@ -8,15 +8,18 @@ import { clientIp, endSession, requireUser, startSession } from "../auth/session
 import { forgotPasswordSchema, logInSchema, resetPasswordSchema, signUpSchema, verifyEmailSchema } from "@/lib/validation";
 import { formObject, toActionState, type ActionState } from "./util";
 import { logger } from "../logger";
+import { safeInviteNext } from "@/lib/team";
 
 // Rate limits: per IP and per email, fixed windows.
 const LIMITS = { login: [10, 300], signup: [5, 3600], forgot: [5, 3600], reset: [10, 3600], verify: [10, 3600], resend: [3, 3600] } as const;
 
 export async function signUpAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  let next: string | null = null;
   try {
     const ip = await clientIp();
     await enforceRateLimit(db(), `signup:ip:${ip}`, ...LIMITS.signup);
     const input = signUpSchema.parse(formObject(fd));
+    next = safeInviteNext(fd.get("next"));
     const user = await signUp(db(), input);
     await startSession(user.id);
     logger.info("auth.signup", { userId: user.id });
@@ -24,10 +27,12 @@ export async function signUpAction(_prev: ActionState, fd: FormData): Promise<Ac
   } catch (e) {
     return toActionState(e);
   }
-  redirect("/onboarding");
+  // Invited staff go straight to their invite instead of creating a store.
+  redirect(next ?? "/onboarding");
 }
 
 export async function logInAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const next = safeInviteNext(fd.get("next"));
   try {
     const ip = await clientIp();
     const input = logInSchema.parse(formObject(fd));
@@ -41,7 +46,7 @@ export async function logInAction(_prev: ActionState, fd: FormData): Promise<Act
   } catch (e) {
     return toActionState(e);
   }
-  redirect("/dashboard");
+  redirect(next ?? "/dashboard");
 }
 
 export async function logOutAction() {

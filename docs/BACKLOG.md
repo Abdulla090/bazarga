@@ -5,7 +5,7 @@ Hourly loop: do NOT take these items; a dedicated subagent ships them easiest fi
 - [x] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
 - [x] SF2. Advanced SEO + white-label (Max): per-store meta title/description, OG image, product meta, per-store sitemap, JSON-LD Product/Store; "hide Made with Reelcart badge" toggle (Max)
 - [x] SF3. Multiple stores per account (Business 3 / Max 5): store switcher, create-store flow, server-side limits, current-store context
-- [ ] SF4. Team members (Pro 2 / Business 5 / Max 10): store_members migration, owner/staff roles, email/copy-link invites, accept, remove, permission checks, seat limits
+- [x] SF4. Team members (Pro 2 / Business 5 / Max 10): store_members migration, owner/staff roles, email/copy-link invites, accept, remove, permission checks, seat limits
 - [ ] SF5. AI product descriptions (Business+): title/description/tags in store language, env-gated provider, monthly quota + rate limit
 - [ ] SF6. Premium templates / exclusive designs (Max): 2-3 premium Theme Studio presets with upgrade preview
 - [ ] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md

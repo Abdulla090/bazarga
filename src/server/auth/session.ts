@@ -70,6 +70,13 @@ export async function requireOwner() {
   return ctx;
 }
 
+/** Page guard for owner-only dashboard areas (src/lib/team.ts OWNER_ONLY_PATHS): staff are sent to the dashboard home. */
+export async function requireOwnerPage() {
+  const ctx = await requireStore();
+  if (ctx.role !== "owner") redirect("/dashboard?denied=owner");
+  return ctx;
+}
+
 /** Current store for route handlers (same resolution as requireStore, without redirects). */
 export async function currentStoreFor(userId: string) {
   const preferred = (await cookies()).get(CURRENT_STORE_COOKIE)?.value;

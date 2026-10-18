@@ -10,7 +10,6 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Online payments (FIB, ZainCash, AsiaPay, NassWallet, cards) | Pro and up | Rasedi gateway built and tested; needs merchant KYC + keys (docs/PAYMENTS.md) |
 | Product Studio (photo clean-up/enhancement, monthly quota 10/100/100) | Pro, Business, Max | Quota table + plan limits (`product_studio_usage`, `src/lib/plans.ts`) |
 | Custom domain per seller (`shop.yourbrand.com`) | Business, Max | `stores.custom_domain`, subdomain routing in `src/proxy.ts` + `src/lib/domains.ts` |
-| Team members (2 / 5 / 10 seats) | Pro / Business / Max | Session + store ownership model; add a store_members table |
 | AI product descriptions | Business | AI builder (`src/server/ai`) behind `AI_ENABLED` |
 | AI Website Designer, exclusive designs, premium templates, monthly design refresh | Max | Theme Studio schema + 7 layout designs (`src/lib/theme-studio`) |
 | Priority processing | Max | Queue/ordering for Product Studio once it ships |
@@ -23,6 +22,7 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Bulk CSV import (preview, per-row validation, plan product cap) | Business, Max | `/dashboard/products/import`, `src/lib/products-csv-import.ts`; gate `assertFeature(store, "bulkCsv")` (`src/server/plan-gate.ts`) |
 | Advanced SEO + white-label (store + product meta title/description, share image, per-store sitemap, JSON-LD Store/Product, white-label switch) | Max | `/dashboard/settings/seo`, `src/lib/seo.ts`, `src/server/actions/seo.ts`, `/s/<slug>/sitemap.xml`; migration 0025 |
 | Multiple stores per account (store switcher, add-store flow, stores share and renew with the plan) | Business 3, Max 5 | `/dashboard/stores`, header switcher, `src/server/services/store-access.ts` (limits, current-store cookie `rc_store`) |
+| Team members (owner + staff, email or copy-link invites, accept, remove, owner-only areas) | Pro 2, Business 5, Max 10 seats | `/dashboard/team`, `/invite/<token>`, `src/server/services/team.ts`, `requireOwner` / `requireOwnerPage`; migration 0026 |
 
 ## Growth ideas (highest leverage first)
 

@@ -459,7 +459,8 @@
     "stores": "Firoşgeh",
     "switchStore": "Firoşgehê biguherîne",
     "manageStores": "Firoşgehan birêve bibe",
-    "staffBadge": "Karmend"
+    "staffBadge": "Karmend",
+    "team": "Tîm"
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
@@ -658,7 +659,9 @@
     "plan_feature": "Ev taybetmendî di plana te de tune. Ji bo bikaranînê planê bilind bike.",
     "plan_limit_stores": "Tu gihîştî sînorê firoşgehan ê plana xwe.",
     "owner_only": "Tenê xwediyê firoşgehê dikare vê bike.",
-    "plan_limit_team": "Te hemû cihên tîmê yên plana xwe bi kar anîne."
+    "plan_limit_team": "Te hemû cihên tîmê yên plana xwe bi kar anîne.",
+    "already_member": "Ev kes jixwe di tîmê de ye.",
+    "invite_wrong_account": "Ev vexwendin ji bo e-nameyeke din e."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1566,5 +1569,36 @@
     "lockTitle": "Ji firoşgehekê zêdetir birêve bibe",
     "lockBody": "Business {business} firoşgehan û Max {max} firoşgehan dihewîne, hemû bi yek têketinê.",
     "atMax": "Tu hemû {n} firoşgehên plana xwe bi kar tînî."
+  },
+  "team": {
+    "title": "Tîm",
+    "sub": "Bila karmend bi têketina xwe ferman û berheman birêve bibin.",
+    "seats": "{used} ji {limit} cihan hatine bikaranîn",
+    "owner": "Xwedî",
+    "staff": "Karmend",
+    "pending": "Vexwendî",
+    "expired": "Vexwendin qediya",
+    "remove": "Rake",
+    "cancelInvite": "Vexwendinê betal bike",
+    "inviteTitle": "Kesekî vexwîne",
+    "email": "E-nameya wî/wê",
+    "send": "Vexwendinê çêke",
+    "emailed": "Vexwendin ji {email} re hat şandin. Tu dikarî girêdanê jî parve bikî:",
+    "copyHint": "Vê girêdanê ji wan re bişîne (7 rojan derbasdar e):",
+    "copy": "Girêdanê kopî bike",
+    "copied": "Hat kopîkirin",
+    "whatsapp": "Li WhatsAppê bişîne",
+    "full": "Hemû cih tije ne. Kesekî rake an ji bo zêdetir planê bilind bike.",
+    "rolesHint": "Karmend dikare ferman, berhem, kategorî, daxistin, kirrîyar û parvekirinê birêve bibe. Mîheng, gihandin, dravdan, rûkar, plan û tîm li cem xwedî dimînin.",
+    "lockTitle": "Tîma xwe zêde bike",
+    "lockBody": "Pro {pro} cihên karmendan, Business {business} û Max {max} dihewîne. Her kes têketina xwe distîne.",
+    "inviteHeading": "Beşdarî {store} bibe",
+    "inviteFor": "Ev vexwendin ji bo {email} e.",
+    "accept": "Qebûl bike û dashboardê veke",
+    "signupToJoin": "Hesabekî çêke",
+    "loginToJoin": "Hesabê min heye",
+    "wrongAccount": "Tu bi e-nameyeke din têketî. Derkeve û wek {email} têkeve.",
+    "inviteInvalidTitle": "Ev vexwendin nayê bikaranîn",
+    "inviteInvalid": "Dibe ku qediyabe, hatibe bikaranîn an betal bûbe. Ji xwediyê firoşgehê girêdaneke nû bixwaze."
   }
 }

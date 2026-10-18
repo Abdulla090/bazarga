@@ -13,6 +13,7 @@ import { createElement } from "react";
 type IconSvgElement = readonly (readonly [string, { readonly [k: string]: string | number }])[];
 import {
   Add01Icon,
+  UserAdd01Icon,
   Alert02Icon,
   Analytics01Icon,
   ArrowDown01Icon,
@@ -94,6 +95,7 @@ export const Tags = Tag01Icon;
 export const Trash2 = Delete02Icon;
 export const Truck = TruckIcon;
 export const Users = UserGroupIcon;
+export const UserAdd = UserAdd01Icon;
 export const Settings = Settings02Icon;
 export const X = Cancel01Icon;
 export const Droplet = DropletIcon;

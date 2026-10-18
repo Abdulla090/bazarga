@@ -6,13 +6,14 @@ import { signUpAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
 import { useKeepValues } from "@/lib/use-keep-values";
 
-export function SignupForm({ legal }: { legal?: React.ReactNode }) {
+export function SignupForm({ legal, next }: { legal?: React.ReactNode; next?: string | null }) {
   const t = useTranslations("auth");
   const locale = useLocale();
   const [state, action, pending] = useActionState(signUpAction, {});
   const keep = useKeepValues(action);
   return (
     <form action={action} onSubmit={keep} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+      {next && <input type="hidden" name="next" value={next} />}
       <div>
         <h1 className="t-headline">{t("signupTitle")}</h1>
         <p className="text-ink-70">{t("signupSub")}</p>
@@ -24,7 +25,7 @@ export function SignupForm({ legal }: { legal?: React.ReactNode }) {
       <Field label={t("password")} name="password" type="password" autoComplete="new-password" minLength={8} required ltr hint={t("passwordHint")} error={state.fieldErrors?.password} />
       <button className="btn-gold w-full" disabled={pending} aria-busy={pending || undefined}>{t("signup")}</button>
       {legal}
-      <p className="text-sm">{t("haveAccount")} <Link href="/login" className="inline-flex min-h-11 items-center font-bold underline">{t("login")}</Link></p>
+      <p className="text-sm">{t("haveAccount")} <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"} className="inline-flex min-h-11 items-center font-bold underline">{t("login")}</Link></p>
     </form>
   );
 }

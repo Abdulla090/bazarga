@@ -6,7 +6,7 @@ import { db } from "../db";
 import { env } from "../env";
 import { logger } from "../logger";
 import { recordAudit } from "../audit";
-import { requireStore } from "../auth/session";
+import { requireOwner } from "../auth/session";
 import { requireAdmin } from "../auth/admin";
 import { enforceRateLimit } from "../auth/rate-limit";
 import { invalidateStore } from "../cache/tags";
@@ -24,7 +24,7 @@ import { toActionState, type ActionState } from "./util";
 /** Seller: save payout details (tenant = session store). Any change goes back to review. */
 export async function savePayoutProfileAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     await enforceRateLimit(db(), `payout-profile:${store.id}`, 10, 3600);
     await savePayoutProfile(db(), store.id, {
       method: formData.get("method"),
@@ -43,7 +43,7 @@ export async function savePayoutProfileAction(_prev: ActionState, formData: Form
 /** Seller: storefront "online payments" toggle (only when gateway on + payouts verified). */
 export async function setOnlinePaymentsAction(enabled: boolean): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     await setOnlinePayments(db(), store.id, z.boolean().parse(enabled));
     await recordAudit(store.id, user.id, "payment.toggle", `online:${enabled ? "on" : "off"}`);
     invalidateStore(store.id);
@@ -56,7 +56,7 @@ export async function setOnlinePaymentsAction(enabled: boolean): Promise<ActionS
 
 /** Seller: "Pay online" on /dashboard/upgrade (form post, works without client JS) → hosted checkout. */
 export async function payOnlineForm(formData: FormData): Promise<void> {
-  const { store } = await requireStore();
+  const { store } = await requireOwner();
   if (!gateway()) redirect("/dashboard/upgrade");
   let url: string;
   try {

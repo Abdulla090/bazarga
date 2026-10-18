@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
-import { requireStore } from "../auth/session";
+import { requireOwner, requireStore } from "../auth/session";
 import { confirmDeliveryFees, markLinkShared } from "../services/setup";
 import { toActionState, type ActionState } from "./util";
 
@@ -17,7 +17,7 @@ export async function markLinkSharedAction(): Promise<ActionState> {
 }
 
 export async function confirmDeliveryFeesAction(): Promise<void> {
-  const { store } = await requireStore();
+  const { store } = await requireOwner();
   await confirmDeliveryFees(db(), store.id);
   revalidatePath("/dashboard");
 }

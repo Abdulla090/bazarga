@@ -4,11 +4,13 @@ import { currentUser } from "@/server/auth/session";
 import { currentLocale } from "@/server/locale";
 import { LEGAL_PATH, splitAgree } from "@/lib/legal-ui";
 import { SignupForm } from "./SignupForm";
+import { safeInviteNext } from "@/lib/team";
 
 export const metadata = { title: "Sign up" };
 
-export default async function SignupPage() {
-  if (await currentUser()) redirect("/dashboard");
+export default async function SignupPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  const next = safeInviteNext((await searchParams).next);
+  if (await currentUser()) redirect(next ?? "/dashboard");
   const parts = splitAgree(await currentLocale());
   // Rendered on the server and passed in, so the legal copy never ships in the client bundle.
   const legal = (
@@ -22,5 +24,5 @@ export default async function SignupPage() {
       )}
     </p>
   );
-  return <SignupForm legal={legal} />;
+  return <SignupForm legal={legal} next={next} />;
 }
