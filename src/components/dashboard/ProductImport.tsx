@@ -59,7 +59,7 @@ export function ProductImport({ labels, room }: { labels: ImportLabels; room: nu
           {bad.length > 0 && <p className="num text-sm text-ink-70" data-testid="import-skipped">{labels.skipped.replace("{n}", String(bad.length))}</p>}
           {valid > room && <p className="num text-sm text-ink-70" data-testid="import-room">{labels.room.replace("{n}", String(room))}</p>}
           {bad.slice(0, 5).map((b) => (
-            <p key={b.line} className="num text-xs text-ink-70" dir="ltr">{labels.rowError.replace("{line}", String(b.line)).replace("{why}", b.error ?? "")}</p>
+            <p key={b.line} className="num text-xs text-ink-70">{labels.rowError.replace("{line}", String(b.line)).replace("{why}", "\u2066" + (b.error ?? "") + "\u2069")}</p>
           ))}
         </div>
       )}

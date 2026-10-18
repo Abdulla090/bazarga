@@ -37,7 +37,8 @@ describe("parseProductsCsv", () => {
     const r = parseProductsCsv("name_en,price,compare_at_price\nOk,1000,\n,500,\nNoPrice,abc,\nCheap,1000,900\n");
     expect(r.rows.map((x) => !!x.input)).toEqual([true, false, false, false]);
     expect(r.rows[1]!.line).toBe(3);
-    expect(r.rows[3]!.error).toContain("compare_at_must_exceed_price");
+    expect(r.rows[3]!.error).toBe("compare_at_price");
+    expect(r.rows[2]!.error).toBe("price");
   });
   it("fails fast on a missing name/price column, empty or oversized input", () => {
     expect(parseProductsCsv("name_en,price").fatal).toBe("empty");
