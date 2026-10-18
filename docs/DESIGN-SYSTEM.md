@@ -112,5 +112,11 @@ Screenshots: `daily-shots/2026-10-19/design-<theme>-{home,product}-{412,1440}.pn
 
 - [x] (a) Architecture (layout overrides, composition, type pairs + fonts, density/surface/motion, header/product
   variants, story/social/WhatsApp sections, spotlight hero) + all 10 flagship themes renderable via preview.
-- [ ] (c) Theme Studio gallery (live thumbnails grouped by style, one-click apply) + Layout tab (mix and match).
+- [x] (c) Theme Studio: "Themes" tab = gallery of the 10 flagships grouped by style (minimal / editorial / bold / soft /
+  catalogue), each with a live thumbnail of the seller's own store in that theme (lazy mini-iframe, `pvt`), name, one
+  line, Max badge, one-click apply (keeps the seller's announcement and AI tagline). Legacy palettes sit under "More
+  palettes". "Layout" tab = mix and match: cover, grid, card, product page, footer, spacing, surface, motion, and the
+  home sections (reorder, hide, add story / Instagram / WhatsApp). "Type" tab = the 9 font pairs with a live "Aa ئا"
+  sample. "Header" tab = all 5 header variants. "Surprise me" = a random flagship with three parts swapped. Publishing
+  needs Max for a premium design or any premium variant (`usesPremium`, server-side).
 - [ ] (d) AI Website Designer composes full designs (3 options side by side).

@@ -6,7 +6,7 @@ import { stores } from "../db/schema";
 import { requireOwner } from "../auth/session";
 import { invalidateStore } from "../cache/tags";
 import { themeSchema } from "@/lib/theme-studio/schema";
-import { isPremiumDesign } from "@/lib/theme-studio/designs";
+import { usesPremium } from "@/lib/theme-studio/designs";
 import { assertFeature } from "../plan-gate";
 import { toActionState, type ActionState } from "./util";
 
@@ -22,12 +22,12 @@ export async function saveThemeDraftAction(raw: unknown): Promise<ActionState> {
   }
 }
 
-/** Publish: validate the given theme, store it as draft and published together. Premium designs need Max (drafts may preview them). */
+/** Publish: validate the given theme, store it as draft and published together. Premium designs and premium variants need Max (drafts may preview them). */
 export async function publishThemeAction(raw: unknown): Promise<ActionState> {
   try {
     const { store } = await requireOwner();
     const theme = themeSchema.parse(raw);
-    if (isPremiumDesign(theme.design)) assertFeature(store, "templatesPremium");
+    if (usesPremium(theme)) assertFeature(store, "templatesPremium");
     // AI Website Designer (SF10): the draft's hero tagline becomes the store tagline in its language on publish.
     const tagline = theme.copy?.tagline ? { ...(store.tagline ?? {}), [theme.copy.lang]: theme.copy.tagline } : undefined;
     await db().update(stores).set({ themeDraft: theme, themePublished: theme, ...(tagline ? { tagline } : {}) }).where(eq(stores.id, store.id));

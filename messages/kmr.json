@@ -1165,7 +1165,145 @@
     "announcePh": "Gihandin belaş e",
     "premiumBadge": "Max",
     "premiumNote": "Tu sêwiranek premium a Max dibînî. Bi azadî lê binêre: ji bo weşandinê pilana Max pêwîst e.",
-    "premiumCta": "Ji bo weşandinê derbasî Max bibe"
+    "premiumCta": "Ji bo weşandinê derbasî Max bibe",
+    "themesTab": "Dîzayn",
+    "layoutTab": "Rêzkirin",
+    "themesIntro": "Her dîzayn temam e: font, rêzkirin, rûpela berhemê û tevger. Reng û wêneyên te yên te ne.",
+    "layoutIntro": "Her beşekê li ser dîzayna xwe biguherîne.",
+    "apply": "Bi kar bîne",
+    "inUse": "Tê bikaranîn",
+    "morePalettes": "Rengên din",
+    "moveUp": "Bilind bike",
+    "moveDown": "Nizm bike",
+    "showSection": "Nîşan bide",
+    "hideSection": "Veşêre",
+    "group": {
+      "minimal": "Sade",
+      "editorial": "Kovarî",
+      "bold": "Wêrek",
+      "soft": "Nerm",
+      "catalogue": "Katalog"
+    },
+    "axis": {
+      "header": "Serê rûpelê",
+      "hero": "Berg",
+      "grid": "Tora berheman",
+      "card": "Karta berhemê",
+      "product": "Rûpela berhemê",
+      "footer": "Binê rûpelê",
+      "density": "Navber",
+      "surface": "Rûber",
+      "motion": "Tevger",
+      "pair": "Tîpnivîs",
+      "sections": "Beşên rûpela serekê"
+    },
+    "vopt": {
+      "split": "Dabeşkirî",
+      "centered": "Navendî",
+      "minimal": "Sade",
+      "search": "Darika lêgerînê",
+      "ticker": "Nivîsa diherike",
+      "masthead": "Sernivîsa mezin",
+      "banner": "Pankart",
+      "fullbleed": "Wêneyê tevahî",
+      "arch": "Kevan",
+      "type": "Nivîsa mezin",
+      "stage": "Sehne",
+      "runway": "Pêşangeh",
+      "pulse": "Qutiya bento",
+      "spotlight": "Berhema diyar",
+      "auto": "Tora rêkûpêk",
+      "magazine": "Kovar",
+      "dense": "Qelebalix",
+      "tiles": "Çarçoveyên wêneyan",
+      "soft": "Nerm",
+      "rows": "Lîste",
+      "masonry": "Stûnên tevlihev",
+      "lookbook": "Albûm",
+      "bento": "Torê bento",
+      "classic": "Klasîk",
+      "editorial": "Kovarî",
+      "compact": "Biçûk",
+      "tile": "Tenê wêne",
+      "row": "Rêz",
+      "float": "Bilind",
+      "frame": "Bi çarçove",
+      "glow": "Biriqîn",
+      "wide": "Galeriya fireh",
+      "stacked": "Yek stûn",
+      "reverse": "Pêşî agahî",
+      "ledger": "Defter",
+      "band": "Bendeke rengîn",
+      "colophon": "Dawînivîs",
+      "regular": "Asayî",
+      "airy": "Fireh",
+      "flat": "Rast",
+      "paper": "Kaxez",
+      "glass": "Cam",
+      "blocks": "Blok",
+      "none": "Tune",
+      "fade": "Vemirîn",
+      "slide": "Şemitîn",
+      "sans-clean": "Sade û paqij",
+      "serif-editorial": "Serîfa kovarî",
+      "rounded-soft": "Girover",
+      "mono-bold": "Monospace",
+      "luxe-serif": "Serîfa luks",
+      "grotesk": "Groteskê",
+      "condensed": "Teng",
+      "tech-mono": "Teknîkî",
+      "playful": "Lîstikvan",
+      "offers": "Darika pêşniyaran",
+      "collections": "Kom",
+      "best": "Yên herî tên firotin",
+      "sale": "Daxistin",
+      "story": "Çîrok",
+      "social": "Rêza Instagramê",
+      "whatsapp": "Bendê WhatsAppê",
+      "rail": "Rêz"
+    },
+    "flagship": {
+      "luxe": {
+        "name": "Luksa sade",
+        "desc": "Serîf, valahiya pir, xetên zirav."
+      },
+      "street": {
+        "name": "Kolana wêrek",
+        "desc": "Tîpên teng, blokên reş, nivîsa diherike."
+      },
+      "blush": {
+        "name": "Butîka nerm",
+        "desc": "Girover, rengên vekirî, bişkokên girover."
+      },
+      "folio": {
+        "name": "Kovar",
+        "desc": "Nivîsa mezin, tora ne wekhev, kaxez."
+      },
+      "circuit": {
+        "name": "Amûrên teknîkî",
+        "desc": "Tarî, grotesk, berhema diyar, taybetmendî."
+      },
+      "bazaar": {
+        "name": "Bazar",
+        "desc": "Katalogê qelebalix, kategorî, daxistin."
+      },
+      "canvas": {
+        "name": "Galeriya hunerê",
+        "desc": "Pêşî wêne, ji kenarê heta kenarê, aram."
+      },
+      "glow": {
+        "name": "Biriqîna xwemalkirinê",
+        "desc": "Ronahiya nerm, kartên bilind, berhema diyar."
+      },
+      "hearth": {
+        "name": "Xwarin û mal",
+        "desc": "Kaxeza germ, serîf, pêşî çîroka te."
+      },
+      "play": {
+        "name": "Zarok û lîstik",
+        "desc": "Tîpên stûr, blokên wêrek, geş."
+      }
+    }
   },
   "pricing": {
     "nav": "Biha",

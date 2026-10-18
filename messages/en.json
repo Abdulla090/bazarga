@@ -1164,7 +1164,145 @@
     "announcePh": "Free delivery over 50,000 IQD",
     "premiumBadge": "Max",
     "premiumNote": "You're previewing a premium Max design. Look around freely: publishing it needs the Max plan.",
-    "premiumCta": "Upgrade to Max to publish"
+    "premiumCta": "Upgrade to Max to publish",
+    "themesTab": "Themes",
+    "layoutTab": "Layout",
+    "themesIntro": "Each theme is a full design: fonts, layout, product page and motion. Your colours and photos stay yours.",
+    "layoutIntro": "Mix and match any part on top of your theme.",
+    "apply": "Apply",
+    "inUse": "In use",
+    "morePalettes": "More palettes",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "showSection": "Show",
+    "hideSection": "Hide",
+    "group": {
+      "minimal": "Minimal",
+      "editorial": "Editorial",
+      "bold": "Bold",
+      "soft": "Soft",
+      "catalogue": "Catalogue"
+    },
+    "axis": {
+      "header": "Header",
+      "hero": "Cover",
+      "grid": "Product grid",
+      "card": "Product card",
+      "product": "Product page",
+      "footer": "Footer",
+      "density": "Spacing",
+      "surface": "Surface",
+      "motion": "Motion",
+      "pair": "Fonts",
+      "sections": "Home sections"
+    },
+    "vopt": {
+      "split": "Split",
+      "centered": "Centred",
+      "minimal": "Minimal",
+      "search": "Search bar",
+      "ticker": "Ticker",
+      "masthead": "Masthead",
+      "banner": "Banner",
+      "fullbleed": "Full photo",
+      "arch": "Arch",
+      "type": "Big type",
+      "stage": "Stage",
+      "runway": "Runway",
+      "pulse": "Bento",
+      "spotlight": "Product spotlight",
+      "auto": "Even grid",
+      "magazine": "Magazine",
+      "dense": "Dense",
+      "tiles": "Photo tiles",
+      "soft": "Soft",
+      "rows": "List",
+      "masonry": "Masonry",
+      "lookbook": "Lookbook",
+      "bento": "Bento",
+      "classic": "Classic",
+      "editorial": "Editorial",
+      "compact": "Compact",
+      "tile": "Photo only",
+      "row": "Row",
+      "float": "Floating",
+      "frame": "Framed",
+      "glow": "Glow",
+      "wide": "Wide gallery",
+      "stacked": "Stacked",
+      "reverse": "Info first",
+      "ledger": "Ledger",
+      "band": "Colour band",
+      "colophon": "Colophon",
+      "regular": "Regular",
+      "airy": "Airy",
+      "flat": "Flat",
+      "paper": "Paper",
+      "glass": "Glass",
+      "blocks": "Blocks",
+      "none": "None",
+      "fade": "Fade",
+      "slide": "Slide",
+      "sans-clean": "Clean sans",
+      "serif-editorial": "Editorial serif",
+      "rounded-soft": "Rounded",
+      "mono-bold": "Mono",
+      "luxe-serif": "Luxe serif",
+      "grotesk": "Grotesk",
+      "condensed": "Condensed",
+      "tech-mono": "Tech",
+      "playful": "Playful",
+      "offers": "Offer strip",
+      "collections": "Collections",
+      "best": "Best sellers",
+      "sale": "On sale",
+      "story": "Story",
+      "social": "Instagram",
+      "whatsapp": "WhatsApp",
+      "rail": "Rail"
+    },
+    "flagship": {
+      "luxe": {
+        "name": "Minimal Luxe",
+        "desc": "Serif, white space, thin lines."
+      },
+      "street": {
+        "name": "Bold Streetwear",
+        "desc": "Condensed type, black blocks, ticker."
+      },
+      "blush": {
+        "name": "Soft Boutique",
+        "desc": "Rounded, pastel, pill buttons."
+      },
+      "folio": {
+        "name": "Editorial Magazine",
+        "desc": "Big type, asymmetric grid, paper."
+      },
+      "circuit": {
+        "name": "Tech Gadget",
+        "desc": "Dark, grotesk, product spotlight, specs."
+      },
+      "bazaar": {
+        "name": "Market Bazaar",
+        "desc": "Dense catalogue, category chips, deals."
+      },
+      "canvas": {
+        "name": "Gallery Art",
+        "desc": "Image first, edge to edge, quiet UI."
+      },
+      "glow": {
+        "name": "Cosmetics Glow",
+        "desc": "Soft light, floating cards, spotlight."
+      },
+      "hearth": {
+        "name": "Food & Home",
+        "desc": "Warm paper, serif, your story first."
+      },
+      "play": {
+        "name": "Kids & Playful",
+        "desc": "Chunky type, bold blocks, bright."
+      }
+    }
   },
   "pricing": {
     "nav": "Pricing",

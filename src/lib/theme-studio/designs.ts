@@ -199,3 +199,13 @@ export function numberSections(order: readonly HomeSection[], present: Partial<R
   for (const s of order) if (present[s]) out[s] = String(++n).padStart(2, "0");
   return out;
 }
+
+/** True when a theme needs Max to publish: a premium design, or any premium variant laid over another design. */
+export function usesPremium(t: { design?: unknown; layout?: LayoutOverrides | null } | null | undefined): boolean {
+  if (isPremiumDesign(t?.design)) return true;
+  const o = t?.layout ?? {};
+  return (Object.keys(PREMIUM_VARIANTS) as (keyof typeof PREMIUM_VARIANTS)[]).some((axis) => {
+    const v = o[axis];
+    return typeof v === "string" && (PREMIUM_VARIANTS[axis] as readonly string[]).includes(v);
+  });
+}

@@ -149,3 +149,36 @@ describe("design system v2: wiring", () => {
     }
   });
 });
+
+describe("design system v2: Theme Studio", () => {
+  it("publishing needs Max for premium designs and for premium variants laid over a free design", async () => {
+    const { usesPremium } = await import("@/lib/theme-studio/designs");
+    expect(usesPremium(FLAGSHIPS.luxe.theme)).toBe(true);
+    expect(usesPremium(FLAGSHIPS.street.theme)).toBe(true);
+    expect(usesPremium(FLAGSHIPS.blush.theme)).toBe(false);
+    expect(usesPremium({ design: "classic", layout: { grid: "bento" } })).toBe(true);
+    expect(usesPremium({ design: "classic", layout: { grid: "dense" } })).toBe(false);
+    expect(readFileSync("src/server/actions/theme.ts", "utf8")).toContain("if (usesPremium(theme)) assertFeature(store, \"templatesPremium\")");
+  });
+  it("the editor previews the whole composition and shows live thumbnails of every flagship", () => {
+    const ed = readFileSync("src/components/dashboard/ThemeEditor.tsx", "utf8");
+    expect(ed).toContain("setPreviewCookie(slug, composition)");
+    expect(ed).toContain("/s/${slug}?pv=1&pvt=${f.id}");
+    expect(ed).toMatch(/data-testid=\{`layout-\$\{axis\}`\}/);
+    const thumb = readFileSync("src/components/dashboard/ThemeThumb.tsx", "utf8");
+    expect(thumb).toContain('loading="lazy"');
+    expect(thumb).toContain("tabIndex={-1}");
+  });
+  it("every flagship, group, axis and variant has a name in all four languages", async () => {
+    for (const l of ["en", "ku", "ar", "kmr"]) {
+      const ts = (await import(`../messages/${l}.json`)).default.themeStudio as Record<string, Record<string, unknown>>;
+      for (const f of FLAGSHIP_IDS) {
+        const e = ts.flagship![f] as { name?: string; desc?: string };
+        expect(e?.name, `${l} ${f}`).toBeTruthy();
+        expect(e?.desc, `${l} ${f}`).toBeTruthy();
+      }
+      for (const g of THEME_GROUPS) expect(ts.group![g], `${l} ${g}`).toBeTruthy();
+      for (const v of [...TYPE_PAIRS, ...HOME_SECTIONS]) expect(ts.vopt![v], `${l} ${v}`).toBeTruthy();
+    }
+  });
+});
