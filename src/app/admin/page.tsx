@@ -116,8 +116,8 @@ export default async function AdminOverview({ searchParams }: { searchParams: Pr
             <>
               <AreaChart series={[{ values: k.signups.map((d) => d.n), kind: "primary" }, { values: k.ordersDaily.map((d) => d.n), kind: "secondary" }]} rtl={rtl} label={t("ov.signupsVsOrders")} xLabels={[range[0].slice(5), range[1].slice(5)]} />
               <p className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-70">
-                <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4 bg-[#2563EB]" />{t("ov.signups")}: <b className="tabular-nums" dir="ltr">{n(k.usersNew)}</b></span>
-                <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4 border-t border-dashed border-ink-50" />{t("ov.ordersChart")}: <b className="tabular-nums" dir="ltr">{n(k.ordersInPeriod)}</b></span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4 bg-[#2563EB]" />{t("ov.signups")}: <b className="tabular-nums" dir="ltr">{n(k.signups.reduce((a, d) => a + d.n, 0))}</b></span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4 border-t border-dashed border-ink-50" />{t("ov.ordersChart")}: <b className="tabular-nums" dir="ltr">{n(k.ordersDaily.reduce((a, d) => a + d.n, 0))}</b></span>
               </p>
             </>
           )}
