@@ -238,36 +238,56 @@ export function buildSourceRows(
     .sort((a, b) => (a.source === "direct" ? 1 : 0) - (b.source === "direct" ? 1 : 0) || b.orders - a.orders || b.visits - a.visits);
 }
 
-/** Totals for the window of equal length right before the current one (for "vs previous period"). */
+/**
+ * Totals for the window of equal length right before the current one (for "vs previous period"), like for like:
+ * the current window ends *now* (today is only partly over), so the previous window is cut at the same point.
+ * Orders/revenue use exact instants (window start → now minus N days); daily view counters take the previous
+ * window's last day pro rata by how much of today has passed. Without this every store read as "down" each morning.
+ */
 export async function getPreviousTotals(
   database: Db,
   storeId: string,
   opts: { days: number; now?: Date },
 ): Promise<{ visitors: number; orders: number; revenue: number; storeViews: number; productViews: number }> {
-  const cur = dayRange(opts.days, opts.now);
+  const now = opts.now ?? new Date();
+  const cur = dayRange(opts.days, now);
   const prevEnd = new Date(Date.parse(`${cur[0]}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
   const prev = dayRange(opts.days, new Date(Date.parse(`${prevEnd}T12:00:00Z`)));
   const first = prev[0]!;
   const last = prev[prev.length - 1]!;
+  const todayFraction = elapsedDayFraction(now);
+  const until = new Date(now.getTime() - opts.days * 86_400_000);
   const [views, ord] = await Promise.all([
     database
-      .select({ page: storePageViews.page, views: sql<number>`sum(${storePageViews.views})` })
+      .select({ page: storePageViews.page, day: storePageViews.day, views: sql<number>`sum(${storePageViews.views})` })
       .from(storePageViews)
       .where(and(eq(storePageViews.storeId, storeId), gte(storePageViews.day, first), lte(storePageViews.day, last)))
-      .groupBy(storePageViews.page),
+      .groupBy(storePageViews.page, storePageViews.day),
     database
       .select({ orders: sql<number>`count(*)`, revenue: sql<number>`coalesce(sum(${orders.total}), 0)` })
       .from(orders)
-      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, iraqDayStart(first)), lt(orders.createdAt, iraqDayStart(cur[0]!)), notInArray(orders.status, [...LOST_ORDER_STATUSES]))),
+      .where(and(eq(orders.storeId, storeId), gte(orders.createdAt, iraqDayStart(first)), lt(orders.createdAt, until), notInArray(orders.status, [...LOST_ORDER_STATUSES]))),
   ]);
   let visitors = 0, storeViews = 0, productViews = 0;
   for (const r of views) {
-    const n = Number(r.views);
+    const n = r.day === last ? Number(r.views) * todayFraction : Number(r.views);
     if (r.page === VISITORS_PAGE) visitors += n;
     else if (r.page === HOME_PAGE) storeViews += n;
     else if (UUID_RE.test(r.page)) productViews += n;
   }
-  return { visitors, storeViews, productViews, orders: Number(ord[0]?.orders ?? 0), revenue: Number(ord[0]?.revenue ?? 0) };
+  return {
+    visitors: Math.round(visitors),
+    storeViews: Math.round(storeViews),
+    productViews: Math.round(productViews),
+    orders: Number(ord[0]?.orders ?? 0),
+    revenue: Number(ord[0]?.revenue ?? 0),
+  };
+}
+
+/** Share of the current Iraqi day that has passed, 0–1. */
+export function elapsedDayFraction(now: Date): number {
+  const start = iraqDayStart(dayRange(1, now)[0]!).getTime();
+  return Math.min(1, Math.max(0, (now.getTime() - start) / 86_400_000));
 }
 
 export type AnalyticsExtras = {

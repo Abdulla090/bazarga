@@ -1,9 +1,11 @@
 /*
  * Demo analytics: ~90 days of believable store traffic and orders for the demo store, so every chart on
  * /dashboard/analytics looks alive on the test deploy. Runs only when SEED_DEMO=true (or on a Vercel build) and is
- * idempotent: page-view rows use ON CONFLICT DO NOTHING and an order day is skipped when it already holds demo orders
- * (customers with +96477099xxxx numbers), so every deploy only tops up the newest days. Pure function of the date:
- * the same day always produces the same numbers.
+ * idempotent, relative to "now": page-view rows are upserted to GREATEST(existing, seeded), so real visits (audits,
+ * smoke tests) never block a top-up and a day seeded while it was "today" is raised to its full value later; demo
+ * orders (customers with +96477099xxxx numbers) are topped up per day up to the current hour, so a day that was
+ * only partly seeded at the last deploy is completed. Every deploy therefore leaves the last 7/30 days whole and
+ * the KPIs show the store's steady growth instead of a false drop. Pure function of the date and hour.
  */
 import { randomBytes } from "node:crypto";
 import { and, eq, like, sql } from "drizzle-orm";
@@ -14,6 +16,7 @@ import type { OrderStatus } from "../src/lib/order-status";
 import { sourcePage, type OrderSource } from "../src/lib/social";
 
 export const DEMO_PHONE_PREFIX = "+96477099";
+
 
 export function seedAnalyticsEnabled(): boolean {
   return process.env.SEED_DEMO === "true" || process.env.VERCEL === "1";
@@ -100,14 +103,14 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
   type Draft = { day: string; at: Date; status: OrderStatus; phone: string; name: string; city: (typeof CITIES)[number]; lines: { id: string; name: string; price: number; qty: number }[]; fee: number };
   const drafts: Draft[] = [];
 
-  const haveDays = new Set(
+  const haveDays = new Map(
     (
       await db
-        .select({ d: sql<string>`to_char((${orders.createdAt} AT TIME ZONE 'UTC') + interval '3 hours', 'YYYY-MM-DD')` })
+        .select({ d: sql<string>`to_char((${orders.createdAt} AT TIME ZONE 'UTC') + interval '3 hours', 'YYYY-MM-DD')`, n: sql<number>`count(*)` })
         .from(orders)
         .where(and(eq(orders.storeId, storeId), like(orders.customerPhone, `${DEMO_PHONE_PREFIX}%`)))
         .groupBy(sql`1`)
-    ).map((r) => r.d),
+    ).map((r) => [r.d, Number(r.n)] as const),
   );
 
   days.forEach((day, i) => {
@@ -128,11 +131,13 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
     const wsum = weights.reduce((a, [, w]) => a + w, 0);
     for (const [p, w] of weights) viewValues.push({ storeId, day, page: p.id, views: Math.max(1, Math.round((totalPv * w) / wsum * (0.8 + 0.4 * r()))) });
 
-    if (haveDays.has(day)) return;
+    const have = haveDays.get(day) ?? 0;
     const n = Math.round(visitors * 0.044 * (0.75 + 0.5 * r()));
+    const dayDrafts: Draft[] = [];
     for (let k = 0; k < n; k++) {
       const hour = pick(r, HOUR_W.map((w, h) => [h, w] as const));
-      if (day === today && hour > nowHour) continue;
+      // Today's later hours are still drawn (so a day's random stream never depends on the hour) but not kept.
+      const future = day === today && hour > nowHour;
       const at = new Date(iraqDayStart(day).getTime() + (hour * 60 + Math.floor(r() * 60)) * 60_000);
       const age = days.length - 1 - i;
       const lineCount = pick(r, [[1, 62], [2, 30], [3, 8]] as const);
@@ -143,7 +148,8 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
         lines.push({ id: p.id, name: p.name.ku ?? p.name.en ?? Object.values(p.name)[0] ?? "—", price: p.price, qty: r() < 0.82 ? 1 : 2 });
       }
       const cust = Math.floor(Math.pow(r(), 1.7) * 70);
-      drafts.push({
+      if (future) continue;
+      dayDrafts.push({
         day,
         at,
         status: statusFor(r, age),
@@ -154,11 +160,22 @@ export async function seedAnalytics(db: Db, storeId: string, now = new Date()): 
         fee: pick(r, [[3000, 60], [5000, 25], [6000, 15]] as const),
       });
     }
+    // Earliest first; the first `have` were inserted by an earlier run, the rest are this day's top-up.
+    dayDrafts.sort((a, b) => a.at.getTime() - b.at.getTime());
+    drafts.push(...dayDrafts.slice(have));
   });
 
   let viewRows = 0;
   for (let i = 0; i < viewValues.length; i += 200) {
-    const res = await db.insert(storePageViews).values(viewValues.slice(i, i + 200)).onConflictDoNothing().returning({ d: storePageViews.day });
+    const res = await db
+      .insert(storePageViews)
+      .values(viewValues.slice(i, i + 200))
+      .onConflictDoUpdate({
+        target: [storePageViews.storeId, storePageViews.day, storePageViews.page],
+        set: { views: sql`greatest(${storePageViews.views}, excluded.views)` },
+        setWhere: sql`${storePageViews.views} < excluded.views`,
+      })
+      .returning({ d: storePageViews.day });
     viewRows += res.length;
   }
 

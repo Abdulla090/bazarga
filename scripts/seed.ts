@@ -53,6 +53,11 @@ async function main() {
 
   const existingStore = await db.query.stores.findFirst({ where: eq(stores.slug, "hawler-bazaar") });
   if (existingStore) {
+    // The demo seller predates email verification (migration 0017): mark it verified so the dashboard has no banner.
+    await db
+      .update(users)
+      .set({ emailVerifiedAt: new Date() })
+      .where(and(eq(users.id, existingStore.ownerId), sql`${users.emailVerifiedAt} is null`));
     if (seedAnalyticsEnabled()) console.log("[seed] demo analytics topped up", await seedAnalytics(db, existingStore.id));
     console.log("[seed] Studio Hawler already exists — nothing else to do");
     process.exit(0);
