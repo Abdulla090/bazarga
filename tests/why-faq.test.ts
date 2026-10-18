@@ -149,6 +149,10 @@ describe("marketing sections are blue + ink only", () => {
       expect(html).toMatch(new RegExp(`dir="${l === "ku" || l === "ar" ? "rtl" : "ltr"}" class="tm-line tm-live"`));
       // fixed height: all 4 phrases are laid out invisibly in the same cell
       expect(html.match(/class="tm-line tm-sizer" aria-hidden="true"/g)?.length).toBe(4);
+      // the demo starts on the visitor's own language (first sizer + the live line), then the others
+      const firstLang = { ku: "ckb", kmr: "kmr", ar: "ar", en: "en" }[l];
+      expect(html).toMatch(new RegExp(`<p lang="${firstLang}"[^>]*class="tm-line tm-sizer"[^>]*style="--k:0"`));
+      expect(html).toMatch(new RegExp(`<p lang="${firstLang}"[^>]*class="tm-line tm-live"`));
       expect(html).not.toContain("bg-gold");
       // language demo: one compact dropdown, not a row of 4 chips
       expect(html).not.toContain("tm-tab");
@@ -165,7 +169,17 @@ describe("marketing sections are blue + ink only", () => {
     expect(ku.whyTitle).toBe("بۆ بازاڕی ئێمە دروستکراوە.");
     expect(ku.whyLead).toContain("بەپێی شێوازی فرۆشتنی خەڵکی ئێرە");
     expect(ku.w1Title).toBe("کوردی لە پێشەوە");
-    expect(ku.w1Body).toContain("بە تەواوی پشتگیری دەکرێن");
+    // Oct 18: "your language first" — the tile title/body follow the visitor's locale, one short line, no rivals line.
+    expect(ku.w1Body).toBe("سۆرانی، کرمانجی، عەرەبی و ئینگلیزی — هەمووی ئامادەیە.");
+    expect(msgs("ar").landing.w1Title).toBe("العربية أولاً");
+    expect(msgs("en").landing.w1Title).toBe("Your language first");
+    expect(msgs("kmr").landing.w1Title).toBe("Kurdî di pêşiyê de");
+    expect(msgs("ar").landing.w1Body).not.toMatch(/المنافس/);
+    for (const l of LOCALES) {
+      expect(msgs(l).landing.w1Title, l).toBeTruthy();
+      expect(msgs(l).landing.w1Body.length, l).toBeLessThan(80);
+      expect(msgs(l).landing.w1Body, l).not.toMatch(/Rivals|Reqîb|المنافس/);
+    }
     for (const l of LOCALES) expect(msgs(l).landing.whyLangPick, l).toBeTruthy();
   });
 
@@ -176,5 +190,19 @@ describe("marketing sections are blue + ink only", () => {
     expect(html.match(/class="who-chip"/g)?.length).toBe(48);
     expect(html.match(/class="who-chip" data-copy="0"/g)?.length).toBe(12);
     expect(html.match(/aria-hidden="true" data-copy="[123]"/g)?.length).toBe(36);
+  });
+});
+
+describe("language demo auto-cycle (Oct 18, real Android)", () => {
+  const src = readFileSync("src/components/marketing/TypeMorph.tsx", "utf8").replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+  const css = readFileSync("src/app/(marketing)/marketing.css", "utf8");
+  it("JS cycle is a plain interval with no reveal/animation-event/reduced-motion gating", () => {
+    expect(src).toMatch(/setInterval\(advance, TM\.step\)/);
+    expect(src).not.toMatch(/data-rv|animationend|transitionend|MutationObserver/);
+    expect(src).not.toMatch(/if \(reduced\) return/);
+  });
+  it("CSS fallback cycles the phrases before/without hydration and survives the reduced-motion clamp", () => {
+    expect(css).toMatch(/\.tm:not\(\[data-tm-js\]\) \.tm-sizer \{[^}]*tm-cycle 12s linear infinite !important/);
+    expect(css).toMatch(/animation-iteration-count: infinite !important/);
   });
 });
