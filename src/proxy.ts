@@ -3,10 +3,11 @@ import { NONCE_HEADER, buildCsp, generateNonce } from "@/server/csp";
 import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn } from "@/lib/not-found";
 import { GEO_LOCALE_HEADER, guessLocale } from "@/lib/geo-locale";
 import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
+import { resolveDomainConfig, storeSlugFromHost } from "@/lib/domains";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
-const ROOT = (process.env.ROOT_DOMAIN ?? "mymarket.app").toLowerCase();
-const RESERVED_SUBDOMAINS = new Set(["www", "app", "api", "admin", "static", "mail"]);
+// Storefront subdomains are off unless ROOT_DOMAIN is set (src/lib/domains.ts; docs/LAUNCH.md "Custom domain").
+const DOMAINS = resolveDomainConfig({ ROOT_DOMAIN: process.env.ROOT_DOMAIN, STORE_SUBDOMAINS: process.env.STORE_SUBDOMAINS });
 const IS_DEV = process.env.NODE_ENV === "development";
 const UPGRADE_INSECURE = (process.env.APP_URL ?? "").startsWith("https://");
 const GATEWAY_ON = paymentsGatewayOn(process.env.PAYMENTS_PROVIDER);
@@ -62,13 +63,14 @@ async function notFoundResponse(req: NextRequest, kind: "page" | "store"): Promi
 /**
  * Edge of the app (Next 16 "proxy", formerly middleware):
  *  - per-request CSP nonce for every page (request header → Next stamps its scripts; response header → browser)
- *  - {slug}.ROOT_DOMAIN  → rewrite to /s/{slug}/…  (storefront subdomains)
+ *  - {slug}.ROOT_DOMAIN  → rewrite to /s/{slug}/…  (storefront subdomains; only when ROOT_DOMAIN is set)
  *  - /s/{slug}/…         → tag the request with the store slug (store-language default)
  *  - custom domains      → TODO(roadmap): look up a verified `stores.custom_domain` (cache it) and rewrite the same way.
  */
 export async function proxy(req: NextRequest) {
   const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "").split(":")[0]!.toLowerCase();
   const url = req.nextUrl;
+  const subSlug = storeSlugFromHost(host, DOMAINS);
   const requestHeaders = new Headers(req.headers);
   const isApi = url.pathname.startsWith("/api/");
 
@@ -82,8 +84,6 @@ export async function proxy(req: NextRequest) {
 
   // Real 404 status for unknown stores, /payments/return while payments are off, and /e404 itself.
   if (!isApi && !req.headers.get(INTERNAL_404_HEADER) && isDocumentRequest(req)) {
-    const sub = host.endsWith(`.${ROOT}`) ? host.slice(0, -(ROOT.length + 1)) : "";
-    const subSlug = sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub) ? sub : null;
     const pathSlug = /^\/s\/([^/]+)(?:\/|$)/.exec(url.pathname)?.[1] ?? null;
     const decision = decideNotFound({ pathname: url.pathname, search: url.searchParams, storeSlug: subSlug ?? pathSlug, gatewayOn: GATEWAY_ON });
     let kind: "page" | "store" | null = null;
@@ -98,8 +98,7 @@ export async function proxy(req: NextRequest) {
   let csp: string | undefined;
   if (!isApi) {
     const nonce = generateNonce();
-    const sub = host.endsWith(`.${ROOT}`) ? host.slice(0, -(ROOT.length + 1)) : "";
-    const storefront = url.pathname.startsWith("/s/") || (!!sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub));
+    const storefront = url.pathname.startsWith("/s/") || !!subSlug;
     csp = buildCsp({ nonce, isDev: IS_DEV, upgradeInsecureRequests: UPGRADE_INSECURE, storefront });
     requestHeaders.set(NONCE_HEADER, nonce);
     requestHeaders.set("Content-Security-Policy", csp);
@@ -107,16 +106,13 @@ export async function proxy(req: NextRequest) {
 
   let res: NextResponse;
   // /e404 is the platform 404 body (fetched by the proxy itself): never rewrite it into a storefront.
-  if (host.endsWith(`.${ROOT}`) && !isApi && url.pathname !== "/e404") {
-    const sub = host.slice(0, -(ROOT.length + 1));
-    if (sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub)) {
-      requestHeaders.set(STORE_SLUG_HEADER, sub);
-      const rewritten = url.clone();
-      rewritten.pathname = `/s/${sub}${url.pathname === "/" ? "" : url.pathname}`;
-      res = NextResponse.rewrite(rewritten, { request: { headers: requestHeaders } });
-      if (csp) res.headers.set("Content-Security-Policy", csp);
-      return withSourceCookie(res, req, sub);
-    }
+  if (subSlug && !isApi && url.pathname !== "/e404") {
+    requestHeaders.set(STORE_SLUG_HEADER, subSlug);
+    const rewritten = url.clone();
+    rewritten.pathname = `/s/${subSlug}${url.pathname === "/" ? "" : url.pathname}`;
+    res = NextResponse.rewrite(rewritten, { request: { headers: requestHeaders } });
+    if (csp) res.headers.set("Content-Security-Policy", csp);
+    return withSourceCookie(res, req, subSlug);
   }
 
   const m = /^\/s\/([a-z0-9-]+)(?:\/|$)/.exec(url.pathname);

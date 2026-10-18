@@ -3,6 +3,7 @@ import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { env } from "../env";
+import { logger } from "../logger";
 import { storeImage, type StoredImage } from "./pipeline";
 import { resolveStorageConfig } from "./config";
 
@@ -118,6 +119,7 @@ let adapter: StorageAdapter | undefined;
 export function storage(): StorageAdapter {
   if (adapter) return adapter;
   const cfg = resolveStorageConfig(env(), { serverless: !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME });
+  if (cfg.driver === "supabase" && cfg.fallbackFrom) logger.warn("storage.fallback", { wanted: "s3", using: "supabase" });
   adapter =
     cfg.driver === "supabase" ? new SupabaseStorage(cfg) : cfg.driver === "s3" ? new S3Storage(cfg) : new LocalDiskStorage(cfg.uploadDir);
   return adapter;

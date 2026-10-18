@@ -13,14 +13,16 @@ const schema = z.object({
   // ^ Vercel + Supabase integration injects POSTGRES_URL (pooled) instead of DATABASE_URL.
   APP_URL: z.string().url().default("http://localhost:3000"),
   /** Root domain used for {slug}.ROOT_DOMAIN storefront subdomains, e.g. mymarket.app */
-  ROOT_DOMAIN: z.string().default("mymarket.app"),
+  ROOT_DOMAIN: z.string().optional(),
+  /** Kill switch for {slug}.ROOT_DOMAIN routing ("false" turns it off while keeping ROOT_DOMAIN). See src/lib/domains.ts. */
+  STORE_SUBDOMAINS: z.string().optional(),
   SESSION_COOKIE_NAME: z.string().default("mm_session"),
   SESSION_TTL_DAYS: z.coerce.number().int().positive().default(30),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
 
   // Storage
   /** Unset → R2/S3 when S3_BUCKET + keys + S3_PUBLIC_URL are all present, else local disk. */
-  STORAGE_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["local", "s3", "supabase"]).optional()),
+  STORAGE_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["local", "s3", "r2", "supabase"]).optional()),
   UPLOAD_DIR: z.string().default("./uploads"),
   SUPABASE_URL: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
@@ -33,11 +35,20 @@ const schema = z.object({
   S3_PUBLIC_URL: z.string().optional(),
   /** Cloudflare account id — derives S3_ENDPOINT=https://<id>.r2.cloudflarestorage.com when S3_ENDPOINT is unset. */
   R2_ACCOUNT_ID: z.string().optional(),
+  /** R2_* aliases for the S3_* bucket values (S3_* wins when both are set). */
+  R2_BUCKET: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_PUBLIC_URL: z.string().optional(),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(5),
 
   // Email
   /** console (default, logs the mail) | resend | brevo (both have free tiers). A provider without its key falls back to console. */
-  EMAIL_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["console", "resend", "brevo"]).default("console")),
+  EMAIL_DRIVER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["console", "resend", "brevo"]).optional()),
+  /** Preferred name for EMAIL_DRIVER (same values). EMAIL_PROVIDER wins when both are set. */
+  EMAIL_PROVIDER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["console", "resend", "brevo"]).optional()),
+  /** One key for whichever provider is selected; RESEND_API_KEY / BREVO_API_KEY still work and win when set. */
+  EMAIL_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default("Bazarga <hello@mymarket.app>"),
   RESEND_API_KEY: z.string().optional(),
   BREVO_API_KEY: z.string().optional(),
