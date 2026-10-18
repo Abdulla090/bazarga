@@ -73,7 +73,7 @@ describe("plans config (pricing v2, 2026-10-14)", () => {
     }
     for (const k of ["priorityStudio", "templatesPremium", "designRefresh"]) expect(getPlan("max").features.find((f) => f.key === k)?.soon).toBe(true);
     const r = (k: string) => COMPARE.find((x) => x.key === k)!;
-    expect(r("stores").max).toEqual({ v: 5, soon: true });
+    expect(r("stores").max).toBe(5);
     expect(r("team").max).toEqual({ v: 10, soon: true });
     for (const l of LOCALES) {
       const copy = JSON.stringify(msgs(l).pricing);

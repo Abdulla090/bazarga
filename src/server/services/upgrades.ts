@@ -1,4 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
+import { normalizePlan } from "@/lib/plans";
+import { syncSiblingPlans } from "./store-access";
 import { z } from "zod";
 import type { Db } from "../db";
 import { stores, storePlanHistory, upgradeRequests } from "../db/schema";
@@ -66,6 +68,8 @@ export async function activateRequestTx(tx: Tx, requestId: string, now: Date, re
   const end = addMonths(active ? store.planPeriodEnd! : now, req.months);
   await tx.update(stores).set({ plan: req.plan, planPeriodEnd: end }).where(eq(stores.id, store.id));
   await tx.insert(storePlanHistory).values({ storeId: store.id, fromPlan: store.plan, toPlan: req.plan, periodEnd: end, reason: reason ?? `upgrade:${req.method}` });
+  // Multi-store accounts (Business 3 / Max 5): the owner's other stores share the plan and renew with it.
+  await syncSiblingPlans(tx, store.ownerId, store.id, normalizePlan(req.plan), end);
   await tx.update(upgradeRequests).set({ status: "activated", resolvedAt: now }).where(eq(upgradeRequests.id, req.id));
   return { already: false as const, end };
 }

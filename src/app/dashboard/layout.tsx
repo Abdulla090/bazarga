@@ -15,6 +15,8 @@ import { normalizePlan } from "@/lib/plans";
 import { isEmailVerified } from "@/server/auth/service";
 import { VerifyEmailBanner } from "@/components/dashboard/VerifyEmailBanner";
 import { PendingButton } from "@/components/ui/PendingButton";
+import { StoreSwitcher } from "@/components/dashboard/StoreSwitcher";
+import { listAccessibleStores } from "@/server/services/store-access";
 
 export const metadata = { title: "Dashboard", robots: { index: false } };
 
@@ -23,22 +25,33 @@ export const metadata = { title: "Dashboard", robots: { index: false } };
  * md+ (three hairline-split groups, selected = white row + blue start tick), a translucent 4-tab bar on phones.
  */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { store, user } = await requireStore();
+  const { store, user, role } = await requireStore();
   const t = await getTranslations("dash");
   const tc = await getTranslations("common");
   const tp = await getTranslations("pricing");
   const plan = normalizePlan(store.plan);
   const locale = await currentLocale();
-  const [newOrders, verified] = await Promise.all([countNewOrders(db(), store.id), isEmailVerified(db(), user.id)]);
+  const [newOrders, verified, stores] = await Promise.all([countNewOrders(db(), store.id), isEmailVerified(db(), user.id), listAccessibleStores(db(), user.id)]);
   return (
     <IntlProvider>
     <div className="min-h-dvh bg-paper pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 print:min-h-0 print:bg-white print:pb-0">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-md print:hidden">
         <div className="flex h-16 items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] md:px-6">
-          <Link href="/dashboard" className="me-auto flex min-h-11 min-w-0 items-center gap-3" aria-label={`Reelcart · ${store.name}`}>
-            <Awning className="h-3.5 w-9 shrink-0" />
-            <span className="truncate text-[15px] font-medium text-ink">{store.name}</span>
-          </Link>
+          {stores.length > 1 ? (
+            <>
+              <Link href="/dashboard" className="flex min-h-11 shrink-0 items-center" aria-label="Reelcart"><Awning className="h-3.5 w-9 shrink-0" /></Link>
+              <StoreSwitcher
+                current={{ id: store.id, name: store.name, slug: store.slug, role }}
+                stores={stores.map((a) => ({ id: a.store.id, name: a.store.name, slug: a.store.slug, role: a.role }))}
+                labels={{ switch: t("switchStore"), manage: t("manageStores"), staff: t("staffBadge") }}
+              />
+            </>
+          ) : (
+            <Link href="/dashboard" className="me-auto flex min-h-11 min-w-0 items-center gap-3" aria-label={`Reelcart · ${store.name}`}>
+              <Awning className="h-3.5 w-9 shrink-0" />
+              <span className="truncate text-[15px] font-medium text-ink">{store.name}</span>
+            </Link>
+          )}
           <Link
             href="/dashboard/upgrade"
             data-plan-chip={plan}

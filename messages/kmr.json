@@ -455,7 +455,11 @@
     "noMatches": "Tiştek li gorî “{q}” tune.",
     "cmdkPlaceholder": "Biçe… (Ctrl/Cmd K)",
     "cmdkEmpty": "Tiştek nehat dîtin",
-    "cmdkTitle": "Navîgasyona bilez"
+    "cmdkTitle": "Navîgasyona bilez",
+    "stores": "Firoşgeh",
+    "switchStore": "Firoşgehê biguherîne",
+    "manageStores": "Firoşgehan birêve bibe",
+    "staffBadge": "Karmend"
   },
   "shareKit": {
     "title": "Amûrên parvekirinê",
@@ -651,7 +655,10 @@
     "variants_all_off": "Herî kêm têkeliyekê veke, an vebijarkan jê bibe.",
     "compare_at_must_exceed_price": "Bihayê berê divê ji bihayê niha bilindtir be.",
     "network": "Girêdana înternetê tune. Selik û agahiyên te li vir in; dema ku girêdan vegere dîsa biceribîne.",
-    "plan_feature": "Ev taybetmendî di plana te de tune. Ji bo bikaranînê planê bilind bike."
+    "plan_feature": "Ev taybetmendî di plana te de tune. Ji bo bikaranînê planê bilind bike.",
+    "plan_limit_stores": "Tu gihîştî sînorê firoşgehan ê plana xwe.",
+    "owner_only": "Tenê xwediyê firoşgehê dikare vê bike.",
+    "plan_limit_team": "Te hemû cihên tîmê yên plana xwe bi kar anîne."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1546,5 +1553,18 @@
     "extrasHint": "Sitemapa firoşgeha te ya taybet heye, û her rûpel bixweber daneyên Store û Product ên Google hildigire. Girêdana sitemapê têxe Google Search Console.",
     "lockTitle": "SEO ya pêşketî û white-label di plana Max de ne",
     "lockBody": "Sernav û şiroveya xwe ya Google ji bo firoşgehê û her berhemê binivîse, wêneyê parvekirinê hilbijêre, sitemapa firoşgehê bistîne û her nîşana Reelcart rake."
+  },
+  "stores": {
+    "title": "Firoşgehên te",
+    "usage": "{used} ji {limit} firoşgehan li ser {plan}",
+    "owner": "Xwedî",
+    "staff": "Karmend",
+    "current": "Niha vekirî ye",
+    "open": "Veke",
+    "add": "Firoşgehekê zêde bike",
+    "addHint": "Her firoşgeh girêdan, berhem, ferman û rûkara xwe heye. Plana te parve dike.",
+    "lockTitle": "Ji firoşgehekê zêdetir birêve bibe",
+    "lockBody": "Business {business} firoşgehan û Max {max} firoşgehan dihewîne, hemû bi yek têketinê.",
+    "atMax": "Tu hemû {n} firoşgehên plana xwe bi kar tînî."
   }
 }

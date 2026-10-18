@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { db } from "@/server/db";
 import { env } from "@/server/env";
 import { validateSession } from "@/server/auth/service";
-import { getStoreForOwner } from "@/server/services/stores";
+import { currentStoreFor } from "@/server/auth/session";
 import { uploadProcessedImage } from "@/server/storage";
 import { enforceRateLimit } from "@/server/auth/rate-limit";
 import { AppError } from "@/server/errors";
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const token = (await cookies()).get(e.SESSION_COOKIE_NAME)?.value ?? "";
     const user = await validateSession(db(), token, e.SESSION_TTL_DAYS);
     if (!user) throw new AppError("UNAUTHENTICATED");
-    const store = await getStoreForOwner(db(), user.id);
+    const store = (await currentStoreFor(user.id))?.store;
     if (!store) throw new AppError("FORBIDDEN");
     await enforceRateLimit(db(), `upload:${store.id}`, 120, 3600);
     const len = Number(req.headers.get("content-length") ?? 0);

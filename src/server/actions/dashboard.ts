@@ -32,7 +32,6 @@ import { specsFromForm, productVariantsInputSchema, variantsFromForm,
   orderStatusSchema,
   paymentToggleSchema,
   productSchema,
-  storeSchema,
   storeThemeSchema,
   storeStorefrontSchema,
 } from "@/lib/validation";
@@ -42,23 +41,11 @@ import { showcaseOptInSchema } from "@/lib/showcase";
 import { setShowcaseOptIn } from "../services/showcase";
 import { LOST_ORDER_STATUSES, RESTOCK_ON } from "@/lib/order-status";
 import { emptyToNull, formObject, localizedFromForm, toActionState, type ActionState } from "./util";
+import { storeInputFromForm } from "./store-input";
 
 const uuid = z.uuid();
 
 // ---------------------------------------------------------------- store
-function storeInputFromForm(fd: FormData) {
-  const o = formObject(fd);
-  return storeSchema.parse({
-    name: o.name,
-    slug: o.slug,
-    defaultLocale: o.defaultLocale,
-    phone: o.phone || undefined,
-    whatsapp: o.whatsapp || undefined,
-    instagram: o.instagram || undefined,
-    city: o.city || undefined,
-    tagline: localizedFromForm(fd, "tagline"),
-  });
-}
 
 export async function createStoreAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
