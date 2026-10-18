@@ -245,4 +245,5 @@ html:has(.mm-sheet:popover-open) { overflow: hidden; }
     .mm-sheet:popover-open .mm-item, [dir="rtl"] .mm-sheet:popover-open .mm-item { opacity: 1; filter: none; transform: none; }
   }
 }
-@media (min-width: 768px) { .mm-sheet { display: none !important; } }
+/* this file is unlayered, so it outranks Tailwind's md:hidden: hide both explicitly on tablets/desktop */
+@media (min-width: 768px) { .mm-burger, .mm-sheet { display: none !important; } }

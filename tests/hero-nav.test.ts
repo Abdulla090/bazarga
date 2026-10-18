@@ -91,6 +91,7 @@ describe("marketing header: one clean row", () => {
     expect(css).toMatch(/\[dir="rtl"\] \.mm-panel \{ transform: translate3d\(-104%/);
     expect(css).toContain("html:has(.mm-sheet:popover-open) { overflow: hidden; }");
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)/);
+    expect(css).toContain("@media (min-width: 768px) { .mm-burger, .mm-sheet { display: none !important; } }");
     expect(css).not.toMatch(/orange|#f97316|#fb923c|#ea580c/i);
   });
 
