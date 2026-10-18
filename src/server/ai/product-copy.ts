@@ -55,7 +55,7 @@ const MOCK: Record<CopyLang, { lead: (n: string) => string; body: (cat: string |
   },
   kmr: {
     lead: (n) => `${n} — bijarteyek xweşik û bikêr ji bo her roj.`,
-    body: (c) => `${c ? `Di beşa ${c} de, ` : ""}bi baldarî hatiye hilbijartin û ji bo şandinê amade ye. Pirsên te hebin, li WhatsAppê ji me re binivîse.`,
+    body: (c) => `${c ? `Di beşa ${c} de, bi` : "Bi"} baldarî hatiye hilbijartin û ji bo şandinê amade ye. Pirsên te hebin, li WhatsAppê ji me re binivîse.`,
     tags: ["#kurdistan", "#duhok", "#zaxo", "#kirîn"],
   },
   ar: {
@@ -65,7 +65,7 @@ const MOCK: Record<CopyLang, { lead: (n: string) => string; body: (cat: string |
   },
   en: {
     lead: (n) => `${n}: a lovely, practical pick for every day.`,
-    body: (c) => `${c ? `From our ${c} range, ` : ""}carefully chosen and ready to deliver. Questions? Message us on WhatsApp.`,
+    body: (c) => `${c ? `From our ${c} range, carefully` : "Carefully"} chosen and ready to deliver. Questions? Message us on WhatsApp.`,
     tags: ["#kurdistan", "#erbil", "#iraq", "#shoponline"],
   },
 };

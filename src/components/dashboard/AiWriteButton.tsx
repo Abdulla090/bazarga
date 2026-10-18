@@ -25,6 +25,7 @@ const val = (id: string) => (document.getElementById(id) as HTMLInputElement | H
 export function AiWriteButton({ mode, lang }: { mode: AiMode; lang: Locale }) {
   const t = useTranslations("aiWrite");
   const te = useTranslations("errors");
+  const tu = useTranslations("upgrade");
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -40,7 +41,7 @@ export function AiWriteButton({ mode, lang }: { mode: AiMode; lang: Locale }) {
   if (mode === "locked")
     return (
       <Link href="/dashboard/upgrade" data-testid="ai-locked" className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold">
-        <Sparkle /> {t("button")} · <span className="text-[#2563EB]">{t("locked")}</span>
+        <Sparkle /> {t("button")} · <span className="text-[#2563EB]">{tu("name.business")}</span>
       </Link>
     );
 
@@ -79,7 +80,13 @@ export function AiWriteButton({ mode, lang }: { mode: AiMode; lang: Locale }) {
       {tags.length > 0 && (
         <div className="grid gap-2 rounded-xl border border-line bg-paper p-3" data-testid="ai-hashtags">
           <p className="text-sm font-semibold">{t("hashtags")}</p>
-          <p className="leading-loose" dir="auto">{tags.join(" ")}</p>
+          <ul className="flex flex-wrap gap-1.5" data-testid="ai-tag-list">
+            {tags.map((tag) => (
+              <li key={tag} className="rounded-full bg-[#2563EB]/10 px-2.5 py-1 text-sm font-medium leading-normal text-[#2563EB]">
+                <bdi>{tag}</bdi>
+              </li>
+            ))}
+          </ul>
           <div className="flex flex-wrap gap-2">
             <button type="button" className="btn-ghost btn-sm min-h-11" onClick={() => void navigator.clipboard?.writeText(tags.join(" ")).then(() => setCopied(true))}>
               {copied ? t("copied") : t("copy")}

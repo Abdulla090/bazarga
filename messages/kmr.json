@@ -1616,7 +1616,6 @@
     "copy": "Haştagan kopî bike",
     "copied": "Hat kopîkirin",
     "addTags": "Li danasînê zêde bike",
-    "locked": "Business",
     "connect": "Operator: nivîsandina AI amade ye lê ne girêdayî ye. GEMINI_API_KEY an OPENAI_API_KEY saz bike (docs/SETUP.md). Firoşkar vê notê nabînin."
   }
 }
