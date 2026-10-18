@@ -8,6 +8,10 @@
  *   npm run images:backfill            → apply
  *   npm run images:backfill -- --dry   → only count what would change
  *
+ * Seed rows (keys under seed/) are not resized: their rendition list is reset to the current
+ * scripts/seed-images.json entry when it names files the seed build no longer generates (e.g. the pre-lean
+ * hero-1376.webp, which 404s).
+ *
  * Cached storefront pages pick the new srcset up on their next revalidation.
  */
 import { and, eq } from "drizzle-orm";
@@ -15,6 +19,18 @@ import { createDb } from "../src/server/db";
 import { productImages, stores, type ImageRendition } from "../src/server/db/schema";
 import { LocalDiskStorage, storage } from "../src/server/storage";
 import { addMissingRenditions, missingRenditionWidths } from "../src/server/storage/pipeline";
+import seedImages from "./seed-images.json";
+
+/** Current seed manifest entry for a stale seed rendition list (matched by the file stem), or null. */
+const SEED = seedImages as Record<string, { renditions: ImageRendition[] }>;
+const SEED_KEYS = new Set(Object.values(SEED).flatMap((e) => e.renditions.map((r) => r.key)));
+function staleSeedFix(list: readonly ImageRendition[]): ImageRendition[] | null {
+  if (!list.length || !list.every((r) => r.key.startsWith("seed/"))) return null;
+  if (list.every((r) => SEED_KEYS.has(r.key))) return null;
+  const stem = /^seed\/(.+)-\d+\.webp$/.exec(list[0]!.key)?.[1];
+  const entry = stem ? SEED[stem] : undefined;
+  return entry ? entry.renditions : null;
+}
 
 async function readSource(r: ImageRendition): Promise<Uint8Array> {
   const s = storage();
@@ -34,6 +50,12 @@ async function main() {
   let failed = 0;
 
   for (const img of await database.select({ id: productImages.id, storeId: productImages.storeId, renditions: productImages.renditions }).from(productImages)) {
+    const seedFix = staleSeedFix(img.renditions);
+    if (seedFix) {
+      if (!dry) await database.update(productImages).set({ renditions: seedFix }).where(and(eq(productImages.id, img.id), eq(productImages.storeId, img.storeId)));
+      images++;
+      continue;
+    }
     if (!missingRenditionWidths(img.renditions.map((r) => r.width)).length) continue;
     if (dry) { images++; continue; }
     try {
@@ -48,6 +70,12 @@ async function main() {
   }
 
   for (const st of await database.select({ id: stores.id, renditions: stores.coverImageRenditions }).from(stores)) {
+    const seedFix = staleSeedFix(st.renditions);
+    if (seedFix) {
+      if (!dry) await database.update(stores).set({ coverImageRenditions: seedFix }).where(eq(stores.id, st.id));
+      covers++;
+      continue;
+    }
     if (!missingRenditionWidths(st.renditions.map((r) => r.width)).length) continue;
     if (dry) { covers++; continue; }
     try {
