@@ -4,6 +4,7 @@ import { ExistenceCache, INTERNAL_404_HEADER, decideNotFound, paymentsGatewayOn 
 import { GEO_LOCALE_HEADER, guessLocale } from "@/lib/geo-locale";
 import { SOURCE_COOKIE_MAX_AGE, parseSource, sourceCookieName } from "@/lib/social";
 import { resolveDomainConfig, storeSlugFromHost } from "@/lib/domains";
+import { PREVIEW_HEADER, isPreviewRequest } from "@/lib/preview";
 
 const STORE_SLUG_HEADER = "x-mm-store-slug";
 // Storefront subdomains are off unless ROOT_DOMAIN is set (src/lib/domains.ts; docs/LAUNCH.md "Custom domain").
@@ -78,6 +79,8 @@ export async function proxy(req: NextRequest) {
   requestHeaders.delete(STORE_SLUG_HEADER);
   requestHeaders.delete(NONCE_HEADER);
   requestHeaders.delete(GEO_LOCALE_HEADER);
+  requestHeaders.delete(PREVIEW_HEADER);
+  if (isPreviewRequest(url.pathname, url.searchParams)) requestHeaders.set(PREVIEW_HEADER, "1");
   // Language from IP location (Vercel edge geo headers; no browser permission prompt). Used only when the visitor has no saved choice.
   const geoLocale = guessLocale(req.headers.get("x-vercel-ip-country"), req.headers.get("x-vercel-ip-country-region"), req.headers.get("accept-language"));
   if (geoLocale) requestHeaders.set(GEO_LOCALE_HEADER, geoLocale);

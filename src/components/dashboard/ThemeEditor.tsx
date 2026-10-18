@@ -43,7 +43,7 @@ export function ThemeEditor({ slug, presets, initial, published, labels, premium
   const designRef = useRef(theme.design);
   useEffect(() => {
     setPreviewCookie(slug, designRef.current);
-    if (frame.current && !frame.current.getAttribute("src")) frame.current.src = `/s/${slug}`;
+    if (frame.current && !frame.current.getAttribute("src")) frame.current.src = `/s/${slug}?pv=1`;
   }, [slug]);
   useEffect(() => {
     if (designRef.current === theme.design) return;
