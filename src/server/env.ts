@@ -100,6 +100,16 @@ const schema = z.object({
   AI_BASE_URL: z.string().default("https://api.openai.com/v1"),
   AI_API_KEY: z.string().optional(),
   AI_MODEL: z.string().default("gpt-4o-mini"),
+  /**
+   * AI text (SF5 descriptions, SF10 website designer). Buyer-supplied keys; any one turns it on.
+   * GEMINI_API_KEY wins over OPENAI_API_KEY; AI_API_KEY (with AI_BASE_URL) is the OpenAI-compatible fallback.
+   * AI_DEMO_MOCK (default on): the seeded demo seller gets the offline mock when no key is set, so the demo works.
+   */
+  GEMINI_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
+  OPENAI_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  OPENAI_MODEL: z.string().default("gpt-4o-mini"),
+  AI_DEMO_MOCK: z.string().optional().transform((v) => !/^(false|0|off|no)$/i.test((v ?? "").trim())),
 });
 
 export type Env = z.infer<typeof schema>;

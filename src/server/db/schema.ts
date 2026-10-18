@@ -918,3 +918,16 @@ export const ledgerEntries = pgTable(
     index("ledger_store_idx").on(t.storeId, t.account, t.createdAt),
   ],
 );
+
+/** AI credits per store per Baghdad month (SF5 AI descriptions, SF10 AI designer). Migration 0027. */
+export const aiUsage = pgTable(
+  "ai_usage",
+  {
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    feature: text("feature").notNull(),
+    period: text("period").notNull(),
+    used: integer("used").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.storeId, t.feature, t.period] })],
+);

@@ -661,7 +661,10 @@
     "owner_only": "Tenê xwediyê firoşgehê dikare vê bike.",
     "plan_limit_team": "Te hemû cihên tîmê yên plana xwe bi kar anîne.",
     "already_member": "Ev kes jixwe di tîmê de ye.",
-    "invite_wrong_account": "Ev vexwendin ji bo e-nameyeke din e."
+    "invite_wrong_account": "Ev vexwendin ji bo e-nameyeke din e.",
+    "plan_limit_ai": "Te krediyên AI yên vê mehê bi kar anîn. Ji bo bêtir pilana xwe bilind bike.",
+    "ai_failed": "Xizmeta AI bersiv neda. Piştî demekê dîsa biceribîne.",
+    "hint_required": "Pêşî çend peyvan binivîse."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1600,5 +1603,20 @@
     "wrongAccount": "Tu bi e-nameyeke din têketî. Derkeve û wek {email} têkeve.",
     "inviteInvalidTitle": "Ev vexwendin nayê bikaranîn",
     "inviteInvalid": "Dibe ku qediyabe, hatibe bikaranîn an betal bûbe. Ji xwediyê firoşgehê girêdaneke nû bixwaze."
+  },
+  "aiWrite": {
+    "button": "Bi AI binivîse",
+    "writing": "Dinivîse…",
+    "hint": "Pêşî çend peyvan li ser berhemê binivîse: AI nav û danasînê bi vê zimanî tije dike.",
+    "left": "{count} nivîsandinên AI ji vê mehê mane",
+    "needHint": "Pêşî qet nebe navê berhemê binivîse, bi her zimanî.",
+    "quota": "Te nivîsandinên AI yên vê mehê bi kar anîn. Di 1ê mehê de nû dibin.",
+    "slowDown": "Hinekî zû ye. Piştî deqeyekê dîsa biceribîne.",
+    "hashtags": "Haştag ji bo Instagramê",
+    "copy": "Haştagan kopî bike",
+    "copied": "Hat kopîkirin",
+    "addTags": "Li danasînê zêde bike",
+    "locked": "Business",
+    "connect": "Operator: nivîsandina AI amade ye lê ne girêdayî ye. GEMINI_API_KEY an OPENAI_API_KEY saz bike (docs/SETUP.md). Firoşkar vê notê nabînin."
   }
 }

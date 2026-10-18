@@ -9,13 +9,14 @@ import { editorFromDb } from "@/lib/variant-editor";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { ProductForm } from "@/components/dashboard/ProductForm";
+import { productAiMode } from "@/server/ai/access";
 import { ProductSeoForm } from "@/components/dashboard/SeoForms";
 import { hasFeature, normalizePlan } from "@/lib/plans";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
-  const { store } = await requireStore();
+  const { store, user } = await requireStore();
   const product = await getProduct(db(), store.id, id);
   if (!product) notFound();
   const t = await getTranslations("products");
@@ -26,6 +27,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       <h1 className="t-headline">{t("edit")}</h1>
       <ProductForm
         defaultLang={store.defaultLocale}
+        ai={productAiMode(user.email, store.plan)}
         maxMb={env().MAX_UPLOAD_MB}
         categories={cats.map((c) => ({ id: c.id, name: pickText(c.name, locale) }))}
         initial={{

@@ -839,7 +839,10 @@
     "owner_only": "Only the store owner can do this.",
     "plan_limit_team": "You've used all team seats on your plan.",
     "already_member": "This person is already on the team.",
-    "invite_wrong_account": "This invite is for a different email address."
+    "invite_wrong_account": "This invite is for a different email address.",
+    "plan_limit_ai": "You've used this month's AI credits. Upgrade for more.",
+    "ai_failed": "The AI service didn't answer. Try again in a moment.",
+    "hint_required": "Type a few words first."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1599,5 +1602,20 @@
     "wrongAccount": "You're signed in with another email. Log out and sign in as {email}.",
     "inviteInvalidTitle": "This invite can't be used",
     "inviteInvalid": "It may have expired, been used, or been cancelled. Ask the store owner for a new link."
+  },
+  "aiWrite": {
+    "button": "Write with AI",
+    "writing": "Writing…",
+    "hint": "Type a few words about the product first: AI fills the name and description in this language.",
+    "left": "{count} AI writes left this month",
+    "needHint": "Type at least a product name first, in any language.",
+    "quota": "You've used this month's AI writes. They reset on the 1st.",
+    "slowDown": "A little too fast. Try again in a minute.",
+    "hashtags": "Hashtags for Instagram",
+    "copy": "Copy hashtags",
+    "copied": "Copied",
+    "addTags": "Add to description",
+    "locked": "Business",
+    "connect": "Operator: AI writing is ready but not connected. Set GEMINI_API_KEY or OPENAI_API_KEY (docs/SETUP.md). Sellers don't see this note."
   }
 }

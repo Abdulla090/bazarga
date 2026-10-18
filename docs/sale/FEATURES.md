@@ -43,6 +43,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Team members (Pro 2 / Business 5 / Max 10 seats): invite by email or copyable WhatsApp link, owner/staff roles, staff limited to orders/products/catalog/customers/sharing; seats enforced on the server
 - Plan usage meter and upgrade requests (`/dashboard/upgrade`), pay online (**off until keys**) or manually
 - AI store builder: photos + a message → draft products (**off until keys**)
+- "Write with AI" in the product form (Business+): name, description and Instagram hashtags in the selected language, 300/1000 credits a month (Business/Max), rate-limited; Gemini or OpenAI with your own key (**off until keys**, the demo seller uses an offline mock)
 
 ## 5. Theme Studio (10 presets)
 - Presets: Studio, Ivory, Midnight, Gallery, Boutique, Stone, Mono, Editorial, Market, Fresh

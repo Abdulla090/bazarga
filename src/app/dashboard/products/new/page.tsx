@@ -8,9 +8,10 @@ import { PlanUsage } from "@/components/dashboard/PlanUsage";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { ProductForm } from "@/components/dashboard/ProductForm";
+import { productAiMode } from "@/server/ai/access";
 
 export default async function NewProductPage() {
-  const { store } = await requireStore();
+  const { store, user } = await requireStore();
   const t = await getTranslations("products");
   const locale = await currentLocale();
   const tp = await getTranslations("pricing");
@@ -31,6 +32,7 @@ export default async function NewProductPage() {
       )}
       <ProductForm
         defaultLang={store.defaultLocale}
+        ai={productAiMode(user.email, store.plan)}
         maxMb={env().MAX_UPLOAD_MB}
         categories={cats.map((c) => ({ id: c.id, name: pickText(c.name, locale) }))}
         initial={{ name: {}, description: {}, price: "", compareAtPrice: null, stock: null, sku: null, specs: [], categoryId: null, isActive: true, images: [] }}

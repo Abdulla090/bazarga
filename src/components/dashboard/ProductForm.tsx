@@ -11,6 +11,7 @@ import { SpecsEditor, type SpecRow } from "./SpecsEditor";
 import { VariantsEditor } from "./VariantsEditor";
 import type { EditorState } from "@/lib/variant-editor";
 import { useKeepValues } from "@/lib/use-keep-values";
+import { AiWriteButton, type AiMode } from "./AiWriteButton";
 
 // Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
 const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
@@ -33,7 +34,7 @@ type Values = {
 
 const LANGS: Locale[] = ["ku", "ar", "en", "kmr"];
 
-export function ProductForm({ initial, categories, maxMb, defaultLang }: { initial: Values; categories: { id: string; name: string }[]; maxMb: number; defaultLang: Locale }) {
+export function ProductForm({ initial, categories, maxMb, defaultLang, ai = "hidden" }: { initial: Values; categories: { id: string; name: string }[]; maxMb: number; defaultLang: Locale; ai?: AiMode }) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const te = useTranslations("errors");
@@ -75,6 +76,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang }: { initi
             </button>
           ))}
         </div>
+        <AiWriteButton mode={ai} lang={lang} />
         {LANGS.map((l) => (
           <div key={l} hidden={lang !== l} className="grid gap-3" dir={l === "en" || l === "kmr" ? "ltr" : "rtl"}>
             <div>
