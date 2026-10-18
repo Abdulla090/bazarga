@@ -28,7 +28,7 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
         aria-valuenow={checklist.doneCount}
         aria-labelledby="setup-title"
       >
-        <div className="h-full rounded-full bg-gold" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-gold transition-[width] duration-700 ease-out motion-reduce:transition-none" style={{ width: `${pct}%` }} />
       </div>
       <ol className="mt-4 grid divide-y divide-line lg:grid-cols-2 lg:gap-x-10 lg:divide-y-0">
         {checklist.steps.map((s) => {
