@@ -1221,7 +1221,7 @@
       "lowStock": "Low-stock alerts",
       "priority": "Priority support",
       "exclusiveDesigns": "Super-premium exclusive designs",
-      "aiDesigner": "AI Website Designer: a full store from a prompt",
+      "aiDesigner": "AI Website Designer: your store's design from a few words",
       "whiteLabel": "White-label: no Reelcart anywhere",
       "earlyAccess": "Early access to new features",
       "stores5": "5 stores",
@@ -1998,5 +1998,30 @@
       "body": "This store is temporarily unavailable. Please check back later."
     },
     "paused": "This is turned off for now."
+  },
+  "aiDesigner": {
+    "title": "AI Website Designer",
+    "intro": "Describe your brand in a few words. AI picks a design, colours, fonts and writes your headline and tagline. You preview it first.",
+    "brief": "Your brand",
+    "briefPh": "e.g. handmade perfumes from Erbil, elegant and warm",
+    "vibe": "Vibe (optional)",
+    "vibes": {
+      "minimal": "Minimal",
+      "bold": "Bold",
+      "luxury": "Luxury",
+      "playful": "Playful",
+      "natural": "Natural",
+      "classic": "Classic"
+    },
+    "generate": "Design my store",
+    "generating": "Designing…",
+    "again": "Try another design",
+    "left": "{count} AI designs left this month",
+    "ready": "Your AI draft is in the preview. Publish to go live, or discard it to get your previous theme back.",
+    "discard": "Discard AI draft",
+    "lockedNote": "AI Website Designer is part of the Max plan.",
+    "upgrade": "Upgrade to Max",
+    "connect": "Connect an AI key (GEMINI_API_KEY or OPENAI_API_KEY) to switch this on for sellers.",
+    "maxBadge": "Max"
   }
 }

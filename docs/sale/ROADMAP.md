@@ -8,11 +8,8 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Feature | Plan | Seam already in the code |
 |---|---|---|
 | Online payments (FIB, ZainCash, AsiaPay, NassWallet, cards) | Pro and up | Rasedi gateway built and tested; needs merchant KYC + keys (docs/PAYMENTS.md) |
-| Product Studio (photo clean-up/enhancement, monthly quota 10/100/100) | Pro, Business, Max | Quota table + plan limits (`product_studio_usage`, `src/lib/plans.ts`) |
-| Custom domain per seller (`shop.yourbrand.com`) | Business, Max | `stores.custom_domain`, subdomain routing in `src/proxy.ts` + `src/lib/domains.ts` |
-| AI Website Designer, monthly design refresh | Max | Theme Studio schema + 7 layout designs (`src/lib/theme-studio`) |
-| Priority processing | Max | Queue/ordering for Product Studio once it ships |
-| Sign in with WhatsApp (phone OTP) | All | `OtpProvider` interface (`src/server/otp`) |
+| Monthly design refresh | Max | AI Website Designer (`src/server/ai/site-design.ts`) + a monthly cron re-running the seller's brief into a draft |
+| Priority Product Studio processing | Max | Product Studio (`src/lib/studio/process.ts`, `/api/studio/remove-bg`) + a priority queue |
 
 ## Shipped from the "Soon" list (Oct 18, 2026)
 
@@ -23,6 +20,10 @@ seam that already exists, so a developer can pick it up quickly. Detailed engine
 | Multiple stores per account (store switcher, add-store flow, stores share and renew with the plan) | Business 3, Max 5 | `/dashboard/stores`, header switcher, `src/server/services/store-access.ts` (limits, current-store cookie `rc_store`) |
 | Team members (owner + staff, email or copy-link invites, accept, remove, owner-only areas) | Pro 2, Business 5, Max 10 seats | `/dashboard/team`, `/invite/<token>`, `src/server/services/team.ts`, `requireOwner` / `requireOwnerPage`; migration 0026 |
 | AI product descriptions ("Write with AI": name, description, hashtags in the tab's language; monthly credits 300 Business / 1000 Max + 8/min rate limit) | Business, Max | `src/server/ai/text.ts` (Gemini/OpenAI, buyer key), `src/server/ai/product-copy.ts`, `src/server/actions/ai.ts`, `ai_usage` (migration 0027) |
+| Custom domain per seller (DNS record, verify, optional Vercel auto-add) | Business, Max | Settings → Custom domain, `src/server/services/custom-domain.ts`; migration 0028 |
+| Sign in with WhatsApp (6-digit code; off until WhatsApp Cloud API or Twilio keys) | All | `src/server/otp`, `/login/phone`; migration 0029 |
+| Product Studio (before/after editor: whiten background, auto-crop, enhance; optional remove.bg cut-out; 10/100/100 edits a month) | Pro, Business, Max | `src/components/dashboard/ProductStudio.tsx`, `src/lib/studio/process.ts`, `/api/studio/remove-bg`, `product_studio_usage` |
+| AI Website Designer (a few words + optional vibe → Theme Studio draft: design incl. Atelier/Pulse, palette, fonts, header line, hero tagline in the store language; preview, then publish or discard; 30 a month) | Max | `src/server/ai/site-design.ts`, `designStoreWithAiAction` (`src/server/actions/ai.ts`), `src/components/dashboard/AiDesigner.tsx`; credits in `ai_usage` |
 | Premium designs Atelier + Pulse (own hero, grid, card and footer each; preview for all, publish on Max; a store below Max renders classic) | Max | `src/lib/theme-studio/designs.ts` `PREMIUM_DESIGNS`, presets `atelier`/`pulse`, gate in `publishThemeAction`, `resolveDesign(…, plan)` |
 
 ## Growth ideas (highest leverage first)

@@ -36,7 +36,7 @@ export function HeroSplit({ name, tagline, cover, shopNow }: HeroProps) {
         <h1 className="t-hero break-words">
           <span className="hero-plate">{name}</span>
         </h1>
-        {tagline && <p className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl">{tagline}</p>}
+        <p data-hero-tagline className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl empty:hidden">{tagline}</p>
         <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{shopNow}</a>
       </div>
     </section>
@@ -53,7 +53,7 @@ export function HeroMasthead({ name, tagline, cover, shopNow }: HeroProps) {
       <h1 className="sf-display ed-masthead break-words text-center">{name}</h1>
       <div className="grid-12 items-end gap-y-8 border-t border-st-fg pt-6 md:pt-10">
         <div className={`col-span-4 grid content-end justify-items-start gap-8 ${cover ? "md:col-span-5 md:pb-2" : "md:col-span-8 md:col-start-3 md:justify-items-center md:text-center"}`}>
-          {tagline && <p className="sf-display line-clamp-4 max-w-xl text-balance text-3xl leading-[1.15] md:text-5xl">{tagline}</p>}
+          <p data-hero-tagline className="sf-display line-clamp-4 max-w-xl text-balance text-3xl leading-[1.15] md:text-5xl empty:hidden">{tagline}</p>
           <a href="#products" className="ed-link t-label inline-flex min-h-11 items-center gap-2 border-b border-st-fg pb-0.5 text-sm">{shopNow}</a>
         </div>
         {cover && (
@@ -83,7 +83,7 @@ export function HeroBanner({ name, tagline, cover, shopNow }: HeroProps) {
     <section className="-mt-2 overflow-hidden rounded-xl border border-st-border bg-st-surface md:mt-0 md:grid md:min-h-[17rem] md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]" data-testid="store-hero" data-hero="banner">
       <div className="grid content-center justify-items-start gap-3 p-5 md:gap-4 md:p-10">
         <h1 className="t-headline break-words">{name}</h1>
-        {tagline && <p className="line-clamp-2 max-w-md text-[15px] leading-snug text-muted md:text-lg">{tagline}</p>}
+        <p data-hero-tagline className="line-clamp-2 max-w-md text-[15px] leading-snug text-muted md:text-lg empty:hidden">{tagline}</p>
         <a href="#products" className="btn-gold mt-1 min-h-11 px-7">{shopNow}</a>
       </div>
       {cover && (
@@ -130,7 +130,7 @@ export function HeroFullbleed({ name, tagline, cover, shopNow }: HeroProps) {
       <div className="absolute inset-0 -z-[5] bg-gradient-to-t from-black/70 via-black/15 to-transparent" aria-hidden />
       <div className="grid min-h-[24rem] px-[var(--page-margin)] content-end justify-items-start gap-4 pb-8 pt-24 md:min-h-[34rem] md:pb-14">
         <h1 className="t-hero break-words text-white">{name}</h1>
-        {tagline && <p className="line-clamp-2 max-w-md text-base leading-snug text-white/85 md:text-xl">{tagline}</p>}
+        <p data-hero-tagline className="line-clamp-2 max-w-md text-base leading-snug text-white/85 md:text-xl empty:hidden">{tagline}</p>
         <a href="#products" className="inline-flex min-h-12 items-center justify-center border border-white px-8 text-sm font-medium uppercase tracking-[0.14em] text-white transition-colors duration-150 hover:bg-white hover:text-black">{shopNow}</a>
       </div>
     </section>
@@ -145,7 +145,7 @@ export function HeroArch({ name, tagline, cover, shopNow }: HeroProps) {
   return (
     <section className="grid justify-items-center gap-6 text-center md:gap-8" data-testid="store-hero" data-hero="arch">
       <h1 className="t-hero max-w-3xl text-balance break-words">{name}</h1>
-      {tagline && <p className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl">{tagline}</p>}
+      <p data-hero-tagline className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl empty:hidden">{tagline}</p>
       <a href="#products" className="btn-gold min-h-12 w-full px-8 sm:w-auto">{shopNow}</a>
       {cover && (
         <div className="w-full max-w-[22rem] overflow-hidden rounded-t-[999px] rounded-b-3xl bg-[#F4F4F5] md:max-w-[30rem]">
@@ -176,7 +176,7 @@ export function HeroType({ name, tagline, cover, shopNow }: HeroProps) {
     <section className="grid gap-6 border-y-2 border-st-fg py-6 md:gap-8 md:py-10" data-testid="store-hero" data-hero="type">
       <h1 className="mono-hero break-words">{name}</h1>
       <div className="grid items-end gap-6 md:grid-cols-[1fr_auto]">
-        {tagline && <p className="line-clamp-3 max-w-xl text-[17px] leading-snug md:text-xl">{tagline}</p>}
+        <p data-hero-tagline className="line-clamp-3 max-w-xl text-[17px] leading-snug md:text-xl empty:hidden">{tagline}</p>
         <a href="#products" className="btn-gold min-h-12 w-full px-8 md:w-auto">{shopNow}</a>
       </div>
       {cover && (
@@ -212,7 +212,7 @@ export function HeroStage({ name, tagline, cover, shopNow }: HeroProps) {
       <div className={`grid items-center gap-8 px-6 py-10 md:gap-12 md:px-14 md:py-16 ${cover ? "md:grid-cols-[1.15fr_0.85fr]" : ""}`}>
         <div className="grid justify-items-start gap-5 md:gap-7">
           <h1 className="t-hero break-words">{name}</h1>
-          {tagline && <p className="line-clamp-3 max-w-md text-[17px] leading-snug opacity-90 md:text-xl">{tagline}</p>}
+          <p data-hero-tagline className="line-clamp-3 max-w-md text-[17px] leading-snug opacity-90 md:text-xl empty:hidden">{tagline}</p>
           <a href="#products" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-surface px-8 text-base font-semibold text-st-fg transition-transform duration-150 active:scale-[0.98] sm:w-auto">{shopNow}</a>
         </div>
         {cover && (
@@ -244,7 +244,7 @@ export function HeroRunway({ name, tagline, cover, shopNow }: HeroProps) {
   return (
     <section className="grid justify-items-center gap-6 text-center md:gap-10" data-testid="store-hero" data-hero="runway">
       <div className="grid justify-items-center gap-4 md:gap-5">
-        {tagline && <p className="at-eyebrow line-clamp-2 max-w-xl text-sm text-muted md:text-base">{tagline}</p>}
+        <p data-hero-tagline className="at-eyebrow line-clamp-2 max-w-xl text-sm text-muted md:text-base empty:hidden">{tagline}</p>
         <h1 className="sf-display at-name break-words text-balance">{name}</h1>
       </div>
       {cover ? (

@@ -191,3 +191,7 @@ Pricing v2 shipped 2026-10-14 (docs/PRICING.md): Free/Pro/Business/Max, server-s
 - ~~Product Studio~~ shipped Oct 18 (SF9): in-browser cleanup (`src/lib/studio/process.ts`: whiten background, auto-crop,
   enhance), quota via `product_studio_usage`, optional remove.bg cut-out (`/api/studio/remove-bg`, `REMOVE_BG_API_KEY`).
   Next: priority/AI Studio on Max (still "Soon").
+- ~~AI Website Designer~~ shipped Oct 18 (SF10, Max): `src/server/ai/site-design.ts` (prompt, normaliser with contrast fixes,
+  deterministic mock), `designStoreWithAiAction` writes only the Theme Studio draft; publish copies the AI tagline into
+  the store tagline for its language. Credits `AI_MONTHLY_LIMIT.aiDesigner` (30/month), 4/min + 20/hour per store.
+  Next: monthly design refresh (cron re-running the saved brief, still "Soon").

@@ -49,6 +49,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - "Write with AI" in the product form (Business+): name, description and Instagram hashtags in the selected language, 300/1000 credits a month (Business/Max), rate-limited; Gemini or OpenAI with your own key (**off until keys**, the demo seller uses an offline mock)
 
 ## 5. Theme Studio (12 presets)
+- AI Website Designer (Max): describe the brand in a few words (+ optional vibe: minimal, bold, luxury, playful, natural, classic) → a Theme Studio draft with a layout design (any of the 9, including Atelier and Pulse), palette with readable contrast, font pair, buttons and cards, a header announcement line and the hero tagline written in the store language. Preview it in Theme Studio, then Publish or Discard (back to the previous theme). 30 designs a month, rate-limited, owner-only, enforced on the server; Gemini or OpenAI with your own key (**off until keys**, the demo seller uses an offline mock)
 - Presets: Studio, Ivory, Midnight, Gallery, Boutique, Stone, Mono, Editorial, Market, Fresh, plus premium Atelier and Pulse (Max)
 - 9 layout designs behind them (classic, editorial, market, gallery, boutique, mono, studio, and premium atelier + pulse)
 - Premium designs (Max): Atelier (couture: runway hero with framed cinematic cover, lookbook grid, framed cards, colophon footer) and Pulse (night drop: bento hero with accent ticker, bento grid with 2×2 features, glow cards, ticker footer). Any seller can preview them in Theme Studio; publishing needs Max

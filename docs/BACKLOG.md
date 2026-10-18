@@ -7,11 +7,10 @@
 - [x] A4. Moderation + site: products hide/delete, orders status, CSV exports; maintenance mode, feature flags, 4-locale announcement, featured stores, email subjects
 - [x] A5. Palette (Ctrl/⌘ K, g-shortcuts, /), toasts, optimistic toggles, bulk actions, 412 px
 - [x] A6a. Product Studio (SF9) honours the `productStudio` flag (claimStudioEditAction + /api/studio/remove-bg)
-- [ ] A6b. SF10 owner: gate the AI Website Designer on `flagOn(db(), "aiDesigner")` (src/server/services/platform-settings.ts); the flag already exists in Admin → Site controls
+- [x] A6b. AI Website Designer (SF10) honours the `aiDesigner` flag (designStoreWithAiAction)
 - [ ] A7. Before sale / real launch: remove SEED_ADMIN_EMAIL=demo@mymarket.app from Vercel and demote the demo account in Admin → Admin team (its password is public)
 
-## SOON FEATURES (Abdulla Oct 18 18:35, owned by subagent until marked done)
-Hourly loop: do NOT take these items; a dedicated subagent ships them easiest first (branches agentb/soon-<name>).
+## SOON FEATURES (Abdulla Oct 18 18:35; all shipped Oct 18)
 - [x] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
 - [x] SF2. Advanced SEO + white-label (Max): per-store meta title/description, OG image, product meta, per-store sitemap, JSON-LD Product/Store; "hide Made with Reelcart badge" toggle (Max)
 - [x] SF3. Multiple stores per account (Business 3 / Max 5): store switcher, create-store flow, server-side limits, current-store context
@@ -21,7 +20,7 @@ Hourly loop: do NOT take these items; a dedicated subagent ships them easiest fi
 - [x] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md
 - [x] SF8. Sign in with WhatsApp (phone OTP): env-gated OtpProvider + mock provider (live stays "coming soon" until WHATSAPP_* or TWILIO_* is set)
 - [x] SF9. Product Studio (photo cleanup, quota 10/100/100): in-browser cleanup + optional remove.bg (REMOVE_BG_API_KEY), product_studio_usage quota server-side; "Soon" tag removed (priority Studio on Max stays Soon)
-- [ ] SF10. AI Website Designer (Max): brand brief -> Theme Studio draft, preview, publish (owned by subagent)
+- [x] SF10. AI Website Designer (Max): brand brief (+ vibe) -> Theme Studio draft (design incl. Atelier/Pulse, palette, fonts, header line, hero tagline in store language), preview, publish or discard; ai_usage credits 30/month, rate-limited, AI_DEMO_MOCK for the demo seller; "Soon" tag removed (monthly design refresh stays Soon)
 Out of scope: online payments (src/server/payments/**, migration 0014, Rasedi env).
 
 ## SALE-READY (Abdulla Oct 18 — top priority)

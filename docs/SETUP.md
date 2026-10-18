@@ -182,6 +182,8 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
   editor (white background, auto-crop, enhance, before/after); saving spends one edit, checked on the server.
 - **Bulk CSV import** (Business+): **Dashboard → Products → Import**.
 - **Premium designs** (Max): Atelier and Pulse in **Dashboard → Theme**; everyone can preview, Max publishes.
+- **AI Website Designer** (Max, needs the AI key from section 4.7): **Dashboard → Theme → AI Website Designer**. The seller
+  types a few words about the brand; the result lands in the draft for preview, then Publish or Discard.
 - **Custom domain** (Business+): **Dashboard → Settings → Custom domain**; hosting step in section 4.3.
 
 ### Sign in with WhatsApp (optional)
