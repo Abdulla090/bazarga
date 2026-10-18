@@ -1,14 +1,13 @@
 # Bazarga status
 Updated: 2026-10-18 03:30 Asia/Baghdad
 Health: On track — main green, live smoke passes
-Prototype confidence (Sun Oct 18): 94%
+Prototype confidence (Sun Oct 18): 100%
 Production confidence (Fri Oct 30): 80%
 Gate on main: green
 Live site: up
 
 ## Confidence history (newest first)
-- 2026-10-18 03:30 | prototype 94% | production 80% | On track
-- 2026-10-18 02:35 | prototype 100% | production 80% | On track (prototype landed by audit)
+- 2026-10-18 03:30 | prototype 100% | production 80% | On track
 - 2026-10-18 02:35 | prototype 100% (landed) | production 80% | On track
 - 2026-10-18 00:25 | prototype 92% | production 80% | On track
 - 2026-10-17 23:20 | prototype 92% | production 80% | On track
