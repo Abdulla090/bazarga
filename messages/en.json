@@ -861,7 +861,8 @@
     "domain_taken": "Another store already uses this domain.",
     "domain_not_pointing": "Your domain doesn't point to us yet. Check the record, then try again in a few minutes.",
     "otp_invalid": "That code is wrong or expired. Check it, or send a new one.",
-    "otp_send_failed": "We couldn't send the WhatsApp code right now. Try again in a minute, or sign in with email."
+    "otp_send_failed": "We couldn't send the WhatsApp code right now. Try again in a minute, or sign in with email.",
+    "studio_failed": "The photo edit didn't work this time. Your edit wasn't used; try again."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1666,5 +1667,27 @@
     "foundNone": "No record found for this domain yet.",
     "hostingAuto": "Your domain is added to our servers automatically.",
     "hostingManual": "After it's verified, the platform team switches it on for your store (usually within a day)."
+  },
+  "studio": {
+    "open": "Studio",
+    "title": "Product Studio",
+    "left": "{n} of {limit} edits left this month",
+    "close": "Close",
+    "before": "Before",
+    "after": "After",
+    "options": "Cleanup options",
+    "whiten": "White background",
+    "crop": "Auto-crop",
+    "enhance": "Brighter & sharper",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "aiCut": "Remove background with AI",
+    "aiDone": "Background removed",
+    "working": "Working…",
+    "hint": "Works best on a product shot on a plain, light background. Saving replaces this photo and uses one edit.",
+    "cancel": "Cancel",
+    "save": "Save photo",
+    "locked": "Clean up photos with Product Studio on Pro and above.",
+    "upgrade": "See plans"
   }
 }

@@ -133,6 +133,8 @@ const schema = z.object({
   TWILIO_AUTH_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   TWILIO_WHATSAPP_FROM: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   OTP_MOCK: z.string().optional().transform((v) => /^(true|1|on|yes)$/i.test((v ?? "").trim())),
+  /** Product Studio (SF9): optional remove.bg key for AI background removal; without it the free in-browser cleanup runs. */
+  REMOVE_BG_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   AI_DEMO_MOCK: z.string().optional().transform((v) => !/^(false|0|off|no)$/i.test((v ?? "").trim())),
 });
 

@@ -14,6 +14,7 @@ import { useKeepValues } from "@/lib/use-keep-values";
 import { AiWriteButton, type AiMode } from "./AiWriteButton";
 
 // Upload/preview editor: its own chunk, fetched in parallel with hydration instead of in the first-load bundle.
+import type { StudioInfo } from "./ProductStudio";
 const ImageUploader = lazy(() => import("./ImageUploader").then((m) => ({ default: m.ImageUploader })));
 
 type Values = {
@@ -34,7 +35,7 @@ type Values = {
 
 const LANGS: Locale[] = ["ku", "ar", "en", "kmr"];
 
-export function ProductForm({ initial, categories, maxMb, defaultLang, ai = "hidden" }: { initial: Values; categories: { id: string; name: string }[]; maxMb: number; defaultLang: Locale; ai?: AiMode }) {
+export function ProductForm({ initial, categories, maxMb, defaultLang, ai = "hidden", studio = null }: { initial: Values; categories: { id: string; name: string }[]; maxMb: number; defaultLang: Locale; ai?: AiMode; studio?: StudioInfo | null }) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const te = useTranslations("errors");
@@ -137,7 +138,7 @@ export function ProductForm({ initial, categories, maxMb, defaultLang, ai = "hid
 
       <div className="border-t border-line pt-6">
         <Suspense fallback={<div className="min-h-28 animate-pulse rounded-xl border border-line" aria-hidden />}>
-          <ImageUploader initial={initial.images} maxMb={maxMb} />
+          <ImageUploader initial={initial.images} maxMb={maxMb} studio={studio} />
         </Suspense>
       </div>
 
