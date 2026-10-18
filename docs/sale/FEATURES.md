@@ -40,6 +40,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Settings: store info, cover photo, contact/WhatsApp, pixels, showcase opt-in, push notifications toggle
 - Payments: cash on delivery; online payment methods toggle (when the platform has a gateway); payout profile
 - Multiple stores per account (Business 3, Max 5): header store switcher, add-store flow, limits enforced on the server; extra stores share and renew with the plan
+- Team members (Pro 2 / Business 5 / Max 10 seats): invite by email or copyable WhatsApp link, owner/staff roles, staff limited to orders/products/catalog/customers/sharing; seats enforced on the server
 - Plan usage meter and upgrade requests (`/dashboard/upgrade`), pay online (**off until keys**) or manually
 - AI store builder: photos + a message → draft products (**off until keys**)
 

@@ -5,6 +5,7 @@ import { AppError } from "../errors";
 import { PLAN_RANK, STORE_LIMIT, normalizePlan, type PlanId } from "@/lib/plans";
 import type { StoreInput } from "@/lib/validation";
 import { createStore, type Store } from "./stores";
+import { memberStoreIds } from "./team";
 
 /** Cookie holding the dashboard's current store id (multi-store accounts). Never trusted on its own: re-checked against access. */
 export const CURRENT_STORE_COOKIE = "rc_store";
@@ -20,10 +21,10 @@ export async function listAccessibleStores(database: Db, userId: string): Promis
   return out;
 }
 
-/** Hook for team membership (stores a user joined as staff); replaced by the team service when it is installed. */
-let memberStores: (database: Db, userId: string) => Promise<Store[]> = async () => [];
-export function setMemberStoresResolver(fn: (database: Db, userId: string) => Promise<Store[]>) {
-  memberStores = fn;
+async function memberStores(database: Db, userId: string): Promise<Store[]> {
+  const ids = await memberStoreIds(database, userId);
+  if (!ids.length) return [];
+  return database.query.stores.findMany({ where: inArray(stores.id, ids), orderBy: asc(stores.createdAt) });
 }
 
 /** The dashboard's current store: the cookie's store when the user can access it, else their first store. */

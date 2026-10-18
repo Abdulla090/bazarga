@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
-import { requireStore } from "../auth/session";
+import { requireOwner } from "../auth/session";
 import { enforceRateLimit } from "../auth/rate-limit";
 import { requireAdmin } from "../auth/admin";
 import { activateRequest, createUpgradeRequest, rejectRequest } from "../services/upgrades";
@@ -12,7 +12,7 @@ import { invalidateStore } from "../cache/tags";
 
 export async function requestUpgradeAction(raw: unknown): Promise<ActionState> {
   try {
-    const { store } = await requireStore();
+    const { store } = await requireOwner();
     await enforceRateLimit(db(), `upgrade-request:${store.id}`, 10, 3600);
     await createUpgradeRequest(db(), store.id, raw);
     revalidatePath("/dashboard/upgrade");
@@ -41,7 +41,7 @@ export async function rejectUpgradeAction(formData: FormData): Promise<void> {
 
 /** Form-post variant used by /dashboard/upgrade (no client JS needed). */
 export async function submitUpgradeForm(formData: FormData): Promise<void> {
-  const { store } = await requireStore();
+  const { store } = await requireOwner();
   const months = Number(formData.get("months"));
   await createUpgradeRequest(db(), store.id, { plan: formData.get("plan"), months, method: formData.get("method") });
   revalidatePath("/dashboard/upgrade");

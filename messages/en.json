@@ -296,7 +296,8 @@
     "stores": "Stores",
     "switchStore": "Switch store",
     "manageStores": "Manage stores",
-    "staffBadge": "Staff"
+    "staffBadge": "Staff",
+    "team": "Team"
   },
   "setup": {
     "title": "Set up your store",
@@ -836,7 +837,9 @@
     "plan_feature": "This feature isn't included in your plan. Upgrade to use it.",
     "plan_limit_stores": "You've reached the store limit for your plan.",
     "owner_only": "Only the store owner can do this.",
-    "plan_limit_team": "You've used all team seats on your plan."
+    "plan_limit_team": "You've used all team seats on your plan.",
+    "already_member": "This person is already on the team.",
+    "invite_wrong_account": "This invite is for a different email address."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1565,5 +1568,36 @@
     "lockTitle": "Run more than one store",
     "lockBody": "Business includes {business} stores and Max includes {max}, all from one login.",
     "atMax": "You're using all {n} stores on your plan."
+  },
+  "team": {
+    "title": "Team",
+    "sub": "Let staff handle orders and products with their own login.",
+    "seats": "{used} of {limit} seats used",
+    "owner": "Owner",
+    "staff": "Staff",
+    "pending": "Invited",
+    "expired": "Invite expired",
+    "remove": "Remove",
+    "cancelInvite": "Cancel invite",
+    "inviteTitle": "Invite someone",
+    "email": "Their email",
+    "send": "Create invite",
+    "emailed": "Invite emailed to {email}. You can also share the link:",
+    "copyHint": "Send this link to them (valid 7 days):",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "whatsapp": "Send on WhatsApp",
+    "full": "All seats are in use. Remove someone or upgrade for more.",
+    "rolesHint": "Staff can manage orders, products, categories, discounts, customers and sharing. Settings, delivery, payments, theme, plan and team stay with the owner.",
+    "lockTitle": "Add your team",
+    "lockBody": "Pro includes {pro} staff seats, Business {business} and Max {max}. Each person gets their own login.",
+    "inviteHeading": "Join {store}",
+    "inviteFor": "This invite is for {email}.",
+    "accept": "Accept and open the dashboard",
+    "signupToJoin": "Create an account",
+    "loginToJoin": "I have an account",
+    "wrongAccount": "You're signed in with another email. Log out and sign in as {email}.",
+    "inviteInvalidTitle": "This invite can't be used",
+    "inviteInvalid": "It may have expired, been used, or been cancelled. Ask the store owner for a new link."
   }
 }

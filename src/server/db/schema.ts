@@ -753,6 +753,27 @@ export const storePlanHistory = pgTable("store_plan_history", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** Team members of a store (migration 0026). Pending invite: accepted_at null, token_hash set; active: user_id set. */
+export const storeMembers = pgTable(
+  "store_members",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    storeId: uuid("store_id").notNull().references(() => stores.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    /** Invited address, lower-cased. */
+    email: text("email").notNull(),
+    role: text("role").$type<"staff">().notNull().default("staff"),
+    /** sha256 of the invite token; null once accepted. */
+    tokenHash: text("token_hash"),
+    invitedBy: uuid("invited_by").references(() => users.id, { onDelete: "set null" }),
+    invitedAt: timestamp("invited_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("store_members_store_email_uq").on(t.storeId, t.email), uniqueIndex("store_members_token_uq").on(t.tokenHash), index("store_members_user_idx").on(t.userId)],
+);
+export type StoreMember = typeof storeMembers.$inferSelect;
+
 /** Product Studio (AI photo/product edits) usage per store per calendar month (Asia/Baghdad), "YYYY-MM". Quota: src/lib/plans.ts. */
 export const productStudioUsage = pgTable(
   "product_studio_usage",

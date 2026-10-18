@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "../db";
-import { requireStore } from "../auth/session";
+import { requireOwner, requireStore } from "../auth/session";
 import { assertFeature } from "../plan-gate";
 import { recordAudit, auditDetail } from "../audit";
 import { invalidateCatalog, invalidateStore } from "../cache/tags";
@@ -13,7 +13,7 @@ import { toActionState, type ActionState } from "./util";
 /** Store meta title/description, OG image and the white-label switch (Max only, enforced here). */
 export async function saveStoreSeoAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   try {
-    const { store, user } = await requireStore();
+    const { store, user } = await requireOwner();
     assertFeature(store, "seoAdvanced");
     const seo = storeSeoSchema.parse({ title: fd.get("title"), description: fd.get("description"), ogImageUrl: fd.get("ogImageUrl") });
     const whiteLabel = fd.get("whiteLabel") === "on";
