@@ -932,3 +932,19 @@ export const aiUsage = pgTable(
   },
   (t) => [primaryKey({ columns: [t.storeId, t.feature, t.period] })],
 );
+
+// ---------------------------------------------------------------- SF8 sign in with WhatsApp
+/** One-time login codes sent over WhatsApp. `code_hash` = sha256(id:phone:code); 5-minute life, 5 tries. */
+export const phoneOtps = pgTable(
+  "phone_otps",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    phone: text("phone").notNull(),
+    codeHash: text("code_hash").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    attempts: integer("attempts").notNull().default(0),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("phone_otps_phone_created_idx").on(t.phone, t.createdAt)],
+);

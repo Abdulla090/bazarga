@@ -41,6 +41,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Payments: cash on delivery; online payment methods toggle (when the platform has a gateway); payout profile
 - Multiple stores per account (Business 3, Max 5): header store switcher, add-store flow, limits enforced on the server; extra stores share and renew with the plan
 - Team members (Pro 2 / Business 5 / Max 10 seats): invite by email or copyable WhatsApp link, owner/staff roles, staff limited to orders/products/catalog/customers/sharing; seats enforced on the server
+- Sign in with WhatsApp: a 6-digit code on WhatsApp to the account phone or the store's WhatsApp number (WhatsApp Cloud API or Twilio, **off until keys**; hashed codes, 5-minute expiry, 5 tries, rate-limited)
 - Custom domain (Business+): Settings → Custom domain shows the exact DNS record (CNAME for shop.brand.com, A for brand.com) with copy buttons, a Verify button (server DNS lookup) and the live status; once verified the domain serves the store. Optional auto-attach to Vercel with `VERCEL_TOKEN` + `VERCEL_PROJECT_ID`, otherwise one manual step for the operator
 - Plan usage meter and upgrade requests (`/dashboard/upgrade`), pay online (**off until keys**) or manually
 - AI store builder: photos + a message → draft products (**off until keys**)

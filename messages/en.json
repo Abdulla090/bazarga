@@ -229,7 +229,21 @@
     "verifyBanner": "Confirm your email so you can recover your account.",
     "verifyResend": "Send link",
     "verifySent": "Link sent. Check your inbox.",
-    "goDashboard": "Go to dashboard"
+    "goDashboard": "Go to dashboard",
+    "phoneLogin": "Sign in with WhatsApp",
+    "phoneTitle": "Sign in with WhatsApp",
+    "phoneIntro": "Type the WhatsApp number of your account or store. We'll send you a 6-digit code.",
+    "phoneLabel": "WhatsApp number",
+    "phoneHint": "Iraqi numbers like 0750 123 4567, or +country code for other countries.",
+    "phoneSend": "Send code on WhatsApp",
+    "phoneSent": "If {phone} belongs to an account, a code is on its way on WhatsApp.",
+    "phoneDevCode": "Test mode code:",
+    "phoneCode": "6-digit code",
+    "phoneCodeHint": "The code works for 5 minutes.",
+    "phoneVerify": "Sign in",
+    "phoneChange": "Use another number",
+    "phoneResend": "Send a new code",
+    "phoneUseEmail": "Sign in with email instead"
   },
   "onboarding": {
     "title": "Let's set up your store",
@@ -845,7 +859,9 @@
     "hint_required": "Type a few words first.",
     "invalid_domain": "That isn't a domain you can use. Try something like shop.yourbrand.com.",
     "domain_taken": "Another store already uses this domain.",
-    "domain_not_pointing": "Your domain doesn't point to us yet. Check the record, then try again in a few minutes."
+    "domain_not_pointing": "Your domain doesn't point to us yet. Check the record, then try again in a few minutes.",
+    "otp_invalid": "That code is wrong or expired. Check it, or send a new one.",
+    "otp_send_failed": "We couldn't send the WhatsApp code right now. Try again in a minute, or sign in with email."
   },
   "pwa": {
     "installTitle": "Install Reelcart",

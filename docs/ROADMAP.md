@@ -131,9 +131,9 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 
 ## 2. Sign in with WhatsApp OTP (weeks 2–4)
 
-- Implement `WhatsAppOtpProvider` behind the existing `OtpProvider` interface (`src/server/otp`): WhatsApp Cloud
-  API *authentication* template, hashed codes in a `otp_codes` table with attempt counters, per-phone + per-IP
-  rate limits (reuse `enforceRateLimit`).
+- ~~WhatsApp OTP login~~ shipped Oct 18 (SF8): `src/server/otp` (WhatsApp Cloud API authentication template, Twilio,
+  dev mock), hashed codes in `phone_otps` (migration 0029, 5 min, 5 tries), per-phone + per-IP rate limits, `/login/phone`.
+  Matches the account phone or the owner's store WhatsApp number. Env-gated: hidden until a provider is set.
 - Make `users.email` optional, add `users.phone` unique + verified flag; phone-first signup for sellers who don't use email.
 - SMS fallback (Asiacell/Zain/Korek aggregators) for numbers without WhatsApp.
 

@@ -173,6 +173,15 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
 - **Premium designs** (Max): Atelier and Pulse in **Dashboard → Theme**; everyone can preview, Max publishes.
 - **Custom domain** (Business+): **Dashboard → Settings → Custom domain**; hosting step in section 4.3.
 
+### Sign in with WhatsApp (optional)
+Sellers can log in with a 6-digit code sent on WhatsApp to their account's phone or their store's WhatsApp number.
+Hidden (the login page says "coming soon") until you set one provider in Vercel → Settings → Environment Variables:
+- **WhatsApp Cloud API (Meta):** `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, and the name of an approved *Authentication*
+  template in `WHATSAPP_TEMPLATE` (default `login_code`, language `WHATSAPP_TEMPLATE_LANG`, default `en`).
+- **Twilio:** `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM` (your WhatsApp sender, e.g. `+14155238886`).
+- Local testing: `OTP_MOCK=true` writes codes to the server log and shows them on screen (not in production).
+Codes are stored hashed, expire after 5 minutes, allow 5 tries; sending is limited to 3 per number per 10 minutes.
+
 ## 5. Troubleshooting
 
 | Symptom | Fix |
