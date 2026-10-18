@@ -73,3 +73,16 @@ export function placeholderStyle(img: ImageLike): Record<string, string> | undef
   }
   return img.dominantColor ? { backgroundColor: img.dominantColor } : undefined;
 }
+
+/**
+ * Smallest pipeline rendition for a tiny avatar (store logo in the header, ~28–40 px). Pipeline keys end in
+ * `-<width>.webp` and an upload always stores every RENDITION width below its top one, so a `-1024.webp` logo also
+ * exists as `-320.webp` (30× fewer bytes). Anything else (seed images, legacy or external URLs) is returned as is.
+ */
+const PIPELINE_TAIL = /(\/stores\/[0-9a-f-]{36}\/[0-9a-f-]{36})-(\d{2,5})\.webp$/;
+const PIPELINE_WIDTHS = new Set([480, 640, 1024, 1280]);
+export function smallRenditionUrl(url: string): string {
+  const m = PIPELINE_TAIL.exec(url);
+  if (!m || !PIPELINE_WIDTHS.has(Number(m[2]))) return url;
+  return url.slice(0, m.index) + `${m[1]}-320.webp`;
+}
