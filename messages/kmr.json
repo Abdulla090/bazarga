@@ -667,7 +667,9 @@
     "hint_required": "Pêşî çend peyvan binivîse.",
     "invalid_domain": "Ev ne domaineke ku tu dikarî bi kar bînî ye. Tiştekî wek shop.yourbrand.com biceribîne.",
     "domain_taken": "Firoşgeheke din berê vê domainê bi kar tîne.",
-    "domain_not_pointing": "Domaina te hêj ber bi me ve nîşan nade. Tomarê kontrol bike, paşê piştî çend deqeyan dîsa biceribîne."
+    "domain_not_pointing": "Domaina te hêj ber bi me ve nîşan nade. Tomarê kontrol bike, paşê piştî çend deqeyan dîsa biceribîne.",
+    "otp_invalid": "Ev kod şaş e an dema wê derbas bûye. Kontrol bike, an kodeke nû bişîne.",
+    "otp_send_failed": "Me niha nikarî koda WhatsAppê bişînin. Piştî deqeyekê dîsa biceribîne, an bi e-nameyê têkeve."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -809,7 +811,21 @@
     "verifyBanner": "E-nameya xwe erê bike da ku hesabê xwe vegerînî.",
     "verifyResend": "Girêdanê bişîne",
     "verifySent": "Girêdan hat şandin. Qutiya xwe kontrol bike.",
-    "goDashboard": "Biçe panelê"
+    "goDashboard": "Biçe panelê",
+    "phoneLogin": "Bi WhatsAppê têkeve",
+    "phoneTitle": "Bi WhatsAppê têkeve",
+    "phoneIntro": "Hejmara WhatsAppê ya hesab an firoşgeha xwe binivîse. Em ê kodeke 6 reqemî ji te re bişînin.",
+    "phoneLabel": "Hejmara WhatsAppê",
+    "phoneHint": "Hejmarên Iraqê wek 0750 123 4567, an + û koda welêt ji bo welatên din.",
+    "phoneSend": "Kodê bi WhatsAppê bişîne",
+    "phoneSent": "Heke {phone} ya hesabekî be, kodek bi WhatsAppê tê.",
+    "phoneDevCode": "Koda moda ceribandinê:",
+    "phoneCode": "Koda 6 reqemî",
+    "phoneCodeHint": "Kod 5 deqeyan dixebite.",
+    "phoneVerify": "Têkeve",
+    "phoneChange": "Hejmareke din bi kar bîne",
+    "phoneResend": "Kodeke nû bişîne",
+    "phoneUseEmail": "Li şûna wê bi e-nameyê têkeve"
   },
   "onboarding": {
     "title": "Em firoşgeha te saz bikin",

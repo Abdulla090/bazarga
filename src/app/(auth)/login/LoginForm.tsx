@@ -6,7 +6,7 @@ import { logInAction } from "@/server/actions/auth";
 import { Field, FormError } from "@/components/forms/Field";
 import { useKeepValues } from "@/lib/use-keep-values";
 
-export function LoginForm({ next }: { next?: string | null }) {
+export function LoginForm({ next, phoneLogin = false }: { next?: string | null; phoneLogin?: boolean }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(logInAction, {});
   const keep = useKeepValues(action);
@@ -22,7 +22,11 @@ export function LoginForm({ next }: { next?: string | null }) {
         <Link href="/forgot-password" className="inline-flex min-h-11 items-center text-ink-70 underline">{t("forgot")}</Link>
         <span>{t("noAccount")} <Link href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="inline-flex min-h-11 items-center font-bold underline">{t("signup")}</Link></span>
       </div>
-      <p className="hint text-center">{t("phoneSoon")}</p>
+      {phoneLogin ? (
+        <Link href={next ? `/login/phone?next=${encodeURIComponent(next)}` : "/login/phone"} className="btn-ghost w-full" data-testid="login-whatsapp">{t("phoneLogin")}</Link>
+      ) : (
+        <p className="hint text-center" data-testid="login-phone-soon">{t("phoneSoon")}</p>
+      )}
     </form>
   );
 }

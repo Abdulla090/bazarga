@@ -119,6 +119,20 @@ const schema = z.object({
   VERCEL_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   VERCEL_PROJECT_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   VERCEL_TEAM_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  /**
+   * Sign in with WhatsApp (SF8). WhatsApp Cloud API (Meta): WHATSAPP_TOKEN + WHATSAPP_PHONE_ID and an approved
+   * authentication template (WHATSAPP_TEMPLATE, language WHATSAPP_TEMPLATE_LANG). Or Twilio: TWILIO_ACCOUNT_SID +
+   * TWILIO_AUTH_TOKEN + TWILIO_WHATSAPP_FROM (+1… WhatsApp sender). Neither → the option is hidden. OTP_MOCK=true logs
+   * codes instead of sending (local dev; the code is also shown on screen outside production).
+   */
+  WHATSAPP_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  WHATSAPP_PHONE_ID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  WHATSAPP_TEMPLATE: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("login_code")),
+  WHATSAPP_TEMPLATE_LANG: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("en")),
+  TWILIO_ACCOUNT_SID: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  TWILIO_AUTH_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  TWILIO_WHATSAPP_FROM: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  OTP_MOCK: z.string().optional().transform((v) => /^(true|1|on|yes)$/i.test((v ?? "").trim())),
   AI_DEMO_MOCK: z.string().optional().transform((v) => !/^(false|0|off|no)$/i.test((v ?? "").trim())),
 });
 
