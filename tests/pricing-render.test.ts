@@ -103,8 +103,9 @@ describe("pricing v2: four cards, cumulative features, Soon tags", () => {
       const i = card.indexOf(`data-feature="${key}"`);
       return card.slice(i, card.indexOf("</li>", i));
     };
-    expect(item("pro", "studio")).toContain("data-soon");
-    expect(item("pro", "studio")).toContain(">Soon<");
+    expect(item("max", "priorityStudio")).toContain("data-soon");
+    expect(item("max", "priorityStudio")).toContain(">Soon<");
+    expect(item("pro", "studio")).not.toContain("data-soon");
     expect(item("max", "aiDesigner")).toContain(">Soon<");
     expect(item("pro", "discounts")).not.toContain("data-soon");
     expect(item("free", "codWhatsapp")).not.toContain("Soon");

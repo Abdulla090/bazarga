@@ -154,6 +154,8 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
 - **Seller order alerts:** `NOTIFY_CHANNELS` (`console,telegram,whatsapp,email`) + `TELEGRAM_BOT_TOKEN` / `WHATSAPP_CLOUD_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID`.
 - **Phone push alerts:** run `npx web-push generate-vapid-keys` once (or any online VAPID generator) → `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:you@yourdomain.com`.
 - **AI product builder:** `AI_ENABLED=true`, `AI_API_KEY` (OpenAI or any compatible API), optional `AI_MODEL`.
+- **Product Studio AI background removal (optional):** `REMOVE_BG_API_KEY` (remove.bg). Product Studio itself needs
+  no key: the free in-browser cleanup (white background, auto-crop, enhance) always works; the key adds an AI cut-out button.
 - **AI writing ("Write with AI" descriptions on Business+, AI Website Designer on Max):** paste your own
   `GEMINI_API_KEY` (Google AI Studio, free tier available) or `OPENAI_API_KEY`; optional `GEMINI_MODEL` / `OPENAI_MODEL`.
   Without a key sellers don't see the tools and admins see a "connect AI" note. The demo seller uses an offline mock
@@ -169,6 +171,8 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
 - **Multiple stores** (Business 3 / Max 5): **Dashboard → Stores**; extra stores share and renew with the plan.
 - **Advanced SEO + white-label** (Max): **Dashboard → Settings → SEO and white-label**. Each Max store also gets
   `/s/<slug>/sitemap.xml`.
+- **Product Studio** (Pro 10 / Business 100 / Max 100 edits a month): the wand button on a product photo opens the
+  editor (white background, auto-crop, enhance, before/after); saving spends one edit, checked on the server.
 - **Bulk CSV import** (Business+): **Dashboard → Products → Import**.
 - **Premium designs** (Max): Atelier and Pulse in **Dashboard → Theme**; everyone can preview, Max publishes.
 - **Custom domain** (Business+): **Dashboard → Settings → Custom domain**; hosting step in section 4.3.

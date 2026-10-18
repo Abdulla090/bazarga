@@ -188,3 +188,6 @@ Ordered by what unblocks real sellers fastest. Each item lists the code seam tha
 
 ## Billing (future)
 Pricing v2 shipped 2026-10-14 (docs/PRICING.md): Free/Pro/Business/Max, server-side product caps and Product Studio quota; manual upgrades + Rasedi gateway (off) for billing.
+- ~~Product Studio~~ shipped Oct 18 (SF9): in-browser cleanup (`src/lib/studio/process.ts`: whiten background, auto-crop,
+  enhance), quota via `product_studio_usage`, optional remove.bg cut-out (`/api/studio/remove-bg`, `REMOVE_BG_API_KEY`).
+  Next: priority/AI Studio on Max (still "Soon").

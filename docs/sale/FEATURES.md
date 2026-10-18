@@ -36,6 +36,7 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - Cmd-K command palette and "g then key" keyboard shortcuts; skeleton loading states; mobile tab bar
 - Products: create/edit with photos (browser compression before upload, server renditions), variants editor, specs editor, categories, low-stock alerts, CSV export, bulk CSV import with a validated preview (Business+)
 - Orders: list with filters and search, detail with status timeline, history notes, courier + tracking number, printable slip, courier sheet, WhatsApp reply templates, quick replies, order source ("From TikTok"), risk flags, CSV export, block abusive phone numbers
+- Product Studio (Pro 10 / Business 100 / Max 100 edits a month): wand button on each product photo → before/after editor that whitens the background, auto-crops and enhances in the browser; saving replaces the photo and spends one edit (quota enforced on the server). Optional AI background removal with your own remove.bg key (**off until keys**)
 - Customers list; delivery zones and areas per city; discount codes screen
 - Settings: store info, cover photo, contact/WhatsApp, pixels, showcase opt-in, push notifications toggle
 - Payments: cash on delivery; online payment methods toggle (when the platform has a gateway); payout profile

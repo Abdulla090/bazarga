@@ -8,6 +8,7 @@ import { PlanUsage } from "@/components/dashboard/PlanUsage";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { ProductForm } from "@/components/dashboard/ProductForm";
+import { getStudioUsage } from "@/server/services/studio-quota";
 import { productAiMode } from "@/server/ai/access";
 
 export default async function NewProductPage() {
@@ -34,6 +35,7 @@ export default async function NewProductPage() {
         defaultLang={store.defaultLocale}
         ai={productAiMode(user.email, store.plan)}
         maxMb={env().MAX_UPLOAD_MB}
+        studio={await studioInfo(store.id)}
         categories={cats.map((c) => ({ id: c.id, name: pickText(c.name, locale) }))}
         initial={{ name: {}, description: {}, price: "", compareAtPrice: null, stock: null, sku: null, specs: [], categoryId: null, isActive: true, images: [] }}
       />
@@ -41,4 +43,10 @@ export default async function NewProductPage() {
       )}
     </div>
   );
+}
+
+/** Product Studio (SF9) edits left this month + whether AI background removal is configured. */
+async function studioInfo(storeId: string) {
+  const u = await getStudioUsage(db(), storeId);
+  return { limit: u.limit, remaining: u.remaining, ai: !!env().REMOVE_BG_API_KEY };
 }

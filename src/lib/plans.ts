@@ -72,7 +72,7 @@ export const PLANS: Plan[] = [
     includes: "free",
     features: [
       { key: "products" },
-      { key: "studio", soon: true },
+      { key: "studio" },
       { key: "themesAll" },
       { key: "noBadge" },
       { key: "analytics90" },
@@ -92,7 +92,7 @@ export const PLANS: Plan[] = [
     includes: "pro",
     features: [
       { key: "productsUnlimited" },
-      { key: "studio", soon: true },
+      { key: "studio" },
       { key: "domain" },
       { key: "stores3" },
       { key: "team5" },
@@ -113,7 +113,7 @@ export const PLANS: Plan[] = [
     includes: "business",
     features: [
       { key: "productsUnlimited" },
-      { key: "studio", soon: true },
+      { key: "studio" },
       { key: "priorityStudio", soon: true },
       { key: "aiDesigner", soon: true },
       { key: "exclusiveDesigns" },
@@ -161,7 +161,7 @@ export const TEAM_LIMIT: Record<PlanId, number> = { free: 0, pro: 2, business: 5
 /** Comparison table rows (keys under `pricing.rows.*`). */
 export const COMPARE: FeatureRow[] = [
   { key: "products", free: 10, pro: 100, business: "unlimited", max: "unlimited" },
-  { key: "studio", free: false, pro: soon(10), business: soon(100), max: soon(100) },
+  { key: "studio", free: false, pro: 10, business: 100, max: 100 },
   { key: "stores", free: STORE_LIMIT.free, pro: STORE_LIMIT.pro, business: STORE_LIMIT.business, max: STORE_LIMIT.max },
   { key: "team", free: false, pro: TEAM_LIMIT.pro, business: TEAM_LIMIT.business, max: TEAM_LIMIT.max },
   { key: "themes", free: "starter", pro: "all", business: "all", max: "exclusive" },

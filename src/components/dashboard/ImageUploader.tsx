@@ -1,22 +1,30 @@
 "use client";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Icon, Plus, X } from "@/components/ui/icons";
+import { Icon, Plus, Sparkles, X } from "@/components/ui/icons";
 import type { ProductImageInput } from "@/lib/validation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES } from "@/lib/responsive-image";
 import { compressForUpload } from "@/lib/client-image-compress";
+import type { StudioInfo } from "./ProductStudio";
+
+const ProductStudio = lazy(() => import("./ProductStudio").then((m) => ({ default: m.ProductStudio })));
 
 /**
  * Uploads to /api/uploads (resize → WebP renditions, EXIF/GPS stripped) and keeps each result as a hidden
  * `images` input holding the pipeline metadata as JSON. Photos are pre-compressed in the browser (compressForUpload). The first image is the product's cover.
  */
-export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: ProductImageInput[]; maxMb: number; max?: number }) {
+export function ImageUploader({ initial = [], maxMb, max = 8, studio = null }: { initial?: ProductImageInput[]; maxMb: number; max?: number; studio?: StudioInfo | null }) {
   const t = useTranslations("products");
   const te = useTranslations("errors");
   const [images, setImages] = useState<ProductImageInput[]>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
+  // Product Studio (SF9): which photo is open, and this month's edits left (updated after each save).
+  const [editing, setEditing] = useState<number | null>(null);
+  const [left, setLeft] = useState(studio?.remaining ?? 0);
+  const ts = useTranslations("studio");
 
   async function onFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -65,6 +73,11 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
             >
               <Icon as={X} size={16} strokeWidth={2} />
             </button>
+            {studio && studio.limit > 0 && (
+              <button type="button" onClick={() => setEditing(i)} className="mt-1 inline-flex min-h-11 w-20 items-center justify-center gap-1 rounded-xl border border-line bg-white text-[13px] font-semibold" data-testid={`studio-open-${i}`}>
+                <Icon as={Sparkles} size={14} /> {ts("open")}
+              </button>
+            )}
           </li>
         ))}
       </ul>
@@ -80,6 +93,21 @@ export function ImageUploader({ initial = [], maxMb, max = 8 }: { initial?: Prod
       )}
       <p className="hint">{t("imagesHint", { mb: maxMb })}</p>
       {error && <p className="field-error">{te(error as "generic")}</p>}
+      {studio && studio.limit === 0 && images.length > 0 && (
+        <p className="hint" data-testid="studio-locked">{ts("locked")} <Link href="/dashboard/upgrade" className="inline-flex min-h-11 items-center font-semibold text-[#2563EB] underline">{ts("upgrade")}</Link></p>
+      )}
+      {studio && editing !== null && images[editing] && (
+        <Suspense fallback={null}>
+          <ProductStudio
+            image={images[editing]!}
+            info={{ ...studio, remaining: left }}
+            maxMb={maxMb}
+            onUsage={setLeft}
+            onSaved={(img) => setImages((list) => list.map((x, j) => (j === editing ? img : x)))}
+            onClose={() => setEditing(null)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

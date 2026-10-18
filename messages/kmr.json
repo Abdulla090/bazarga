@@ -669,7 +669,8 @@
     "domain_taken": "Firoşgeheke din berê vê domainê bi kar tîne.",
     "domain_not_pointing": "Domaina te hêj ber bi me ve nîşan nade. Tomarê kontrol bike, paşê piştî çend deqeyan dîsa biceribîne.",
     "otp_invalid": "Ev kod şaş e an dema wê derbas bûye. Kontrol bike, an kodeke nû bişîne.",
-    "otp_send_failed": "Me niha nikarî koda WhatsAppê bişînin. Piştî deqeyekê dîsa biceribîne, an bi e-nameyê têkeve."
+    "otp_send_failed": "Me niha nikarî koda WhatsAppê bişînin. Piştî deqeyekê dîsa biceribîne, an bi e-nameyê têkeve.",
+    "studio_failed": "Vê carê guhertina wêneyê nexebitî. Guhertina te nehat bikaranîn; dîsa biceribîne."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1667,5 +1668,27 @@
     "foundNone": "Hêj ji bo vê domainê tu tomar nehat dîtin.",
     "hostingAuto": "Domaina te bixweber li serverên me tê zêdekirin.",
     "hostingManual": "Piştî piştrastkirinê, tîma platformê wê ji bo firoşgeha te çalak dike (bi gelemperî di nava rojekê de)."
+  },
+  "studio": {
+    "open": "Stûdyo",
+    "title": "Stûdyoya berheman",
+    "left": "Vê mehê {n} ji {limit} guhertinan mane",
+    "close": "Bigire",
+    "before": "Berê",
+    "after": "Piştî",
+    "options": "Vebijarkên paqijkirinê",
+    "whiten": "Paşxana spî",
+    "crop": "Birîna bixweber",
+    "enhance": "Ronîtir û zelaltir",
+    "brightness": "Ronahî",
+    "contrast": "Kontrast",
+    "aiCut": "Paşxanê bi AI rake",
+    "aiDone": "Paşxan hat rakirin",
+    "working": "Dixebite…",
+    "hint": "Ji bo berhemeke ku li ser paşxaneke sade û ronî hatiye kişandin çêtirîn dixebite. Tomarkirin vê wêneyê diguherîne û guhertinekê bi kar tîne.",
+    "cancel": "Betal bike",
+    "save": "Wêneyê tomar bike",
+    "locked": "Di Pro û jortir de wêneyan bi Stûdyoya berheman paqij bike.",
+    "upgrade": "Planan bibîne"
   }
 }
