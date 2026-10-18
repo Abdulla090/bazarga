@@ -45,9 +45,10 @@ IQD prices, cash on delivery, delivery by city/area, Iraqi phone formats, WhatsA
 - AI store builder: photos + a message → draft products (**off until keys**)
 - "Write with AI" in the product form (Business+): name, description and Instagram hashtags in the selected language, 300/1000 credits a month (Business/Max), rate-limited; Gemini or OpenAI with your own key (**off until keys**, the demo seller uses an offline mock)
 
-## 5. Theme Studio (10 presets)
-- Presets: Studio, Ivory, Midnight, Gallery, Boutique, Stone, Mono, Editorial, Market, Fresh
-- 7 layout designs behind them (classic, editorial, market, gallery, boutique, mono, studio)
+## 5. Theme Studio (12 presets)
+- Presets: Studio, Ivory, Midnight, Gallery, Boutique, Stone, Mono, Editorial, Market, Fresh, plus premium Atelier and Pulse (Max)
+- 9 layout designs behind them (classic, editorial, market, gallery, boutique, mono, studio, and premium atelier + pulse)
+- Premium designs (Max): Atelier (couture: runway hero with framed cinematic cover, lookbook grid, framed cards, colophon footer) and Pulse (night drop: bento hero with accent ticker, bento grid with 2×2 features, glow cards, ticker footer). Any seller can preview them in Theme Studio; publishing needs Max
 - Live preview in phone or desktop frame; colours (accent, background, surface, text), type scale, button shape/style, card radius/style/ratio, background (solid/gradient/pattern), header layout, announcement bar
 - Undo/redo, "surprise me", draft autosave, publish; low-contrast warning
 

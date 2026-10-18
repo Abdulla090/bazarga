@@ -160,6 +160,7 @@ Set `LOG_WEBHOOK_URL` to that URL and redeploy. (Max 20 messages/minute; secrets
 - **Advanced SEO + white-label** (Max): **Dashboard → Settings → SEO and white-label**. Each Max store also gets
   `/s/<slug>/sitemap.xml`.
 - **Bulk CSV import** (Business+): **Dashboard → Products → Import**.
+- **Premium designs** (Max): Atelier and Pulse in **Dashboard → Theme**; everyone can preview, Max publishes.
 
 ## 5. Troubleshooting
 

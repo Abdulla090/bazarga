@@ -52,7 +52,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const theme = resolveTheme(store.themePreset, store.accentColor);
   const hdr = parseTheme(store.themePublished)?.header;
   const wa = store.whatsapp ? normalizePhone(store.whatsapp) : null;
-  const design = await resolveDesign(slug, store.themePublished);
+  const design = await resolveDesign(slug, store.themePublished, store.plan);
   return (
     <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} data-design={design.id} data-header={hdr?.layout ?? "split"} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
       <PreviewBridge />

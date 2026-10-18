@@ -1079,7 +1079,9 @@
       "mono": "أحادي",
       "editorial": "تحريري",
       "fresh": "منعش",
-      "market": "سوق"
+      "market": "سوق",
+      "atelier": "أتيليه",
+      "pulse": "نبض"
     },
     "colors": "الألوان",
     "type": "الخط",
@@ -1134,7 +1136,10 @@
     "header": "الترويسة",
     "headerLayout": "تخطيط الترويسة",
     "announce": "شريط الإعلان",
-    "announcePh": "توصيل مجاني"
+    "announcePh": "توصيل مجاني",
+    "premiumBadge": "Max",
+    "premiumNote": "أنت تعاين تصميماً مميزاً من Max. تصفّحه بحرية: نشره يحتاج خطة Max.",
+    "premiumCta": "رقِّ إلى Max للنشر"
   },
   "pricing": {
     "nav": "الأسعار",

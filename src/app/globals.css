@@ -980,3 +980,55 @@ html:lang(ckb) .mono-label, html:lang(ar) .mono-label { text-transform: none; le
 .storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline) { font-weight: 700; letter-spacing: -0.03em; }
 html:lang(ckb) .storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline), html:lang(ar) .storefront[data-design="studio"] :is(.t-hero, .t-display, .t-headline) { letter-spacing: 0; }
 .storefront[data-design="studio"] [data-testid="spotlight"] { border-radius: 2rem; }
+
+/* ---- Atelier (premium, Max): couture house. Serif display, generous air, accent hairlines, quiet uppercase wayfinding.
+ * Kurdish/Arabic: no uppercase or tracking, Naskh display, taller line-height so diacritics never clip. ---- */
+.storefront[data-design="atelier"] {
+  --sf-display: var(--font-fraunces), var(--font-fraunces-ext), var(--font-naskh), var(--font-vazirmatn), Georgia, "Times New Roman", serif;
+  --section-gap: 5.5rem;
+}
+@media (min-width: 1024px) { .storefront[data-design="atelier"] { --section-gap: 8.5rem; } }
+.storefront[data-design="atelier"] :is(.t-hero, .t-display, .t-headline, .t-title) { font-family: var(--sf-display); font-weight: 300; letter-spacing: -0.015em; }
+html:lang(ckb) .storefront[data-design="atelier"] :is(.t-hero, .t-display, .t-headline, .t-title),
+html:lang(ar) .storefront[data-design="atelier"] :is(.t-hero, .t-display, .t-headline, .t-title) { font-weight: 400; letter-spacing: 0; line-height: 1.45; }
+.storefront[data-design="atelier"] .sf-display { font-weight: 330; }
+html:lang(ckb) .storefront[data-design="atelier"] .sf-display, html:lang(ar) .storefront[data-design="atelier"] .sf-display { font-weight: 400; line-height: 1.55; }
+.at-name { font-size: clamp(3rem, 12vw, 9.5rem); line-height: 0.95; letter-spacing: -0.04em; font-weight: 300; }
+html:lang(ckb) .at-name, html:lang(ar) .at-name { font-size: clamp(2.5rem, 9vw, 6.5rem); line-height: 1.4; letter-spacing: 0; font-weight: 400; padding-block: 0.1em; }
+.at-name-sm { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.1; font-weight: 300; }
+html:lang(ckb) .at-name-sm, html:lang(ar) .at-name-sm { line-height: 1.5; font-weight: 400; }
+.at-eyebrow { text-transform: uppercase; letter-spacing: 0.22em; font-size: 0.75rem; }
+html:lang(ckb) .at-eyebrow, html:lang(ar) .at-eyebrow { text-transform: none; letter-spacing: 0; font-size: 0.9375rem; line-height: 1.7; }
+.at-inset { border: 1px solid color-mix(in srgb, var(--st-accent) 70%, transparent); }
+.at-rule { background: var(--st-accent); }
+.at-frame { border-radius: 0; }
+.at-cta { border-block: 1px solid var(--st-accent); color: var(--st-fg); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.75rem; transition: letter-spacing 200ms ease-out, background-color 200ms ease-out; }
+.at-cta:hover { letter-spacing: 0.26em; background: color-mix(in srgb, var(--st-accent) 10%, transparent); }
+html:lang(ckb) .at-cta, html:lang(ar) .at-cta { text-transform: none; letter-spacing: 0; font-size: 1rem; }
+html:lang(ckb) .at-cta:hover, html:lang(ar) .at-cta:hover { letter-spacing: 0; }
+.storefront[data-design="atelier"] .store-mark { display: none; }
+.storefront[data-design="atelier"] .store-name { font-family: var(--sf-display); font-size: 1.5rem; font-weight: 350; letter-spacing: 0.02em; }
+html:lang(ckb) .storefront[data-design="atelier"] .store-name, html:lang(ar) .storefront[data-design="atelier"] .store-name { font-weight: 500; letter-spacing: 0; line-height: 1.5; }
+.storefront[data-design="atelier"] :is(.rounded-2xl, .rounded-xl) { border-radius: 0; }
+.storefront[data-design="atelier"] [data-testid="spotlight"] { background: transparent; border-block: 1px solid color-mix(in srgb, var(--st-accent) 60%, transparent); }
+.storefront[data-design="atelier"] .btn, .storefront[data-design="atelier"] .btn-gold { border-radius: 0; letter-spacing: 0.06em; }
+html:lang(ckb) .storefront[data-design="atelier"] :is(.btn, .btn-gold), html:lang(ar) .storefront[data-design="atelier"] :is(.btn, .btn-gold) { letter-spacing: 0; }
+
+/* ---- Pulse (premium, Max): night drop. Heavy grotesk, tight bento, accent glow, looping tickers (still with reduced motion). ---- */
+.storefront[data-design="pulse"] { --section-gap: 3.5rem; }
+.storefront[data-design="pulse"] :is(.t-hero, .t-display, .t-headline) { font-weight: 800; letter-spacing: -0.035em; text-transform: none; }
+html:lang(ckb) .storefront[data-design="pulse"] :is(.t-hero, .t-display, .t-headline), html:lang(ar) .storefront[data-design="pulse"] :is(.t-hero, .t-display, .t-headline) { font-weight: 800; letter-spacing: 0; line-height: 1.4; }
+.storefront[data-design="pulse"] .store-name { font-weight: 800; letter-spacing: -0.02em; }
+html:lang(ckb) .storefront[data-design="pulse"] .store-name, html:lang(ar) .storefront[data-design="pulse"] .store-name { letter-spacing: 0; }
+.storefront[data-design="pulse"] :is(.rounded-2xl, .rounded-xl) { border-radius: 1.25rem; }
+.storefront[data-design="pulse"] [data-testid="spotlight"] { border-radius: 1.75rem; box-shadow: 0 0 0 1px var(--st-border); }
+.pulse-card:hover, .pulse-card:focus-within { box-shadow: 0 0 0 2px var(--st-accent), 0 18px 48px -18px color-mix(in srgb, var(--st-accent) 70%, transparent); }
+.pulse-dot { box-shadow: 0 0 0 0 color-mix(in srgb, var(--st-accent) 70%, transparent); animation: pulse-ping 1.8s ease-out infinite; }
+@keyframes pulse-ping { to { box-shadow: 0 0 0 14px transparent; } }
+.pulse-track { animation: pulse-marquee 28s linear infinite; }
+[dir="rtl"] .pulse-track { animation-name: pulse-marquee-rtl; }
+@keyframes pulse-marquee { to { transform: translateX(-50%); } }
+@keyframes pulse-marquee-rtl { to { transform: translateX(50%); } }
+.pulse-ticker:hover .pulse-track { animation-play-state: paused; }
+html:lang(ckb) .pulse-track, html:lang(ar) .pulse-track { line-height: 1.6; }
+@media (prefers-reduced-motion: reduce) { .pulse-track, .pulse-dot { animation: none; } }

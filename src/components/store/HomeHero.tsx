@@ -235,3 +235,81 @@ export function HeroStage({ name, tagline, cover, shopNow }: HeroProps) {
     </section>
   );
 }
+
+/**
+ * Atelier runway (premium): a centered tagline eyebrow and the store name in the display face, then the cover as a
+ * cinematic crop (4:5 on phones, 21:9 from md) inside a hairline inset frame in the accent colour, a quiet text CTA.
+ */
+export function HeroRunway({ name, tagline, cover, shopNow }: HeroProps) {
+  return (
+    <section className="grid justify-items-center gap-6 text-center md:gap-10" data-testid="store-hero" data-hero="runway">
+      <div className="grid justify-items-center gap-4 md:gap-5">
+        {tagline && <p className="at-eyebrow line-clamp-2 max-w-xl text-sm text-muted md:text-base">{tagline}</p>}
+        <h1 className="sf-display at-name break-words text-balance">{name}</h1>
+      </div>
+      {cover ? (
+        <div className="at-frame relative w-full overflow-hidden bg-st-surface">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cover.url}
+            srcSet={buildSrcSet(cover.renditions)}
+            sizes={cover.renditions?.length ? "100vw" : undefined}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-[4/5] w-full object-cover sm:aspect-[16/9] md:aspect-[21/9]"
+            style={coverStyle(cover)}
+          />
+          <span aria-hidden className="at-inset pointer-events-none absolute inset-3 md:inset-5" />
+        </div>
+      ) : (
+        <span aria-hidden className="at-rule h-px w-24" />
+      )}
+      <a href="#products" className="at-cta inline-flex min-h-12 items-center gap-3 px-8 text-sm">{shopNow}</a>
+    </section>
+  );
+}
+
+/**
+ * Pulse bento (premium): a name tile with a live dot and the CTA, the cover as a tall tile, and an accent ticker
+ * that loops the tagline (still under prefers-reduced-motion). Stacks name → cover → ticker on phones.
+ */
+export function HeroPulse({ name, tagline, cover, shopNow }: HeroProps) {
+  const words = tagline || name;
+  return (
+    <section className={`grid gap-2 sm:gap-3 ${cover ? "md:grid-cols-[1.25fr_1fr]" : ""}`} data-testid="store-hero" data-hero="pulse">
+      <div className="pulse-tile relative grid min-h-[15rem] content-between gap-8 overflow-hidden rounded-[1.75rem] bg-st-surface p-6 ring-1 ring-st-border md:min-h-[22rem] md:p-10">
+        <span aria-hidden className="pulse-dot inline-flex h-3 w-3 rounded-full bg-st-accent" />
+        <h1 className="t-hero break-words">{name}</h1>
+        <a href="#products" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-accent px-8 text-base font-bold text-st-on-accent transition-transform duration-150 active:scale-[0.98] sm:w-fit">{shopNow}</a>
+      </div>
+      {cover && (
+        <div className="relative overflow-hidden rounded-[1.75rem] bg-st-surface md:row-span-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cover.url}
+            srcSet={buildSrcSet(cover.renditions)}
+            sizes={cover.renditions?.length ? "(min-width: 768px) 45vw, 100vw" : undefined}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-square h-full w-full object-cover md:aspect-auto"
+            style={coverStyle(cover)}
+          />
+        </div>
+      )}
+      <div className="pulse-ticker overflow-hidden rounded-[1.75rem] bg-st-accent py-4 text-st-on-accent" aria-hidden>
+        <div className="pulse-track flex w-max gap-8 whitespace-nowrap text-lg font-bold md:text-2xl">
+          {Array.from({ length: 8 }, (_, i) => (
+            <span key={i} className="flex items-center gap-8">
+              {words}
+              <span className="text-base">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -80,7 +80,27 @@ export const THEME_STUDIO_PRESETS: Record<string, StoreTheme> = {
     cards: { radius: "lg", style: "shadow", ratio: "landscape" },
     background: { kind: "gradient" }, header: { layout: "split" },
   }),
+  // Premium (Max): full designs, not palette swaps (src/lib/theme-studio/designs.ts PREMIUM_DESIGNS).
+  atelier: base("atelier", {
+    design: "atelier",
+    colors: { accent: "#B08D57", bg: "#16120F", surface: "#201A16", text: "#F3EDE4" },
+    type: { pair: "serif-editorial", scale: "l" },
+    buttons: { shape: "square", style: "outline", size: "l" },
+    cards: { radius: "none", style: "hairline", ratio: "portrait" },
+    background: { kind: "solid" }, header: { layout: "centered" },
+  }),
+  pulse: base("pulse", {
+    design: "pulse",
+    colors: { accent: "#C6F432", bg: "#0A0B0F", surface: "#15171E", text: "#F5F7FA" },
+    type: { pair: "mono-bold", scale: "m" },
+    buttons: { shape: "pill", style: "solid", size: "m" },
+    cards: { radius: "lg", style: "shadow", ratio: "square" },
+    background: { kind: "pattern" }, header: { layout: "split" },
+  }),
 };
+
+/** Presets whose design is premium (Max). */
+export const PREMIUM_PRESETS: ReadonlySet<string> = new Set(["atelier", "pulse"]);
 
 /** The editor's starting point keeps the classic composition; "studio" is an opt-in design. */
 export const DEFAULT_THEME: StoreTheme = { ...THEME_STUDIO_PRESETS.studio!, design: "classic" };

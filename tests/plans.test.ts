@@ -71,7 +71,7 @@ describe("plans config (pricing v2, 2026-10-14)", () => {
     for (const k of ["aiDesigner", "exclusiveDesigns", "whiteLabel", "earlyAccess", "priorityStudio", "templatesPremium", "seoAdvanced", "designRefresh", "stores5", "team10"]) {
       expect(maxKeys).toContain(k);
     }
-    for (const k of ["priorityStudio", "templatesPremium", "designRefresh"]) expect(getPlan("max").features.find((f) => f.key === k)?.soon).toBe(true);
+    for (const k of ["priorityStudio", "designRefresh"]) expect(getPlan("max").features.find((f) => f.key === k)?.soon).toBe(true);
     const r = (k: string) => COMPARE.find((x) => x.key === k)!;
     expect(r("stores").max).toBe(5);
     expect(r("team").max).toBe(10);
