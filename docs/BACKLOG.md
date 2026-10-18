@@ -1,5 +1,9 @@
 # Reelcart backlog (top unfinished first)
 
+## LIVE DB HYGIENE (Abdulla Oct 19 00:41)
+Live DB was wiped of test data on Oct 19 (backup kept outside the repo). e2e/gate/smoke/audit specs and scripts/e2e-matrix.mjs default to https://bazarga.vercel.app and sign up `…@example.com` accounts on LIVE; CI itself only uses pglite.
+- [ ] Hourly loop: after ANY run of e2e / gate / smoke / audit specs against live, run `DATABASE_URL=<live POSTGRES_URL_NON_POOLING> npm run db:cleanup-tests` (add `--dry-run` to preview). It deletes `@example.com` accounts older than 30 min + everything they own, "Social Test %" orders on the demo store, and admin_audit rows about test users. Never touches demo@mymarket.app or owners.
+
 ## OWNER ADMIN CONSOLE (Abdulla Oct 18 21:01, subagent; docs/ADMIN.md)
 - [x] A1. Security + audit + overview: DB roles (owner/admin) + ADMIN_EMAILS guard on every page/route/action, step-up confirmations, admin_audit (0030), admin rate limits, noindex, time-limited audited impersonation; Overview KPIs/charts/health
 - [x] A2. Users: search/filter/paginate, inline edit, verify, force logout, suspend/ban/unban, delete, promote/demote, view-as
