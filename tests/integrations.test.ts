@@ -101,7 +101,7 @@ describe("cron routes", () => {
 describe("integration status (/api/health)", () => {
   it("reports drivers and booleans only, never values", () => {
     const s = integrationStatus({ ...r2Alias, EMAIL_FROM: "x <a@b.co>", EMAIL_PROVIDER: "resend", CRON_SECRET: "c".repeat(20), ROOT_DOMAIN: "bazarga.app" }, { serverless: true });
-    expect(s).toEqual({ storage: { driver: "s3" }, email: { driver: "console", keyMissing: true }, cron: true, subdomains: true, push: false, ai: false });
+    expect(s).toEqual({ storage: { driver: "s3" }, email: { driver: "console", keyMissing: true }, cron: true, subdomains: true, push: false, ai: false, aiText: "off" });
     expect(JSON.stringify(s)).not.toMatch(/imgs|acc1|bazarga\.app|ccccc/);
   });
   it("flags misconfigured storage instead of throwing", () => {

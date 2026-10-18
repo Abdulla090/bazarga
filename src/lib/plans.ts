@@ -98,7 +98,7 @@ export const PLANS: Plan[] = [
       { key: "team5" },
       { key: "analyticsAdvanced" },
       { key: "bulkCsv" },
-      { key: "aiDescriptions", soon: true },
+      { key: "aiDescriptions" },
       { key: "lowStock" },
       { key: "priority" },
     ],
@@ -171,7 +171,7 @@ export const COMPARE: FeatureRow[] = [
   { key: "badge", free: "shown", pro: "removed", business: "removed", max: "whiteLabel" },
   { key: "domain", free: false, pro: false, business: soon(true), max: soon(true) },
   { key: "bulkCsv", free: false, pro: false, business: true, max: true },
-  { key: "aiDescriptions", free: false, pro: false, business: soon(true), max: soon(true) },
+  { key: "aiDescriptions", free: false, pro: false, business: true, max: true },
   { key: "lowStock", free: true, pro: true, business: true, max: true },
   { key: "aiDesigner", free: false, pro: false, business: false, max: soon(true) },
   { key: "priorityStudio", free: false, pro: false, business: false, max: soon(true) },
@@ -246,3 +246,13 @@ export type GatedFeature = keyof typeof FEATURE_MIN_PLAN;
 export function hasFeature(plan: PlanId, f: GatedFeature): boolean {
   return planAtLeast(plan, FEATURE_MIN_PLAN[f]);
 }
+
+/**
+ * Monthly AI credits per plan (SF5/SF10, Hark's numbers, change here). Enforced in src/server/services/ai-quota.ts;
+ * a short per-store rate limit applies on top (src/server/actions/ai.ts).
+ */
+export const AI_MONTHLY_LIMIT: Record<"aiDescriptions" | "aiDesigner", Record<PlanId, number>> = {
+  aiDescriptions: { free: 0, pro: 0, business: 300, max: 1000 },
+  aiDesigner: { free: 0, pro: 0, business: 0, max: 30 },
+};
+export type AiFeature = keyof typeof AI_MONTHLY_LIMIT;

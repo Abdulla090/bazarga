@@ -1,6 +1,7 @@
 import { resolveStorageConfig, type StorageEnv } from "./storage/config";
 import { resolveEmailConfig } from "./email";
 import { resolveDomainConfig } from "@/lib/domains";
+import { resolveTextProvider, type AiTextEnv } from "./ai/text";
 
 /**
  * Which external services are plugged in, from env only (pure; shown on /api/health). Driver names and booleans,
@@ -13,6 +14,8 @@ export type IntegrationStatus = {
   subdomains: boolean;
   push: boolean;
   ai: boolean;
+  /** AI text (descriptions, website designer): which buyer key is set, or "off" (demo seller still gets the mock). */
+  aiText: "gemini" | "openai" | "mock" | "off";
 };
 
 type Env = StorageEnv &
@@ -45,5 +48,6 @@ export function integrationStatus(e: Env, runtime: { serverless?: boolean } = {}
     // Same rule as pushConfig() in ./push: all three VAPID values present.
     push: ["VAPID_PUBLIC_KEY", "VAPID_PRIVATE_KEY", "VAPID_SUBJECT"].every((k) => !!str(k)?.trim()),
     ai: !!e.AI_ENABLED && (e.AI_PROVIDER === "mock" || !!e.AI_API_KEY),
+    aiText: resolveTextProvider(e as AiTextEnv)?.name ?? "off",
   };
 }
