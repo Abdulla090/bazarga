@@ -157,7 +157,7 @@
       },
       "q5": {
         "q": "Can I use my own domain?",
-        "a": "Yes, on Business ($50 a month) and Max: connect a domain like shop.yourbrand.com (switching on soon). Free and Pro stores get their own Reelcart link."
+        "a": "Yes, on Business ($50 a month) and Max: connect a domain like shop.yourbrand.com. Free and Pro stores get their own Reelcart link."
       },
       "q6": {
         "q": "How does delivery pricing per city work?",
@@ -842,7 +842,10 @@
     "invite_wrong_account": "This invite is for a different email address.",
     "plan_limit_ai": "You've used this month's AI credits. Upgrade for more.",
     "ai_failed": "The AI service didn't answer. Try again in a moment.",
-    "hint_required": "Type a few words first."
+    "hint_required": "Type a few words first.",
+    "invalid_domain": "That isn't a domain you can use. Try something like shop.yourbrand.com.",
+    "domain_taken": "Another store already uses this domain.",
+    "domain_not_pointing": "Your domain doesn't point to us yet. Check the record, then try again in a few minutes."
   },
   "pwa": {
     "installTitle": "Install Reelcart",
@@ -1621,5 +1624,31 @@
     "copied": "Copied",
     "addTags": "Add to description",
     "connect": "Operator: AI writing is ready but not connected. Set GEMINI_API_KEY or OPENAI_API_KEY (docs/SETUP.md). Sellers don't see this note."
+  },
+  "domain": {
+    "title": "Custom domain",
+    "linkHint": "Open your store on your own address, like shop.yourbrand.com",
+    "lockTitle": "Your own domain is on Business and Max",
+    "lockBody": "Put your store on an address you own, like shop.yourbrand.com. Shoppers see your brand in the address bar.",
+    "formTitle": "Your domain",
+    "hint": "Type a domain you own. A subdomain like shop.yourbrand.com is the easiest to connect.",
+    "label": "Domain",
+    "save": "Save domain",
+    "remove": "Remove domain",
+    "stepsTitle": "Add this record at your domain provider",
+    "stepsHint": "Open the DNS settings where you bought the domain (GoDaddy, Namecheap, Cloudflare…), add this record, then come back and tap Verify.",
+    "type": "Type",
+    "name": "Name / Host",
+    "value": "Value / Points to",
+    "verify": "Verify now",
+    "verifying": "Checking…",
+    "verified": "Connected",
+    "notVerified": "Not verified yet",
+    "verifiedHint": "Your store opens at {host}. The secure lock (HTTPS) can take a few minutes to appear.",
+    "notVerifiedHint": "We can't see the record yet. DNS changes take from a few minutes up to 24 hours.",
+    "found": "What we see now: {found}",
+    "foundNone": "No record found for this domain yet.",
+    "hostingAuto": "Your domain is added to our servers automatically.",
+    "hostingManual": "After it's verified, the platform team switches it on for your store (usually within a day)."
   }
 }

@@ -93,7 +93,7 @@ export const PLANS: Plan[] = [
     features: [
       { key: "productsUnlimited" },
       { key: "studio", soon: true },
-      { key: "domain", soon: true },
+      { key: "domain" },
       { key: "stores3" },
       { key: "team5" },
       { key: "analyticsAdvanced" },
@@ -169,7 +169,7 @@ export const COMPARE: FeatureRow[] = [
   { key: "payments", free: "codWa", pro: soon("codOnline"), business: soon("codOnline"), max: soon("codOnline") },
   { key: "discounts", free: false, pro: true, business: true, max: true },
   { key: "badge", free: "shown", pro: "removed", business: "removed", max: "whiteLabel" },
-  { key: "domain", free: false, pro: false, business: soon(true), max: soon(true) },
+  { key: "domain", free: false, pro: false, business: true, max: true },
   { key: "bulkCsv", free: false, pro: false, business: true, max: true },
   { key: "aiDescriptions", free: false, pro: false, business: true, max: true },
   { key: "lowStock", free: true, pro: true, business: true, max: true },

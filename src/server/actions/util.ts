@@ -17,7 +17,7 @@ export type ActionState = {
 const SPECIFIC = new Set([
   "email_taken", "invalid_credentials", "slug_taken", "invalid_slug", "invalid_phone", "password_short",
   "invalid_or_expired_token", "invalid_city", "product_unavailable", "payment_method_unavailable", "out_of_stock",
-  "invalid_transition", "file_too_large", "unsupported_image_type", "ai_disabled", "plan_limit_ai", "hint_required", "ai_failed", "name_required", "empty_file", "nothing_to_read",
+  "invalid_transition", "file_too_large", "unsupported_image_type", "ai_disabled", "plan_limit_ai", "invalid_domain", "domain_taken", "domain_not_pointing", "hint_required", "ai_failed", "name_required", "empty_file", "nothing_to_read",
   "image_too_large", "invalid_color", "invalid_threshold", "invalid_image_url",
   "phone_operator", "address_required", "invalid_area", "variant_required", "discount_invalid", "discount_inactive",
   "discount_not_started", "discount_expired", "discount_used_up", "discount_below_minimum",
