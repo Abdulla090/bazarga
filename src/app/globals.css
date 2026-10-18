@@ -1032,3 +1032,132 @@ html:lang(ckb) .storefront[data-design="pulse"] .store-name, html:lang(ar) .stor
 .pulse-ticker:hover .pulse-track { animation-play-state: paused; }
 html:lang(ckb) .pulse-track, html:lang(ar) .pulse-track { line-height: 1.6; }
 @media (prefers-reduced-motion: reduce) { .pulse-track, .pulse-dot { animation: none; } }
+
+/* =====================================================================================================================
+ * Design system v2 (docs/DESIGN-SYSTEM.md). Every axis of a store's composition is a data attribute on .storefront:
+ * data-type (type pair), data-density, data-surface, data-motion, data-card, data-product, data-header. Placed last so a
+ * theme's own choice wins over the older per-design rules above. Arabic-script pages (ckb/ar) get their own weights
+ * and taller line boxes so harakat and the Sorani letters (ڕ ڵ ۆ ێ) never clip; nothing here uppercases Arabic.
+ * =================================================================================================================== */
+
+/* ---- Typography: one display face + one body face per pair, each with a Kurdish/Arabic partner. ---- */
+.storefront {
+  --sf-body: var(--font-inter), var(--font-inter-ext), var(--font-vazirmatn), system-ui, sans-serif;
+  --sf-display: var(--sf-body);
+  --sf-label: var(--sf-body);
+  --sf-dw: 350;           /* display weight (Latin) */
+  --sf-dw-ar: 500;        /* display weight (Arabic script) */
+  --sf-dtrack: -0.03em;   /* display tracking (Latin) */
+  --sf-dcase: none;       /* display case (Latin only) */
+  --sf-lcase: none;       /* label case (Latin only) */
+  --sf-ltrack: 0.02em;
+  font-family: var(--sf-body);
+}
+.storefront[data-type="serif-editorial"] { --sf-display: var(--font-fraunces), var(--font-fraunces-ext), var(--font-naskh), Georgia, "Times New Roman", serif; --sf-dw: 340; --sf-dw-ar: 600; --sf-dtrack: -0.02em; }
+.storefront[data-type="luxe-serif"] { --sf-display: var(--font-playfair), var(--font-fraunces-ext), var(--font-naskh), Georgia, serif; --sf-dw: 400; --sf-dw-ar: 500; --sf-dtrack: -0.01em; --sf-lcase: uppercase; --sf-ltrack: 0.18em; }
+.storefront[data-type="rounded-soft"] { --sf-body: var(--font-nunito), var(--font-nunito-ext), var(--font-vazirmatn), system-ui, sans-serif; --sf-display: var(--sf-body); --sf-dw: 750; --sf-dw-ar: 700; --sf-dtrack: -0.02em; }
+.storefront[data-type="playful"] { --sf-body: var(--font-nunito), var(--font-nunito-ext), var(--font-vazirmatn), system-ui, sans-serif; --sf-display: var(--font-nunito), var(--font-nunito-ext), var(--font-kufi), system-ui, sans-serif; --sf-dw: 900; --sf-dw-ar: 800; --sf-dtrack: -0.035em; }
+.storefront[data-type="mono-bold"] { --sf-display: var(--font-jetbrains), var(--font-inter-ext), var(--font-plex-arabic), ui-monospace, monospace; --sf-label: var(--sf-display); --sf-dw: 700; --sf-dw-ar: 700; --sf-dtrack: -0.03em; --sf-dcase: uppercase; --sf-lcase: uppercase; --sf-ltrack: 0.06em; }
+.storefront[data-type="tech-mono"] { --sf-body: var(--font-grotesk), var(--font-grotesk-ext), var(--font-plex-arabic), system-ui, sans-serif; --sf-display: var(--sf-body); --sf-label: var(--font-jetbrains), var(--font-inter-ext), var(--font-plex-arabic), ui-monospace, monospace; --sf-dw: 600; --sf-dw-ar: 700; --sf-dtrack: -0.035em; --sf-lcase: uppercase; --sf-ltrack: 0.08em; }
+.storefront[data-type="grotesk"] { --sf-display: var(--font-grotesk), var(--font-grotesk-ext), var(--font-plex-arabic), system-ui, sans-serif; --sf-dw: 500; --sf-dw-ar: 700; --sf-dtrack: -0.04em; --sf-lcase: uppercase; --sf-ltrack: 0.12em; }
+.storefront[data-type="condensed"] { --sf-display: var(--font-oswald), var(--font-oswald-ext), var(--font-kufi), Impact, sans-serif; --sf-label: var(--sf-display); --sf-dw: 600; --sf-dw-ar: 800; --sf-dtrack: 0; --sf-dcase: uppercase; --sf-lcase: uppercase; --sf-ltrack: 0.1em; }
+
+.storefront :is(.t-hero, .t-display, .t-headline, .t-title, .sf-display, .store-name) {
+  font-family: var(--sf-display);
+  font-weight: var(--sf-dw);
+  letter-spacing: var(--sf-dtrack);
+  text-transform: var(--sf-dcase);
+}
+.storefront .t-label { font-family: var(--sf-label); text-transform: var(--sf-lcase); letter-spacing: var(--sf-ltrack); }
+.storefront[data-type="condensed"] :is(.t-hero, .t-display) { line-height: 0.92; }
+.storefront[data-type="luxe-serif"] .t-hero { font-style: normal; }
+html:is(:lang(ckb), :lang(ar)) .storefront :is(.t-hero, .t-display, .t-headline, .t-title, .sf-display, .store-name) {
+  font-weight: var(--sf-dw-ar);
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.45;
+  padding-block: 0.04em;
+}
+html:is(:lang(ckb), :lang(ar)) .storefront .t-label { letter-spacing: 0; text-transform: none; }
+
+/* ---- Density: rhythm between sections, grid gaps, page margins. ---- */
+.storefront[data-density="compact"] { --section-gap: 2.5rem; --grid-gap: 0.5rem; }
+.storefront[data-density="airy"] { --section-gap: 5rem; --grid-gap: 1rem; }
+@media (min-width: 640px) {
+  .storefront[data-density="compact"] { --section-gap: 3.5rem; --grid-gap: 0.75rem; }
+  .storefront[data-density="airy"] { --section-gap: 7rem; --grid-gap: 1.75rem; }
+}
+@media (min-width: 1024px) {
+  .storefront[data-density="compact"] { --section-gap: 4rem; --grid-gap: 1rem; }
+  .storefront[data-density="airy"] { --section-gap: 10rem; --grid-gap: 2.5rem; --page-margin: 4rem; }
+}
+
+/* ---- Surfaces. ---- */
+/* Paper: a faint printed grain over the page colour, hairline rules, cards on the surface colour. */
+.storefront[data-surface="paper"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), var(--t-bg-image, none);
+  background-size: 160px 160px, var(--t-bg-size, auto);
+}
+.storefront[data-surface="paper"] .store-header { border-bottom: 1px solid var(--st-border); }
+.storefront[data-surface="paper"] .sf-frame { background: var(--st-surface); }
+/* Glass: a frosted sticky header and translucent framed cards. */
+.storefront[data-surface="glass"] .store-header { background: color-mix(in srgb, var(--st-bg) 72%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); border-bottom: 1px solid color-mix(in srgb, var(--st-border) 70%, transparent); }
+.storefront[data-surface="glass"] .sf-frame { background: color-mix(in srgb, var(--st-surface) 80%, transparent); border: 1px solid var(--st-border); }
+/* Blocks: hard 2 px borders with an offset shadow on frames and buttons; nothing soft. */
+.storefront[data-surface="blocks"] { --blk: 2px solid var(--st-fg); }
+.storefront[data-surface="blocks"] .store-header { border-bottom: var(--blk); }
+.storefront[data-surface="blocks"] .sf-frame { border: var(--blk); box-shadow: 4px 4px 0 var(--st-fg); }
+[dir="rtl"] .storefront[data-surface="blocks"] .sf-frame { box-shadow: -4px 4px 0 var(--st-fg); }
+.storefront[data-surface="blocks"] :is(.btn-gold, .btn-ghost) { border: var(--blk); box-shadow: 3px 3px 0 var(--st-fg); }
+[dir="rtl"] .storefront[data-surface="blocks"] :is(.btn-gold, .btn-ghost) { box-shadow: -3px 3px 0 var(--st-fg); }
+.storefront[data-surface="blocks"] :is(.btn-gold, .btn-ghost):active { box-shadow: none; transform: translate(2px, 2px); }
+.storefront[data-surface="blocks"] .sf-wa { border-radius: 0; box-shadow: 6px 6px 0 var(--st-fg); --tw-ring-color: var(--st-fg); border: var(--blk); }
+/* Glow: soft accent light pooled at the top of the page; cards float on tinted shadows. */
+.storefront[data-surface="glow"] {
+  background-image:
+    radial-gradient(60rem 36rem at 85% -10%, color-mix(in srgb, var(--st-accent) 16%, transparent), transparent 70%),
+    radial-gradient(48rem 30rem at -10% 20%, color-mix(in srgb, var(--st-accent) 9%, transparent), transparent 70%),
+    var(--t-bg-image, none);
+  background-repeat: no-repeat;
+}
+.storefront[data-surface="glow"] .sf-frame { box-shadow: 0 24px 60px -28px color-mix(in srgb, var(--st-accent) 45%, transparent); }
+.storefront[data-surface="glow"] .store-header { background: color-mix(in srgb, var(--st-bg) 80%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+
+/* ---- Motion personality (all of it off under prefers-reduced-motion; no JS, scroll-driven where supported). ---- */
+@keyframes sf-slide { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes sf-fade { from { opacity: 0; } to { opacity: 1; } }
+.storefront[data-motion="none"] .reveal { animation: none !important; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .storefront[data-motion="slide"] :is(.reveal, [data-testid="product-grid"] > *) { animation: sf-slide linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+    .storefront[data-motion="fade"] :is(.reveal, [data-testid="product-grid"] > *) { animation: sf-fade linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+  }
+  .storefront[data-motion="fade"] .sf-frame img, .storefront[data-motion="slide"] .sf-frame img { transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+}
+
+/* ---- Story / WhatsApp sections per surface. ---- */
+.storefront[data-surface="paper"] .sf-story { border-color: var(--st-fg); }
+.storefront:is([data-design="gallery"], [data-design="atelier"], [data-design="editorial"], [data-design="mono"]) .sf-wa { border-radius: 0; }
+
+/* ---- Header variants beyond the original three. ---- */
+.storefront[data-header="ticker"] .store-announce { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html:is(:lang(ckb), :lang(ar)) .store-ticker .pulse-track { text-transform: none; letter-spacing: 0; line-height: 1.7; }
+.storefront[data-header="search"] .store-header { border-bottom: 1px solid var(--st-border); }
+
+/* ---- Product page per layout. ---- */
+.storefront[data-product="stacked"] [data-testid="product-name"] { text-wrap: balance; }
+@media (min-width: 768px) {
+  .storefront[data-product="stacked"] [data-pdp="stacked"] [data-testid="product-name"] { font-size: clamp(2.25rem, 4vw, 3.5rem); }
+  .storefront[data-product="reverse"] [data-pdp="reverse"] [data-testid="product-name"] { font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1.02; }
+  .storefront[data-product="wide"] [data-pdp="wide"] > :last-child { padding: 1.5rem; background: var(--st-surface); border: 1px solid var(--st-border); border-radius: var(--t-radius-card, 12px); }
+}
+html:is(:lang(ckb), :lang(ar)) .storefront[data-product] [data-pdp] [data-testid="product-name"] { line-height: 1.45; }
+
+/* ---- Corner language follows the theme's card radius everywhere, including the designed heroes' tiles. ---- */
+.storefront .hero-cta { border-radius: var(--t-radius-btn, 9999px); }
+.storefront[data-radius="none"] :is(.rounded-2xl, .rounded-xl, .rounded-lg, .rounded-3xl, [class*="rounded-[1"], [class*="rounded-[2"]):not(.rounded-full) { border-radius: 0; }
+.storefront[data-radius="sm"] :is(.rounded-2xl, .rounded-3xl, [class*="rounded-[1"], [class*="rounded-[2"]):not(.rounded-full) { border-radius: 0.375rem; }
+.storefront[data-radius="lg"] :is(.rounded-xl, .rounded-2xl) { border-radius: 1.5rem; }
+.storefront :is(.btn-ghost, .btn-gold) { border-radius: var(--t-radius-btn, 9999px); }
+.storefront :is(.t-headline, .t-title).truncate { line-height: 1.25; }
+.storefront[data-surface="glass"] .spot-panel { background: radial-gradient(80% 80% at 50% 30%, color-mix(in srgb, var(--st-accent) 22%, var(--st-surface)), var(--st-surface)); }

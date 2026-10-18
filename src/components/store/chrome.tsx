@@ -37,7 +37,7 @@ export async function StoreHeader({ store, design }: { store: ChromeStore; desig
       <Icon as={Search} className="h-[22px] w-[22px]" />
     </Link>
   );
-  if (design.id === "market") {
+  if (design.header === "search") {
     return (
       <header className="store-header sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
         <div className="store-page flex h-16 items-center gap-3 md:gap-8">
@@ -333,5 +333,26 @@ export async function StoreFooter({
         {bar}
       </footer>
     </>
+  );
+}
+
+/**
+ * Ticker header (design system v2, header "ticker"): a looping accent band above the header carrying the announcement
+ * (or the tagline, or the store name). Decorative: the real announcement stays in #announce-bar for screen readers.
+ * Reduced motion: the band stands still (globals.css .pulse-track).
+ */
+export function HeaderTicker({ text }: { text: string }) {
+  const run = text.slice(0, 80);
+  return (
+    <div className="store-ticker pulse-ticker overflow-hidden bg-st-accent py-2 text-st-on-accent" aria-hidden data-testid="header-ticker">
+      <div className="pulse-track flex w-max gap-6 whitespace-nowrap text-[13px] font-semibold uppercase tracking-[0.08em]">
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="flex items-center gap-6">
+            <span>{run}</span>
+            <TickerStar className="h-3 w-3 shrink-0" />
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }

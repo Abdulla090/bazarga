@@ -6,8 +6,8 @@ import { PreviewBridge } from "@/components/store/PreviewBridge";
 import { SourceCapture } from "@/components/store/SourceCapture";
 import { CookieNotice } from "@/components/store/CookieNotice";
 import { SellerPixels } from "@/components/store/SellerPixels";
-import { StoreHeader, StoreFooter } from "@/components/store/chrome";
-import { resolveDesign } from "./design";
+import { HeaderTicker, StoreHeader, StoreFooter } from "@/components/store/chrome";
+import { resolveStoreDesign } from "./design";
 import { currentLocale } from "@/server/locale";
 import { pickText } from "@/lib/i18n";
 import { resolveTheme, themeStyle } from "@/lib/theme";
@@ -60,16 +60,32 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const about = pickText(store.about, locale);
   const returns = pickText(store.returnPolicy, locale);
   const theme = resolveTheme(store.themePreset, store.accentColor);
-  const hdr = parseTheme(store.themePublished)?.header;
+  const { spec: design, previewTheme } = await resolveStoreDesign(slug, store.themePublished, store.plan);
+  const active = previewTheme ?? parseTheme(store.themePublished);
+  const hdr = active?.header;
   const wa = store.whatsapp ? normalizePhone(store.whatsapp) : null;
-  const design = await resolveDesign(slug, store.themePublished, store.plan);
+  // Design system v2: every axis of the composition is a data attribute; globals.css "Design system v2" styles them.
   return (
-    <div className="storefront flex min-h-dvh flex-col" data-theme={store.themePreset} data-design={design.id} data-header={hdr?.layout ?? "split"} style={{ ...themeStyle(theme), ...publishedThemeStyle(store.themePublished) }}>
+    <div
+      className="storefront flex min-h-dvh flex-col"
+      data-theme={store.themePreset}
+      data-design={design.id}
+      data-header={design.header}
+      data-type={design.type}
+      data-density={design.density}
+      data-surface={design.surface}
+      data-motion={design.motion}
+      data-card={design.card}
+      data-product={design.product}
+      data-radius={active?.cards.radius ?? "md"}
+      style={{ ...themeStyle(theme), ...publishedThemeStyle(previewTheme ?? store.themePublished) }}
+    >
       <PreviewBridge />
       <SourceCapture slug={store.slug} />
       <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
       <CookieNotice tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} labels={{ title: t("cookie.title"), body: t("cookie.body"), accept: t("cookie.accept"), decline: t("cookie.decline") }} />
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
+      {design.header === "ticker" && <HeaderTicker text={hdr?.announce || pickText(store.tagline, locale) || store.name} />}
       <StoreHeader store={store} design={design} />
       {/* min-height keeps the footer below the fold while a page streams in or the cart reads localStorage, so it
           never jumps up into view (desktop CLS 0.06-0.11 on cart / search / offers before). */}

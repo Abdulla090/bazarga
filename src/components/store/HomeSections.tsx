@@ -204,3 +204,53 @@ export function CollectionIndex({
     </section>
   );
 }
+
+/**
+ * Story (design system v2): the seller's own "about" text as a home section. Display face, generous measure; nothing is
+ * invented: the section only renders when the seller wrote an about text.
+ */
+export function StoryBand({ title, body, index }: { title: string; body: string; index: string }) {
+  return (
+    <section aria-labelledby="story-h" className="section sf-story grid gap-5 border-y border-st-border py-12 sm:py-16 md:grid-cols-12 md:gap-x-[var(--grid-gap)]" data-testid="story">
+      <div className="md:col-span-4"><SectionHead id="story-h" title={title} index={index} /></div>
+      <p className="sf-display whitespace-pre-line text-balance text-2xl leading-[1.45] sm:text-3xl md:col-span-8 md:col-start-5 md:text-4xl">{body}</p>
+    </section>
+  );
+}
+
+/** Social strip: six product photos in an Instagram-style square grid, the handle and a follow link. */
+export function SocialStrip({ instagram, photos, slug, locale, title, body, index }: { instagram: string; photos: CatalogProduct[]; slug: string; locale: Locale; title: string; body: string; index: string }) {
+  if (photos.length < 3) return null;
+  return (
+    <section aria-labelledby="social-h" className="section grid gap-5" data-testid="social-strip">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <SectionHead id="social-h" title={title} index={index} />
+        <a href={`https://instagram.com/${instagram}`} target="_blank" rel="noopener noreferrer" className="btn-ghost min-h-11 px-5" dir="ltr">@{instagram}</a>
+      </div>
+      <p className="-mt-2 text-[15px] text-muted">{body}</p>
+      <ul className="grid grid-cols-3 gap-1 sm:grid-cols-6 sm:gap-2">
+        {photos.slice(0, 6).map((p, i) => (
+          <li key={p.id} className="relative aspect-square overflow-hidden">
+            <Link href={`/s/${slug}/p/${p.id}`} className="block h-full w-full" aria-label={pickText(p.name, locale)}>
+              {p.image && <ResponsiveImage image={p.image} alt="" sizes="(min-width: 640px) 16vw, 33vw" index={i + 8} className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.04] motion-reduce:transition-none" />}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** WhatsApp band: invite to order or ask by chat; works without JS (a plain link). */
+export function WhatsAppBand({ href, title, body, cta, index }: { slug: string; href: string; title: string; body: string; cta: string; index: string }) {
+  return (
+    <section aria-labelledby="wa-h" className="section sf-wa grid items-center gap-5 rounded-2xl bg-st-surface p-6 ring-1 ring-inset ring-st-border sm:p-10 md:grid-cols-[1fr_auto]" data-testid="whatsapp-band">
+      <div className="grid gap-2">
+        {index && <span className="t-label section-index" aria-hidden>{index}</span>}
+        <h2 id="wa-h" className="t-headline">{title}</h2>
+        <p className="text-[15px] leading-relaxed text-muted">{body}</p>
+      </div>
+      <a href={href} target="_blank" rel="noopener noreferrer" className="btn btn-gold min-h-12 px-7">{cta}</a>
+    </section>
+  );
+}

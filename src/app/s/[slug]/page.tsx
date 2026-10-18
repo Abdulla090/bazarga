@@ -21,8 +21,8 @@ import { normalizePhone } from "@/lib/phone";
 import { Icon, MessageCircle, Search, Truck, X } from "@/components/ui/icons";
 import { ViewPixel } from "@/components/store/ViewPixel";
 import { ProductStrip, SectionHead } from "@/components/store/MiniProductCard";
-import { CollectionBento, CollectionIndex, Spotlight } from "@/components/store/HomeSections";
-import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroPulse, HeroRunway, HeroSplit, HeroStage, HeroType } from "@/components/store/HomeHero";
+import { CollectionBento, CollectionIndex, SocialStrip, Spotlight, StoryBand, WhatsAppBand } from "@/components/store/HomeSections";
+import { HeroArch, HeroBanner, HeroFullbleed, HeroMasthead, HeroPulse, HeroRunway, HeroSplit, HeroSpotlight, HeroStage, HeroType } from "@/components/store/HomeHero";
 import { numberSections, type HomeSection } from "@/lib/theme-studio/designs";
 import { resolveDesign } from "./design";
 import { OfferBanner } from "@/components/store/OfferBanner";
@@ -106,7 +106,8 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
   const showCollections = browsing && usedCats.length >= 2;
   const hasOffersStrip = browsing && !!(offer || minFee !== null);
-  const idx = numberSections(design.sections, { collections: showCollections, best: best.length > 0, spotlight: !!spot, sale: saleStrip.length > 0 });
+  const about = pickText(store.about, locale).trim();
+  const idx = numberSections(design.sections, { collections: showCollections, best: best.length > 0, spotlight: !!spot, sale: saleStrip.length > 0, story: browsing && !!about, social: browsing && !!store.instagram, whatsapp: browsing && !!wa });
   const allIndex = String(Object.values(idx).filter(Boolean).length + 1).padStart(2, "0");
   const look = design.card;
   const cover = store.coverImageUrl ? { url: store.coverImageUrl, renditions: store.coverImageRenditions, placeholder: store.coverImagePlaceholder } : null;
@@ -147,7 +148,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const catNav =
     usedCats.length > 0 || onSale.length > 0
       ? catItems.map((it) => (
-          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.id === "editorial" ? "editorial" : design.id === "market" ? "market" : design.id === "gallery" ? "gallery" : design.id === "mono" ? "mono" : design.id === "studio" ? "studio" : "classic"](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
+          <Link key={it.key} href={it.href} aria-current={it.on ? "page" : undefined} className={catCls[design.chips](it.on)} data-testid={"testId" in it ? it.testId : undefined}>
             {it.label}
           </Link>
         ))
@@ -169,7 +170,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     ),
     collections:
       showCollections &&
-      (design.id === "editorial" ? (
+      (design.chips === "editorial" ? (
         <CollectionIndex categories={usedCats} products={products} slug={store.slug} locale={locale} title={t("collections")} index={idx.collections} countLabel={(count) => t("itemsCount", { count })} />
       ) : (
         <CollectionBento categories={usedCats} products={products} slug={store.slug} locale={locale} title={t("collections")} index={idx.collections} countLabel={(count) => t("itemsCount", { count })} />
@@ -206,6 +207,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         look={look}
       />
     ),
+    story: browsing && about ? <StoryBand title={t("storyTitle")} body={about} index={idx.story} /> : null,
+    social: browsing && store.instagram ? <SocialStrip instagram={store.instagram} photos={withPhoto.slice(0, 6)} slug={slug} locale={locale} title={t("socialTitle")} body={t("socialBody")} index={idx.social} /> : null,
+    whatsapp: browsing && wa ? <WhatsAppBand slug={slug} href={waLink(wa, t("waStoreIntro", { store: store.name }))} title={t("waBandTitle")} body={t("waBandBody")} cta={t("chatWhatsApp")} index={idx.whatsapp} /> : null,
     rail: null,
   };
 
@@ -225,7 +229,13 @@ export default async function StorefrontPage({ params, searchParams }: { params:
       })) }} />}
       {browsing && (
         <>
-          {design.hero === "masthead" ? <HeroMasthead {...heroProps} /> : design.hero === "banner" ? <HeroBanner {...heroProps} /> : design.hero === "fullbleed" ? <HeroFullbleed {...heroProps} /> : design.hero === "arch" ? <HeroArch {...heroProps} /> : design.hero === "type" ? <HeroType {...heroProps} /> : design.hero === "stage" ? <HeroStage {...heroProps} /> : design.hero === "runway" ? <HeroRunway {...heroProps} /> : design.hero === "pulse" ? <HeroPulse {...heroProps} /> : <HeroSplit {...heroProps} />}
+          {design.hero === "spotlight" ? (() => {
+            const hp = withPhoto.find((p) => p.badge === "featured") ?? best.find((p) => p.image && !p.soldOut) ?? withPhoto[0];
+            return <HeroSpotlight {...heroProps} product={hp ? { href: `/s/${slug}/p/${hp.id}`, title: pickText(hp.name, locale), price: hp.priceMax > hp.price ? from.replace("{price}", formatIQD(hp.price, locale)) : formatIQD(hp.price, locale), image: hp.image, view: t("view") } : null} />;
+          })() : (() => {
+            const Hero = { split: HeroSplit, masthead: HeroMasthead, banner: HeroBanner, fullbleed: HeroFullbleed, arch: HeroArch, type: HeroType, stage: HeroStage, runway: HeroRunway, pulse: HeroPulse, spotlight: HeroSplit }[design.hero];
+            return <Hero {...heroProps} />;
+          })()}
           {design.sections.map((k) => (
             <Fragment key={k}>{blocks[k]}</Fragment>
           ))}
@@ -234,23 +244,23 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
       {/* All products: heading, then category links (start) and search (end) on one row from md up. */}
       <section id="products" aria-labelledby="grid-h" className={`grid scroll-mt-24 gap-6 sm:gap-8 ${browsing ? "section" : ""}`} data-grid={design.grid}>
-        <SectionHead id="grid-h" title={offers ? t("offers") : t("allProducts")} index={browsing && design.id !== "market" ? allIndex : undefined} testId="grid-title" />
-        {catNav && design.id === "market" && (
+        <SectionHead id="grid-h" title={offers ? t("offers") : t("allProducts")} index={browsing && design.chips !== "market" ? allIndex : undefined} testId="grid-title" />
+        {catNav && design.chips === "market" && (
           <div className="rail sticky top-16 z-10 -mx-[var(--page-margin)] overflow-x-auto border-b border-st-border bg-st-bg/95 px-[var(--page-margin)] py-2 backdrop-blur" data-testid="category-rail">
             <nav className="flex gap-2" aria-label={t("products")}>{catNav}</nav>
           </div>
         )}
         <div className="grid-12 gap-y-4">
-          {catNav && design.id !== "market" && (
+          {catNav && design.chips !== "market" && (
             <nav
-              className={`col-span-4 md:col-span-8 ${design.id === "editorial" ? "flex flex-wrap gap-x-7 gap-y-1" : "rail -mx-[var(--page-margin)] flex gap-2 overflow-x-auto px-[var(--page-margin)] md:mx-0 md:flex-wrap md:px-0"}`}
+              className={`col-span-4 md:col-span-8 ${design.chips === "editorial" ? "flex flex-wrap gap-x-7 gap-y-1" : "rail -mx-[var(--page-margin)] flex gap-2 overflow-x-auto px-[var(--page-margin)] md:mx-0 md:flex-wrap md:px-0"}`}
               aria-label={t("products")}
             >
               {catNav}
             </nav>
           )}
           {/* Plain GET form: works without JS, keeps the category. */}
-          <form id="store-search" action={`/s/${slug}#products`} method="get" role="search" className={`col-span-4 flex items-center md:col-span-4 md:col-start-9 ${design.id === "market" ? "md:hidden" : ""}`}>
+          <form id="store-search" action={`/s/${slug}#products`} method="get" role="search" className={`col-span-4 flex items-center md:col-span-4 md:col-start-9 ${design.header === "search" ? "md:hidden" : ""}`}>
             {c && <input type="hidden" name="c" value={c} />}
             {offers && <input type="hidden" name="offers" value="1" />}
             <label className="relative flex-1">
@@ -263,7 +273,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
                 placeholder={t("searchPlaceholder")}
                 enterKeyHint="search"
                 maxLength={80}
-                className={`h-12 w-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] ${design.id === "classic" || design.id === "studio" ? "rounded-full" : design.id === "editorial" ? "rounded-none" : "rounded-lg"}`}
+                className={`h-12 w-full border border-st-border bg-st-surface ps-11 pe-4 text-base text-st-fg transition-[border-color] duration-150 placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] ${design.chips === "classic" || design.chips === "studio" ? "rounded-full" : design.chips === "editorial" || design.chips === "gallery" || design.chips === "mono" ? "rounded-none" : "rounded-lg"}`}
               />
             </label>
             <button type="submit" className="sr-only">{t("search")}</button>

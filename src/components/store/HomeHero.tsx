@@ -214,7 +214,7 @@ export function HeroStage({ name, tagline, cover, shopNow }: HeroProps) {
         <div className="grid justify-items-start gap-5 md:gap-7">
           <h1 className="t-hero break-words">{name}</h1>
           <HeroTagline text={tagline} className="line-clamp-3 max-w-md text-[17px] leading-snug opacity-90 md:text-xl empty:hidden" />
-          <a href="#products" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-surface px-8 text-base font-semibold text-st-fg transition-transform duration-150 active:scale-[0.98] sm:w-auto">{shopNow}</a>
+          <a href="#products" className="hero-cta inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-surface px-8 text-base font-semibold text-st-fg transition-transform duration-150 active:scale-[0.98] sm:w-auto">{shopNow}</a>
         </div>
         {cover && (
           <div className="overflow-hidden rounded-3xl bg-[#F4F4F5] shadow-e3 ring-4 ring-st-on-accent/20 md:rotate-2 rtl:md:-rotate-2">
@@ -283,7 +283,7 @@ export function HeroPulse({ name, tagline, cover, shopNow }: HeroProps) {
       <div className="pulse-tile relative grid min-h-[15rem] content-between gap-8 overflow-hidden rounded-[1.75rem] bg-st-surface p-6 ring-1 ring-st-border md:min-h-[22rem] md:p-10">
         <span aria-hidden className="pulse-dot inline-flex h-3 w-3 rounded-full bg-st-accent" />
         <h1 className="t-hero break-words">{name}</h1>
-        <a href="#products" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-accent px-8 text-base font-bold text-st-on-accent transition-transform duration-150 active:scale-[0.98] sm:w-fit">{shopNow}</a>
+        <a href="#products" className="hero-cta inline-flex min-h-12 w-full items-center justify-center rounded-full bg-st-accent px-8 text-base font-bold text-st-on-accent transition-transform duration-150 active:scale-[0.98] sm:w-fit">{shopNow}</a>
       </div>
       {cover && (
         <div className="relative overflow-hidden rounded-[1.75rem] bg-st-surface md:row-span-2">
@@ -321,5 +321,34 @@ export function TickerStar({ className }: { className?: string }) {
     <svg aria-hidden viewBox="0 0 24 24" className={className} fill="currentColor">
       <path d="M12 0c.9 6.6 4.4 10.6 12 12-7.6 1.4-11.1 5.4-12 12-.9-6.6-4.4-10.6-12-12 7.6-1.4 11.1-5.4 12-12z" />
     </svg>
+  );
+}
+
+/**
+ * Product spotlight hero (design system v2, hero "spotlight"; Tech Gadget): one real product as the cover. A framed
+ * photo panel, the store name as a mono eyebrow, the product name set huge, its price, and two actions (view it, shop
+ * all). Falls back to the split hero when the store has no product photo yet. Nothing here is invented: name, photo
+ * and price come from the catalogue.
+ */
+export function HeroSpotlight({ name, tagline, cover, shopNow, product }: HeroProps & { product: { href: string; title: string; price: string; image: import("@/server/services/storefront").CatalogProduct["image"]; view: string } | null }) {
+  if (!product?.image) return <HeroSplit name={name} tagline={tagline} cover={cover} shopNow={shopNow} />;
+  const img = product.image;
+  return (
+    <section className="grid-12 items-center gap-y-8 md:min-h-[min(78vh,44rem)]" data-testid="store-hero" data-hero="spotlight">
+      <div className="col-span-4 grid gap-5 md:col-span-6 md:gap-7">
+        <p className="t-label text-muted"><span className="me-2 inline-block h-2 w-2 rounded-full bg-st-accent align-middle" aria-hidden />{name}</p>
+        <h1 className="t-hero break-words">{product.title}</h1>
+        <HeroTagline text={tagline} className="line-clamp-2 max-w-md text-[17px] leading-snug text-muted md:text-xl empty:hidden" />
+        <p className="num text-2xl font-semibold md:text-3xl">{product.price}</p>
+        <div className="flex flex-wrap gap-3">
+          <a href={product.href} className="btn-gold min-h-12 px-8">{product.view}</a>
+          <a href="#products" className="btn-ghost min-h-12 px-8">{shopNow}</a>
+        </div>
+      </div>
+      <a href={product.href} className="spot-panel col-span-4 block overflow-hidden rounded-2xl border border-st-border bg-st-surface md:col-span-6" tabIndex={-1} aria-hidden>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={img.url} srcSet={buildSrcSet(img.renditions)} sizes="(min-width: 768px) 50vw, 100vw" alt="" loading="eager" fetchPriority="high" decoding="async" className="aspect-square w-full object-cover" />
+      </a>
+    </section>
   );
 }
