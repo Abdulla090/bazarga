@@ -3,10 +3,11 @@ import { env } from "../env";
 import { logger } from "../logger";
 
 /**
- * Transactional email behind one small interface. Which provider sends is decided by env only:
- *   EMAIL_DRIVER=resend + RESEND_API_KEY  → Resend HTTP API
- *   EMAIL_DRIVER=brevo  + BREVO_API_KEY   → Brevo HTTP API (free 300/day)
- *   anything else (or a missing key)      → console: the mail is written to the server log (dev, previews, prototype)
+ * Transactional email behind one small interface. Which provider sends is decided by env only (plain fetch, no SDK):
+ *   EMAIL_PROVIDER=resend + EMAIL_API_KEY (or RESEND_API_KEY)  → Resend HTTP API (free 3,000/month)
+ *   EMAIL_PROVIDER=brevo  + EMAIL_API_KEY (or BREVO_API_KEY)   → Brevo HTTP API (free 300/day)
+ *   anything else (or a missing key)                           → console: the mail is written to the server log
+ * EMAIL_DRIVER is the older name of EMAIL_PROVIDER and still works; EMAIL_FROM is the sender ("Name <addr@domain>").
  * Callers never know which one is active; a provider failure throws so the caller decides (password reset logs and
  * carries on, so the endpoint never reveals whether an account exists).
  */
@@ -93,13 +94,29 @@ export class BrevoEmailProvider implements EmailProvider {
   }
 }
 
-type EmailEnv = { EMAIL_DRIVER: string; EMAIL_FROM: string; RESEND_API_KEY?: string; BREVO_API_KEY?: string };
+type EmailEnv = {
+  EMAIL_PROVIDER?: string;
+  EMAIL_DRIVER?: string;
+  EMAIL_API_KEY?: string;
+  EMAIL_FROM: string;
+  RESEND_API_KEY?: string;
+  BREVO_API_KEY?: string;
+};
+
+/** Which provider env asks for and whether its key is present (pure; also used by /api/health). */
+export function resolveEmailConfig(e: EmailEnv): { wanted: string; driver: "console" | "resend" | "brevo"; key?: string } {
+  const wanted = e.EMAIL_PROVIDER || e.EMAIL_DRIVER || "console";
+  const key = wanted === "resend" ? e.RESEND_API_KEY || e.EMAIL_API_KEY : wanted === "brevo" ? e.BREVO_API_KEY || e.EMAIL_API_KEY : undefined;
+  if ((wanted === "resend" || wanted === "brevo") && key) return { wanted, driver: wanted, key };
+  return { wanted, driver: "console" };
+}
 
 /** Pure selection (tested): the configured provider when its key is present, else console. */
 export function selectEmailProvider(e: EmailEnv): EmailProvider {
-  if (e.EMAIL_DRIVER === "resend" && e.RESEND_API_KEY) return new ResendEmailProvider(e.RESEND_API_KEY, e.EMAIL_FROM);
-  if (e.EMAIL_DRIVER === "brevo" && e.BREVO_API_KEY) return new BrevoEmailProvider(e.BREVO_API_KEY, e.EMAIL_FROM);
-  if (e.EMAIL_DRIVER !== "console") logger.warn("email.provider_key_missing", { driver: e.EMAIL_DRIVER, fallback: "console" });
+  const c = resolveEmailConfig(e);
+  if (c.driver === "resend") return new ResendEmailProvider(c.key!, e.EMAIL_FROM);
+  if (c.driver === "brevo") return new BrevoEmailProvider(c.key!, e.EMAIL_FROM);
+  if (c.wanted !== "console") logger.warn("email.provider_key_missing", { driver: c.wanted, fallback: "console" });
   return new ConsoleEmailProvider();
 }
 

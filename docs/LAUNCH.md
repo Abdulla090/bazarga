@@ -36,6 +36,58 @@ FINAL deadlines (Abdulla, Oct 15): Sun 2026-10-18 full prototype live with selle
 ## Thu 29 freeze / Fri 30 launch
 - [x] Live e2e green Oct 15 on bazarga.vercel.app (seller-journey + plan-gating via proxy-aware Playwright config; mobile/legal/error/landing specs also pass live) · [x] Bug bash pass 1 Oct 16 (live crawl all public + dashboard routes x 4 locales x 3 widths: clean after tap-target fixes) · [ ] Thu 29: final bug bash after freeze (scripts/bugbash.mjs)
 
+## Integrations (plug-and-play, env-gated)
+Every external service is off or on a free fallback until its env is set on Vercel (Production). No code change, no
+paid SDK. `GET /api/health` → `integrations` shows which driver is live (names/booleans only). Tests:
+tests/integrations.test.ts (+ tests/deploy.test.ts, tests/launch-ops.test.ts). Live today (Oct 18): storage
+`supabase`, email `console`, cron on, subdomains off.
+
+### Image storage — Cloudflare R2 (or any S3)
+| Env | Value |
+|---|---|
+| `R2_ACCOUNT_ID` | Cloudflare account id (endpoint becomes `https://<id>.r2.cloudflarestorage.com`) |
+| `R2_BUCKET` | bucket name, e.g. `bazarga-images` |
+| `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | R2 API token (Object Read & Write, this bucket only) |
+| `R2_PUBLIC_URL` | public base, e.g. `https://pub-xxxx.r2.dev` or `https://img.<domain>` |
+| `STORAGE_DRIVER` | optional: `r2`/`s3`, `supabase`, `local`. Unset = R2 when the four values above are complete, else Supabase on Vercel, else disk |
+
+The S3_* names (`S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL`) still work and win.
+Fallback: `STORAGE_DRIVER=r2` with a missing value uses Supabase Storage (log `storage.fallback`, health
+`storage.fallback: true`) instead of failing uploads. Existing images keep their stored URLs; only new uploads move.
+
+### Transactional email — Resend or Brevo
+| Env | Value |
+|---|---|
+| `EMAIL_PROVIDER` | `resend` (free 3,000/mo) or `brevo` (free 300/day); unset = `console` (mail written to the log) |
+| `EMAIL_API_KEY` | the provider key (`RESEND_API_KEY` / `BREVO_API_KEY` also work) |
+| `EMAIL_FROM` | `Bazarga <hello@<verified-domain>>`; the domain must be verified at the provider (SPF + DKIM) |
+
+A provider without a key falls back to console and logs `email.provider_key_missing`. Plain `fetch`, 10 s timeout.
+`EMAIL_DRIVER` is the old name of `EMAIL_PROVIDER`.
+
+### Cron — `CRON_SECRET`
+`CRON_SECRET` (16+ chars, set on Vercel) protects every cron route: unset → 404, wrong/missing
+`Authorization: Bearer <CRON_SECRET>` → 401. Source of truth: `src/lib/cron-routes.ts`. External pinger list
+(cron-job.org free, header `Authorization: Bearer <CRON_SECRET>`):
+
+| URL | Method | Schedule |
+|---|---|---|
+| `https://bazarga.vercel.app/api/cron/daily` | GET | daily 03:00 UTC (also in vercel.json, so optional) |
+| `https://bazarga.vercel.app/api/cron/payments` | GET or POST | every 5 min, only once online payments are on |
+
+After a domain move, swap `https://bazarga.vercel.app` for the new `APP_URL`.
+
+### Custom domain / store subdomains
+| Env | Value |
+|---|---|
+| `APP_URL` | `https://<domain>` (canonical, emails, share links) |
+| `ROOT_DOMAIN` | `<domain>`; turns on `<slug>.<domain>` → `/s/<slug>`. Unset = off (stores at `APP_URL/s/<slug>`) |
+| `STORE_SUBDOMAINS` | `false` = kill switch for subdomain routing while keeping `ROOT_DOMAIN` |
+
+Needs: domain added to the Vercel project, plus `*.<domain>` wildcard (Vercel nameservers for the wildcard cert).
+Reserved labels (www, app, api, admin, static, mail, status, cdn, img) never resolve to a store. Logic:
+`src/lib/domains.ts`. Before Oct 18 `ROOT_DOMAIN` defaulted to `mymarket.app`; there is no default now.
+
 ## Needs Abdulla
 - Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).
 - Rasedi: KYC → test keys → set on Vercel (Production): `PAYMENTS_PROVIDER=rasedi`, `RASEDI_MODE=test`, `RASEDI_KEY_ID`, `RASEDI_PRIVATE_KEY`, `RASEDI_WEBHOOK_SECRET` (optional: `RASEDI_GATEWAYS`, `USD_IQD_RATE`=1310, `PLATFORM_COMMISSION_BPS`=0, `RASEDI_FEE_FROM_CUSTOMER`) → test payment → live keys + `RASEDI_MODE=live`. Steps + questions for Rasedi in docs/PAYMENTS.md.
