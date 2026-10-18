@@ -41,6 +41,26 @@ describe("Product Studio local cleanup (SF9)", () => {
     const all = new Uint8Array(40 * 30).fill(1);
     expect(autoCropBox(all, 40, 30)).toEqual({ x: 0, y: 0, w: 40, h: 30 });
   });
+  it("stops at a low-contrast product outline (beige product on a beige backdrop) at any photo size", () => {
+    for (const [W, H] of [[60, 40], [900, 600]] as const) {
+      const d = new Uint8ClampedArray(W * H * 4);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const inside = x >= W * 0.3 && x < W * 0.7 && y >= H * 0.25 && y < H * 0.8;
+        const i = (y * W + x) * 4;
+        // backdrop 214,210,202 with a soft vertical gradient; product 226,214,190 (max channel diff ≈ 12)
+        const g = Math.round((y / H) * 6);
+        d.set(inside ? [226, 214, 190, 255] : [214 - g, 210 - g, 202 - g, 255], i);
+      }
+      const img: Rgba = { data: d, width: W, height: H };
+      const m = backgroundMask(img);
+      expect(m[0]).toBe(1);
+      expect(m[(H - 1) * W + W - 1]).toBe(1);
+      expect(m[Math.floor(H / 2) * W + Math.floor(W / 2)]).toBe(0);
+      let inner = 0;
+      for (let y = Math.ceil(H * 0.3); y < H * 0.75; y++) for (let x = Math.ceil(W * 0.35); x < W * 0.65; x++) inner += m[y * W + x]!;
+      expect(inner).toBe(0);
+    }
+  });
   it("brightness/contrast move mid-tones and clamp", () => {
     const img: Rgba = { data: new Uint8ClampedArray([100, 100, 100, 255, 250, 250, 250, 255]), width: 2, height: 1 };
     enhance(img, 10, 20);
