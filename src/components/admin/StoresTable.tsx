@@ -72,7 +72,7 @@ export function StoresTable({ rows, q, plan, state, page, total, size }: { rows:
                 <tr key={s.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3 md:table-row md:p-0" data-testid="store-row">
                   <td className="md:px-3 md:py-2"><input type="checkbox" className="size-5 md:size-4" aria-label={s.slug} checked={sel.has(s.id)} onChange={() => toggle(s.id)} /></td>
                   <td className="min-w-0 flex-1 md:px-3 md:py-2"><p className="font-medium">{s.name}</p><p className="text-xs text-ink-50" dir="ltr">/{s.slug}</p></td>
-                  <td className="w-full truncate text-ink-70 md:w-auto md:px-3 md:py-2" dir="ltr"><Link href={`/admin/users/${s.ownerId}`} className="hover:text-[#2563EB]">{s.ownerEmail}</Link></td>
+                  <td className="w-full truncate text-ink-70 md:w-auto md:px-3 md:py-2" dir="ltr"><Link href={`/admin/users/${s.ownerId}`} className="inline-flex min-h-11 items-center hover:text-[#2563EB]">{s.ownerEmail}</Link></td>
                   <td className="md:px-3 md:py-2"><Badge tone={s.plan === "free" ? "gray" : "blue"}>{s.plan}</Badge>{s.planPeriodEnd && <span className="ms-1 text-xs text-ink-50">→ {fmtDate(s.planPeriodEnd)}</span>}</td>
                   <td className="md:px-3 md:py-2"><Badge tone={tone}>{label}</Badge></td>
                   <td className="tabular-nums text-ink-70 md:px-3 md:py-2">{s.productCount} / {s.orderCount}</td>

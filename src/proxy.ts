@@ -33,6 +33,23 @@ async function customDomainSlug(origin: string, host: string): Promise<string | 
   }
 }
 
+/**
+ * /admin for a non-admin → real 404 status. No session cookie → 404 without a lookup; otherwise ask /api/admin/check
+ * with the visitor's cookies. Fails open (the page's own requireAdmin() guard still renders the 404 UI).
+ */
+async function adminAllowed(req: NextRequest): Promise<boolean> {
+  const cookie = req.headers.get("cookie") ?? "";
+  const name = process.env.SESSION_COOKIE_NAME || "mm_session";
+  if (!cookie.split(/;\s*/).some((c) => c.startsWith(`${name}=`))) return false;
+  try {
+    const r = await fetch(`${req.nextUrl.origin}/api/admin/check`, { headers: { cookie, [INTERNAL_404_HEADER]: "1" }, signal: AbortSignal.timeout(3000), cache: "no-store" });
+    if (!r.ok) return true;
+    return Boolean(((await r.json()) as { admin?: unknown }).admin);
+  } catch {
+    return true;
+  }
+}
+
 /** A full-page browser navigation (not an RSC/prefetch/server-action request), the only kind we answer with an HTML 404. */
 function isDocumentRequest(req: NextRequest): boolean {
   if (req.method !== "GET" && req.method !== "HEAD") return false;
@@ -116,6 +133,7 @@ export async function proxy(req: NextRequest) {
     let kind: "page" | "store" | null = null;
     if (decision && "kind" in decision) kind = decision.kind;
     else if (decision && !(await storeExists(url.origin, decision.checkStore))) kind = "store";
+    else if (!subSlug && /^\/admin(\/|$)/.test(url.pathname) && !(await adminAllowed(req))) kind = "page";
     if (kind) {
       const nf = await notFoundResponse(req, kind);
       if (nf) return nf;
