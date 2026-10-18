@@ -51,6 +51,7 @@ If `/admin` shows "not found": the email doesn't match exactly (check spelling/c
 - **Already deployed with the demo:** set `SEED_DEMO=false` in Vercel and redeploy (stops it being re-created), then
   remove the existing demo: Supabase → your project → **SQL Editor** → run
   `delete from users where email = 'demo@mymarket.app';` (this deletes the demo seller and, automatically, its store, products and orders).
+- **Demo plan:** the demo store is put on `SEED_DEMO_PLAN` (default `max`) on every deploy, so visitors see every feature. Set it to `free` to demo the Free plan.
 - **Keeping the demo but want it private:** set `SEED_DEMO_PASSWORD` to a new password *before the first deploy*.
   If it already exists, log in as the demo and change the password from "Forgot password", or delete it as above.
 

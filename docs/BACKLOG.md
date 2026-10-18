@@ -2,7 +2,7 @@
 
 ## SOON FEATURES (Abdulla Oct 18 18:35, owned by subagent until marked done)
 Hourly loop: do NOT take these items; a dedicated subagent ships them easiest first (branches agentb/soon-<name>).
-- [ ] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
+- [x] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
 - [ ] SF2. Advanced SEO + white-label (Max): per-store meta title/description, OG image, product meta, per-store sitemap, JSON-LD Product/Store; "hide Made with Reelcart badge" toggle (Max)
 - [ ] SF3. Multiple stores per account (Business 3 / Max 5): store switcher, create-store flow, server-side limits, current-store context
 - [ ] SF4. Team members (Pro 2 / Business 5 / Max 10): store_members migration, owner/staff roles, email/copy-link invites, accept, remove, permission checks, seat limits

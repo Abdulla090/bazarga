@@ -650,7 +650,8 @@
     "too_many_variants": "Heta 100 têkel.",
     "variants_all_off": "Herî kêm têkeliyekê veke, an vebijarkan jê bibe.",
     "compare_at_must_exceed_price": "Bihayê berê divê ji bihayê niha bilindtir be.",
-    "network": "Girêdana înternetê tune. Selik û agahiyên te li vir in; dema ku girêdan vegere dîsa biceribîne."
+    "network": "Girêdana înternetê tune. Selik û agahiyên te li vir in; dema ku girêdan vegere dîsa biceribîne.",
+    "plan_feature": "Ev taybetmendî di plana te de tune. Ji bo bikaranînê planê bilind bike."
   },
   "analytics": {
     "title": "Analîtîk",
@@ -1518,5 +1519,11 @@
         "a": "Li WhatsApp'ê peyamekê bişîne an e-name bişîne founder@kurdistanai.app."
       }
     }
+  },
+  "planGate": {
+    "badge": "Plana {plan}",
+    "cta": "Bilind bike bo {plan}",
+    "csvTitle": "Barkirina girseyî bi CSV di plana Business de ye",
+    "csvBody": "Bi carekê bi sedan berheman ji tabloyekê zêde bike. Derxistina berhem û fermanan di hemû planan de belaş dimîne."
   }
 }

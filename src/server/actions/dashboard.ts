@@ -8,6 +8,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { recordAudit, auditDetail } from "../audit";
 import { requireStore, requireUser } from "../auth/session";
+import { assertFeature } from "../plan-gate";
 import { createStore, getStoreForOwner, updateStore, updateStorePixels, updateStoreStorefront, updateStoreTheme } from "../services/stores";
 import {
   createCategory,
@@ -428,6 +429,7 @@ export async function createProductsFromDraftsAction(drafts: unknown): Promise<A
 export async function importProductsCsvAction(csv: unknown): Promise<ActionState> {
   try {
     const { store } = await requireStore();
+    assertFeature(store, "bulkCsv");
     const text = z.string().max(IMPORT_MAX_BYTES).parse(csv);
     const parsed = parseProductsCsv(text);
     if (parsed.fatal) return { ok: false, error: "VALIDATION", message: parsed.fatal };
