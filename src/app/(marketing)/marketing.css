@@ -552,12 +552,13 @@ html:lang(ckb) .dvb-col-title, html:lang(ar) .dvb-col-title { letter-spacing: 0;
 }
 @media print { html[data-rv-on] [data-rv], html[data-rv-on] .rv-w { opacity: 1 !important; filter: none !important; transform: none !important; clip-path: none !important; } }
 
-/* Hero opening sequence (page load, CSS only so it also runs without JS; no element starts later than 100ms after
-   the first one that can be the LCP): eyebrow → title lines → subtitle → CTAs → phone. */
+/* Hero opening sequence (page load, CSS only so it also runs without JS): eyebrow → title lines → subtitle → CTAs →
+   phone. The LCP candidates (title lines, phone) start within 0-110ms and never at opacity 0, so they count as painted
+   on the first frame (a soft blurred ghost that resolves to sharp) instead of delaying LCP. */
 @keyframes hero-in-chip { from { opacity: 0; transform: translate3d(0, -10px, 0) scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes hero-in-line { from { opacity: 0; filter: blur(12px); transform: translate3d(0, 0.32em, 0); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes hero-in-line { from { opacity: 0.18; filter: blur(12px); transform: translate3d(0, 0.32em, 0); } to { opacity: 1; filter: blur(0); transform: none; } }
 @keyframes hero-in-soft { from { opacity: 0; filter: blur(8px); transform: translate3d(0, 10px, 0); } to { opacity: 1; filter: blur(0); transform: none; } }
-@keyframes hero-in-media { from { opacity: 0; filter: blur(12px); transform: translate3d(0, 28px, 0) scale(1.04); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes hero-in-media { from { opacity: 0.12; filter: blur(12px); transform: translate3d(0, 28px, 0) scale(1.04); } to { opacity: 1; filter: blur(0); transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
   .ho-chip { animation: hero-in-chip 600ms var(--rv-ease) 0ms both; }
   .ho-line { animation: hero-in-line 900ms var(--rv-ease) both; }
