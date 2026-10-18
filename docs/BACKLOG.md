@@ -7,11 +7,10 @@
 - [x] A4. Moderation + site: products hide/delete, orders status, CSV exports; maintenance mode, feature flags, 4-locale announcement, featured stores, email subjects
 - [x] A5. Palette (Ctrl/⌘ K, g-shortcuts, /), toasts, optimistic toggles, bulk actions, 412 px
 - [x] A6a. Product Studio (SF9) honours the `productStudio` flag (claimStudioEditAction + /api/studio/remove-bg)
-- [ ] A6b. SF10 owner: gate the AI Website Designer on `flagOn(db(), "aiDesigner")` (src/server/services/platform-settings.ts); the flag already exists in Admin → Site controls
+- [x] A6b. AI Website Designer (SF10) honours the `aiDesigner` flag (designStoreWithAiAction)
 - [ ] A7. Before sale / real launch: remove SEED_ADMIN_EMAIL=demo@mymarket.app from Vercel and demote the demo account in Admin → Admin team (its password is public)
 
-## SOON FEATURES (Abdulla Oct 18 18:35, owned by subagent until marked done)
-Hourly loop: do NOT take these items; a dedicated subagent ships them easiest first (branches agentb/soon-<name>).
+## SOON FEATURES (Abdulla Oct 18 18:35; all shipped Oct 18)
 - [x] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
 - [x] SF2. Advanced SEO + white-label (Max): per-store meta title/description, OG image, product meta, per-store sitemap, JSON-LD Product/Store; "hide Made with Reelcart badge" toggle (Max)
 - [x] SF3. Multiple stores per account (Business 3 / Max 5): store switcher, create-store flow, server-side limits, current-store context

@@ -54,6 +54,7 @@ export async function designStoreWithAiAction(input: { brief: string; vibe?: str
   try {
     const { store, user } = await requireOwner();
     assertFeature(store, "aiDesigner");
+    if (!(await flagOn(db(), "aiDesigner"))) throw new AppError("UNAVAILABLE", "ai_disabled");
     const provider = textProviderFor(user.email);
     if (!provider) throw new AppError("UNAVAILABLE", "ai_disabled");
     const parsed = siteDesignInputSchema.parse({ brief: input.brief, vibe: input.vibe || null });

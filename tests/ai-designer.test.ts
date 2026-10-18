@@ -111,6 +111,7 @@ describe("AI Website Designer (SF10)", () => {
     const fn = src.slice(src.indexOf("export async function designStoreWithAiAction"));
     expect(fn).toContain("requireOwner()");
     expect(fn).toContain('assertFeature(store, "aiDesigner")');
+    expect(fn).toContain('flagOn(db(), "aiDesigner")');
     expect(fn).toMatch(/enforceRateLimit\(db\(\), `ai:design:/);
     expect(fn).toContain('consumeAiCredit(db(), store.id, "aiDesigner")');
     expect(fn).toContain('refundAiCredit(db(), store.id, "aiDesigner")');

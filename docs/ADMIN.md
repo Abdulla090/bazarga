@@ -82,7 +82,7 @@ means: every flag on, no maintenance, no announcement. A failed read falls back 
 | `whatsappLogin` | WhatsApp login codes are not sent |
 | `showcase` | `/showcase` is 404 (featured order cached up to 5 min) |
 | `productStudio` | Product Studio saves and AI cut-outs are refused |
-| `aiDesigner` | Stored and shown; the AI Website Designer (SF10) must check `flagOn(db, "aiDesigner")` when it ships (see BACKLOG) |
+| `aiDesigner` | AI Website Designer (SF10): `designStoreWithAiAction` refuses with `ai_disabled` when off |
 
 ## Limit overrides
 
