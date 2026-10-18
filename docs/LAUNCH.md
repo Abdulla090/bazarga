@@ -107,3 +107,4 @@ Origin-Agent-Cluster. Tests: tests/security-reporting.test.ts, tests/security-he
 - R2 (Oct 18, in progress): bucket `bazarga-uploads` + token → set on Vercel Production `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=bazarga-uploads`, `R2_PUBLIC_URL` (r2.dev public URL or custom image domain; the bucket needs public read for that URL) → redeploy → `/api/health` shows `storage.driver: "s3"` → upload one product photo.
 - Email: Resend or Brevo free key + verified sending domain → `EMAIL_PROVIDER`, `EMAIL_API_KEY`, `EMAIL_FROM`.
 - External cron pinger (cron-job.org free) for `/api/cron/payments` every 5 min once payments are on; optional `LOG_WEBHOOK_URL` (Discord/Slack webhook).
+- SECURITY_CONTACT_EMAIL (optional): contact in /.well-known/security.txt
