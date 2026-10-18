@@ -519,7 +519,13 @@
     "slipHint": "بۆ چاپی A6 یان A5 لە پەنجەرەی چاپدا قەبارەی کاغەز هەڵبژێرە.",
     "emptyHelp": "لینکی دوکانەکەت بڵاو بکەرەوە بۆ یەکەم داواکاری.",
     "emptyCta": "بڵاوکردنەوەی دوکان",
-    "fromSource": "لە {source}ەوە"
+    "fromSource": "لە {source}ەوە",
+    "waTemplates": {
+      "title": "ڕەشنووسی واتسئاپ",
+      "confirmed": "پشتڕاستکردنەوە",
+      "shipped": "نێردرا",
+      "delivered": "گەیشت"
+    }
   },
   "customers": {
     "title": "کڕیاران",

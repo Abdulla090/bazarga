@@ -519,7 +519,13 @@
     "slipHint": "Pick A6 or A5 paper in the print dialog.",
     "emptyHelp": "Share your store link to get your first order.",
     "emptyCta": "Share store",
-    "fromSource": "From {source}"
+    "fromSource": "From {source}",
+    "waTemplates": {
+      "title": "WhatsApp messages",
+      "confirmed": "Order confirmed",
+      "shipped": "Shipped + tracking",
+      "delivered": "Delivered / thanks"
+    }
   },
   "customers": {
     "title": "Customers",

@@ -564,7 +564,13 @@
     "pay_refunded": "Hat vegerandin",
     "emptyHelp": "Girêdana firoşgehê parve bike da ferman bên.",
     "emptyCta": "Firoşgehê parve bike",
-    "fromSource": "Ji {source}"
+    "fromSource": "Ji {source}",
+    "waTemplates": {
+      "title": "Peyamên WhatsApp",
+      "confirmed": "Daxwaz hate pejirandin",
+      "shipped": "Hate şandin + şopandin",
+      "delivered": "Gihîşt / spas"
+    }
   },
   "risk": {
     "title": "Berî şandinê kontrol bike",
