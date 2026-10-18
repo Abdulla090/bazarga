@@ -1,5 +1,19 @@
 # Reelcart backlog (top unfinished first)
 
+## SOON FEATURES (Abdulla Oct 18 18:35, owned by subagent until marked done)
+Hourly loop: do NOT take these items; a dedicated subagent ships them easiest first (branches agentb/soon-<name>).
+- [ ] SF1. Bulk CSV import: verify live, drop "Soon" tag (pricing + plan features, 4 locales), gate to Business+
+- [ ] SF2. Advanced SEO + white-label (Max): per-store meta title/description, OG image, product meta, per-store sitemap, JSON-LD Product/Store; "hide Made with Reelcart badge" toggle (Max)
+- [ ] SF3. Multiple stores per account (Business 3 / Max 5): store switcher, create-store flow, server-side limits, current-store context
+- [ ] SF4. Team members (Pro 2 / Business 5 / Max 10): store_members migration, owner/staff roles, email/copy-link invites, accept, remove, permission checks, seat limits
+- [ ] SF5. AI product descriptions (Business+): title/description/tags in store language, env-gated provider, monthly quota + rate limit
+- [ ] SF6. Premium templates / exclusive designs (Max): 2-3 premium Theme Studio presets with upgrade preview
+- [ ] SF7. Custom domain per seller (Business+): DNS instructions, verify, optional Vercel API, SETUP.md
+- [ ] SF8. Sign in with WhatsApp (phone OTP): env-gated OtpProvider + mock provider
+- [ ] SF9. Product Studio (photo cleanup, quota 10/100/100): env-gated provider + local fallback, product_studio_usage
+- [ ] SF10. AI Website Designer (Max): brand brief -> Theme Studio draft, preview, publish
+Out of scope: online payments (src/server/payments/**, migration 0014, Rasedi env).
+
 ## SALE-READY (Abdulla Oct 18 — top priority)
 Goal: a buyer who barely codes can understand, run and launch Reelcart with their own keys. Hourly loop: take the top unchecked item.
 - [x] S1. docs/BACKLOG.md sale section (this list)
