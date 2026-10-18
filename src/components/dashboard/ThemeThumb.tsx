@@ -7,7 +7,7 @@ const H = 640;
 /**
  * Live theme thumbnail (Theme Studio gallery): the seller's own store rendered in that theme at phone width
  * (/s/<slug>?pv=1&pvt=<id>), scaled to the card. Lazy (only loads when scrolled into view), not focusable, no pointer
- * events. Same-origin and unsandboxed on purpose: the storefront streams behind loading.tsx, which needs JS to swap in.
+ * events. Same-origin and unsandboxed on purpose (the preview bridge and fonts run inside it).
  */
 export function ThemeThumb({ src, title, bg }: { src: string; title: string; bg: string }) {
   const box = useRef<HTMLDivElement>(null);
