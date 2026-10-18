@@ -880,7 +880,31 @@
     "variantsStockNote": "Stok û SKU ji bo her cureyê li jêr têne danîn.",
     "variantsLimit": "Heta {max} têkel. Nirxekê jê bibe da ku zêdetir lê zêde bikî.",
     "maxOptions": "Heta 3 komên vebijarkan.",
-    "export": "CSV dakêşe"
+    "export": "CSV dakêşe",
+    "importTitle": "Hinardekirina berheman",
+    "importHelp": "Pelê CSV ji Excel an Google Sheets bar bike (an li vir pêve bike). Stûnek nav (name_kmr, name_ku, name_ar an name_en) û stûna price lazim e. Wêne piştre di edîtora berhemê de têne zêdekirin.",
+    "importPick": "Pelê CSV hilbijêre",
+    "importPaste": "An CSV li vir pêve bike",
+    "importPreview": "Pêşdîtin",
+    "importReady": "{n} berhem amade ne ji bo hinardekirinê",
+    "importSkipped": "{n} rêz hatin derbaskirin (pirsgirêk hene)",
+    "importRoom": "Plana te cihê {n} berhemên din heye, yên mayî nayên girtin",
+    "importStart": "{n} berheman têxe hundir",
+    "importWorking": "Tê hinardekirin…",
+    "importDone": "{n} berhem hatin hinardekirin",
+    "importTemplate": "Nimûneyê dakêşe",
+    "importView": "Berheman bibîne",
+    "importRowError": "Rêza {line}: {why}",
+    "importLimit": "Te gihaşt sînorê berhemên planê. Bilind bike da ku zêdetir zêde bikî.",
+    "importFailed": "Nehat hinardekirin. Pelê kontrol bike û dîsa biceribîne.",
+    "importFatal": {
+      "empty": "Pel vala ye.",
+      "too_big": "Pel pir mezin e (herî zêde 400KB).",
+      "no_name_column": "Stûnek nav zêde bike: name_kmr, name_ku, name_ar an name_en.",
+      "no_price_column": "Stûna price zêde bike.",
+      "too_many_rows": "Heta 200 berhem di her pelekê de."
+    },
+    "importCta": "Hinardekirina CSV"
   },
   "categories": {
     "title": "Beş",

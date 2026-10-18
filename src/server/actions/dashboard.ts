@@ -14,6 +14,7 @@ import {
   createProduct,
   deleteCategory,
   deleteProduct,
+  getProductUsage,
   setProductActive,
   updateCategory,
   updateProduct,
@@ -34,6 +35,7 @@ import { specsFromForm, productVariantsInputSchema, variantsFromForm,
   storeThemeSchema,
   storeStorefrontSchema,
 } from "@/lib/validation";
+import { IMPORT_MAX_BYTES, parseProductsCsv } from "@/lib/products-csv-import";
 import { storePixelsSchema } from "@/lib/pixels";
 import { showcaseOptInSchema } from "@/lib/showcase";
 import { setShowcaseOptIn } from "../services/showcase";
@@ -416,6 +418,34 @@ export async function createProductsFromDraftsAction(drafts: unknown): Promise<A
     invalidateCatalog(store.id);
     revalidatePath("/dashboard/products");
     return { ok: true, count: list.length };
+  } catch (e) {
+    return toActionState(e);
+  }
+}
+
+// ---------------------------------------------------------------- CSV import
+/** Creates the valid rows of a product CSV, up to the plan's product cap. Re-validated server side; the client preview is advisory. */
+export async function importProductsCsvAction(csv: unknown): Promise<ActionState> {
+  try {
+    const { store } = await requireStore();
+    const text = z.string().max(IMPORT_MAX_BYTES).parse(csv);
+    const parsed = parseProductsCsv(text);
+    if (parsed.fatal) return { ok: false, error: "VALIDATION", message: parsed.fatal };
+    const valid = parsed.rows.filter((r) => r.input);
+    const skipped = parsed.rows.length - valid.length;
+    const usage = await getProductUsage(db(), store.id);
+    const room = Math.max(0, usage.cap - usage.used);
+    if (valid.length > 0 && room === 0) return { ok: false, error: "plan_limit_products" };
+    let created = 0;
+    for (const r of valid.slice(0, room)) {
+      await createProduct(db(), store.id, r.input!);
+      created++;
+    }
+    if (created) {
+      invalidateCatalog(store.id);
+      revalidatePath("/dashboard/products");
+    }
+    return { ok: true, data: { created, skipped, overLimit: valid.length - created } };
   } catch (e) {
     return toActionState(e);
   }

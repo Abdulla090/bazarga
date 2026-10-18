@@ -395,7 +395,31 @@
     "variantsStockNote": "Stock and SKU are set per variant below.",
     "variantsLimit": "Up to {max} combinations. Remove a value to add more.",
     "maxOptions": "Up to 3 option groups.",
-    "export": "Download CSV"
+    "export": "Download CSV",
+    "importTitle": "Import products",
+    "importHelp": "Upload a CSV from Excel or Google Sheets (or paste it). Needs a name column (name_en, name_ku, name_ar or name_kmr) and a price column. Photos are added afterwards in the product editor.",
+    "importPick": "Choose CSV file",
+    "importPaste": "Or paste CSV here",
+    "importPreview": "Preview",
+    "importReady": "{n} products ready to import",
+    "importSkipped": "{n} rows skipped (problems)",
+    "importRoom": "Your plan has room for {n} more, the rest will be left out",
+    "importStart": "Import {n} products",
+    "importWorking": "Importing…",
+    "importDone": "{n} products imported",
+    "importTemplate": "Download template",
+    "importView": "View products",
+    "importRowError": "Row {line}: {why}",
+    "importLimit": "You've reached your plan's product limit. Upgrade to add more.",
+    "importFailed": "Could not import. Check the file and try again.",
+    "importFatal": {
+      "empty": "The file is empty.",
+      "too_big": "The file is too big (400 KB max).",
+      "no_name_column": "Add a name column: name_en, name_ku, name_ar or name_kmr.",
+      "no_price_column": "Add a price column.",
+      "too_many_rows": "Up to 200 products per file."
+    },
+    "importCta": "Import CSV"
   },
   "categories": {
     "title": "Categories",
