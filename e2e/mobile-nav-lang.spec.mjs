@@ -48,16 +48,15 @@ for (const locale of ["ku", "ar", "en", "kmr"]) {
     const sw = await page.evaluate(() => document.scrollingElement.scrollWidth);
     expect(sw).toBeLessThanOrEqual(360);
 
-    // header sheet dropdown
+    // header sheet: segmented language control (Oct 18 redesign), one pressed, all 44px+, inside the viewport
     await page.locator("[data-nav-menu-button]").click();
-    const sheet = page.locator("[data-menu-cta]").locator("xpath=ancestor::nav[1]").locator("[data-lang-dropdown]");
-    await sheet.locator("[data-lang-trigger]").click();
-    const m2 = sheet.locator('[role="menu"]');
-    await expect(m2).toBeVisible();
-    await inViewport(m2, 360);
-    await expect(m2.locator('[aria-checked="true"]')).toHaveCount(1);
-    await page.mouse.click(180, 40);
-    await expect(m2).toHaveCount(0);
+    const seg = page.locator("[data-mobile-sheet] [data-menu-lang]");
+    await expect(seg).toBeVisible();
+    await expect(seg.locator('button[aria-pressed="true"]')).toHaveCount(1);
+    await inViewport(seg, 360);
+    const small = await seg.locator("button").evaluateAll((els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
+    expect(small).toBe(0);
+    await page.keyboard.press("Escape");
     await context.close();
   });
 }

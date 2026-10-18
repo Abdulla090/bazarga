@@ -44,8 +44,8 @@ for (const width of [360, 412]) {
       const sheet = page.locator("[data-mobile-sheet]");
       await expect(sheet).toBeVisible();
       await expect(btn).toHaveAttribute("aria-expanded", "true");
-      await sheet.locator("[data-lang-trigger]").tap();
-      await sheet.locator('[role="menuitemradio"]', { hasText: LABEL[to] }).tap();
+      await page.waitForTimeout(600); // let the panel slide in
+      await sheet.locator(`[data-menu-lang] button[data-locale="${to}"]`, { hasText: LABEL[to] }).tap();
       await expect(page.locator("html")).toHaveAttribute("lang", HTML_LANG[to], { timeout: 15_000 });
       await expect(page.locator("html")).toHaveAttribute("dir", to === "ku" || to === "ar" ? "rtl" : "ltr");
       await noOverflow(page);
@@ -76,8 +76,7 @@ test("before hydration (no JS): the menu still opens and a language pick still a
   await page.locator("[data-nav-menu-button]").tap();
   const sheet = page.locator("[data-mobile-sheet]");
   await expect(sheet).toBeVisible();
-  await sheet.locator("[data-lang-trigger]").tap();
-  await sheet.locator('[role="menuitemradio"]', { hasText: "English" }).tap();
+  await sheet.locator('[data-menu-lang] button[data-locale="en"]', { hasText: "English" }).tap();
   await expect(page.locator("html")).toHaveAttribute("lang", "en", { timeout: 20_000 });
   await context.close();
 });
