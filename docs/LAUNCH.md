@@ -88,6 +88,18 @@ Needs: domain added to the Vercel project, plus `*.<domain>` wildcard (Vercel na
 Reserved labels (www, app, api, admin, static, mail, status, cdn, img) never resolve to a store. Logic:
 `src/lib/domains.ts`. Before Oct 18 `ROOT_DOMAIN` defaulted to `mymarket.app`; there is no default now.
 
+### Error + security reporting
+| Env | Value |
+|---|---|
+| `LOG_WEBHOOK_URL` | optional HTTPS webhook; every `error` log line is also POSTed there (redacted). Discord/Slack webhooks get a one-line message, any other URL the JSON event. Max 20/min per instance. Unset = stdout only |
+
+Every server error already logs one JSON line (`request.error`, with the digest users see on error pages) via
+`src/instrumentation.ts` → `src/server/logger.ts`. CSP violations are reported by browsers to `/api/csp-report`
+(`report-uri` + `report-to` with the `Reporting-Endpoints` header) and logged as `csp.violation` (origin-only URLs,
+30 / 10 min per IP). Headers live: CSP (nonce + strict-dynamic, worker-src/manifest-src explicit), HSTS 2 years +
+preload, X-Frame-Options SAMEORIGIN + frame-ancestors 'self', nosniff, Referrer-Policy, Permissions-Policy, COOP,
+Origin-Agent-Cluster. Tests: tests/security-reporting.test.ts, tests/security-headers.test.ts.
+
 ## Needs Abdulla
 - Confirm the Max price ($100/mo, Hark's pick; one constant `MAX_MONTHLY_USD` in src/lib/plans.ts).
 - Rasedi: KYC → test keys → set on Vercel (Production): `PAYMENTS_PROVIDER=rasedi`, `RASEDI_MODE=test`, `RASEDI_KEY_ID`, `RASEDI_PRIVATE_KEY`, `RASEDI_WEBHOOK_SECRET` (optional: `RASEDI_GATEWAYS`, `USD_IQD_RATE`=1310, `PLATFORM_COMMISSION_BPS`=0, `RASEDI_FEE_FROM_CUSTOMER`) → test payment → live keys + `RASEDI_MODE=live`. Steps + questions for Rasedi in docs/PAYMENTS.md.

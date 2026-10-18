@@ -8,6 +8,9 @@
  * dangerous than script injection; scripts are the XSS boundary that matters.
  */
 export const NONCE_HEADER = "x-nonce";
+export const CSP_REPORT_PATH = "/api/csp-report";
+/** Pairs with `report-to csp` in the policy (static header in next.config.ts). */
+export const REPORTING_ENDPOINTS = `csp="${CSP_REPORT_PATH}"`;
 
 export function generateNonce(): string {
   const bytes = new Uint8Array(16);
@@ -40,6 +43,12 @@ export function buildCsp(opts: { nonce: string; isDev: boolean; upgradeInsecureR
     // https: — online payment providers (FIB / ZainCash) redirect flows.
     "form-action 'self' https:",
     "object-src 'none'",
+    // The service worker (/sw.js) and the web manifest: explicit, so they never fall back to the nonce-only script-src.
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    // Violations are logged as `csp.violation` (src/app/api/csp-report). report-to needs the Reporting-Endpoints header.
+    `report-uri ${CSP_REPORT_PATH}`,
+    "report-to csp",
   ];
   if (opts.upgradeInsecureRequests) directives.push("upgrade-insecure-requests");
   return directives.join("; ");
