@@ -15,6 +15,8 @@ import { publishedThemeStyle, parseTheme } from "@/lib/theme-studio/resolve";
 import { normalizePhone } from "@/lib/phone";
 import { normalizePlan } from "@/lib/plans";
 import { effectiveSeo, whiteLabelOn } from "@/lib/seo";
+import { StatusPage } from "@/components/site/StatusPage";
+import { maintenanceFor } from "@/server/admin/site-gate";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -45,6 +47,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function StoreLayout({ children, params }: { children: React.ReactNode; params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const store = await loadStore(slug);
+  // Admin controls (docs/ADMIN.md): platform maintenance mode, then a suspended store, replace the whole storefront.
+  const maint = await maintenanceFor();
+  if (maint || store.suspendedAt) {
+    const ts = await getTranslations("site");
+    return maint
+      ? <StatusPage title={ts("maintenance.title")} body={maint.message || ts("maintenance.body")} testId="maintenance-page" />
+      : <StatusPage title={ts("suspended.title")} body={ts("suspended.body")} testId="store-suspended-page" />;
+  }
   const t = await getTranslations("store");
   const locale = await currentLocale();
   const about = pickText(store.about, locale);
