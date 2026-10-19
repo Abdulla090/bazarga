@@ -82,8 +82,12 @@ export default async function StoreLayout({ children, params }: { children: Reac
     >
       <PreviewBridge />
       <SourceCapture slug={store.slug} />
+      {(store.tiktokPixelId || store.metaPixelId) && (
+        <>
       <SellerPixels tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} />
       <CookieNotice tiktokId={store.tiktokPixelId} metaId={store.metaPixelId} labels={{ title: t("cookie.title"), body: t("cookie.body"), accept: t("cookie.accept"), decline: t("cookie.decline") }} />
+        </>
+      )}
       <p id="announce-bar" hidden={!hdr?.announce} className="store-announce" data-testid="announce-bar">{hdr?.announce}</p>
       {design.header === "ticker" && <HeaderTicker text={hdr?.announce || pickText(store.tagline, locale) || store.name} />}
       <StoreHeader store={store} design={design} />
