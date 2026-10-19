@@ -15,6 +15,9 @@ describe("static security headers", () => {
   ])("sets %s", (h) => {
     expect(cfg).toContain(`key: "${h}"`);
   });
+  it("locks down powerful browser APIs and ad cohorts", () => {
+    for (const f of ["usb=()", "serial=()", "bluetooth=()", "browsing-topics=()", "interest-cohort=()"]) expect(cfg).toContain(f);
+  });
   it("hides x-powered-by", () => {
     expect(cfg).toContain("poweredByHeader: false");
   });
