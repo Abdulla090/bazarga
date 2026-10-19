@@ -24,3 +24,10 @@ describe("bulk sale", () => {
     }
   });
 });
+
+import { readFileSync as rfs } from "node:fs";
+import { it as it2, expect as ex2 } from "vitest";
+it2("bulk sale offers 10/20/30/50 percent presets", () => {
+  const s = rfs("src/app/dashboard/products/BulkVisibility.tsx", "utf8");
+  ex2(s).toMatch(/\[10, 20, 30, 50\]/);
+});
