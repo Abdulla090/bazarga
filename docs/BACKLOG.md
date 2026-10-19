@@ -11,7 +11,7 @@
 - [x] Kids & Playful phone-first playground hero (dd41029)
 - [x] (d) AI Website Designer v2: 3 full catalogue-aware compositions side by side, live thumbnails, pick → draft → publish/discard; 1 credit per 3 (d93ea17)
 - [x] Storefront home/product render without JS (no loading.tsx Suspense on them) (6ff9fae)
-- [ ] Product page gallery thumbnails still stream behind a lazy Suspense (no-JS visitors see the main photo but not the thumb strip); render the strip server-side if it matters
+- [x] Product page gallery thumbnails render server-side (no lazy Suspense)
 - [ ] With a real AI key (GEMINI/OPENAI), smoke the composer once on live and tune the prompt from 10 real answers (the mock is what the demo seller sees today)
 
 ## LIVE DB HYGIENE (Abdulla Oct 19 00:41)

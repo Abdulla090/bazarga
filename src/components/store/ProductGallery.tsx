@@ -1,12 +1,12 @@
 "use client";
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import GalleryThumbs from "./GalleryThumbs";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { SIZES, type ImageLike } from "@/lib/responsive-image";
 
 // Multi-photo extras live in their own chunks so the first-load storefront bundle stays inside its budget:
-// the thumbnail strip is requested only when a product has several photos, the fullscreen viewer only on first tap.
+// the thumbnail strip is a plain import (tiny, and server-rendered so no-JS visitors see it); the fullscreen viewer loads only on first tap.
 // React.lazy rather than next/dynamic: no loadable runtime added to the storefront bundle.
-const GalleryThumbs = lazy(() => import("./GalleryThumbs"));
 const loadLightbox = () => import("./GalleryLightbox");
 const GalleryLightbox = lazy(loadLightbox);
 
@@ -121,9 +121,7 @@ export function ProductGallery({ images, alt, label }: { images: GalleryImage[];
               <span key={img.id} className={`h-1.5 rounded-full transition-all ${i === active ? "w-5 bg-st-fg" : "w-1.5 bg-st-fg/25"}`} />
             ))}
           </div>
-          <Suspense fallback={<div className="h-14 md:col-start-1 md:row-start-1 md:h-auto" aria-hidden />}>
-            <GalleryThumbs images={images} active={active} onPick={go} label={label} />
-          </Suspense>
+          <GalleryThumbs images={images} active={active} onPick={go} label={label} />
         </>
       )}
 
