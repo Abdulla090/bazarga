@@ -203,7 +203,7 @@ export function ProductBuy({
   async function share() {
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title: name, url: shareUrl });
+        await navigator.share({ title: name, text: `${name} · ${formatIQD(price, locale)}`, url: shareUrl });
       } catch {
         /* dismissed */
       }
