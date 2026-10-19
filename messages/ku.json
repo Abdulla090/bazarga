@@ -368,6 +368,8 @@
     "imagesHint": "JPG، PNG یان WebP، هەر یەکە تا {mb} MB",
     "active": "لە دوکاندا دیارە",
     "hidden": "شاراوە",
+    "hideAll": "شاردنەوەی هەموو لەم لاپەڕەیە",
+    "showAll": "نیشاندانی هەموو لەم لاپەڕەیە",
     "inStock": "{count} بەردەستە",
     "untracked": "ناژمێردرێت",
     "translations": "ناو و وەسف بە هەر زمانێک",

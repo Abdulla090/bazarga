@@ -212,6 +212,15 @@ export async function toggleProductAction(id: string, isActive: boolean) {
   revalidatePath("/dashboard/products");
 }
 
+export async function bulkProductVisibilityAction(ids: string[], isActive: boolean) {
+  const { store } = await requireStore();
+  const list = z.array(uuid).max(100).parse(ids);
+  const active = z.boolean().parse(isActive);
+  for (const id of list) await setProductActive(db(), store.id, id, active);
+  invalidateCatalog(store.id, list);
+  revalidatePath("/dashboard/products");
+}
+
 export async function deleteProductAction(id: string) {
   const { store } = await requireStore();
   await deleteProduct(db(), store.id, uuid.parse(id));

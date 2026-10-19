@@ -368,6 +368,8 @@
     "imagesHint": "JPG أو PNG أو WebP، حتى {mb} ميغابايت لكل صورة",
     "active": "ظاهر في المتجر",
     "hidden": "مخفي",
+    "hideAll": "إخفاء الكل في هذه الصفحة",
+    "showAll": "إظهار الكل في هذه الصفحة",
     "inStock": "{count} متوفر",
     "untracked": "غير متتبع",
     "translations": "الاسم والوصف بكل لغة",
