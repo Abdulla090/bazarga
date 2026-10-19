@@ -12,12 +12,13 @@ export type CartDrawerLabels = { added: string; viewCart: string; checkout: stri
  * Shows the photo, name, options, quantity × price and two exits; it stays until dismissed (never times out).
  * Opened by the `mm:cart-added` window event that every add-to-cart control fires.
  */
-export function CartDrawer({ slug, labels }: { slug: string; labels: CartDrawerLabels }) {
+export function CartDrawer({ slug, labels, initial }: { slug: string; labels: CartDrawerLabels; initial?: AddedItem }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [item, setItem] = useState<AddedItem | null>(null);
+  const [item, setItem] = useState<AddedItem | null>(initial ?? null);
   const { count } = useCart(slug);
 
   useEffect(() => {
+    if (initial) ref.current?.showModal();
     const onAdded = (e: Event) => {
       setItem((e as CustomEvent<AddedItem>).detail);
       const d = ref.current;
@@ -25,6 +26,7 @@ export function CartDrawer({ slug, labels }: { slug: string; labels: CartDrawerL
     };
     window.addEventListener(CART_ADDED, onAdded);
     return () => window.removeEventListener(CART_ADDED, onAdded);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const close = () => ref.current?.close();

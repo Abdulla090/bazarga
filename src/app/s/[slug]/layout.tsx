@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
-import { CartDrawer } from "@/components/store/CartDrawer";
+import { CartDrawerLazy as CartDrawer } from "@/components/store/CartDrawerLazy";
 import { PreviewBridge } from "@/components/store/PreviewBridge";
 import { SourceCapture } from "@/components/store/SourceCapture";
 import { CookieNotice } from "@/components/store/CookieNotice";
