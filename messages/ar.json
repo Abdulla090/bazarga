@@ -1451,7 +1451,10 @@
     "usageProductsUnlimited": "{used} منتج · غير محدودة",
     "usageStudio": "Product Studio: {used} من {limit} تعديل هذا الشهر",
     "upgradeCta": "ترقية",
-    "limitHint": "وصلت إلى حد المنتجات في خطتك. رقِّ خطتك لإضافة المزيد."
+    "limitHint": "وصلت إلى حد المنتجات في خطتك. رقِّ خطتك لإضافة المزيد.",
+    "included": "مشمول",
+    "notIncluded": "غير مشمول",
+    "footerNav": "روابط التذييل"
   },
   "upgrade": {
     "title": "رقِّ متجرك",

@@ -1451,7 +1451,10 @@
     "usageProductsUnlimited": "{used} products · Unlimited",
     "usageStudio": "Product Studio: {used} of {limit} edits this month",
     "upgradeCta": "Upgrade",
-    "limitHint": "You've reached your plan's product limit. Upgrade to add more."
+    "limitHint": "You've reached your plan's product limit. Upgrade to add more.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "footerNav": "Footer links"
   },
   "upgrade": {
     "title": "Upgrade your store",

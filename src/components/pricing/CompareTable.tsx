@@ -6,11 +6,11 @@ export async function CompareTable() {
   const t = await getTranslations("pricing");
   const value = (v: CellValue, max = false) =>
     v === true ? (
-      <span role="img" aria-label="Included" className={`inline-flex ${max ? "max-col-check" : "text-[#2563EB]"}`}>
+      <span role="img" aria-label={t("included")} className={`inline-flex ${max ? "max-col-check" : "text-[#2563EB]"}`}>
         <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </span>
     ) : v === false ? (
-      <span role="img" aria-label="Not included" className="text-ink-50">–</span>
+      <span role="img" aria-label={t("notIncluded")} className="text-ink-50">–</span>
     ) : typeof v === "number" ? (
       <span className="num" dir="ltr">{v}</span>
     ) : (
