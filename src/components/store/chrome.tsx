@@ -49,7 +49,7 @@ export async function StoreHeader({ store, design }: { store: ChromeStore; desig
             <label className="relative block">
               <span className="sr-only">{t("search")}</span>
               <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
-              <input type="search" name="q" maxLength={80} placeholder={t("searchPlaceholder")} enterKeyHint="search" data-testid="header-search-field" className="h-11 w-full rounded-lg border border-st-border bg-st-surface ps-11 pe-4 text-[15px] text-st-fg placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus:outline-none" />
+              <input type="search" name="q" maxLength={80} placeholder={t("searchPlaceholder")} enterKeyHint="search" data-testid="header-search-field" className="h-11 w-full rounded-lg border border-st-border bg-st-surface ps-11 pe-4 text-[15px] text-st-fg placeholder:text-faint hover:border-st-fg/40 focus:border-st-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563eb]" />
             </label>
           </form>
           <span className="md:hidden">{searchLink}</span>
