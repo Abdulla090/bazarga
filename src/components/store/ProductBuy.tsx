@@ -1,4 +1,5 @@
 "use client";
+import { withSource } from "@/lib/social";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { announceAdded, useCart } from "./cart";
@@ -218,7 +219,7 @@ export function ProductBuy({
   }
 
   const waHref = whatsapp
-    ? waLink(whatsapp, [labels.waIntro, `${name}${variantTitle ? ` (${variantTitle})` : ""}`, formatIQD(price, locale), shareUrl].join("\n"))
+    ? waLink(whatsapp, [labels.waIntro, `${name}${variantTitle ? ` (${variantTitle})` : ""}`, formatIQD(price, locale), withSource(shareUrl, "whatsapp")].join("\n"))
     : null;
 
   const ctaLabel = soldOut
