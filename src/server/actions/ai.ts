@@ -2,7 +2,7 @@
 import { flagOn } from "../services/platform-settings";
 import { db } from "../db";
 import { and, asc, count, desc, eq, isNull, sql } from "drizzle-orm";
-import { categories, productImages, products } from "../db/schema";
+import { categories, products } from "../db/schema";
 import { requireOwner, requireStore } from "../auth/session";
 import { assertFeature } from "../plan-gate";
 import { AppError } from "../errors";
@@ -52,7 +52,7 @@ async function catalogContext(storeId: string, lang: Locale, hasCover: boolean):
     db()
       .select({
         name: products.name, price: products.price, compareAt: products.compareAtPrice,
-        hasImage: sql<boolean>`exists (select 1 from ${productImages} where ${productImages.productId} = ${products.id})`,
+        hasImage: sql<boolean>`exists (select 1 from "product_images" pi where pi.product_id = "products"."id")`,
       })
       .from(products).where(live).orderBy(asc(products.sort), desc(products.createdAt)).limit(24),
     db().select({ n: count() }).from(products).where(live),
