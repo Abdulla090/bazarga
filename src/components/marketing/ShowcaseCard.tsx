@@ -24,6 +24,7 @@ export function ShowcaseCard({ store, tagline, city, l, priority = false }: { st
             sizes={store.coverRenditions.length ? "(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw" : undefined}
             alt=""
             loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
             decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
