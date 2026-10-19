@@ -13,3 +13,14 @@ describe("bulk visibility", () => {
     expect(s).toMatch(/bulkProductVisibilityAction[\s\S]*z\.array\(uuid\)\.max\(100\)[\s\S]*store\.id/);
   });
 });
+describe("bulk sale", () => {
+  it("action is zod-bounded and store-scoped", () => {
+    const s = readFileSync("src/server/actions/dashboard.ts", "utf8");
+    expect(s).toMatch(/bulkProductSaleAction[\s\S]*min\(5\)\.max\(90\)[\s\S]*store\.id/);
+    for (const l of ["en", "ku", "ar", "kmr"]) {
+      const t = readFileSync(`messages/${l}.json`, "utf8");
+      expect(t).toContain('"saleAll"');
+      expect(t).toContain('"endSale"');
+    }
+  });
+});

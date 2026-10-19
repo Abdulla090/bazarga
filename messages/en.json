@@ -369,6 +369,8 @@
     "active": "Visible in store",
     "hidden": "Hidden",
     "hideAll": "Hide all on this page",
+    "saleAll": "Sale 20% off",
+    "endSale": "End sale",
     "showAll": "Show all on this page",
     "inStock": "{count} in stock",
     "untracked": "Untracked",
