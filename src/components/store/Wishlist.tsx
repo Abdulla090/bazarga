@@ -42,7 +42,7 @@ export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem;
                 <Link href={`/s/${slug}/p/${o.id}`} className="block min-h-11">
                   <div className="aspect-[4/5] overflow-hidden rounded-lg bg-black/5">
                     {/* eslint-disable-next-line @next/next/no-img-element -- small local thumb */}
-                    {o.img ? <img src={o.img} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" /> : null}
+                    {o.img ? <img src={o.img} alt="" width={128} height={160} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : null}
                   </div>
                   <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-st-fg">{o.name}</p>
                   <p className="text-sm text-muted">{o.price}</p>

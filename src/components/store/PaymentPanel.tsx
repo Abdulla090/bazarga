@@ -42,7 +42,7 @@ export function PaymentPanel({ labels: L, slug, publicId, method, status, fib }:
           <h2 className="display text-[22px]">{L.fibTitle}</h2>
           {fib.qrCode && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={fib.qrCode} alt="FIB QR" className="mx-auto h-48 w-48" />
+            <img src={fib.qrCode} alt="FIB QR" width={192} height={192} decoding="async" className="mx-auto h-48 w-48" />
           )}
           {fib.readableCode && (
             <p className="text-center text-sm">
