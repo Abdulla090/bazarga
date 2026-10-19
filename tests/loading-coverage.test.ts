@@ -6,3 +6,9 @@ describe("loading states", () => {
     expect(existsSync(`src/app/${d}/loading.tsx`)).toBe(true);
   });
 });
+
+describe("shopper/invite loading states", () => {
+  it.each(["invite", "s/[slug]/cart", "s/[slug]/track", "s/[slug]/order"])("%s has loading.tsx", (d) => {
+    expect(existsSync(`src/app/${d}/loading.tsx`)).toBe(true);
+  });
+});
