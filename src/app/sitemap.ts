@@ -9,7 +9,9 @@ import { STATIC_PUBLIC_PATHS, siteUrl } from "@/lib/seo";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await connection();
   const base = siteUrl();
+  const now = new Date();
   const out: MetadataRoute.Sitemap = STATIC_PUBLIC_PATHS.map((p) => ({
+    lastModified: now,
     url: `${base}${p === "/" ? "" : p}`,
     changeFrequency: p === "/" || p === "/pricing" ? "weekly" : "yearly",
     priority: p === "/" ? 1 : p === "/pricing" ? 0.8 : 0.3,
