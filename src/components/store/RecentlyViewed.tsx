@@ -18,7 +18,7 @@ export function RecentlyViewed({ slug, item, heading }: { slug: string; item: Re
   }, [slug, item]);
   if (others.length === 0) return null;
   return (
-    <section aria-label={heading} className="grid gap-3" data-testid="recently-viewed">
+    <section aria-label={heading} className="grid gap-3 [content-visibility:auto] [contain-intrinsic-size:auto_14rem]" data-testid="recently-viewed">
       <h2 className="text-base font-semibold text-st-fg">{heading}</h2>
       <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
         {others.map((o) => (
