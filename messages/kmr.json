@@ -1452,7 +1452,10 @@
     "usageProductsUnlimited": "{used} berhem · bêsînor",
     "usageStudio": "Product Studio: {used} ji {limit} guhertinan vê mehê",
     "upgradeCta": "Bilind bike",
-    "limitHint": "Tu gihîştî sînorê berheman ê plana xwe. Ji bo zêdetir planê bilind bike."
+    "limitHint": "Tu gihîştî sînorê berheman ê plana xwe. Ji bo zêdetir planê bilind bike.",
+    "included": "Heye",
+    "notIncluded": "Tune ye",
+    "footerNav": "Lînkên jêr"
   },
   "upgrade": {
     "title": "Dikana xwe bilind bike",

@@ -13,7 +13,7 @@ export async function SiteFooter() {
     <footer className="border-t border-line py-8" data-testid="site-footer">
       <div className="container-page flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-sm text-ink-70">
         <Logo />
-        <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5">
+        <nav aria-label={p("footerNav")} className="flex flex-wrap items-center gap-x-5">
           <Link href="/pricing" className="min-h-11 content-center hover:text-ink">{p("nav")}</Link>
           <Link href="/showcase" className="min-h-11 content-center hover:text-ink">{sc("nav")}</Link>
           {LEGAL_DOCS.map((d) => (
