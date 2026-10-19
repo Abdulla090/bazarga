@@ -1,7 +1,7 @@
 # Reelcart backlog (top unfinished first)
 
 ## URGENT (Oct 19, from design-rebuild-2)
-- [ ] AI composer photo detection bug: in `catalogContext` (src/server/actions/ai.ts) the has-photo check compiles to `"product_id" = "id"`, so every product reads as photo-less and photo-led covers are never offered. Fix with sql`exists (select 1 from "product_images" pi where pi.product_id = "products"."id")`, add a test, gate, merge, and confirm CI is green on main.
+- [x] AI composer photo detection bug: in `catalogContext` (src/server/actions/ai.ts) the has-photo check compiles to `"product_id" = "id"`, so every product reads as photo-less and photo-led covers are never offered. Fix with sql`exists (select 1 from "product_images" pi where pi.product_id = "products"."id")`, add a test, gate, merge, and confirm CI is green on main.
 - [ ] Reset demo store theme draft to its published theme (smoke left it changed).
 
 
