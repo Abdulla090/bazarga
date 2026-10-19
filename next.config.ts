@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: { "/api/share/story": ["./src/server/share/fonts/*.ttf"] },
   experimental: {
     // Tree-shake barrel imports so shared client JS stays small (Lighthouse 95+ goal).
-    optimizePackageImports: ["zod", "next-intl"],
+    optimizePackageImports: ["zod", "next-intl", "@hugeicons/core-free-icons"],
     // Snappy clicks: hovering (or touching) a link upgrades its prefetch to the full page data, so the click usually
     // renders from the client cache instead of waiting on the server; a visited dynamic page is reused for 30 s when
     // the seller tabs back to it. Server actions that revalidate still clear this cache, so edits show at once.
