@@ -77,7 +77,7 @@ async function main() {
       .set({ emailVerifiedAt: new Date() })
       .where(and(eq(users.id, existingStore.ownerId), sql`${users.emailVerifiedAt} is null`));
     if (existingStore.plan !== DEMO_PLAN) {
-      await db.update(stores).set({ plan: DEMO_PLAN, planPeriodEnd: null }).where(eq(stores.id, existingStore.id));
+      await db.update(stores).set({ plan: DEMO_PLAN, planPeriodEnd: null, themeDraft: null }).where(eq(stores.id, existingStore.id));
       console.log(`[seed] demo store plan set to ${DEMO_PLAN}`);
     }
     if (seedAnalyticsEnabled()) console.log("[seed] demo analytics topped up", await seedAnalytics(db, existingStore.id));
