@@ -873,6 +873,8 @@
     "imagesHint": "JPG, PNG an WebP, heta {mb} MB ji bo her yekê",
     "active": "Di firoşgehê de xuya dibe",
     "hidden": "Veşartî",
+    "hideAll": "Hemûyan di vê rûpelê de veşêre",
+    "showAll": "Hemûyan di vê rûpelê de nîşan bide",
     "inStock": "{count} di stokê de",
     "untracked": "Nayê jimartin",
     "translations": "Nav û danasîn bi her zimanî",

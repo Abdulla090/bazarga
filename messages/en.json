@@ -368,6 +368,8 @@
     "imagesHint": "JPG, PNG or WebP, up to {mb} MB each",
     "active": "Visible in store",
     "hidden": "Hidden",
+    "hideAll": "Hide all on this page",
+    "showAll": "Show all on this page",
     "inStock": "{count} in stock",
     "untracked": "Untracked",
     "translations": "Name and description in each language",

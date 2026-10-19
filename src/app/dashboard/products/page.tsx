@@ -9,6 +9,7 @@ import { formatIQD } from "@/lib/money";
 import { pickText } from "@/lib/i18n";
 import { stockLevel } from "@/lib/low-stock";
 import { ActiveToggle } from "./ActiveToggle";
+import { BulkVisibility } from "./BulkVisibility";
 import { ProductShareButton } from "@/components/dashboard/ProductShareButton";
 import { CAPTION_LOCALES, type CaptionLocale } from "@/lib/social";
 import { Icon, Sparkles } from "@/components/ui/icons";
@@ -51,6 +52,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         hint={atLimit ? tp("limitHint") : null}
         cta={usage.plan === "max" ? null : tp("upgradeCta")}
       />
+      {products.length > 1 && <BulkVisibility ids={products.map((p) => p.id)} />}
       {all.length > 0 && <ListSearch base="/dashboard/products" q={q} labels={labels} testId="products-search" />}
       {all.length > 0 && products.length === 0 ? (
         <p className="rounded-xl border border-line p-6 text-center text-ink-70" data-testid="products-no-match">{td("noMatches", { q })}</p>
