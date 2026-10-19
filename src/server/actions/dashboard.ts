@@ -16,7 +16,7 @@ import {
   deleteCategory,
   deleteProduct,
   getProductUsage,
-  setProductActive,
+  setProductActive, bulkSetSale,
   updateCategory,
   updateProduct,
 } from "../services/catalog";
@@ -217,6 +217,15 @@ export async function bulkProductVisibilityAction(ids: string[], isActive: boole
   const list = z.array(uuid).max(100).parse(ids);
   const active = z.boolean().parse(isActive);
   for (const id of list) await setProductActive(db(), store.id, id, active);
+  invalidateCatalog(store.id, list);
+  revalidatePath("/dashboard/products");
+}
+
+export async function bulkProductSaleAction(ids: string[], percent: number | null) {
+  const { store } = await requireStore();
+  const list = z.array(uuid).max(100).parse(ids);
+  const pct = z.number().int().min(5).max(90).nullable().parse(percent);
+  await bulkSetSale(db(), store.id, list, pct);
   invalidateCatalog(store.id, list);
   revalidatePath("/dashboard/products");
 }

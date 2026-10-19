@@ -1,5 +1,5 @@
 import { withOverride } from "./limit-overrides";
-import { and, asc, count, desc, eq, inArray, isNotNull, lte } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import { categories, productImages, productOptionValues, productOptions, productVariants, products, stores } from "../db/schema";
 import { AppError } from "../errors";
@@ -347,6 +347,26 @@ export async function setProductActive(database: Db, storeId: string, id: string
     .where(and(eq(products.id, id), eq(products.storeId, storeId)))
     .returning({ id: products.id });
   if (!r.length) throw new AppError("NOT_FOUND");
+}
+
+export async function bulkSetSale(database: Db, storeId: string, ids: string[], percent: number | null) {
+  if (!ids.length) return;
+  const where = and(eq(products.storeId, storeId), inArray(products.id, ids));
+  if (percent === null) {
+    await database
+      .update(products)
+      .set({ price: sql`${products.compareAtPrice}`, compareAtPrice: null, updatedAt: new Date() })
+      .where(and(where, sql`${products.compareAtPrice} > ${products.price}`));
+    return;
+  }
+  await database
+    .update(products)
+    .set({
+      compareAtPrice: sql`coalesce(${products.compareAtPrice}, ${products.price})`,
+      price: sql`greatest(1, round(coalesce(${products.compareAtPrice}, ${products.price}) * ${100 - percent} / 100.0))::int`,
+      updatedAt: new Date(),
+    })
+    .where(where);
 }
 
 export async function deleteProduct(database: Db, storeId: string, id: string) {
