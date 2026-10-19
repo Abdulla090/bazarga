@@ -177,7 +177,7 @@ export function CartCheckout({ labels: L, slug, locale, zones, payments, default
           <li key={l.key} className={`flex items-center gap-4 py-4 lg:gap-6 lg:py-5 ${l.available ? "" : "opacity-60"}`}>
             {l.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={l.image} alt="" className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] object-cover sm:h-24 sm:w-[4.8rem] lg:h-32 lg:w-[6.4rem]" />
+              <img src={l.image} alt="" loading="lazy" decoding="async" width={77} height={102} className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] object-cover sm:h-24 sm:w-[4.8rem] lg:h-32 lg:w-[6.4rem]" />
             ) : (
               <span className="h-20 w-16 shrink-0 rounded-xl bg-[#F4F4F5] sm:h-24 sm:w-[4.8rem] lg:h-32 lg:w-[6.4rem]" />
             )}
