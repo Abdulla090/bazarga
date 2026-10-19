@@ -54,7 +54,7 @@ export function CartDrawer({ slug, labels }: { slug: string; labels: CartDrawerL
           <div className="flex items-center gap-4 border-y border-st-border py-5">
             {item.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={item.image} alt="" className="h-24 w-[4.8rem] shrink-0 rounded-xl bg-[#F4F4F5] object-cover" />
+              <img src={item.image} alt="" loading="lazy" decoding="async" width={77} height={96} className="h-24 w-[4.8rem] shrink-0 rounded-xl bg-[#F4F4F5] object-cover" />
             ) : (
               <span className="h-24 w-[4.8rem] shrink-0 rounded-xl bg-[#F4F4F5]" />
             )}
