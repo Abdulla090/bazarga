@@ -6,6 +6,7 @@ import { NONCE_HEADER } from "@/server/csp";
 import { absoluteUrl, serializeJsonLd } from "@/lib/product-page";
 import { effectiveSeo, siteUrl, storeJsonLd } from "@/lib/seo";
 import { normalizePlan } from "@/lib/plans";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
@@ -52,6 +53,12 @@ const chipOff = "border-st-border bg-transparent text-st-fg hover:border-st-fg";
  * bento → best sellers → spotlight band (full bleed) → on sale → all products. While searching, filtering or paging
  * only the product block renders, straight under the header. Sections number themselves (01, 02…) in render order.
  */
+/** Canonical URL for the store home so ?q=/?src= variants never split search ranking (layout supplies the rest). */
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  return { alternates: { canonical: `${siteUrl().replace(/\/$/, "")}/s/${slug}` } };
+}
+
 export default async function StorefrontPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<SP> }) {
   const { slug } = await params;
   const sp = await searchParams;
