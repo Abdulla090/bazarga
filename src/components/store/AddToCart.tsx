@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { announceAdded, useCart, type AddedItem } from "./cart";
 
 export type AddToCartLabels = { add: string; added: string; soldOut: string };
@@ -26,6 +26,8 @@ export function AddToCart({
 }) {
   const { add } = useCart(slug);
   const [added, setAdded] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   return (
     <button
       type="button"
@@ -36,7 +38,8 @@ export function AddToCart({
         add({ productId });
         if (item) announceAdded({ ...item, qty: 1 });
         setAdded(true);
-        setTimeout(() => setAdded(false), 1200);
+        if (timer.current) clearTimeout(timer.current);
+        timer.current = setTimeout(() => setAdded(false), 1200);
       }}
     >
       {icon ? <span aria-hidden>{icon}</span> : <span aria-live="polite">{disabled ? labels.soldOut : added ? labels.added : labels.add}</span>}
