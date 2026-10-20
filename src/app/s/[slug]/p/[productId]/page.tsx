@@ -334,6 +334,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           save: { en: "Save", ku: "هەڵیبگرە", kmr: "Hilbigire", ar: "حفظ" }[locale] ?? "Save",
           saved: { en: "Saved", ku: "هەڵگیرا", kmr: "Hat hilanîn", ar: "تم الحفظ" }[locale] ?? "Saved",
           heading: { en: "Your saved items", ku: "هەڵگیراوەکانت", kmr: "Tiştên te yên hilanî", ar: "العناصر المحفوظة" }[locale] ?? "Saved",
+          remove: { en: "Remove", ku: "لابردن", kmr: "Rake", ar: "إزالة" }[locale] ?? "Remove",
         }}
       />
       <RecentlyViewed
