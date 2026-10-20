@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { hasWish, parseWish, toggleWish, wishKey, type WishItem } from "@/lib/wishlist";
 
 /** Heart toggle for this product plus the shopper's other saved products (this browser only). */
-export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem; labels: { save: string; saved: string; heading: string } }) {
+export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem; labels: { save: string; saved: string; heading: string; remove: string } }) {
   const [list, setList] = useState<WishItem[]>([]);
   useEffect(() => {
     try {
@@ -15,15 +15,16 @@ export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem;
     }
   }, [slug]);
   const on = hasWish(list, item.id);
-  const toggle = () => {
-    const next = toggleWish(list, item);
+  const toggle = () => save(toggleWish(list, item));
+  const dropOther = (id: string) => save(list.filter((x) => x.id !== id));
+  function save(next: WishItem[]) {
     setList(next);
     try {
       localStorage.setItem(wishKey(slug), JSON.stringify(next));
     } catch {
       /* ignore */
     }
-  };
+  }
   const others = list.filter((x) => x.id !== item.id);
   return (
     <section aria-label={labels.heading} className="grid gap-3" data-testid="wishlist">
@@ -38,7 +39,7 @@ export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem;
           <h2 className="text-base font-semibold text-st-fg">{labels.heading}</h2>
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
             {others.map((o) => (
-              <li key={o.id} className="w-32 shrink-0 snap-start">
+              <li key={o.id} className="relative w-32 shrink-0 snap-start">
                 <Link href={`/s/${slug}/p/${o.id}`} className="block min-h-11">
                   <div className="aspect-[4/5] overflow-hidden rounded-lg bg-black/5">
                     {/* eslint-disable-next-line @next/next/no-img-element -- small local thumb */}
@@ -47,6 +48,9 @@ export function Wishlist({ slug, item, labels }: { slug: string; item: WishItem;
                   <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-st-fg">{o.name}</p>
                   <p className="text-sm text-muted">{o.price}</p>
                 </Link>
+                <button type="button" onClick={() => dropOther(o.id)} aria-label={`${labels.remove}: ${o.name}`} title={labels.remove} className="absolute end-1 top-1 inline-flex size-11 items-center justify-center rounded-full bg-white/90 text-lg leading-none text-black shadow" data-testid="wishlist-remove">
+                  <span aria-hidden>×</span>
+                </button>
               </li>
             ))}
           </ul>
