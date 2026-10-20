@@ -12,3 +12,9 @@ describe("shopper/invite loading states", () => {
     expect(existsSync(`src/app/${d}/loading.tsx`)).toBe(true);
   });
 });
+
+describe("legal page loading states", () => {
+  it.each(["privacy", "terms", "refund"])("(marketing)/%s has loading.tsx", (d) => {
+    expect(existsSync(`src/app/(marketing)/${d}/loading.tsx`)).toBe(true);
+  });
+});
