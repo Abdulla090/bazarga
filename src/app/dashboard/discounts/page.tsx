@@ -6,6 +6,7 @@ import { currentLocale } from "@/server/locale";
 import { formatIQD } from "@/lib/money";
 import { toIraqDay } from "@/lib/validation";
 import { Icon, Truck } from "@/components/ui/icons";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { DiscountForm, DiscountToggle } from "./DiscountForms";
 
 export default async function DiscountsPage() {
@@ -28,7 +29,7 @@ export default async function DiscountsPage() {
         </div>
       </details>
       {codes.length === 0 ? (
-        <p className="text-ink-70">{t("none")}</p>
+        <EmptyState title={t("noneTitle")} body={t("none")} />
       ) : (
         <ul className="grid gap-3">
           {codes.map((c) => {

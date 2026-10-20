@@ -920,7 +920,8 @@
     "status": "الحالة",
     "showOnStorefront": "اعرضه في متجري",
     "showOnStorefrontHint": "يرى المتسوقون هذا الكود كلافتة عرض في متجرك وصفحات المنتجات.",
-    "onStorefront": "في المتجر"
+    "onStorefront": "في المتجر",
+    "noneTitle": "لا توجد أكواد خصم بعد"
   },
   "track": {
     "title": "تتبّع طلبك",

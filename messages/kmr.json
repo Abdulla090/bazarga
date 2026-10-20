@@ -1074,7 +1074,8 @@
     "status": "Rewş",
     "showOnStorefront": "Di firoşgeha min de nîşan bide",
     "showOnStorefrontHint": "Kirrîyar vê kodê wekî pêşniyareke li ser rûpelên firoşgeh û berhemê dibînin.",
-    "onStorefront": "Di firoşgehê de"
+    "onStorefront": "Di firoşgehê de",
+    "noneTitle": "Hê koda daxistinê tune"
   },
   "courier": {
     "title": "Radestkirina bo kuryer",

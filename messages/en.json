@@ -920,7 +920,8 @@
     "status": "Status",
     "showOnStorefront": "Show on my store",
     "showOnStorefrontHint": "Shoppers see this code as an offer banner on your store and product pages.",
-    "onStorefront": "On store"
+    "onStorefront": "On store",
+    "noneTitle": "No discount codes yet"
   },
   "track": {
     "title": "Track your order",
