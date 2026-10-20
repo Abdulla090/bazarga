@@ -204,10 +204,11 @@ export function ProductBuy({
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({ title: name, text: `${name} · ${formatIQD(price, locale)}`, url: shareUrl });
-      } catch {
-        /* dismissed */
+        return;
+      } catch (err) {
+        // The shopper closed the sheet: done. Any other failure falls through to copy-link.
+        if (err instanceof DOMException && err.name === "AbortError") return;
       }
-      return;
     }
     try {
       await navigator.clipboard.writeText(shareUrl);
