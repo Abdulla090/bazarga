@@ -66,6 +66,8 @@ export function StorefrontForm({ initial, maxMb }: { initial: Values; maxMb: num
           <img
             src={cover.url}
             alt=""
+            loading="lazy"
+            decoding="async"
             className="mb-2 aspect-[16/6] w-full rounded-xl border border-line bg-ink/10 object-cover"
             style={cover.placeholder ? { backgroundImage: `url("${cover.placeholder}")`, backgroundSize: "cover" } : undefined}
           />
