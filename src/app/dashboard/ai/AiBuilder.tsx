@@ -70,7 +70,7 @@ export function AiBuilder() {
           {drafts.map((d, i) => (
             <div key={i} className="card grid gap-2 sm:grid-cols-[5rem_1fr]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              {urls[d.photoIndexes[0] ?? -1] ? <img src={urls[d.photoIndexes[0]!]} alt="" className="h-20 w-20 rounded-xl object-cover" /> : <span />}
+              {urls[d.photoIndexes[0] ?? -1] ? <img src={urls[d.photoIndexes[0]!]} alt="" width={80} height={80} decoding="async" className="h-20 w-20 rounded-xl object-cover" /> : <span />}
               <div className="grid gap-2">
                 {(["ku", "ar", "en"] as const).map((l) => (
                   <input key={l} aria-label={`${tp("name")} (${l})`} className="input" dir={l === "en" ? "ltr" : "rtl"} value={d.name[l] ?? ""} placeholder={`${tp("name")} (${l})`} onChange={(e) => update(i, { name: { ...d.name, [l]: e.target.value } })} />
