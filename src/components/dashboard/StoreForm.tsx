@@ -113,7 +113,7 @@ export function StoreForm({
             <label className="label" htmlFor="f-logo">{ts("logo")}</label>
             {initial?.logoUrl && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={initial.logoUrl} alt="" className="mb-2 h-16 w-16 rounded-xl object-cover" />
+              <img src={initial.logoUrl} alt="" width={64} height={64} decoding="async" className="mb-2 h-16 w-16 rounded-xl object-cover" />
             )}
             <input id="f-logo" type="file" name="logo" accept="image/jpeg,image/png,image/webp" className="block min-h-11 w-full max-w-full text-base file:me-3 file:min-h-11 file:rounded-full file:border file:border-line file:bg-white file:px-4 file:font-semibold" />
           </div>
