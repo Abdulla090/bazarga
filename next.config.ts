@@ -58,6 +58,11 @@ const nextConfig: NextConfig = {
       // Hashed build output never changes under a URL (Next sets this too in production; stated explicitly so a
       // CDN in front sees it). Not in dev, where chunk names are stable across edits.
       ...(isProd ? [{ source: "/_next/static/:path*", headers: [{ key: "Cache-Control", value: IMMUTABLE }] }] : []),
+      // Private areas never belong in a search index, even if a link leaks (robots.txt alone is advisory).
+      ...["/dashboard/:path*", "/admin/:path*", "/onboarding/:path*", "/api/:path*"].map((source) => ({
+        source,
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      })),
       // Service worker: always revalidated so a deploy reaches clients on the next visit.
       {
         source: "/sw.js",
