@@ -6,6 +6,7 @@ import { fontVariables } from "./fonts";
 import { HTML_LANG, dirOf, isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
 import { BRAND } from "@/lib/theme";
 import { siteUrl } from "@/lib/seo";
+import { imageOrigin } from "@/lib/image-origin";
 
 const OG_LOCALE = { ku: "ckb_IQ", ar: "ar_IQ", en: "en_US", kmr: "kmr_TR" } as const;
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
@@ -50,8 +51,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   await connection();
   const raw = await getLocale();
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
+  const imgOrigin = imageOrigin(process.env.S3_PUBLIC_URL || process.env.R2_PUBLIC_URL);
   return (
     <html lang={HTML_LANG[locale]} dir={dirOf(locale)} className={fontVariables}>
+      <head>{imgOrigin ? <link rel="preconnect" href={imgOrigin} crossOrigin="anonymous" /> : null}</head>
       <body className="antialiased">
         {/* Client translations are provided per area (src/components/IntlProvider.tsx), not here: storefronts ship none. */}
         {children}
