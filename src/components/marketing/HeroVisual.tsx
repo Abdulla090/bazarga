@@ -25,7 +25,7 @@ const srcSet = (base: string) => `${src(base, 320)} 320w, ${src(base, 480)} 480w
 
 function Thumb({ base, className }: { base: string; className?: string }) {
   // eslint-disable-next-line @next/next/no-img-element -- pre-resized seed rendition
-  return <img src={src(base, 320)} alt="" width={320} height={320} decoding="async" className={className} />;
+  return <img src={src(base, 320)} alt="" width={320} height={320} loading="lazy" decoding="async" className={className} />;
 }
 
 export async function HeroVisual({ locale }: { locale: Locale }) {
