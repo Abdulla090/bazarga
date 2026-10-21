@@ -12,5 +12,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ code: st
   const headers = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
   if (!hit) return new Response(null, { status: 307, headers: { ...headers, Location: "/e404" } });
   const search = new URL(req.url).search;
-  return new Response(null, { status: 307, headers: { ...headers, Location: shortLinkTarget(hit.slug, hit.productId, search) } });
+  // A found link is cached at the edge for a minute (stale-while-revalidate), so a viral post's burst of taps skips the DB.
+  const cached = { ...headers, "Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=300" };
+  return new Response(null, { status: 307, headers: { ...cached, Location: shortLinkTarget(hit.slug, hit.productId, search) } });
 }
