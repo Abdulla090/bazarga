@@ -13,3 +13,12 @@ describe("resolve", () => {
     expect(parseTheme(DEFAULT_THEME)).toEqual(DEFAULT_THEME);
   });
 });
+
+describe("store viewport theme colour", () => {
+  it("layout exports generateViewport using the resolved accent", async () => {
+    const { readFileSync } = await import("node:fs");
+    const src = readFileSync("src/app/s/[slug]/layout.tsx", "utf8");
+    expect(src).toContain("generateViewport");
+    expect(src).toContain("themeColor: theme.accent");
+  });
+});

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { CartDrawerLazy as CartDrawer } from "@/components/store/CartDrawerLazy";
@@ -42,6 +42,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         }
       : {}),
   };
+}
+
+// Browser chrome (Android address bar, iOS status bar) takes the store's own accent.
+export async function generateViewport({ params }: { params: Promise<{ slug: string }> }): Promise<Viewport> {
+  const { slug } = await params;
+  const store = await loadStore(slug);
+  const theme = resolveTheme(store.themePreset, store.accentColor);
+  return { themeColor: theme.accent };
 }
 
 export default async function StoreLayout({ children, params }: { children: React.ReactNode; params: Promise<{ slug: string }> }) {
