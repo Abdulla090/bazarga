@@ -16,9 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   return {
     metadataBase: new URL(siteUrl()),
-    title: { default: t("metaTitle"), template: "%s · Reelcart" },
+    title: { default: t("metaTitle"), template: `%s · ${locale === "en" ? "Reelcart" : "بازارگە"}` },
     description: t("metaDescription"),
-    applicationName: "Reelcart",
+    applicationName: locale === "en" ? "Reelcart" : "بازارگە",
     // Share previews (WhatsApp, Telegram, Facebook, X): one branded 1200×630 card; storefronts and products override it.
     openGraph: {
       type: "website",
