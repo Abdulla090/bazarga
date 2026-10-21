@@ -1,6 +1,9 @@
-export default function Loading() {
+import { SrLoading } from "@/components/SrLoading";
+
+export default async function Loading() {
   return (
     <div role="status" aria-busy="true" className="mx-auto w-full max-w-5xl px-4 py-8">
+      <SrLoading />
       <div className="h-40 rounded-2xl bg-slate-200/70 motion-safe:animate-pulse" />
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         {Array.from({ length: 8 }).map((_, i) => (
