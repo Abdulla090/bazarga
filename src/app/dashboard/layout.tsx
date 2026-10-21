@@ -46,6 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <ImpersonationBanner />
     {ann && <AnnouncementBar {...ann} />}
     <div className="min-h-dvh bg-paper pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 print:min-h-0 print:bg-white print:pb-0">
+      <a href="#dash-main" className="sr-only focus:not-sr-only focus:fixed focus:start-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-ink focus:px-4 focus:py-3 focus:text-paper print:hidden">{tc("skipToContent")}</a>
       <header className="sticky top-0 z-20 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-md print:hidden">
         <div className="flex h-16 items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] md:px-6">
           {stores.length > 1 ? (
@@ -88,7 +89,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <PendingButton className="flex min-h-11 w-full items-center rounded-lg px-3 text-[14px] text-ink/60 transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink">{tc("logout")}</PendingButton>
           </form>
         </aside>
-        <main className="mx-auto w-full min-w-0 max-w-[72rem] px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>
+        <main id="dash-main" tabIndex={-1} className="mx-auto w-full min-w-0 max-w-[72rem] outline-none px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>
       </div>
       <DashNav variant="bottom" newOrders={newOrders} role={role} />
       <CommandPalette />
