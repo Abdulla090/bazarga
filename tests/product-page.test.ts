@@ -212,3 +212,11 @@ describe("product page source guards", () => {
     expect(g).not.toMatch(/^import .*GalleryLightbox/m);
   });
 });
+
+import { productBreadcrumbJsonLd as _bc, serializeJsonLd as _ser } from "@/lib/product-page";
+import { it as _it, expect as _expect } from "vitest";
+_it("breadcrumb JSON-LD lists store then product and stays script-safe", () => {
+  const j = _bc({ storeName: "A</script>", storeUrl: "https://x.io/s/a", productName: "P", productUrl: "https://x.io/s/a/p/1" });
+  _expect((j.itemListElement as unknown[]).length).toBe(2);
+  _expect(_ser(j)).not.toContain("</script>");
+});
