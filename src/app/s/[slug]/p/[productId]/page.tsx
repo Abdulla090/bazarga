@@ -23,7 +23,7 @@ import { formatIQD } from "@/lib/money";
 import {
   absoluteUrl,
   descriptionParagraphs,
-  productJsonLd,
+  productJsonLd, productBreadcrumbJsonLd,
   relatedProducts,
   serializeJsonLd,
   specRows,
@@ -152,7 +152,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   // Catalog entry carries the computed price range / sold-out state used by the JSON-LD and related strip.
   const self = catalog.products.find((c) => c.id === p.id);
   const related = relatedProducts(catalog.products, { id: p.id, categoryId: p.categoryId }, 8);
-  const jsonLd = productJsonLd({
+  const jsonLdProduct = productJsonLd({
     url: shareUrl,
     name,
     description,
@@ -163,6 +163,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     priceMax: self?.priceMax,
     soldOut: self?.soldOut ?? (p.stock !== null && p.stock <= 0),
   });
+
+  const crumbs = productBreadcrumbJsonLd({ storeName: store.name, storeUrl: absoluteUrl(base(), `/s/${store.slug}`), productName: name, productUrl: shareUrl });
+  const jsonLd = [jsonLdProduct, crumbs];
 
   return (
     // Bottom padding on phones so the sticky buy bar never covers the footer.

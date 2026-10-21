@@ -107,6 +107,18 @@ export function productJsonLd(i: JsonLdInput): Record<string, unknown> {
   };
 }
 
+/** schema.org BreadcrumbList (store home → product) for rich results on the product page. */
+export function productBreadcrumbJsonLd(i: { storeName: string; storeUrl: string; productName: string; productUrl: string }): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: i.storeName, item: i.storeUrl },
+      { "@type": "ListItem", position: 2, name: i.productName, item: i.productUrl },
+    ],
+  };
+}
+
 /** JSON for an inline <script type="application/ld+json">: `<`, `>`, `&` and line separators escaped so seller text can't close the tag. */
 export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data)
