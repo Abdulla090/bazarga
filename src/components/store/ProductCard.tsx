@@ -217,7 +217,7 @@ export function ProductCard({
           <MerchBadges price={p.price} compareAtPrice={p.compareAtPrice} bestSeller={p.bestSeller} badge={p.badge} soldOut={p.soldOut} labels={labels.badges} soldOutLabel={labels.soldOut} corner="top" />
           <div className="absolute inset-x-0 bottom-4 z-10 hidden justify-center opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:hover)]:md:flex">
             {p.hasVariants && !p.soldOut ? (
-              <Link href={href} className="btn-ghost btn-sm min-h-9 border-st-fg/40 bg-st-bg/90 px-4 backdrop-blur">{labels.chooseOptions}</Link>
+              <Link href={href} className="btn-ghost btn-sm min-h-11 border-st-fg/40 bg-st-bg/90 px-4 backdrop-blur">{labels.chooseOptions}</Link>
             ) : !p.soldOut ? (
               <AddToCart slug={slug} productId={p.id} labels={{ add: labels.add, added: labels.added, soldOut: labels.soldOut }} item={{ name, image: p.image?.url ?? null, price: formatIQD(p.price, locale) }} />
             ) : null}
