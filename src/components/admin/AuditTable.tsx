@@ -22,8 +22,8 @@ export function AuditTable({ rows, filters, page, total, size }: { rows: Row[]; 
           <option value="">{t("a.target")}: {t("c.all")}</option>
           {["user", "store", "product", "order", "upgrade", "setting"].map((x) => <option key={x} value={x}>{x}</option>)}
         </select>
-        <input type="date" name="from" defaultValue={filters.from} aria-label="from" className={inputCls} dir="ltr" />
-        <input type="date" name="to" defaultValue={filters.to} aria-label="to" className={inputCls} dir="ltr" />
+        <input type="date" name="from" defaultValue={filters.from} aria-label="From date" className={inputCls} dir="ltr" />
+        <input type="date" name="to" defaultValue={filters.to} aria-label="To date" className={inputCls} dir="ltr" />
         <div className="flex gap-2 sm:col-span-3 lg:col-span-7">
           <Btn type="submit" tone="ink">{t("c.filter")}</Btn>
           <a href={EXPORT_AUDIT} className="inline-flex min-h-11 items-center rounded-full border border-line bg-white px-4 text-sm font-medium">{t("c.export")}</a>

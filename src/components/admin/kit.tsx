@@ -217,7 +217,7 @@ export function Pager({ page, total, size, hrefFor }: { page: number; total: num
   const pages = Math.max(1, Math.ceil(total / size));
   if (pages <= 1) return <p className="mt-3 text-xs text-ink-50">{t("c.results", { n: total })}</p>;
   return (
-    <nav className="mt-3 flex items-center justify-between gap-2 text-sm" aria-label="pagination">
+    <nav className="mt-3 flex items-center justify-between gap-2 text-sm" aria-label="Pagination">
       <span className="text-ink-50">{t("c.page", { page, pages })} · {t("c.results", { n: total })}</span>
       <span className="flex gap-2">
         <a aria-disabled={page <= 1} href={page > 1 ? hrefFor(page - 1) : undefined} className={`inline-flex min-h-11 items-center rounded-full border border-line px-4 ${page <= 1 ? "pointer-events-none opacity-40" : "hover:border-ink/30"}`}>{t("c.prev")}</a>
