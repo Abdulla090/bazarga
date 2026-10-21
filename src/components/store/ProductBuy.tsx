@@ -368,7 +368,8 @@ export function ProductBuy({
           )}
           <button type="button" onClick={share} className={`btn-ghost min-h-11 border-st-border ${waHref ? "w-11 shrink-0 px-0" : "flex-1"}`} aria-label={copied ? labels.linkCopied : labels.share} title={labels.share}>
             <Icon as={copied ? Check : Share2} />
-            {!waHref && <span aria-live="polite">{copied ? labels.linkCopied : labels.share}</span>}
+            {!waHref && <span>{copied ? labels.linkCopied : labels.share}</span>}
+            <span className="sr-only" role="status" aria-live="polite">{copied ? labels.linkCopied : ""}</span>
           </button>
         </div>
       </div>
