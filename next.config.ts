@@ -83,7 +83,7 @@ const nextConfig: NextConfig = {
       },
       // Unhashed public assets: long-lived but not immutable (a rebrand replaces them in place).
       { source: "/icons/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }] },
-      { source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }] },
+      { source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=31536000" }] },
     ];
   },
 };
