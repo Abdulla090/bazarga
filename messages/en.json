@@ -314,7 +314,8 @@
     "switchStore": "Switch store",
     "manageStores": "Manage stores",
     "staffBadge": "Staff",
-    "team": "Team"
+    "team": "Team",
+    "navLabel": "Dashboard menu"
   },
   "setup": {
     "title": "Set up your store",

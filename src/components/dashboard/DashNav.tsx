@@ -47,7 +47,7 @@ export function DashNav({ variant, newOrders = 0, role = "owner" }: { variant: "
     const tab = (on: boolean) =>
       `relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors duration-150 ${on ? "text-ink" : "text-ink/70 hover:text-ink"}`;
     return (
-      <nav aria-label="Dashboard" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden print:hidden">
+      <nav aria-label={t("navLabel")} className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden print:hidden">
         <ul className="grid grid-cols-4">
           {ITEMS.filter((i) => i.mobile).map((i) => {
             const on = active(i.href);
@@ -76,7 +76,7 @@ export function DashNav({ variant, newOrders = 0, role = "owner" }: { variant: "
 
   if (variant === "more") {
     return (
-      <nav aria-label="Dashboard">
+      <nav aria-label={t("navLabel")}>
         <ul className="divide-y divide-line border-y border-line">
           {ITEMS.filter((i) => !i.mobile).map((i) => (
             <li key={i.href}>
@@ -114,7 +114,7 @@ export function DashNav({ variant, newOrders = 0, role = "owner" }: { variant: "
     );
   };
   return (
-    <nav aria-label="Dashboard" className="grid gap-3">
+    <nav aria-label={t("navLabel")} className="grid gap-3">
       {groups.map((g, n) => (
         <ul key={n} className={`grid gap-0.5 ${n > 0 ? "border-t border-line pt-3" : ""}`}>
           {g.map(row)}

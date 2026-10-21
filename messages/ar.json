@@ -314,7 +314,8 @@
     "switchStore": "تبديل المتجر",
     "manageStores": "إدارة المتاجر",
     "staffBadge": "موظف",
-    "team": "الفريق"
+    "team": "الفريق",
+    "navLabel": "قائمة لوحة التحكم"
   },
   "setup": {
     "title": "جهّز متجرك",
