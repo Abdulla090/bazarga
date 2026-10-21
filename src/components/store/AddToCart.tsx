@@ -11,7 +11,7 @@ export function AddToCart({
   disabled,
   labels,
   item,
-  className = "btn-ghost btn-sm relative z-10 min-h-9 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur",
+  className = "btn-ghost btn-sm relative z-10 min-h-11 border-transparent bg-st-surface/95 px-4 shadow-e1 backdrop-blur",
   icon,
 }: {
   slug: string;
