@@ -701,6 +701,7 @@
     "searchPlaceholder": "ابحث في هذا المتجر",
     "search": "بحث",
     "resultsFor": "نتائج «{q}»: {count}",
+    "filteredCount": "{count} منتج",
     "clearSearch": "مسح",
     "noResults": "لا توجد منتجات تطابق «{q}».",
     "showMore": "عرض المزيد ({count} أخرى)",

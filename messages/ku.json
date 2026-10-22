@@ -701,6 +701,7 @@
     "searchPlaceholder": "گەڕان لەم دوکانەدا",
     "search": "گەڕان",
     "resultsFor": "ئەنجامەکانی «{q}»: {count}",
+    "filteredCount": "{count} بەرهەم",
     "clearSearch": "سڕینەوە",
     "noResults": "هیچ کاڵایەک لەگەڵ «{q}» ناگونجێت.",
     "showMore": "زیاتر پیشان بدە ({count}ی تر)",
