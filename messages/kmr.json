@@ -336,6 +336,7 @@
     "searchPlaceholder": "Di vê firoşgehê de bigere",
     "search": "Bigere",
     "resultsFor": "Encamên “{q}”: {count}",
+    "filteredCount": "{count} berhem",
     "clearSearch": "Paqij bike",
     "noResults": "Tiştek bi “{q}” re nagunce.",
     "showMore": "Bêtir nîşan bide ({count} din)",

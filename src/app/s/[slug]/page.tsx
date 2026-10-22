@@ -310,6 +310,10 @@ export default async function StorefrontPage({ params, searchParams }: { params:
           </p>
         )}
 
+        {!q && (c || offers || inStock) && total > 0 && (
+          <p className="text-sm text-muted" aria-live="polite" data-testid="filtered-count">{t("filteredCount", { count: total })}</p>
+        )}
+
         {items.length === 0 ? (
           <div className="grid justify-items-center gap-6 border-y border-st-border px-4 py-16 text-center sm:py-24" data-testid="empty-results">
             <p className="t-headline max-w-xl break-words">{q ? t("noResults", { q }) : offers ? t("noOffers") : t("noProducts")}</p>

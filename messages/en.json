@@ -701,6 +701,7 @@
     "searchPlaceholder": "Search this store",
     "search": "Search",
     "resultsFor": "Results for “{q}”: {count}",
+    "filteredCount": "{count} products",
     "clearSearch": "Clear",
     "noResults": "Nothing matches “{q}”.",
     "showMore": "Show more ({count} more)",
