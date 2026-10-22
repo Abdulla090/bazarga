@@ -42,9 +42,9 @@ export type CatalogFilter = {
   sort?: string | null;
 };
 
-export type CatalogSort = "price-asc" | "price-desc" | "discount";
+export type CatalogSort = "price-asc" | "price-desc" | "discount" | "name";
 export function parseSort(v: string | null | undefined): CatalogSort | undefined {
-  return v === "price-asc" || v === "price-desc" || v === "discount" ? v : undefined;
+  return v === "price-asc" || v === "price-desc" || v === "discount" || v === "name" ? v : undefined;
 }
 
 /** `outOfRange`: the page asked for starts past the last match (?page=999); the page answers 404 instead of a full list. */
@@ -72,6 +72,7 @@ export function filterCatalog<T extends FilterableProduct>(products: readonly T[
   const sort = parseSort(f.sort);
   const off = (p: T) => (p.price !== undefined ? percentOff(p.price, p.compareAtPrice) ?? 0 : 0);
   if (sort === "discount") matches.sort((a, b) => off(b) - off(a));
+  else if (sort === "name") matches.sort((a, b) => pickText(a.name, f.locale).localeCompare(pickText(b.name, f.locale), f.locale === "en" ? "en" : "ar"));
   else if (sort) matches.sort((a, b) => (sort === "price-asc" ? (a.price ?? 0) - (b.price ?? 0) : (b.price ?? 0) - (a.price ?? 0)));
   const lastPage = Math.max(1, Math.ceil(matches.length / pageSize));
   const outOfRange = page > lastPage;
