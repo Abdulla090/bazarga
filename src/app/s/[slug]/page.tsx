@@ -15,7 +15,7 @@ import { currentLocale } from "@/server/locale";
 import { ProductCard } from "@/components/store/ProductCard";
 import { pickText } from "@/lib/i18n";
 import { formatIQD } from "@/lib/money";
-import { filterCatalog } from "@/lib/catalog-filter";
+import { parseSort, filterCatalog } from "@/lib/catalog-filter";
 import { waLink } from "@/lib/whatsapp";
 import { WaTap } from "@/components/store/WaTap";
 import { normalizePhone } from "@/lib/phone";
@@ -30,15 +30,16 @@ import { OfferBanner } from "@/components/store/OfferBanner";
 import { bestSellerStrip, percentOff, pickBannerOffer, saleProducts } from "@/lib/merch";
 import { merchLabels, offerLabels } from "@/components/store/merch-labels";
 
-type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[] };
+type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[]; sort?: string | string[] };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)?.trim() || undefined;
 
 /** Build a store-home href keeping only the params that are set. */
-function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offers?: boolean }) {
+function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offers?: boolean; sort?: string }) {
   const sp = new URLSearchParams();
   if (p.q) sp.set("q", p.q);
   if (p.c) sp.set("c", p.c);
   if (p.offers) sp.set("offers", "1");
+  if (p.sort) sp.set("sort", p.sort);
   if (p.page && p.page > 1) sp.set("page", String(p.page));
   const s = sp.toString();
   return `/s/${slug}${s ? `?${s}` : ""}`;
@@ -65,6 +66,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const q = one(sp.q)?.slice(0, 80);
   const c = one(sp.c);
   const offers = one(sp.offers) === "1";
+  const sort = parseSort(one(sp.sort));
   const store = await loadStore(slug);
   const design = await resolveDesign(slug, store.themePublished, store.plan);
   const t = await getTranslations("store");
@@ -75,7 +77,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     getStorefrontSettings(store.id),
     getStoreOffers(store.id),
   ]);
-  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, page: one(sp.page), locale, pageSize: design.pageSize });
+  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, sort, page: one(sp.page), locale, pageSize: design.pageSize });
   // ?page=N past the last page: a 404 (the store's own not-found page), never the whole catalogue under a bogus URL.
   if (outOfRange) notFound();
   const badges = merchLabels(t);
@@ -270,6 +272,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
           <form id="store-search" action={`/s/${slug}#products`} method="get" role="search" className={`col-span-4 flex items-center md:col-span-4 md:col-start-9 ${design.header === "search" ? "md:hidden" : ""}`}>
             {c && <input type="hidden" name="c" value={c} />}
             {offers && <input type="hidden" name="offers" value="1" />}
+            {sort && <input type="hidden" name="sort" value={sort} />}
             <label className="relative flex-1">
               <span className="sr-only">{t("search")}</span>
               <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
@@ -287,6 +290,12 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             <InstantSearch formId="store-search" />
           </form>
         </div>
+
+        <nav className="flex flex-wrap items-center gap-2" aria-label={t("sortBy")} data-testid="sort-links">
+          {([[undefined, t("sortNewest")], ["price-asc", t("sortPriceAsc")], ["price-desc", t("sortPriceDesc")]] as const).map(([key, label]) => (
+            <Link key={label} href={`${homeHref(slug, { q, c, offers, sort: key })}#products`} aria-current={sort === key ? "true" : undefined} className={`${chip} ${sort === key ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{label}</Link>
+          ))}
+        </nav>
 
         {q && (
           <p className="flex items-center justify-between gap-2 text-sm text-muted" aria-live="polite">

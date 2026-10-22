@@ -82,3 +82,14 @@ describe("filterCatalog paging past the end", () => {
     expect(filterCatalog(many, { locale: "en", q: "zzz", page: 2 }).outOfRange).toBe(true);
   });
 });
+
+import { filterCatalog as fc, parseSort } from "@/lib/catalog-filter";
+describe("sort", () => {
+  const ps = [{ name: { en: "a" }, categoryId: null, price: 5 }, { name: { en: "b" }, categoryId: null, price: 1 }, { name: { en: "c" }, categoryId: null, price: 9 }];
+  it("orders by price and ignores junk", () => {
+    expect(fc(ps, { locale: "en", sort: "price-asc" }).items.map((p) => p.price)).toEqual([1, 5, 9]);
+    expect(fc(ps, { locale: "en", sort: "price-desc" }).items.map((p) => p.price)).toEqual([9, 5, 1]);
+    expect(fc(ps, { locale: "en", sort: "x" }).items.map((p) => p.price)).toEqual([5, 1, 9]);
+    expect(parseSort("bad")).toBeUndefined();
+  });
+});
