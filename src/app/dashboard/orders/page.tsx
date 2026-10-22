@@ -37,7 +37,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         <div className="flex flex-wrap gap-2">
         <Link href="/dashboard/orders/courier" className="btn-ghost btn-sm" data-testid="orders-courier">{t("courier")}</Link>
         {total > 0 && (
-          <a href={status ? `/api/orders/export?status=${status}` : "/api/orders/export"} download className="btn-ghost btn-sm" data-testid="orders-export">
+          <a href={`/api/orders/export${status || q ? "?" : ""}${[status ? `status=${status}` : "", q ? `q=${encodeURIComponent(q)}` : ""].filter(Boolean).join("&")}`} download className="btn-ghost btn-sm" data-testid="orders-export">
             {t("export")}
           </a>
         )}

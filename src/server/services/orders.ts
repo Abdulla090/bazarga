@@ -628,11 +628,7 @@ export async function listOrders(
 }
 
 /** One page of the seller's order list, newest first, with optional status + search (number, phone, name). */
-export async function listOrdersPage(
-  database: Db,
-  storeId: string,
-  opts: { status?: OrderStatus; q?: string; offset?: number; limit?: number } = {},
-): Promise<{ orders: Order[]; total: number }> {
+function orderFilter(storeId: string, opts: { status?: OrderStatus; q?: string }) {
   const conds = [eq(orders.storeId, storeId)];
   if (opts.status) conds.push(eq(orders.status, opts.status));
   const q = orderQuery(opts.q ?? "");
@@ -641,7 +637,15 @@ export async function listOrdersPage(
   if (q.phoneDigits) any.push(sql`${orders.customerPhone} LIKE ${"%" + q.phoneDigits + "%"}`);
   if (q.text) any.push(sql`${orders.customerName} ILIKE ${"%" + q.text.replace(/[\\%_]/g, (c) => "\\" + c) + "%"}`);
   if (any.length) conds.push(or(...any)!);
-  const where = and(...conds);
+  return and(...conds);
+}
+
+export async function listOrdersPage(
+  database: Db,
+  storeId: string,
+  opts: { status?: OrderStatus; q?: string; offset?: number; limit?: number } = {},
+): Promise<{ orders: Order[]; total: number }> {
+  const where = orderFilter(storeId, opts);
   const [rows, counted] = await Promise.all([
     database.query.orders.findMany({ where, orderBy: [desc(orders.createdAt), desc(orders.number)], limit: Math.min(opts.limit ?? 50, 200), offset: Math.max(0, opts.offset ?? 0) }),
     database.select({ n: sql<number>`count(*)::int` }).from(orders).where(where),
@@ -818,9 +822,9 @@ export async function storeStats(database: Db, storeId: string, now = new Date()
 }
 
 /** Orders with their item lines for the seller CSV export (store-scoped; newest first; max 2000). */
-export async function listOrdersForExport(database: Db, storeId: string, opts: { status?: OrderStatus } = {}) {
+export async function listOrdersForExport(database: Db, storeId: string, opts: { status?: OrderStatus; q?: string } = {}) {
   const rows = await database.query.orders.findMany({
-    where: opts.status ? and(eq(orders.storeId, storeId), eq(orders.status, opts.status)) : eq(orders.storeId, storeId),
+    where: orderFilter(storeId, opts),
     orderBy: desc(orders.createdAt),
     limit: 2000,
   });

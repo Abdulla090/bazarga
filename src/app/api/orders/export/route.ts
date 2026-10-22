@@ -15,7 +15,8 @@ export async function GET(req: Request) {
     await enforceRateLimit(db(), `orders-export:${store.id}`, 30, 3600);
     const raw = new URL(req.url).searchParams.get("status") ?? "";
     const status = (ORDER_STATUSES as readonly string[]).includes(raw) ? (raw as OrderStatus) : undefined;
-    const rows = await listOrdersForExport(db(), store.id, { status });
+    const q = (new URL(req.url).searchParams.get("q") ?? "").trim().slice(0, 80);
+    const rows = await listOrdersForExport(db(), store.id, { status, q });
     const day = new Date(Date.now() + 3 * 3600_000).toISOString().slice(0, 10);
     return new Response(ordersToCsv(rows), {
       headers: {

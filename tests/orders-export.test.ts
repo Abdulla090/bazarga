@@ -60,3 +60,15 @@ describe("new-orders badge count", () => {
     for (const m of [en, ku, ar, kmr]) expect((m as { dash: Record<string, string> }).dash.newOrders).toContain("{count");
   });
 });
+
+describe("orders export search filter", () => {
+  it("narrows the export by customer name and stays store-scoped", async () => {
+    const a = await seller(database, "expq");
+    const p = await product(database, a.store.id, 20_000);
+    await placeOrder(database, a.store, checkoutSchema.parse({ ...checkout([{ productId: p.id, quantity: 1 }]), customerName: "Zanyar Test", phone: "07701110001", notes: undefined }));
+    await placeOrder(database, a.store, checkoutSchema.parse({ ...checkout([{ productId: p.id, quantity: 1 }]), customerName: "Other Buyer", phone: "07701119999", notes: undefined }));
+    const hit = await listOrdersForExport(database, a.store.id, { q: "zanyar" });
+    expect(hit.length).toBe(1);
+    expect(hit[0]!.customerName).toBe("Zanyar Test");
+  });
+});
