@@ -65,7 +65,7 @@ Goal: a buyer who barely codes can understand, run and launch Reelcart with thei
 - [x] 0. (Do first) Variant editor nits from audit: price/stock placeholders truncated at 1280 ("Same as p", "Not cour") and new colour swatches all default blue (give each preset colour its real swatch). See docs/E2E-AUDIT.md.
 - [ ] 1. (hugeicons added to optimizePackageImports) Product page Lighthouse 95+ mobile (audit: fonts already subsetted/unicode-range, gallery images eager+fetchpriority by index; next measure JS bundle with lighthouse, trim shared client JS), then landing, pricing, store home
 - [x] 2. (live run Oct 17 00:30 Baghdad: 25 passed, 1 skipped; `npm run test:live`) Seller-journey e2e on live site (signup → onboarding → product → share → shopper order ?src → orders by source) + plan-gating UI. Due Sun Oct 18
-- [ ] 3. Market theme (6th)
+- [x] 3. Market theme (shipped inside the 10 flagship themes, ebfdc96)
 - [ ] 4. (loading.tsx added for order slip, stores, team, admin, onboarding) axe clean on all top screens + CLS + empty/error/loading states ([x] marketing+auth loading skeletons; landing renders inline for no-JS)
 - [ ] 5. Dashboard wow ([x] first-order celebration card, [x] Cmd-K palette, [x] g-then-key shortcuts): Cmd-K, shortcuts, first-run checklist, first-order moment, optimistic edits
 - [ ] 6. Shopper delight ([x] instant search, [x] recently viewed, [x] related, [x] wishlist): instant search, quick-view, wishlist, recently viewed, related, share cards
