@@ -15,7 +15,7 @@ export function siteUrl(appUrl: string | undefined = process.env.APP_URL): strin
 export const STATIC_PUBLIC_PATHS = ["/", "/pricing", "/showcase", "/terms", "/privacy", "/refund"] as const;
 
 /** Never indexed: private, transactional or per-shopper pages. Mirrored in robots.txt and page-level noindex. */
-export const ROBOTS_DISALLOW = ["/dashboard", "/admin", "/api/", "/onboarding", "/payments/", "/e404", "/s/*/cart", "/s/*/order/", "/s/*/track"] as const;
+export const ROBOTS_DISALLOW = ["/dashboard", "/admin", "/api/", "/onboarding", "/payments/", "/invite/", "/e404", "/s/*/cart", "/s/*/order/", "/s/*/track"] as const;
 
 // ---------------------------------------------------------------- advanced SEO + white-label (Max)
 export type { ProductSeo, StoreSeo };
