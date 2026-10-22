@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 describe("admin list loading skeletons", () => {
-  for (const d of ["users", "stores", "orders", "products"]) {
+  for (const d of ["users", "stores", "orders", "products", "audit", "catalog", "database", "growth", "health", "payments", "plans", "settings", "site"]) {
     it(`${d} has an accessible, reduced-motion-safe skeleton`, () => {
       const p = `src/app/admin/${d}/loading.tsx`;
       expect(existsSync(p)).toBe(true);
