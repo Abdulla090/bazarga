@@ -42,6 +42,8 @@ const nextConfig: NextConfig = {
     // Snappy clicks: hovering (or touching) a link upgrades its prefetch to the full page data, so the click usually
     // renders from the client cache instead of waiting on the server; a visited dynamic page is reused for 30 s when
     // the seller tabs back to it. Server actions that revalidate still clear this cache, so edits show at once.
+    // Inline the (small) critical CSS in the HTML so first paint is not blocked by a stylesheet request.
+    inlineCss: true,
     dynamicOnHover: true,
     staleTimes: { dynamic: 30 },
     serverActions: {
