@@ -17,6 +17,10 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: BRAND.ink,
     background_color: BRAND.paper,
     categories: ["shopping", "business"],
+    shortcuts: [
+      { name: "ئۆردەرەکان / Orders", short_name: "Orders", url: "/dashboard/orders?source=pwa", icons: [{ src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }] },
+      { name: "بەرهەمەکان / Products", short_name: "Products", url: "/dashboard/products?source=pwa", icons: [{ src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }] },
+    ],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
