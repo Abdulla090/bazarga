@@ -697,6 +697,7 @@
     "sortPriceAsc": "Price: low to high",
     "sortPriceDesc": "Price: high to low",
     "sortDiscount": "Biggest discount",
+    "sortName": "A–Z",
     "searchPlaceholder": "Search this store",
     "search": "Search",
     "resultsFor": "Results for “{q}”: {count}",

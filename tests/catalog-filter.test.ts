@@ -104,3 +104,11 @@ it2("inStock hides sold-out products", () => {
   ex2(r.items.length).toBe(1);
   ex2(fc2(ps, { locale: "en" }).items.length).toBe(2);
 });
+
+describe("name sort", () => {
+  it("orders by localized name", () => {
+    const ps = [{ name: { en: "Zeta" }, categoryId: null }, { name: { en: "Alpha" }, categoryId: null }];
+    const r = filterCatalog(ps as never, { locale: "en", sort: "name" });
+    expect(r.items.map((p) => p.name.en)).toEqual(["Alpha", "Zeta"]);
+  });
+});

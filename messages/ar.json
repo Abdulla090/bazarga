@@ -697,6 +697,7 @@
     "sortPriceAsc": "السعر: من الأقل إلى الأعلى",
     "sortPriceDesc": "السعر: من الأعلى إلى الأقل",
     "sortDiscount": "أكبر خصم",
+    "sortName": "أ–ي",
     "searchPlaceholder": "ابحث في هذا المتجر",
     "search": "بحث",
     "resultsFor": "نتائج «{q}»: {count}",
