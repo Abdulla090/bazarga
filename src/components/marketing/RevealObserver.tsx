@@ -75,7 +75,29 @@ export function RevealObserver() {
       for (const el of [...pending]) if (el.getBoundingClientRect().bottom < 0) reveal(el);
     };
     window.addEventListener("scrollend", onScrollEnd, { passive: true });
+    // New [data-rv] nodes that appear after mount (language switch re-renders keyed rows, streamed sections) must
+    // never stay at their hidden start state: on screen or above it they show at once, below it they join the observer.
+    const adopt = (el: HTMLElement) => {
+      if (el.hasAttribute("data-rv-in") || pending.has(el)) return;
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.92) {
+        el.setAttribute("data-rv-in", "");
+        el.setAttribute("data-rv-done", "");
+      } else {
+        pending.add(el);
+        io.observe(el);
+      }
+    };
+    const mo = new MutationObserver((records) => {
+      for (const rec of records)
+        for (const n of rec.addedNodes) {
+          if (!(n instanceof HTMLElement)) continue;
+          if (n.matches("[data-rv]")) adopt(n);
+          for (const el of n.querySelectorAll<HTMLElement>("[data-rv]")) adopt(el);
+        }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
     return () => {
+      mo.disconnect();
       io.disconnect();
       window.removeEventListener("scrollend", onScrollEnd);
       for (const t of timers) clearTimeout(t);

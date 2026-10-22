@@ -31,7 +31,7 @@ export function DmsVsBazarga({ l }: { l: DvbLabels }) {
             </h3>
             <ul className="dvb-rows">
               {l.dms.map((d, i) => (
-                <li key={d} className="dvb-row" {...rv("e", 260 + i * 70)}>
+                <li key={i} className="dvb-row" {...rv("e", 260 + i * 70)}>
                   <span className="dvb-ic dvb-ic-x" aria-hidden="true"><Icon as={X} size="0.85rem" strokeWidth={2.2} /></span>
                   <span className="min-w-0">{d}</span>
                 </li>
@@ -45,7 +45,7 @@ export function DmsVsBazarga({ l }: { l: DvbLabels }) {
             </h3>
             <ul className="dvb-rows">
               {l.bzs.map((d, i) => (
-                <li key={d} className="dvb-row" {...rv("e", 380 + i * 90)}>
+                <li key={i} className="dvb-row" {...rv("e", 380 + i * 90)}>
                   <span className="dvb-ic dvb-ic-ok" aria-hidden="true"><Icon as={Check} size="0.85rem" strokeWidth={2.6} /></span>
                   <span className="min-w-0">{d}</span>
                 </li>
