@@ -90,6 +90,8 @@ describe("sort", () => {
     expect(fc(ps, { locale: "en", sort: "price-asc" }).items.map((p) => p.price)).toEqual([1, 5, 9]);
     expect(fc(ps, { locale: "en", sort: "price-desc" }).items.map((p) => p.price)).toEqual([9, 5, 1]);
     expect(fc(ps, { locale: "en", sort: "x" }).items.map((p) => p.price)).toEqual([5, 1, 9]);
+    const ds = [{ name: { en: "a" }, categoryId: null, price: 9, compareAtPrice: 10 }, { name: { en: "b" }, categoryId: null, price: 5, compareAtPrice: 10 }, { name: { en: "c" }, categoryId: null, price: 3 }];
+    expect(fc(ds, { locale: "en", sort: "discount" }).items.map((p) => p.price)).toEqual([5, 9, 3]);
     expect(parseSort("bad")).toBeUndefined();
   });
 });
