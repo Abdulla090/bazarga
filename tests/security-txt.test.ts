@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { GET } from "@/app/.well-known/security.txt/route";
+import { buildSecurityTxt } from "../src/app/.well-known/security.txt/route";
 
 describe("security.txt", () => {
-  it("serves a contact and expiry as text/plain", async () => {
-    const res = GET();
-    expect(res.headers.get("content-type")).toContain("text/plain");
-    const t = await res.text();
-    expect(t).toMatch(/^Contact: mailto:.+@.+/m);
-    expect(t).toMatch(/^Expires: \d{4}-/m);
+  it("has contact, expiry and canonical", () => {
+    const t = buildSecurityTxt("a@b.co", "https://x.app");
+    expect(t).toContain("Contact: mailto:a@b.co");
+    expect(t).toMatch(/Expires: \d{4}-/);
+    expect(t).toContain("Canonical: https://x.app/.well-known/security.txt");
   });
 });

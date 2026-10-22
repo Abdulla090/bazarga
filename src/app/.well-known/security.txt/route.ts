@@ -1,21 +1,21 @@
-import { z } from "zod";
+export const dynamic = "force-static";
 
-// No `export const dynamic`: route segment config is not allowed with cacheComponents (it broke `next build` in CI). Prerendered at build; Expires is a year ahead.
+const contact = process.env.SECURITY_CONTACT_EMAIL || "security@reelcart.app";
 
-const emailSchema = z.string().email();
-
-export function GET() {
-  const parsed = emailSchema.safeParse(process.env.SECURITY_CONTACT_EMAIL);
-  const contact = parsed.success ? parsed.data : "security@bazarga.app";
-  const expires = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 11, 31)).toISOString();
-  const body = [
-    `Contact: mailto:${contact}`,
+export function buildSecurityTxt(email: string, base: string): string {
+  const expires = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 0, 1)).toISOString();
+  return [
+    `Contact: mailto:${email}`,
     `Expires: ${expires}`,
-    "Preferred-Languages: en, ku, ar",
-    "Policy: https://bazarga.vercel.app/security",
+    "Preferred-Languages: en, ar, ku",
+    `Canonical: ${base}/.well-known/security.txt`,
     "",
   ].join("\n");
-  return new Response(body, {
+}
+
+export function GET() {
+  const base = (process.env.NEXT_PUBLIC_APP_URL || "https://bazarga.vercel.app").replace(/\/$/, "");
+  return new Response(buildSecurityTxt(contact, base), {
     headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=86400" },
   });
 }
