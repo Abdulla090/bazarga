@@ -412,3 +412,10 @@ describe("overview + database browser: real data only", () => {
     for (const f of ["src/app/admin/database/page.tsx", "src/app/admin/database/[table]/page.tsx"]) expect(readFileSync(f, "utf8")).toMatch(/requireAdmin\("team"\)/);
   });
 });
+
+import { existsSync as __ex, readFileSync as __rf } from "node:fs";
+import { it as __it, expect as __expect } from "vitest";
+__it("admin has its own not-found pointing back to /admin", () => {
+  __expect(__ex("src/app/admin/not-found.tsx")).toBe(true);
+  __expect(__rf("src/app/admin/not-found.tsx", "utf8")).toContain('href: "/admin"');
+});
