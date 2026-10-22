@@ -36,7 +36,14 @@ export type CatalogFilter = {
   locale: Locale;
   /** "Offers" filter: only products on sale (compare-at above price). */
   offers?: boolean;
+  /** Price order; anything else keeps the catalogue's own order. */
+  sort?: string | null;
 };
+
+export type CatalogSort = "price-asc" | "price-desc";
+export function parseSort(v: string | null | undefined): CatalogSort | undefined {
+  return v === "price-asc" || v === "price-desc" ? v : undefined;
+}
 
 /** `outOfRange`: the page asked for starts past the last match (?page=999); the page answers 404 instead of a full list. */
 export type FilterResult<T> = { items: T[]; total: number; hasMore: boolean; page: number; lastPage: number; outOfRange: boolean };
@@ -59,6 +66,8 @@ export function filterCatalog<T extends FilterableProduct>(products: readonly T[
     const hay = normalizeSearchText([pickText(p.name, f.locale), ...Object.values(p.name)].filter(Boolean).join(" "));
     return terms.every((t) => hay.includes(t));
   });
+  const sort = parseSort(f.sort);
+  if (sort) matches.sort((a, b) => (sort === "price-asc" ? (a.price ?? 0) - (b.price ?? 0) : (b.price ?? 0) - (a.price ?? 0)));
   const lastPage = Math.max(1, Math.ceil(matches.length / pageSize));
   const outOfRange = page > lastPage;
   const shown = Math.min(page, lastPage);

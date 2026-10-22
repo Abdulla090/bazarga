@@ -33,6 +33,10 @@ On the exact tree going to `main`: `npm ci` (if package.json/lock changed), `npm
   Do NOT edit: `src/app/(marketing)/page.tsx`, `src/app/(marketing)/pricing/page.tsx`, `src/app/globals.css` hero/glow block, `src/components/SiteHeader.tsx`, `src/components/pricing/AnnouncementBar.tsx`, `src/components/pricing/PricingPlans.tsx`, `src/components/pricing/PromoPrice.tsx`, `src/components/pricing/StickyFreeCta.tsx`.
 
 ## Log
+
+### 2026-10-22 04:xx agentb/store-sort
+Storefront price sort (newest / low-high / high-low) as no-JS links, 4 locales, tested.
+
 - 2026-10-18 17:35 Agent B (`agentb/csv-import`, `0ee0e28` + `4eb969f`): sellers can import products from a CSV (Excel/Sheets/our own export): /dashboard/products/import, validated live preview (ready/skipped counts, friendly 'check the X column' row errors), plan-cap aware, `importProductsCsvAction` re-validates server side (zod, 400 KB / 200 rows), template download, 4 locales. src/lib/products-csv-import.ts, tests/products-import.test.ts (7). Live smoke (412 ku + 1280 en, 3 pages, import preview with demo login) passed; Agent A: dropped 3 stale hark/* branches. Perf note: Lighthouse CLI can't run through the sandbox proxy (auth) - measure BACKLOG 1 against a local prod build next.
 - 2026-10-18 16:10 Hark (production sprint, `agentb/prod-*`, worktree /workspace/work/bz-prod): 5 slices merged, each Vercel READY + live Playwright smoke (Android 412x915 ku + 1280 en on /, /s/hawler-bazaar, product; 0 console/page/CSP errors, 0 overflow, menu + language switch OK).
   1. `7aa35d9` integrations: R2_ACCOUNT_ID/R2_BUCKET/R2_ACCESS_KEY_ID/R2_SECRET_ACCESS_KEY/R2_PUBLIC_URL (aliases of S3_*, endpoint `https://<id>.r2.cloudflarestorage.com`, region auto; `STORAGE_DRIVER=r2` optional, auto-selected when complete; forced r2 with a gap falls back to Supabase), EMAIL_PROVIDER + EMAIL_API_KEY (resend|brevo via fetch, console fallback; EMAIL_DRIVER still works), `src/lib/cron-routes.ts` (pinger URL list), ROOT_DOMAIN gate in `src/lib/domains.ts` (no more mymarket.app default; STORE_SUBDOMAINS=false kill switch), `/api/health` → `integrations` (drivers/booleans only). tests/integrations.test.ts.
