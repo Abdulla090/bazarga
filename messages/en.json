@@ -696,6 +696,7 @@
     "inStockOnly": "In stock only",
     "sortPriceAsc": "Price: low to high",
     "sortPriceDesc": "Price: high to low",
+    "sortDiscount": "Biggest discount",
     "searchPlaceholder": "Search this store",
     "search": "Search",
     "resultsFor": "Results for “{q}”: {count}",

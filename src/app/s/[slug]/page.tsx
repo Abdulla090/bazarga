@@ -295,7 +295,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
         </div>
 
         <nav className="flex flex-wrap items-center gap-2" aria-label={t("sortBy")} data-testid="sort-links">
-          {([[undefined, t("sortNewest")], ["price-asc", t("sortPriceAsc")], ["price-desc", t("sortPriceDesc")]] as const).map(([key, label]) => (
+          {([[undefined, t("sortNewest")], ["price-asc", t("sortPriceAsc")], ["price-desc", t("sortPriceDesc")], ["discount", t("sortDiscount")]] as const).map(([key, label]) => (
             <Link key={label} href={`${homeHref(slug, { q, c, offers, sort: key, stock: inStock })}#products`} aria-current={sort === key ? "true" : undefined} className={`${chip} ${sort === key ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{label}</Link>
           ))}
           <Link href={`${homeHref(slug, { q, c, offers, sort, stock: !inStock })}#products`} aria-pressed={inStock} data-testid="stock-chip" className={`${chip} ${inStock ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{t("inStockOnly")}</Link>
