@@ -25,7 +25,7 @@ export function normalizeSearchText(s: string): string {
     .trim();
 }
 
-export type FilterableProduct = { name: LocalizedText; categoryId: string | null; price?: number; compareAtPrice?: number | null };
+export type FilterableProduct = { name: LocalizedText; categoryId: string | null; price?: number; compareAtPrice?: number | null; soldOut?: boolean };
 
 export type CatalogFilter = {
   q?: string | null;
@@ -36,6 +36,8 @@ export type CatalogFilter = {
   locale: Locale;
   /** "Offers" filter: only products on sale (compare-at above price). */
   offers?: boolean;
+  /** Hide sold-out products. */
+  inStock?: boolean;
   /** Price order; anything else keeps the catalogue's own order. */
   sort?: string | null;
 };
@@ -61,6 +63,7 @@ export function filterCatalog<T extends FilterableProduct>(products: readonly T[
   const terms = q ? q.split(" ") : [];
   const matches = products.filter((p) => {
     if (f.c && p.categoryId !== f.c) return false;
+    if (f.inStock && p.soldOut) return false;
     if (f.offers && !(p.price !== undefined && percentOff(p.price, p.compareAtPrice) !== null)) return false;
     if (!terms.length) return true;
     const hay = normalizeSearchText([pickText(p.name, f.locale), ...Object.values(p.name)].filter(Boolean).join(" "));

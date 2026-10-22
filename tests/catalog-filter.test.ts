@@ -93,3 +93,12 @@ describe("sort", () => {
     expect(parseSort("bad")).toBeUndefined();
   });
 });
+
+import { filterCatalog as fc2 } from "@/lib/catalog-filter";
+import { it as it2, expect as ex2 } from "vitest";
+it2("inStock hides sold-out products", () => {
+  const ps = [{ name: { en: "a" }, categoryId: null, soldOut: true }, { name: { en: "b" }, categoryId: null }];
+  const r = fc2(ps, { inStock: true, locale: "en" });
+  ex2(r.items.length).toBe(1);
+  ex2(fc2(ps, { locale: "en" }).items.length).toBe(2);
+});
