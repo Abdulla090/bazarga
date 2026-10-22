@@ -693,6 +693,7 @@
     "of": "of",
     "sortBy": "Sort by",
     "sortNewest": "Newest",
+    "inStockOnly": "In stock only",
     "sortPriceAsc": "Price: low to high",
     "sortPriceDesc": "Price: high to low",
     "searchPlaceholder": "Search this store",

@@ -30,16 +30,17 @@ import { OfferBanner } from "@/components/store/OfferBanner";
 import { bestSellerStrip, percentOff, pickBannerOffer, saleProducts } from "@/lib/merch";
 import { merchLabels, offerLabels } from "@/components/store/merch-labels";
 
-type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[]; sort?: string | string[] };
+type SP = { c?: string | string[]; q?: string | string[]; page?: string | string[]; offers?: string | string[]; sort?: string | string[]; stock?: string | string[] };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)?.trim() || undefined;
 
 /** Build a store-home href keeping only the params that are set. */
-function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offers?: boolean; sort?: string }) {
+function homeHref(slug: string, p: { q?: string; c?: string; page?: number; offers?: boolean; sort?: string; stock?: boolean }) {
   const sp = new URLSearchParams();
   if (p.q) sp.set("q", p.q);
   if (p.c) sp.set("c", p.c);
   if (p.offers) sp.set("offers", "1");
   if (p.sort) sp.set("sort", p.sort);
+  if (p.stock) sp.set("stock", "1");
   if (p.page && p.page > 1) sp.set("page", String(p.page));
   const s = sp.toString();
   return `/s/${slug}${s ? `?${s}` : ""}`;
@@ -67,6 +68,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
   const c = one(sp.c);
   const offers = one(sp.offers) === "1";
   const sort = parseSort(one(sp.sort));
+  const inStock = one(sp.stock) === "1";
   const store = await loadStore(slug);
   const design = await resolveDesign(slug, store.themePublished, store.plan);
   const t = await getTranslations("store");
@@ -77,7 +79,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
     getStorefrontSettings(store.id),
     getStoreOffers(store.id),
   ]);
-  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, sort, page: one(sp.page), locale, pageSize: design.pageSize });
+  const { items, total, hasMore, page, outOfRange } = filterCatalog(products, { q, c, offers, sort, inStock, page: one(sp.page), locale, pageSize: design.pageSize });
   // ?page=N past the last page: a 404 (the store's own not-found page), never the whole catalogue under a bogus URL.
   if (outOfRange) notFound();
   const badges = merchLabels(t);
@@ -273,6 +275,7 @@ export default async function StorefrontPage({ params, searchParams }: { params:
             {c && <input type="hidden" name="c" value={c} />}
             {offers && <input type="hidden" name="offers" value="1" />}
             {sort && <input type="hidden" name="sort" value={sort} />}
+            {inStock && <input type="hidden" name="stock" value="1" />}
             <label className="relative flex-1">
               <span className="sr-only">{t("search")}</span>
               <Icon as={Search} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
@@ -293,8 +296,9 @@ export default async function StorefrontPage({ params, searchParams }: { params:
 
         <nav className="flex flex-wrap items-center gap-2" aria-label={t("sortBy")} data-testid="sort-links">
           {([[undefined, t("sortNewest")], ["price-asc", t("sortPriceAsc")], ["price-desc", t("sortPriceDesc")]] as const).map(([key, label]) => (
-            <Link key={label} href={`${homeHref(slug, { q, c, offers, sort: key })}#products`} aria-current={sort === key ? "true" : undefined} className={`${chip} ${sort === key ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{label}</Link>
+            <Link key={label} href={`${homeHref(slug, { q, c, offers, sort: key, stock: inStock })}#products`} aria-current={sort === key ? "true" : undefined} className={`${chip} ${sort === key ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{label}</Link>
           ))}
+          <Link href={`${homeHref(slug, { q, c, offers, sort, stock: !inStock })}#products`} aria-pressed={inStock} data-testid="stock-chip" className={`${chip} ${inStock ? chipOn : chipOff}`} style={{ lineHeight: 1.5, paddingBlock: "0.25rem" }}>{t("inStockOnly")}</Link>
         </nav>
 
         {q && (
