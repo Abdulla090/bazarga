@@ -38,7 +38,8 @@ export async function SetupChecklist({ checklist, storeUrl, storeName }: { check
               key={s.key}
               data-step={s.key}
               data-done={s.done || undefined}
-              className={`flex items-start gap-3 py-4 lg:border-t lg:border-line ${isNext ? "" : ""}`}
+              aria-current={isNext ? "step" : undefined}
+              className={`flex items-start gap-3 py-4 lg:border-t lg:border-line ${isNext ? "border-s-2 border-s-gold ps-3 lg:ps-3" : ""}`}
             >
               <span
                 className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border ${s.done ? "border-gold bg-gold text-white" : isNext ? "border-gold" : "border-line"}`}
