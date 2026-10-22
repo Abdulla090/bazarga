@@ -220,3 +220,11 @@ describe("security headers + rate limits (launch verification)", () => {
     expect(read("src/app/api/cron/daily/route.ts")).toContain("pruneRateLimits(");
   });
 });
+
+describe("buildInfo version", () => {
+  it("derives a version from the sha when APP_VERSION is unset", () => {
+    expect(buildInfo({ VERCEL_GIT_COMMIT_SHA: "f964a35a6aacba7c7a45ccab51e3036aea3da728" }).version).toBe("1.0.0+f964a35");
+    expect(buildInfo({ APP_VERSION: "2.1.0" }).version).toBe("2.1.0");
+    expect(buildInfo({}).version).toBe("dev");
+  });
+});

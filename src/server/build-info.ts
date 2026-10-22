@@ -13,6 +13,6 @@ export function buildInfo(e: Record<string, string | undefined> = process.env): 
     sha,
     shortSha: sha === "unknown" ? sha : sha.slice(0, 7),
     env: e.VERCEL_ENV || e.NODE_ENV || "development",
-    version: e.APP_VERSION || "dev",
+    version: e.APP_VERSION || (sha === "unknown" ? "dev" : `1.0.0+${sha.slice(0, 7)}`),
   };
 }
