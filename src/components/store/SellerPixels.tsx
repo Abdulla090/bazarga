@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { CART_ADDED, type AddedItem } from "./cart";
-import { pixelsConsented } from "./CookieNotice";
+import { pixelsConsented } from "./consent";
 import { safePixelId, trackingAllowed, vendorEvent, type PixelData, type PixelEvent } from "@/lib/pixels-client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

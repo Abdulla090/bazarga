@@ -1,17 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { safePixelId } from "@/lib/pixels-client";
+import { CONSENT_KEY, pixelsConsented } from "./consent";
 
-export const CONSENT_KEY = "bz-pixel-consent";
-
-/** True unless the shopper declined the seller's ad pixels. */
-export function pixelsConsented(): boolean {
-  try {
-    return window.localStorage.getItem(CONSENT_KEY) !== "no";
-  } catch {
-    return true;
-  }
-}
+export { CONSENT_KEY, pixelsConsented };
 
 export type CookieNoticeLabels = { title: string; body: string; accept: string; decline: string };
 
