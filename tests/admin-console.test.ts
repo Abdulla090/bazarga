@@ -38,7 +38,7 @@ import DbPage from "@/app/admin/database/page";
 import DbTablePage from "@/app/admin/database/[table]/page";
 import { overviewKpis } from "@/server/admin/service";
 import { browseTable, listDbTables } from "@/server/admin/db-browser";
-import { promoteSeedAdmins } from "../scripts/seed-admin";
+import { demoteDemoAdmin, promoteSeedAdmins } from "../scripts/seed-admin";
 import {
   MASK, applyOverride, auditSnapshot, browserCell, can, isSecretColumn, csvCell, effectiveRole, maintenanceExempt, parseAnnouncement, parseLimit, resolveFlags, stepUpMatches,
 } from "@/lib/admin";
@@ -315,6 +315,16 @@ describe("admin actions", () => {
     expect(await promoteSeedAdmins(database, s.user.email)).toEqual([]);
     expect(await promoteSeedAdmins(database, "")).toEqual([]);
     expect((await database.query.users.findFirst({ where: eq(users.id, s.user.id) }))?.role).toBe("owner");
+  });
+
+  it("A7: the public demo account is demoted unless explicitly listed as an admin", async () => {
+    const s = await seller(database);
+    await promoteSeedAdmins(database, s.user.email);
+    expect(await demoteDemoAdmin(database, s.user.email, s.user.email, "")).toBe(false);
+    expect(await demoteDemoAdmin(database, s.user.email, "", s.user.email)).toBe(false);
+    expect(await demoteDemoAdmin(database, s.user.email.toUpperCase(), "owner@x.iq", "")).toBe(true);
+    expect(await demoteDemoAdmin(database, s.user.email, "owner@x.iq", "")).toBe(false);
+    expect((await database.query.users.findFirst({ where: eq(users.id, s.user.id) }))?.role).toBe("user");
   });
 });
 
