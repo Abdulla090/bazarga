@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { IntlProvider } from "@/components/IntlProvider";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/server/locale";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const locale = await currentLocale();
