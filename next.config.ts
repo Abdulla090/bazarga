@@ -42,8 +42,9 @@ const nextConfig: NextConfig = {
     // Snappy clicks: hovering (or touching) a link upgrades its prefetch to the full page data, so the click usually
     // renders from the client cache instead of waiting on the server; a visited dynamic page is reused for 30 s when
     // the seller tabs back to it. Server actions that revalidate still clear this cache, so edits show at once.
-    // Inline the (small) critical CSS in the HTML so first paint is not blocked by a stylesheet request.
-    inlineCss: true,
+    // inlineCss is OFF (Oct 23 launch): it inlined the full ~220 KB stylesheet into every HTML response AND again into
+    // the RSC payload (~180 KB), so pages shipped ~1 MB of HTML and the parse dominated TBT. One cached CSS file wins.
+    inlineCss: false,
     dynamicOnHover: true,
     staleTimes: { dynamic: 30 },
     serverActions: {
