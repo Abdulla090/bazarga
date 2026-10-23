@@ -128,3 +128,8 @@ export function emailProvider(): EmailProvider {
 export function setEmailProvider(p: EmailProvider | undefined) {
   provider = p;
 }
+
+/** True when mail actually leaves the server (a provider with its key). Console = mail only reaches the log. */
+export function emailDelivers(e: EmailEnv = env()): boolean {
+  return resolveEmailConfig(e).driver !== "console";
+}

@@ -817,6 +817,8 @@
     "forgotTitle": "Şîfreya xwe vegerîne",
     "forgotSub": "Em ê girêdanekê bi e-nameyê ji te re bişînin.",
     "forgotSent": "Heke ev e-name hesabek hebe, girêdana vegerandinê di rê de ye.",
+    "forgotNoEmail": "Vegerandina şîfreyê bi e-nameyê hê ne çalak e. Ji e-nameya hesabê xwe ji me re binivîse û em ê ji te re nû bikin, bi gelemperî heman rojê.",
+    "forgotNoEmailHint": "Hat bîra te? Li jêr têkeve.",
     "sendLink": "Girêdanê bişîne",
     "resetTitle": "Şîfreyeke nû hilbijêre",
     "resetDone": "Şîfre hat guhertin. Bi şîfreya nû têkeve.",

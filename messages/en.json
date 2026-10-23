@@ -217,6 +217,8 @@
     "forgotTitle": "Reset your password",
     "forgotSub": "We'll email you a link.",
     "forgotSent": "If that email has an account, a reset link is on its way.",
+    "forgotNoEmail": "Password reset by email isn't switched on yet. Write to us from the email on your account and we'll reset it for you, usually the same day.",
+    "forgotNoEmailHint": "Remembered it? Log in below.",
     "sendLink": "Send link",
     "resetTitle": "Choose a new password",
     "resetDone": "Password changed. Log in with your new password.",
