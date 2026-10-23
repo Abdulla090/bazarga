@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { loadStore } from "./data";
 import { CartDrawerLazy as CartDrawer } from "@/components/store/CartDrawerLazy";
@@ -64,6 +65,8 @@ export default async function StoreLayout({ children, params }: { children: Reac
       : <StatusPage title={ts("suspended.title")} body={ts("suspended.body")} testId="store-suspended-page" />;
   }
   const t = await getTranslations("store");
+  // Theme Studio preview bridge only matters inside the editor iframe; skip its JS for real shoppers.
+  const inIframe = (await headers()).get("sec-fetch-dest") === "iframe";
   const locale = await currentLocale();
   const about = pickText(store.about, locale);
   const returns = pickText(store.returnPolicy, locale);
@@ -88,7 +91,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       data-radius={active?.cards.radius ?? "md"}
       style={{ ...themeStyle(theme), ...publishedThemeStyle(previewTheme ?? store.themePublished) }}
     >
-      <PreviewBridge />
+      {inIframe ? <PreviewBridge /> : null}
       <SourceCapture slug={store.slug} />
       {(store.tiktokPixelId || store.metaPixelId) && (
         <>
