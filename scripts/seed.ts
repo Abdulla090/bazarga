@@ -9,7 +9,7 @@
  * (Variable names honey/dress/scarf are the historical product slots.)
  * Idempotent: re-running does nothing if the store exists.
  */
-import { promoteSeedAdmins } from "./seed-admin";
+import { demoteDemoAdmin, promoteSeedAdmins } from "./seed-admin";
 import { randomBytes } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { createDb } from "../src/server/db";
@@ -61,6 +61,8 @@ async function main() {
   const promote = async () => {
     const done = await promoteSeedAdmins(db).catch((err) => { console.error("[seed] admin promotion failed", err); return []; });
     if (done.length) console.log(`[seed] platform owner role granted to ${done.length} account(s) from SEED_ADMIN_EMAIL`);
+    const demoted = await demoteDemoAdmin(db, DEMO_EMAIL).catch((err) => { console.error("[seed] demo demotion failed", err); return false; });
+    if (demoted) console.log("[seed] demo account demoted to role=user (A7: public demo login is never an admin)");
   };
   // SEED_DEMO=false launches an empty platform: no demo seller, no demo store (docs/SETUP.md).
   if (process.env.SEED_DEMO === "false") {
