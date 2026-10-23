@@ -54,7 +54,9 @@ async function adminAllowed(req: NextRequest): Promise<boolean> {
 function isDocumentRequest(req: NextRequest): boolean {
   if (req.method !== "GET" && req.method !== "HEAD") return false;
   if (req.headers.get("rsc") || req.headers.get("next-router-prefetch") || req.headers.get("next-action")) return false;
-  return (req.headers.get("accept") ?? "").includes("text/html");
+  // Browsers send text/html; crawlers and curl often send */* or nothing. Both are page loads that deserve a real 404 status.
+  const accept = req.headers.get("accept") ?? "";
+  return accept === "" || accept.includes("text/html") || accept.trim() === "*/*";
 }
 
 async function storeExists(origin: string, slug: string): Promise<boolean> {
