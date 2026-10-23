@@ -1,6 +1,6 @@
-export const dynamic = "force-static";
+// No route segment config: `dynamic` is incompatible with cacheComponents and broke `next build` on Vercel (Oct 23).
 
-const contact = process.env.SECURITY_CONTACT_EMAIL || "security@reelcart.app";
+const contact = process.env.SECURITY_CONTACT_EMAIL || "founder@kurdistanai.app";
 
 export function buildSecurityTxt(email: string, base: string): string {
   const expires = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 0, 1)).toISOString();
