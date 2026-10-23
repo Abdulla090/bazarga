@@ -6,6 +6,10 @@ import { PricingPlans } from "@/components/pricing/PricingPlans";
 import { CompareTable } from "@/components/pricing/CompareTable";
 import { FoundingSpots } from "@/components/marketing/FoundingSpots";
 import { getFoundingSpotsLeft } from "@/server/cache/founding";
+import { headers } from "next/headers";
+import { NONCE_HEADER } from "@/server/csp";
+import { serializeJsonLd } from "@/lib/product-page";
+import { pricingJsonLd } from "@/lib/pricing-jsonld";
 
 export async function generateMetadata() {
   const t = await getTranslations("pricing");
@@ -15,8 +19,10 @@ export async function generateMetadata() {
 export default async function PricingPage() {
   const t = await getTranslations("pricing");
   const spotsLeft = await getFoundingSpotsLeft();
+  const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
   return (
     <>
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: serializeJsonLd(pricingJsonLd("Reelcart", "https://bazarga.vercel.app/pricing")) }} />
       <SiteHeader />
       <main id="main">
         <section className="container-page pt-12 pb-8 text-center md:pt-20">
