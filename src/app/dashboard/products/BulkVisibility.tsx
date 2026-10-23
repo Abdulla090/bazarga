@@ -1,11 +1,11 @@
 "use client";
 import { useTransition } from "react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { bulkProductVisibilityAction, bulkProductSaleAction } from "@/server/actions/dashboard";
 
 export function BulkVisibility({ ids }: { ids: string[] }) {
   const t = useTranslations("products");
-  const f = useFormatter();
+  // Plain "10%": Intl percent formatting for ckb differs between Node and browser ICU (hydration error #418 in ku).
   const [pending, start] = useTransition();
   const run = (active: boolean) => start(async () => { await bulkProductVisibilityAction(ids, active); });
   const sale = (pct: number | null) => start(async () => { await bulkProductSaleAction(ids, pct); });
@@ -16,7 +16,7 @@ export function BulkVisibility({ ids }: { ids: string[] }) {
       <button type="button" disabled={pending} onClick={() => run(true)} className={cls}>{t("showAll")}</button>
       {[10, 20, 30, 50].map((p) => (
         <button key={p} type="button" disabled={pending} onClick={() => sale(p)} className={cls} data-testid={`bulk-sale-${p}`}>
-          {f.number(p / 100, { style: "percent" })}
+          <span dir="ltr">{p}%</span>
         </button>
       ))}
       <button type="button" disabled={pending} onClick={() => sale(null)} className={cls}>{t("endSale")}</button>
