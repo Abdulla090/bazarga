@@ -52,7 +52,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex h-16 items-center gap-2 ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] md:px-6">
           {stores.length > 1 ? (
             <>
-              <Link href="/dashboard" className="flex min-h-11 shrink-0 items-center" aria-label="Reelcart"><Awning className="h-3.5 w-9 shrink-0" /></Link>
+              <Link href="/dashboard" className="flex min-h-11 min-w-11 shrink-0 items-center" aria-label="Reelcart"><Awning className="h-3.5 w-9 shrink-0" /></Link>
               <StoreSwitcher
                 current={{ id: store.id, name: store.name, slug: store.slug, role }}
                 stores={stores.map((a) => ({ id: a.store.id, name: a.store.name, slug: a.store.slug, role: a.role }))}

@@ -15,7 +15,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     <IntlProvider>
     <div className="flex min-h-dvh flex-col">
       <header className="container-page flex items-center justify-between gap-2 border-b border-[#E7E5E4] py-3">
-        <Link href="/" className="inline-flex min-h-11 items-center"><Logo /></Link>
+        <Link href="/" className="inline-flex min-h-11 min-w-11 items-center"><Logo /></Link>
         <span className="ms-auto hidden text-xs font-semibold text-[#2563EB] sm:inline">{tp("onb")}</span>
         <LocaleSwitcher current={locale} locales={["ku", "kmr", "ar", "en"]} compact />
       </header>
