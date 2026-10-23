@@ -13,6 +13,7 @@ import { DashNav } from "@/components/dashboard/DashNav";
 import { ExternalLink, Icon } from "@/components/ui/icons";
 import { normalizePlan } from "@/lib/plans";
 import { isEmailVerified } from "@/server/auth/service";
+import { emailDelivers } from "@/server/email";
 import { VerifyEmailBanner } from "@/components/dashboard/VerifyEmailBanner";
 import { PendingButton } from "@/components/ui/PendingButton";
 import { StoreSwitcher } from "@/components/dashboard/StoreSwitcher";
@@ -89,7 +90,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <PendingButton className="flex min-h-11 w-full items-center rounded-lg px-3 text-[14px] text-ink/60 transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink">{tc("logout")}</PendingButton>
           </form>
         </aside>
-        <main id="dash-main" tabIndex={-1} className="mx-auto w-full min-w-0 max-w-[72rem] outline-none px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && <VerifyEmailBanner />}{children}</main>
+        <main id="dash-main" tabIndex={-1} className="mx-auto w-full min-w-0 max-w-[72rem] outline-none px-4 py-6 sm:px-6 md:px-10 md:py-10 print:max-w-none print:p-0">{!verified && emailDelivers() && <VerifyEmailBanner />}{children}</main>
       </div>
       <DashNav variant="bottom" newOrders={newOrders} role={role} />
       <CommandPalette />

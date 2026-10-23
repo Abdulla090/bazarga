@@ -1,31 +1,26 @@
-"use client";
 import Link from "next/link";
-import { useActionState } from "react";
-import { useTranslations } from "next-intl";
-import { forgotPasswordAction } from "@/server/actions/auth";
-import { Field, FormError } from "@/components/forms/Field";
-import { useKeepValues } from "@/lib/use-keep-values";
+import { getTranslations } from "next-intl/server";
+import { emailDelivers } from "@/server/email";
+import { SUPPORT_EMAIL } from "@/components/ErrorState";
+import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
-export default function ForgotPasswordPage() {
-  const t = useTranslations("auth");
-  const [state, action, pending] = useActionState(forgotPasswordAction, {});
-  const keep = useKeepValues(action);
+/**
+ * While EMAIL_PROVIDER is console (no provider key on Vercel) a reset link would only reach the server log, so the page
+ * says so honestly and points to support instead of pretending a mail is on its way. Setting EMAIL_PROVIDER +
+ * EMAIL_API_KEY brings the normal form back with no code change.
+ */
+export default async function ForgotPasswordPage() {
+  if (emailDelivers()) return <ForgotPasswordForm />;
+  const t = await getTranslations("auth");
   return (
-    <form action={action} onSubmit={keep} className="grid gap-5 border-t border-[#E7E5E4] pt-8">
+    <div className="grid gap-5 border-t border-[#E7E5E4] pt-8" data-testid="forgot-no-email">
       <div>
         <h1 className="t-headline">{t("forgotTitle")}</h1>
-        <p className="text-ink-70">{t("forgotSub")}</p>
+        <p className="text-ink-70">{t("forgotNoEmail")}</p>
       </div>
-      {state.ok ? (
-        <p role="status" className="rounded-xl bg-green/10 px-3 py-2 font-semibold text-green">{t("forgotSent")}</p>
-      ) : (
-        <>
-          <FormError error={state.error === "VALIDATION" ? undefined : state.error} />
-          <Field label={t("email")} name="email" type="email" autoComplete="email" required ltr error={state.fieldErrors?.email} />
-          <button className="btn-gold" disabled={pending} aria-busy={pending || undefined}>{t("sendLink")}</button>
-        </>
-      )}
+      <a href={`mailto:${SUPPORT_EMAIL}?subject=Password%20reset`} className="btn-gold justify-center" dir="ltr">{SUPPORT_EMAIL}</a>
+      <p className="text-sm text-ink-70">{t("forgotNoEmailHint")}</p>
       <Link href="/login" className="inline-flex min-h-11 items-center text-sm underline">{t("login")}</Link>
-    </form>
+    </div>
   );
 }
