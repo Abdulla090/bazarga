@@ -59,14 +59,15 @@ function isDocumentRequest(req: NextRequest): boolean {
   return accept === "" || accept.includes("text/html") || accept.trim() === "*/*";
 }
 
-async function storeExists(origin: string, slug: string): Promise<boolean> {
-  const cached = storeExistence.get(slug);
+async function storeExists(origin: string, slug: string, productId?: string): Promise<boolean> {
+  const key = productId ? `${slug}/${productId}` : slug;
+  const cached = storeExistence.get(key);
   if (cached !== undefined) return cached;
   try {
-    const r = await fetch(`${origin}/api/store-exists/${slug}`, { headers: { [INTERNAL_404_HEADER]: "1" }, signal: AbortSignal.timeout(2000), cache: "no-store" });
+    const r = await fetch(`${origin}/api/store-exists/${slug}${productId ? `?p=${productId}` : ""}`, { headers: { [INTERNAL_404_HEADER]: "1" }, signal: AbortSignal.timeout(2000), cache: "no-store" });
     if (!r.ok) return true; // fail open: the page still renders its own not-found UI
     const exists = Boolean(((await r.json()) as { exists?: unknown }).exists);
-    storeExistence.set(slug, exists);
+    storeExistence.set(key, exists);
     return exists;
   } catch {
     return true;
@@ -137,7 +138,7 @@ export async function proxy(req: NextRequest) {
     const decision = decideNotFound({ pathname: url.pathname, search: url.searchParams, storeSlug: subSlug ?? pathSlug, gatewayOn: GATEWAY_ON });
     let kind: "page" | "store" | null = null;
     if (decision && "kind" in decision) kind = decision.kind;
-    else if (decision && !(await storeExists(url.origin, decision.checkStore))) kind = "store";
+    else if (decision && !(await storeExists(url.origin, decision.checkStore, decision.productId))) kind = "store";
     else if (!subSlug && /^\/admin(\/|$)/.test(url.pathname) && !(await adminAllowed(req))) kind = "page";
     if (kind) {
       const nf = await notFoundResponse(req, kind);

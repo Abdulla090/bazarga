@@ -19,7 +19,7 @@ export function paymentsGatewayOn(provider: string | undefined): boolean {
   return v !== "" && v !== "none";
 }
 
-export type NotFoundDecision = { kind: "page" | "store" } | { checkStore: string } | null;
+export type NotFoundDecision = { kind: "page" | "store" } | { checkStore: string; productId?: string } | null;
 
 /**
  * What the proxy should do for a page request:
@@ -38,6 +38,8 @@ export function decideNotFound(input: { pathname: string; search: URLSearchParam
   }
   if (storeSlug !== null) {
     if (!slugExistsSchema.safeParse(storeSlug).success) return { kind: "store" };
+    const pm = /^\/(?:s\/[^/]+\/)?p\/([^/]+)\/?$/.exec(pathname);
+    if (pm && UUID_RE.test(pm[1]!)) return { checkStore: storeSlug, productId: pm[1]!.toLowerCase() };
     return { checkStore: storeSlug };
   }
   return null;
