@@ -119,3 +119,12 @@ describe("brand + boundaries", () => {
     expect(i).toContain('split("?")[0]');
   });
 });
+
+describe("product 404 decision", () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  it("asks about the product for /s/<slug>/p/<uuid> and subdomain /p/<uuid>", () => {
+    expect(decideNotFound({ pathname: `/s/shop/p/${id}`, search: new URLSearchParams(), storeSlug: "shop", gatewayOn: false })).toEqual({ checkStore: "shop", productId: id });
+    expect(decideNotFound({ pathname: `/p/${id}`, search: new URLSearchParams(), storeSlug: "shop", gatewayOn: false })).toEqual({ checkStore: "shop", productId: id });
+    expect(decideNotFound({ pathname: `/s/shop/p/nope`, search: new URLSearchParams(), storeSlug: "shop", gatewayOn: false })).toEqual({ checkStore: "shop" });
+  });
+});
